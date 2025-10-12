@@ -1,0 +1,15 @@
+/*
+ * File: styles.css
+ * Contiene gli stili di base e personalizzati del sito.
+ */
+
+body {
+    /* Dosis è il font principale del corpo */
+    font-family: 'Dosis', sans-serif;
+    font-size: 17px; 
+}
+
+/* Classe per i titoli/elementi che richiedono Montserrat (es. nomi dei coach) */
+.font-montserrat {
+    font-family: 'Montserrat', sans-serif;
+}

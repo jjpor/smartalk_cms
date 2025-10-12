@@ -1,0 +1,60 @@
+[tool.poetry]
+name = "smartalk_cms"  # Il nome del progetto deve stare qui
+version = "0.1.0"
+description = "CMS for Smartalk"
+authors = ["Giulia Porcellato <jj@smartalk.online>"]
+license = "http://www.apache.org/licenses/LICENSE-2.0" # Ho convertito l'oggetto in una stringa semplice
+readme = "README.md"
+packages = [
+  { include = "smartalk" }
+]
+# La sezione 'packages' va qui
+# richiede che la sezione packages sia definita qui sotto la tool.poetry
+
+[tool.poetry.dependencies]
+python = ">=3.11,<4.0" # La versione di Python va qui
+
+# --- Core ---
+fastapi = ">=0.115.0,<1.0.0"
+uvicorn = {extras = ["standard"], version = ">=0.30.0,<1.0.0"}
+
+# --- AWS / DynamoDB ---
+aioboto3 = {version = ">=12.3.0,<13.0.0"}
+boto3 = {version = ">=1.34.41,<1.35.0"}
+
+# --- Auth & Security ---
+passlib = {extras = ["bcrypt"], version = ">=1.7.4,<2.0.0"}
+pyjwt = ">=2.10.1,<3.0.0"
+
+# --- Google OAuth ---
+google-auth = ">=2.41.1,<3.0.0"
+google-auth-oauthlib = ">=1.2.2,<2.0.0"
+
+# --- Config / Env ---
+pydantic = ">=2.11.10,<3.0.0"
+python-dotenv = ">=1.1.1,<2.0.0"
+
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.4.2"
+black = "^25.9.0"
+isort = "^6.1.0"
+ruff = "^0.14.0"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+line-length = 120
+# target-version = "py311"  # opzionale
+exclude = ["__pycache__", "build", "dist"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+ignore = ["E203", "E501"]
+fixable = ["I", "E", "F"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
