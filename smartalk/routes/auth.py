@@ -5,19 +5,21 @@ from typing import Optional
 import google.auth.transport.requests
 import google.oauth2.id_token
 import jwt
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel, EmailStr
 
-from smartalk.core.dynamodb import create_user_if_not_exists, get_user_by_email, normalize_email
+from smartalk.core.dynamodb import get_dynamodb_connection
 from smartalk.core.settings import settings
-
-# -------------------------------------------------
-# CONFIGURAZIONE JWT E GOOGLE
-# -------------------------------------------------
+from smartalk.db_usage.dynamodb_auth import (
+    create_user_if_not_exists,
+    get_user_by_email,
+    normalize_email,
+)
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
-
+# Uso della Dependency Injection per ottenere la connessione resiliente
+DBDependency = Depends(get_dynamodb_connection)
 # -------------------------------------------------
 # SCHEMI Pydantic
 # -------------------------------------------------
@@ -81,7 +83,7 @@ async def get_current_user(request: Request):
     if not user_id or not email:
         raise HTTPException(status_code=401, detail="Invalid token payload")
 
-    user = await get_user_by_email(email)
+    user = await get_user_by_email(email, DBDependency)
     if not user or user.get("id") != user_id:
         raise HTTPException(status_code=401, detail="User not found")
 
@@ -99,7 +101,7 @@ async def signup(req: AuthRequest):
     Crea un nuovo utente se non esiste già (signup tradizionale).
     """
     email = normalize_email(req.email)
-    existing = await get_user_by_email(email)
+    existing = await get_user_by_email(email, DBDependency)
 
     if existing:
         raise HTTPException(status_code=400, detail="User already exists")
@@ -107,7 +109,7 @@ async def signup(req: AuthRequest):
     # genera user_id stabile
     user_id = f"u_{uuid.uuid4().hex[:10]}"
 
-    user = await create_user_if_not_exists(user_id, email, req.name or email)
+    user = await create_user_if_not_exists(user_id, email, req.name or email, DBDependency)
     token = create_jwt_token(user_id, email)
 
     return TokenResponse(
@@ -124,7 +126,7 @@ async def login(req: AuthRequest):
     Login classico basato su email (senza password per ora).
     """
     email = normalize_email(req.email)
-    user = await get_user_by_email(email)
+    user = await get_user_by_email(email, DBDependency)
 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -156,10 +158,10 @@ async def login_with_google(req: GoogleLoginRequest):
     name = id_info.get("name", email)
 
     # Recupera o crea user
-    user = await get_user_by_email(email)
+    user = await get_user_by_email(email, DBDependency)
     if not user:
         user_id = f"u_{uuid.uuid4().hex[:10]}"
-        user = await create_user_if_not_exists(user_id, email, name)
+        user = await create_user_if_not_exists(user_id, email, name, DBDependency)
     else:
         user_id = user["id"]
 
@@ -184,7 +186,7 @@ async def forgot_password(req: AuthRequest):
     Placeholder: invio email reset (non implementato).
     """
     email = normalize_email(req.email)
-    user = await get_user_by_email(email)
+    user = await get_user_by_email(email, DBDependency)
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 

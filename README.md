@@ -28,8 +28,8 @@ poetry run uvicorn smartalk.app:app --host localhost --port 8000 --reload
 
 ## Docker
 
-sudo docker compose up --build
-sudo docker compose down
+docker compose up --build
+docker compose down
 
 ## git
 git config core.autocrlf input

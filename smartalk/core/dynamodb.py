@@ -1,143 +1,112 @@
-import datetime
-import uuid
-from typing import Any, Dict, List, Optional
+import asyncio
+import json
+import logging
+from contextlib import asynccontextmanager
+from typing import AsyncGenerator
 
-import aioboto3
-from botocore.exceptions import ClientError
+from aioboto3 import Session as AioSession
 
 from smartalk.core.settings import settings
 
-# -----------------------------
-# COSTANTI
-# -----------------------------
+# Inizializzazione logger
+logger = logging.getLogger("aws_egress_db_counter")
+logger.setLevel(logging.INFO)  # Mantenere INFO per vedere il conteggio
 
-USERS_TABLE = "Users"
-
-# -----------------------------
-# SESSIONE DYNAMODB
-# -----------------------------
-
-_session = None
+# Contatore globale che stima il traffico in uscita da AWS (DB -> Server)
+AWS_EGRESS_DB_COUNTER_BYTES = 0
+lock = asyncio.Lock()
 
 
-async def get_dynamodb():
+def get_dynamodb_resource_context():
     """
-    Restituisce una risorsa DynamoDB configurata per ambiente locale o cloud.
+    Restituisce l'AsyncContextManager (session.resource(...)).
+    Gestisce la logica condizionale per l'ambiente (Locale vs AWS).
     """
-    global _session
-    if _session is None:
-        session = aioboto3.Session(
-            aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-            aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
-            region_name=settings.AWS_REGION,
-        )
-        endpoint = settings.DYNAMO_ENDPOINT or None
-        _session = await session.resource("dynamodb", endpoint_url=endpoint)
-    return _session
 
-
-# -----------------------------
-# UTILITIES
-# -----------------------------
-
-
-def normalize_email(email: str) -> str:
-    """
-    Canonicalizza un indirizzo email:
-    - lowercase
-    - per @gmail.com e @googlemail.com rimuove i punti
-    """
-    email = email.strip().casefold()
-    local, _, domain = email.partition("@")
-    if domain in ("gmail.com", "googlemail.com"):
-        local = local.replace(".", "")
-    return f"{local}@{domain}"
-
-
-def utc_now_iso() -> str:
-    return datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds") + "Z"
-
-
-# -----------------------------
-# USERS
-# -----------------------------
-
-
-async def get_user_by_email(email: str) -> Optional[Dict[str, Any]]:
-    """
-    Recupera un utente tramite il GSI email-index (KEYS_ONLY).
-    """
-    db = await get_dynamodb()
-    client = db.meta.client
-    norm = normalize_email(email)
-
-    resp = await client.query(
-        TableName=USERS_TABLE,
-        IndexName="email-index",
-        KeyConditionExpression="email = :email",
-        ExpressionAttributeValues={":email": {"S": norm}},
-        Limit=1,
+    # Prepara i parametri della Sessione AioBoto3.
+    # Se le variabili sono stringhe vuote (""), 'or None' le converte in None,
+    # affidandosi alle credenziali implicite (IAM, variabili d'ambiente).
+    session = AioSession(
+        aws_access_key_id=settings.AWS_ACCESS_KEY_ID or None,
+        aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY or None,
+        region_name=settings.AWS_REGION,
     )
 
-    items = resp.get("Items", [])
-    if not items:
-        return None
+    kwargs = {}
 
-    user_id = items[0]["id"]["S"]
-    full = await client.get_item(TableName=USERS_TABLE, Key={"id": {"S": user_id}})
-    return full.get("Item")
+    # Configura endpoint_url solo se specificato (caso locale/custom)
+    if settings.DYNAMO_ENDPOINT:
+        kwargs["endpoint_url"] = settings.DYNAMO_ENDPOINT
+        logger.info(f"DEBUG: Connessione a Endpoint Locale/Custom: {settings.DYNAMO_ENDPOINT}")
+    else:
+        logger.info(f"DEBUG: Connessione a Endpoint AWS Standard in regione: {settings.AWS_REGION}")
 
-
-async def get_user_by_id(user_id: str) -> Optional[Dict[str, Any]]:
-    db = await get_dynamodb()
-    table = await db.Table(USERS_TABLE)
-    resp = await table.get_item(Key={"id": user_id})
-    return resp.get("Item")
+    # Restituisce il gestore di contesto asincrono
+    return session.resource("dynamodb", **kwargs)
 
 
-async def update_user(user_id: str, updates: Dict[str, Any]) -> Dict[str, Any]:
+class DynamoDBResourceWrapper:
     """
-    Aggiorna campi specifici dell'utente (merge).
+    Wrapper che avvolge la risorsa DynamoDB per intercettare i metodi di lettura
+    e misurare i byte della risposta.
     """
-    db = await get_dynamodb()
-    table = await db.Table(USERS_TABLE)
 
-    update_expr = []
-    expr_vals = {}
-    for k, v in updates.items():
-        update_expr.append(f"{k} = :{k}")
-        expr_vals[f":{k}"] = v
+    def __init__(self, resource):
+        self._resource = resource
 
-    resp = await table.update_item(
-        Key={"id": user_id},
-        UpdateExpression="SET " + ", ".join(update_expr),
-        ExpressionAttributeValues=expr_vals,
-        ReturnValues="ALL_NEW",
-    )
-    return resp["Attributes"]
+    def __getattr__(self, name):
+        # Ottiene l'attributo/metodo reale dalla risorsa sottostante
+        attr = getattr(self._resource, name)
+
+        # Intercetta solo i metodi che restituiscono dati
+        if callable(attr) and name in ("get_item", "scan", "query", "batch_get_item"):
+            return self._wrap_method(attr, name)
+
+        return attr
+
+    def _wrap_method(self, original_method, method_name):
+        # Funzione di wrapping asincrona
+        async def wrapped_method(*args, **kwargs):
+            try:
+                # Esegue l'operazione reale su DynamoDB
+                response = await original_method(*args, **kwargs)
+
+                # Misurazione: serializza la risposta per stimare i byte ricevuti
+                response_json = json.dumps(response)
+                # Misura la dimensione (stimata)
+                received_bytes = len(response_json.encode("utf-8"))
+
+                # Aggiornamento del Contatore Globale
+                global AWS_EGRESS_DB_COUNTER_BYTES
+                current_counter = None
+                async with lock:
+                    AWS_EGRESS_DB_COUNTER_BYTES += received_bytes
+                    current_counter = AWS_EGRESS_DB_COUNTER_BYTES
+
+                logger.info(f"-> DB {method_name} | Received: {received_bytes / 1024:.2f} KB")
+                logger.info(f"Total current received from db: {current_counter / 1024**2:.2f} MB")
+
+                return response
+            except Exception as e:
+                logger.error(f"Errore DB in {method_name}: {e}")
+                raise
+
+        return wrapped_method
 
 
-async def create_user_if_not_exists(user_id: str, email: str, name: str) -> Dict[str, Any]:
+@asynccontextmanager
+async def get_dynamodb_connection() -> AsyncGenerator:
     """
-    Crea un nuovo utente se non esiste già.
+    Dependency Injection per ottenere la connessione resiliente (risolve TypeError)
+    e applica il wrapper di misurazione.
     """
-    db = await get_dynamodb()
-    table = await db.Table(USERS_TABLE)
+    db_context_manager = get_dynamodb_resource_context()
 
-    norm_email = normalize_email(email)
-    item = {
-        "id": user_id,
-        "email": norm_email,
-        "name": name,
-        "coins": 0,
-        "ads_seen": 0,
-        "subscription": {"type": None, "status": "inactive", "renew_at": None},
-        "created_at": int(datetime.datetime.now(datetime.timezone.utc).timestamp()),
-        "current_portfolio_snapshot_id": None,
-        "current_sop_snapshot_id": None,
-    }
-
-    await table.put_item(Item=item, ConditionExpression="attribute_not_exists(id)")
-    return item
-
-
+    # CORREZIONE CRUCIALE: Uso di async with per creare la risorsa in modo asincrono
+    async with db_context_manager as db_resource:
+        try:
+            # Passa la risorsa DynamoDB wrappata alla funzione che la richiede
+            yield DynamoDBResourceWrapper(db_resource)
+        except Exception as e:
+            logger.critical(f"Errore CRITICO durante l'inizializzazione/uso di DynamoDB: {e}")
+            raise

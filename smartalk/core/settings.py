@@ -1,4 +1,4 @@
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
@@ -7,6 +7,9 @@ class Settings(BaseSettings):
     DYNAMO_ENDPOINT: str | None = None
     AWS_ACCESS_KEY_ID: str | None = "dummy"
     AWS_SECRET_ACCESS_KEY: str | None = "dummy"
+
+    # Tables
+    USERS_TABLE: str
 
     # JWT
     JWT_SECRET: str

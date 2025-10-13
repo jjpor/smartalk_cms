@@ -1,0 +1,11 @@
+.git
+.gitignore
+.env
+.venv/
+Dockerfile
+.dockerignore
+.vscode/
+**/__pycache__/
+dynamodblocal/
+docker-compose.yml
+smartalk_cms.code-workspace
