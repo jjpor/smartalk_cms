@@ -209,9 +209,5 @@ __marimo__/
 *.code-workspace
 *.txt
 
-#docker per test locali
-Dockerfile
-docker-compose.yml
-
 #dynamodb data
-dynamodblocal/
+dynamodb_local/

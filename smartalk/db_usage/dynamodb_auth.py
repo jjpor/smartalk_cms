@@ -1,7 +1,13 @@
 import datetime
+import logging
+import uuid
 from typing import Any, Dict, Optional
 
+from botocore.exceptions import ClientError
+
 from smartalk.core.settings import settings
+
+logger = logging.Logger("Auth")
 
 # -----------------------------
 # UTILITIES
@@ -34,11 +40,10 @@ async def get_user_by_email(email: str, db: dict) -> Optional[Dict[str, Any]]:
     """
     Recupera un utente tramite il GSI email-index (KEYS_ONLY).
     """
-    client = db.meta.client
+    table = await db.Table(settings.USERS_TABLE)
     norm = normalize_email(email)
 
-    resp = await client.query(
-        TableName=settings.USERS_TABLE,
+    resp = await table.query(
         IndexName="email-index",
         KeyConditionExpression="email = :email",
         ExpressionAttributeValues={":email": {"S": norm}},
@@ -50,14 +55,14 @@ async def get_user_by_email(email: str, db: dict) -> Optional[Dict[str, Any]]:
         return None
 
     user_id = items[0]["id"]["S"]
-    full = await client.get_item(TableName=settings.USERS_TABLE, Key={"id": {"S": user_id}})
+    full = await table.get_item(Key={"id": {"S": user_id}})
     return full.get("Item")
 
 
 async def get_user_by_id(user_id: str, db: dict) -> Optional[Dict[str, Any]]:
     table = await db.Table(settings.USERS_TABLE)
-    resp = await table.get_item(Key={"id": user_id})
-    return resp.get("Item")
+    full = await table.get_item(Key={"id": {"S": user_id}})
+    return full.get("Item")
 
 
 async def update_user(user_id: str, updates: Dict[str, Any], db: dict) -> Dict[str, Any]:
@@ -81,19 +86,38 @@ async def update_user(user_id: str, updates: Dict[str, Any], db: dict) -> Dict[s
     return resp["Attributes"]
 
 
-async def create_user_if_not_exists(user_id: str, email: str, name: str, db: dict) -> Dict[str, Any]:
-    """
-    Crea un nuovo utente se non esiste già.
-    """
+async def create_user_if_not_exists(email: str, name: str, db) -> Dict[str, Any]:
+    # La probabilità di avere un uuid già usato è bassissima
+    # Avere 10 volte consecutive un uuid già usato è praticamente impossibile
     table = await db.Table(settings.USERS_TABLE)
-
     norm_email = normalize_email(email)
-    item = {
-        "id": user_id,
-        "email": norm_email,
-        "name": name,
-        "created_at": int(datetime.datetime.now(datetime.timezone.utc).timestamp()),
-    }
 
-    await table.put_item(Item=item, ConditionExpression="attribute_not_exists(id)")
-    return item
+    for attempt in range(10):
+        user_id = f"u_{uuid.uuid4().hex[:10]}"
+        if attempt > 0:
+            logger.info(f"Collisione ID DynamoDB rilevata. Tentativo {attempt + 1} con nuovo ID: {user_id}")
+
+        item = {
+            "id": user_id,
+            "email": norm_email,
+            "name": name,
+            "created_at": int(datetime.datetime.now(datetime.timezone.utc).timestamp()),
+        }
+
+        try:
+            # Atomicita' su ID: l'ID viene inserito solo se non esiste.
+            await table.put_item(Item=item, ConditionExpression="attribute_not_exists(id)")
+            # Successo
+            return item
+
+        except ClientError as e:
+            # Codice di eccezione specifico quando la condizione fallisce
+            if e.response["Error"]["Code"] == "ConditionalCheckFailedException":
+                # Continua con il prossimo uuid
+                continue
+            else:
+                # Altro errore DB, solleva
+                raise e
+
+    # Fallimento definitivo
+    raise Exception("Impossibile creare l'utente. Falliti 10 tentativi per collisione ID.")

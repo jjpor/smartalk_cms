@@ -1,5 +1,4 @@
 import datetime
-import uuid
 from typing import Optional
 
 import google.auth.transport.requests
@@ -38,7 +37,6 @@ class GoogleLoginRequest(BaseModel):
 class TokenResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
-    user_id: str
     email: EmailStr
     name: str
 
@@ -106,15 +104,11 @@ async def signup(req: AuthRequest):
     if existing:
         raise HTTPException(status_code=400, detail="User already exists")
 
-    # genera user_id stabile
-    user_id = f"u_{uuid.uuid4().hex[:10]}"
-
-    user = await create_user_if_not_exists(user_id, email, req.name or email, DBDependency)
-    token = create_jwt_token(user_id, email)
+    user = await create_user_if_not_exists(email, req.name or email, DBDependency)
+    token = create_jwt_token(user.user_id, email)
 
     return TokenResponse(
         access_token=token,
-        user_id=user_id,
         email=email,
         name=user["name"],
     )
@@ -134,7 +128,6 @@ async def login(req: AuthRequest):
     token = create_jwt_token(user["id"], email)
     return TokenResponse(
         access_token=token,
-        user_id=user["id"],
         email=email,
         name=user["name"],
     )
@@ -160,16 +153,12 @@ async def login_with_google(req: GoogleLoginRequest):
     # Recupera o crea user
     user = await get_user_by_email(email, DBDependency)
     if not user:
-        user_id = f"u_{uuid.uuid4().hex[:10]}"
-        user = await create_user_if_not_exists(user_id, email, name, DBDependency)
-    else:
-        user_id = user["id"]
+        user = await create_user_if_not_exists(email, name, DBDependency)
 
-    token = create_jwt_token(user_id, email)
+    token = create_jwt_token(user["id"], email)
 
     return TokenResponse(
         access_token=token,
-        user_id=user_id,
         email=email,
         name=user.get("name", name),
     )

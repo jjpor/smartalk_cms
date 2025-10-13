@@ -37,9 +37,9 @@ def get_dynamodb_resource_context():
     # Configura endpoint_url solo se specificato (caso locale/custom)
     if settings.DYNAMO_ENDPOINT:
         kwargs["endpoint_url"] = settings.DYNAMO_ENDPOINT
-        logger.info(f"DEBUG: Connessione a Endpoint Locale/Custom: {settings.DYNAMO_ENDPOINT}")
+        logger.info(f"Connessione a Endpoint Locale/Custom: {settings.DYNAMO_ENDPOINT}")
     else:
-        logger.info(f"DEBUG: Connessione a Endpoint AWS Standard in regione: {settings.AWS_REGION}")
+        logger.info(f"Connessione a Endpoint AWS Standard in regione: {settings.AWS_REGION}")
 
     # Restituisce il gestore di contesto asincrono
     return session.resource("dynamodb", **kwargs)

@@ -1,0 +1,46 @@
+services:
+  # -----------------------------------------------------------------
+  # 1. SERVIZIO DYNAMODB LOCALE (Invariato)
+  # -----------------------------------------------------------------
+  dynamodb:
+    image: amazon/dynamodb-local:latest
+    container_name: smartalk_dynamodb_local
+    ports:
+      - "8000:8000"
+    command: -jar DynamoDBLocal.jar -sharedDb -dbPath /home/dynamodblocal/data
+    volumes:
+      - ./dynamodb_local:/home/dynamodblocal/data
+    restart: unless-stopped
+
+  # -----------------------------------------------------------------
+  # 2. SERVIZIO PYTHON (CMS) - AGGIORNATO
+  # -----------------------------------------------------------------
+  cms:
+    build: .
+    container_name: smartalk_cms_server
+    ports:
+      - "8001:8000"
+    env_file:
+      - .env
+    depends_on:
+      - dynamodb
+    restart: unless-stopped
+    environment:
+      - DYNAMO_ENDPOINT=http://dynamodb:8000
+
+    # 1. AGGIUNGI IL BIND MOUNT PER IL CODICE
+    # Mappa la cartella corrente del codice alla directory del codice dentro /app nel container.
+    volumes:
+      - ./smartalk:/app/smartalk
+
+    # 2. AGGIORNA IL COMMAND PER USARE IL RELOAD DI UVICORN
+    # Questo dice a uvicorn di guardare i file sorgente e riavviarsi se cambiano.
+    command: poetry run uvicorn smartalk.app:app --host 0.0.0.0 --port 8000 --reload
+
+# -----------------------------------------------------------------------------
+# VOLUMI
+# -----------------------------------------------------------------------------
+volumes:
+  dynamodb_local:
+    # Volume per la persistenza dei dati di DynamoDB
+
