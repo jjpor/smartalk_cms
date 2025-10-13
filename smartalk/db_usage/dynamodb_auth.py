@@ -4,13 +4,33 @@ import uuid
 from typing import Any, Dict, Optional
 
 from botocore.exceptions import ClientError
+from passlib.context import CryptContext
 
 from smartalk.core.settings import settings
 
 logger = logging.Logger("Auth")
 
+# Contesto per l'hashing delle password. Usiamo bcrypt, lo standard moderno.
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
 # -----------------------------
-# UTILITIES
+# UTILITIES PASSWORD
+# -----------------------------
+
+
+def hash_password(password: str) -> str:
+    """Ritorna l'hash sicuro della password."""
+    return pwd_context.hash(password)
+
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verifica la password in chiaro con l'hash memorizzato."""
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+# -----------------------------
+# UTILITIES EMAIL / DATA
 # -----------------------------
 
 
@@ -74,6 +94,9 @@ async def update_user(user_id: str, updates: Dict[str, Any], db: dict) -> Dict[s
     update_expr = []
     expr_vals = {}
     for k, v in updates.items():
+        # skipping protected fields
+        if k in ["id", "email", "password_hash"]:
+            continue
         update_expr.append(f"{k} = :{k}")
         expr_vals[f":{k}"] = v
 
@@ -86,11 +109,18 @@ async def update_user(user_id: str, updates: Dict[str, Any], db: dict) -> Dict[s
     return resp["Attributes"]
 
 
-async def create_user_if_not_exists(email: str, name: str, db) -> Dict[str, Any]:
+async def create_user_if_not_exists(email: str, name: str, password: str, db: dict) -> Dict[str, Any]:
     # La probabilità di avere un uuid già usato è bassissima
     # Avere 10 volte consecutive un uuid già usato è praticamente impossibile
     table = await db.Table(settings.USERS_TABLE)
     norm_email = normalize_email(email)
+
+    # Check password non vuota
+    if password in ["", None]:
+        raise Exception("Fornire una password.")
+
+    # Hashing della password prima di salvarla
+    password_hash = hash_password(password)
 
     for attempt in range(10):
         user_id = f"u_{uuid.uuid4().hex[:10]}"
@@ -101,6 +131,7 @@ async def create_user_if_not_exists(email: str, name: str, db) -> Dict[str, Any]
             "id": user_id,
             "email": norm_email,
             "name": name,
+            "password_hash": password_hash,
             "created_at": int(datetime.datetime.now(datetime.timezone.utc).timestamp()),
         }
 

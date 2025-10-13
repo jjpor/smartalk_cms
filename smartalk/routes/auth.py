@@ -1,4 +1,5 @@
 import datetime
+import uuid
 from typing import Optional
 
 import google.auth.transport.requests
@@ -13,6 +14,7 @@ from smartalk.db_usage.dynamodb_auth import (
     create_user_if_not_exists,
     get_user_by_email,
     normalize_email,
+    verify_password,
 )
 
 router = APIRouter(prefix="/auth", tags=["auth"])
@@ -104,7 +106,7 @@ async def signup(req: AuthRequest):
     if existing:
         raise HTTPException(status_code=400, detail="User already exists")
 
-    user = await create_user_if_not_exists(email, req.name or email, DBDependency)
+    user = await create_user_if_not_exists(email, req.name or email, req.password, DBDependency)
     token = create_jwt_token(user.user_id, email)
 
     return TokenResponse(
@@ -122,8 +124,12 @@ async def login(req: AuthRequest):
     email = normalize_email(req.email)
     user = await get_user_by_email(email, DBDependency)
 
+    # Errore se non esiste o la password non è corretta
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=404, detail="Wrong credentials.")
+    else:
+        if not verify_password(req.password, user["password_hash"]):
+            raise HTTPException(status_code=404, detail="Wrong credentials.")
 
     token = create_jwt_token(user["id"], email)
     return TokenResponse(
@@ -153,7 +159,10 @@ async def login_with_google(req: GoogleLoginRequest):
     # Recupera o crea user
     user = await get_user_by_email(email, DBDependency)
     if not user:
-        user = await create_user_if_not_exists(email, name, DBDependency)
+        # Crea un user con una nuova password
+        password = f"{uuid.uuid4().hex[:8]}"
+        user = await create_user_if_not_exists(email, name, password, DBDependency)
+        # TODO: invia email per fargli conoscere la sua password se vuole accedere in modo tradizionale
 
     token = create_jwt_token(user["id"], email)
 
