@@ -209,7 +209,8 @@ async def _create_debriefs_table(db, table_name) -> None:
 async def ensure_tables(db) -> None:
     """Orchestra la creazione di tutte le tabelle necessarie."""
     try:
-        response = await db.list_tables()
+        client = db.meta.client
+        response = await client.list_tables()
         table_names = response.get("TableNames", [])
         logger.info(f"Existing tables: {table_names}")
 

@@ -2,6 +2,7 @@ import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware  # <-- 1. Importa la middleware
 from starlette.staticfiles import StaticFiles  # <-- Importato
 
 # Importa i componenti chiave
@@ -41,6 +42,25 @@ app = FastAPI(
 # Questo serve tutti i file (CSS, JS, immagini) direttamente dalla cartella 'website'
 # Qualsiasi richiesta a /static/... verrà cercata in website/...
 app.mount("/static", StaticFiles(directory="smartalk/website"), name="website")
+
+# --- 2. CONFIGURAZIONE CORS ---
+# Definisci quali origini (frontend) possono chiamare le tue API
+origins = [
+    "http://localhost",
+    "http://localhost:8000",
+    "http://127.0.0.1",
+    "http://127.0.0.1:8000",
+    "http://smartalk.online"
+    # Aggiungi qui l'URL del tuo sito in produzione se necessario
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"], # Permette tutti i metodi (GET, POST, etc.)
+    allow_headers=["*"], # Permette tutti gli header
+)
 
 # --- INCLUSIONE ROUTERS ---
 app.include_router(auth.router)

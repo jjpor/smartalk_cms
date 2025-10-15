@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(name)s: %(messa
 logger = logging.getLogger("data_migration")
 
 # URL del tuo Apps Script
-APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw-AkO87R7aTse1Ph-Glrzd6DGg_Gak-3dFjqHuXb4ecjUBp5CU5SfCI66eaPwUkumN/exec"
+APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxkMQHNbDYt3LesAzEDbeii9aqgJ7xsww31yWcK9fLBs9l-tvKgR1WsVcAXJ3CNcm8/exec"
 
 # --- FUNZIONI HELPER ---
 
