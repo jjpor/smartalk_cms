@@ -24,6 +24,10 @@ class Settings(BaseSettings):
     # Google OAuth
     GOOGLE_CLIENT_ID: str
 
+    # --- Variabile per la migrazione ---
+    # Impostala a 'True' nel file .env solo per il primo avvio
+    RUN_DATA_MIGRATION: bool = False
+
     class Config:
         env_file = ".env"
 

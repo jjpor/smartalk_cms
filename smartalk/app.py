@@ -6,8 +6,10 @@ from starlette.staticfiles import StaticFiles  # <-- Importato
 
 # Importa i componenti chiave
 from smartalk.core.dynamodb import AWS_EGRESS_DB_COUNTER_BYTES, get_dynamodb_resource_context
+from smartalk.core.settings import settings
 from smartalk.routes import auth, coach, student, website  # <-- Aggiunto website
 from smartalk.scripts.create_tables import ensure_tables
+from smartalk.scripts.migrate_data import migrate_all_data
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(name)s: %(message)s")
 logger = logging.getLogger("Start Application")
@@ -19,6 +21,8 @@ async def lifespan(app: FastAPI):
     db_context_manager = get_dynamodb_resource_context()
     async with db_context_manager as db_resource:
         await ensure_tables(db_resource)
+        if settings.RUN_DATA_MIGRATION:
+            await migrate_all_data(db_resource)
     logger.info("[AVVIO COMPLETATO]\n")
     yield
     logger.info("\n[CHIUSURA APPLICAZIONE]")

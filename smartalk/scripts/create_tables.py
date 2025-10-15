@@ -1,4 +1,5 @@
 import logging
+
 from smartalk.core.settings import settings
 
 logger = logging.getLogger("startup")
