@@ -10,6 +10,12 @@ class Settings(BaseSettings):
 
     # Tables
     USERS_TABLE: str
+    PRODUCTS_TABLE: str
+    CONTRACTS_TABLE: str
+    INVOICES_TABLE: str
+    TRACKER_TABLE: str
+    REPORT_CARDS_TABLE: str
+    DEBRIEFS_TABLE: str
 
     # JWT
     JWT_SECRET: str
