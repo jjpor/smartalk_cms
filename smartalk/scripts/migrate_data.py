@@ -16,7 +16,15 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from smartalk.core.settings import settings
 from smartalk.db_usage.dynamodb_auth import hash_password
 
-# --- CONFIGURAZIONE ---
+# --- CONFIGURAZIONE logging.basicConfig(
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
+    handlers=[
+        logging.FileHandler("migration_test.log", mode='w'), # Scrive su file, 'w' = sovrascrivi ogni volta
+        logging.StreamHandler()  # Mantiene i log anche sul terminale
+    ]
+)
 logger = logging.getLogger("data_migration")
 APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxkMQHNbDYt3LesAzEDbeii9aqgJ7xsww31yWcK9fLBs9l-tvKgR1WsVcAXJ3CNcm8/exec"
 
@@ -56,13 +64,14 @@ class StudentUser(BaseModel):
     id: str = Field(..., alias='Student ID')
     name: str = Field(..., alias='Name')
     surname: str = Field(..., alias='Surname')
-    password: int = Field(..., alias='Password')
-    email: EmailStr = Field(..., alias='Email')
+    # La password e l'email possono essere vuote per le righe "segnaposto"
+    password: Optional[str] = Field(None, alias='Password')
+    email: Optional[EmailStr] = Field(None, alias='Email')
     secondary_email: Optional[EmailStr] = Field(None, alias='Secondary Email')
     phone: Optional[str] = Field(None, alias='Phone')
     status: str = Field(..., alias='Status')
     onboarded: bool = Field(False, alias='Onboarded (dashboard)')
-    report_card_cadency_months: Optional[int] = Field(None, alias='Report Card Cadency Months')
+    report_card_cadency_months: Optional[int|str] = Field(None, alias='Report Card Cadency Months')
     quizlet: Optional[str] = Field(None, alias='Quizlet')
     drive: Optional[str] = Field(None, alias='Drive')
     homework: Optional[str] = Field(None, alias='Homework')
@@ -87,9 +96,14 @@ class Product(BaseModel):
     junior_coach_rate: Optional[Decimal] = Field(None, alias='Junior Coach')
     net_after_taxes: Optional[Decimal] = Field(None, alias='Net after taxes (€)')
     margin: Optional[Decimal] = Field(None, alias='Margin (€)')
+    # Questi campi possono essere numerici o stringhe vuote
     sprint_path: Optional[str] = Field(None, alias='Sprint Path')
     smart_path: Optional[str] = Field(None, alias='Smart Path')
     impact_path: Optional[str] = Field(None, alias='Impact Path')
+
+    @field_validator('sprint_path', 'smart_path', 'impact_path', mode='before')
+    def stringify_paths(cls, value):
+        return str(value) if value is not None else None
 
 class Contract(BaseModel):
     contract_id: str = Field(..., alias='Contract ID')
@@ -99,15 +113,17 @@ class Contract(BaseModel):
     invoice_id: Optional[str] = Field(None, alias='Invoice ID')
     client_id: Optional[str] = Field(None, alias='Client ID')
     package: Optional[str] = Field(None, alias='Package')
-    manual_total_calls: Optional[int] = Field(None, alias='Manual Total Calls')
-    total_calls: Optional[int] = Field(None, alias='Total Calls')
+    # Questi campi numerici possono essere vuoti
+    manual_total_calls: Optional[int|str] = Field(None, alias='Manual Total Calls')
+    total_calls: Optional[int|str] = Field(None, alias='Total Calls')
     calls_per_week: Optional[float] = Field(None, alias='Calls/week')
+    used_calls: Optional[float] = Field(None, alias='Used Calls')
+    left_calls: Optional[float] = Field(None, alias='Left Calls')
+    report_card_cadency: Optional[int|str] = Field(None, alias='Report Card Cadency')
+    # ------------------
     unlimited: bool = Field(False, alias='Unlimited')
     start_date: Optional[date] = Field(None, alias='Start Date')
     max_end_date: Optional[date] = Field(None, alias='Max End Date')
-    used_calls: Optional[float] = Field(None, alias='Used Calls')
-    left_calls: Optional[float] = Field(None, alias='Left Calls')
-    report_card_cadency: Optional[int] = Field(None, alias='Report Card Cadency')
     report_card_start_date: Optional[date] = Field(None, alias='Report Card Start Date')
     report_card_email_recipients: Optional[str] = Field(None, alias='Report Card Email Recipient(s)')
 
@@ -126,7 +142,7 @@ class Tracker(BaseModel):
     coach_id: str = Field(..., alias='Coach ID')
     product_id: str = Field(..., alias='Product ID')
     units: Optional[Decimal] = Field(None, alias='Units')
-    duration: Optional[int] = Field(None, alias='Duration')
+    duration: Optional[int|str] = Field(None, alias='Duration')
     coach_rate: Optional[Decimal] = Field(None, alias='Coach Rate')
     prod_cost: Optional[Decimal] = Field(None, alias='Prod cost')
     attendance: Optional[str] = Field(None, alias='Attendance')
@@ -144,7 +160,7 @@ class Invoice(BaseModel):
     due_date: date = Field(..., alias='Due')
     amount: Decimal = Field(..., alias='Amount')
     paid: bool = Field(..., alias='Paid')
-    installments: Optional[int] = Field(None, alias='Installments')
+    installments: Optional[int|str] = Field(None, alias='Installments')
     email_reminder: Optional[EmailStr] = Field(None, alias='Email Reminder Expired Invoice')
 
     @field_validator('paid', mode='before')
@@ -218,19 +234,18 @@ async def fetch_sheet_data(sheet_name: str) -> List[Dict[str, Any]]:
             logger.error(f"  -> An error occurred while fetching {sheet_name}: {e}", exc_info=True)
             return []
 
-def to_dynamodb_item(pydantic_model: BaseModel=None, item_to_use=None) -> Dict[str, Any]:
-    """Converte un modello Pydantic in un dizionario pulito per DynamoDB."""
-    item = None
-    if item_to_use is None:
-        item = pydantic_model.model_dump(by_alias=False, exclude_none=True)
-    else:
-        item = item_to_use
+def to_dynamodb_item(item: Dict[str, Any]) -> Dict[str, Any]:
+    """Converts a dictionary to a clean format for DynamoDB."""
     final_item = {}
     for key, value in item.items():
         if isinstance(value, date):
             final_item[key] = value.isoformat()
         elif isinstance(value, datetime):
             final_item[key] = value.isoformat()
+        # --- FIX IS HERE ---
+        # Convert any float to a Decimal before sending to DynamoDB
+        elif isinstance(value, float):
+            final_item[key] = Decimal(str(value))
         elif value is not None and value != "":
             final_item[key] = value
     return final_item
@@ -256,6 +271,9 @@ async def migrate_users(db: Any):
             item["password_hash"] = hash_password(str(data.password))
             await table.put_item(Item=to_dynamodb_item(item_to_use=item))
         except ValidationError as e:
+            # not real error
+            if row.get('password') == '' and row.get('Email') == '':
+                continue
             logger.warning(f"  -> Skipping invalid Student row: {e} | Data: {row}")
     # Clients (Companies only)
     for row in await fetch_sheet_data("Clients"):
@@ -298,8 +316,13 @@ async def migrate_all_data(db: Any):
     logger.info("\n--- Migrating Products ---")
     await migrate_generic(db, settings.PRODUCTS_TABLE, "Products", Product)
     
+    def contract_logic(item):
+        if item["unlimited"]:
+            item.pop("used_calls")
+            item.pop("left_calls")
+        return item
     logger.info("\n--- Migrating Contracts ---")
-    await migrate_generic(db, settings.CONTRACTS_TABLE, "Contracts", Contract)
+    await migrate_generic(db, settings.CONTRACTS_TABLE, "Contracts", Contract, special_logic=contract_logic)
     
     def tracker_logic(item):
         item["date"] = item.pop("session_date")
