@@ -17,14 +17,6 @@ from smartalk.core.settings import settings
 from smartalk.db_usage.dynamodb_auth import hash_password
 
 # --- CONFIGURAZIONE logging.basicConfig(
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-    handlers=[
-        logging.FileHandler("migration_test.log", mode='w'), # Scrive su file, 'w' = sovrascrivi ogni volta
-        logging.StreamHandler()  # Mantiene i log anche sul terminale
-    ]
-)
 logger = logging.getLogger("data_migration")
 APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxkMQHNbDYt3LesAzEDbeii9aqgJ7xsww31yWcK9fLBs9l-tvKgR1WsVcAXJ3CNcm8/exec"
 
@@ -91,11 +83,11 @@ class Product(BaseModel):
     product_name: str = Field(..., alias='Product Name')
     duration: int = Field(..., alias='Duration')
     participants: int = Field(..., alias='Participants')
-    head_coach_rate: Optional[Decimal] = Field(None, alias='Head Coach')
-    senior_coach_rate: Optional[Decimal] = Field(None, alias='Senior Coach')
-    junior_coach_rate: Optional[Decimal] = Field(None, alias='Junior Coach')
-    net_after_taxes: Optional[Decimal] = Field(None, alias='Net after taxes (€)')
-    margin: Optional[Decimal] = Field(None, alias='Margin (€)')
+    head_coach_rate: Optional[Decimal|str] = Field(None, alias='Head Coach')
+    senior_coach_rate: Optional[Decimal|str] = Field(None, alias='Senior Coach')
+    junior_coach_rate: Optional[Decimal|str] = Field(None, alias='Junior Coach')
+    net_after_taxes: Optional[Decimal|str] = Field(None, alias='Net after taxes (€)')
+    margin: Optional[Decimal|str] = Field(None, alias='Margin (€)')
     # Questi campi possono essere numerici o stringhe vuote
     sprint_path: Optional[str] = Field(None, alias='Sprint Path')
     smart_path: Optional[str] = Field(None, alias='Smart Path')
@@ -116,9 +108,9 @@ class Contract(BaseModel):
     # Questi campi numerici possono essere vuoti
     manual_total_calls: Optional[int|str] = Field(None, alias='Manual Total Calls')
     total_calls: Optional[int|str] = Field(None, alias='Total Calls')
-    calls_per_week: Optional[float] = Field(None, alias='Calls/week')
-    used_calls: Optional[float] = Field(None, alias='Used Calls')
-    left_calls: Optional[float] = Field(None, alias='Left Calls')
+    calls_per_week: Optional[float|str] = Field(None, alias='Calls/week')
+    used_calls: Optional[float|str] = Field(None, alias='Used Calls')
+    left_calls: Optional[float|str] = Field(None, alias='Left Calls')
     report_card_cadency: Optional[int|str] = Field(None, alias='Report Card Cadency')
     # ------------------
     unlimited: bool = Field(False, alias='Unlimited')
@@ -141,10 +133,10 @@ class Tracker(BaseModel):
     contract_id: str = Field(..., alias='Contract ID')
     coach_id: str = Field(..., alias='Coach ID')
     product_id: str = Field(..., alias='Product ID')
-    units: Optional[Decimal] = Field(None, alias='Units')
+    units: Optional[Decimal|str] = Field(None, alias='Units')
     duration: Optional[int|str] = Field(None, alias='Duration')
-    coach_rate: Optional[Decimal] = Field(None, alias='Coach Rate')
-    prod_cost: Optional[Decimal] = Field(None, alias='Prod cost')
+    coach_rate: Optional[Decimal|str] = Field(None, alias='Coach Rate')
+    prod_cost: Optional[Decimal|str] = Field(None, alias='Prod cost')
     attendance: Optional[str] = Field(None, alias='Attendance')
     notes: Optional[str] = Field(None, alias='Notes')
 
@@ -156,8 +148,8 @@ class Invoice(BaseModel):
     invoice_id: str = Field(..., alias='Invoice ID')
     client_id: str = Field(..., alias='Client ID')
     buyer: Optional[str] = Field(None, alias='Buyer')
-    invoice_date: date = Field(..., alias='Date')
-    due_date: date = Field(..., alias='Due')
+    invoice_date: Optional[date|str] = Field(..., alias='Date')
+    due_date: Optional[date|str] = Field(..., alias='Due')
     amount: Decimal = Field(..., alias='Amount')
     paid: bool = Field(..., alias='Paid')
     installments: Optional[int|str] = Field(None, alias='Installments')
@@ -259,21 +251,21 @@ async def migrate_users(db: Any):
             item = data.model_dump(by_alias=False, exclude={"password"})
             item["user_type"] = "coach"
             item["password_hash"] = hash_password(str(data.password))
-            await table.put_item(Item=to_dynamodb_item(item_to_use=item))
+            await table.put_item(Item=to_dynamodb_item(item))
         except ValidationError as e:
             logger.warning(f"  -> Skipping invalid Coach row: {e} | Data: {row}")
     # Students
     for row in await fetch_sheet_data("Students"):
-        try:
+        try:           
+            # not real error
+            if row.get('Password') == '' and row.get('Email') == '':
+                continue
             data = StudentUser.model_validate(row)
             item = data.model_dump(by_alias=False, exclude={"password"})
             item["user_type"] = "student"
             item["password_hash"] = hash_password(str(data.password))
-            await table.put_item(Item=to_dynamodb_item(item_to_use=item))
+            await table.put_item(Item=to_dynamodb_item(item))
         except ValidationError as e:
-            # not real error
-            if row.get('password') == '' and row.get('Email') == '':
-                continue
             logger.warning(f"  -> Skipping invalid Student row: {e} | Data: {row}")
     # Clients (Companies only)
     for row in await fetch_sheet_data("Clients"):
@@ -285,22 +277,36 @@ async def migrate_users(db: Any):
                 "user_type": "company",
                 "password_hash": hash_password(str(data.password))
             }
-            await table.put_item(Item=to_dynamodb_item(item_to_use=item))
+            await table.put_item(Item=to_dynamodb_item(item))
         except ValidationError:
             # Salta silenziosamente le righe che non sono "Company" (es. clienti individuali)
             continue
 
 async def migrate_generic(db: Any, table_name: str, sheet_name: str, model_cls: BaseModel, special_logic=None):
     table = await db.Table(table_name)
+    row_index = 2
     for row in await fetch_sheet_data(sheet_name):
         try:
+            if sheet_name == "Invoices" and row.get("Invoice ID") in ["", None] and row.get("Client ID") in ["", None]:
+                continue
+
+            if sheet_name == "Debriefs" and (row.get("Coach ID") in ["", None] or row.get("Student ID") in ["", None]):
+                continue
+
             data = model_cls.model_validate(row)
-            item = to_dynamodb_item(data)
+            item = to_dynamodb_item(data.model_dump())
             if special_logic:
                 item = special_logic(item)
+            logger.info(f"{sheet_name}, row_index: {row_index}")
+            if sheet_name == "Debriefs":
+                previous_item_response = await table.get_item(Key={"student_id": item["student_id"], "date": item["date"]})
+                previous_item = previous_item_response.get('Item', None)
+                if previous_item:
+                    raise Exception(f"Already inserted: {previous_item}")
             await table.put_item(Item=item)
-        except (ValidationError, InvalidOperation, ValueError) as e:
+        except Exception as e:
             logger.warning(f"  -> Skipping invalid {sheet_name} row: {e} | Data: {row}")
+        row_index += 1
 
 # ---
 # SEZIONE 3: FUNZIONE PRINCIPALE DI MIGRAZIONE
@@ -332,8 +338,10 @@ async def migrate_all_data(db: Any):
     await migrate_generic(db, settings.TRACKER_TABLE, "Tracker", Tracker, special_logic=tracker_logic)
     
     def invoice_logic(item):
-        item["date"] = item.pop("invoice_date")
-        item["due"] = item.pop("due_date")
+        if "invoice_date" in item:
+            item["date"] = item.pop("invoice_date")
+        if "due_date" in item:
+            item["due"] = item.pop("due_date")
         return item
     logger.info("\n--- Migrating Invoices ---")
     await migrate_generic(db, settings.INVOICES_TABLE, "Invoices", Invoice, special_logic=invoice_logic)

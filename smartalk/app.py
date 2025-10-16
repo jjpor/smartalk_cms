@@ -106,9 +106,6 @@ async def see_table_data(table_short_name: str):
     Servizio di debug per visualizzare tutti i dati di una tabella.
     Usa un nome breve per la tabella (es. 'users', 'products').
     """
-    logger.info('test')
-
-    
     db_ = get_dynamodb_resource_context()
     async with db_ as db: 
         if table_short_name not in TABLE_MAP:
@@ -131,7 +128,7 @@ async def see_table_data(table_short_name: str):
                 response = await table.scan(ExclusiveStartKey=response["LastEvaluatedKey"])
                 items.extend(response.get("Items", []))
                 
-            return items
+            return {"quantity": len(items), "items": items}
             
         except Exception as e:
             raise HTTPException(
