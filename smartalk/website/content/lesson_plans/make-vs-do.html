@@ -1,0 +1,80 @@
+{% include 'base_styles.html' %}
+<link rel="stylesheet" href="/website/content/content.css">
+
+{% include 'universal_header_dual.html' %}
+
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl pt-24">
+
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Make vs. Do</h1>
+            <p class="text-lg text-slate-600 mt-2">A guide to using these two common verbs correctly.</p>
+        </header>
+
+        <nav class="mb-8 sticky top-20 bg-white/80 backdrop-blur-sm z-10 py-2">
+            <ul class="flex justify-center flex-wrap gap-x-4 gap-y-2">
+                <li><a href="#introduction" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Introduction</a></li>
+                <li><a href="#make" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Make</a></li>
+                <li><a href="#do" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Do</a></li>
+                <li><a href="#practice" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Practice</a></li>
+                <li><a href="#discussion" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Discussion</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <section id="introduction" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">Introduction & Explanation</h2>
+                <p class="text-slate-700">The verbs <strong>make</strong> and <strong>do</strong> can be tricky. While both describe an action, they are used in different contexts. Understanding the subtle differences will help you sound more natural and precise.</p>
+            </section>
+            
+            <hr class="my-12 border-gray-200">
+
+            <section id="make" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">We use 'MAKE' when we talk about...</h2>
+                <div class="bg-white p-5 rounded-xl shadow-md">
+                    <div class="card-header flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800">Key Uses of 'MAKE'</h3>
+                        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="card-content show">
+                        <ul class="list-disc list-outside mt-4 text-slate-600 space-y-2 ml-4 list-terms">
+                            <li><strong>Creating or producing something:</strong> (e.g., She made a cake.)</li>
+                            <li><strong>Producing a reaction or effect:</strong> (e.g., This movie makes me happy.)</li>
+                            <li><strong>Plans and decisions:</strong> (e.g., make a decision, make a choice)</li>
+                            <li><strong>Food, drink, and meals:</strong> (e.g., make breakfast, make coffee)</li>
+                            <li><strong>Speaking and sounds:</strong> (e.g., make a comment, make a noise)</li>
+                        </ul>
+                        <p class="text-slate-700 mt-4 italic font-bold">Tip: Think about creating, producing, or causing something new.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <hr class="my-12 border-gray-200">
+
+            <section id="do" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">We use 'DO' when we talk about...</h2>
+                <div class="bg-white p-5 rounded-xl shadow-md">
+                     <div class="card-header flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800">Key Uses of 'DO'</h3>
+                        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="card-content show">
+                         <ul class="list-disc list-outside mt-4 text-slate-600 space-y-2 ml-4 list-terms">
+                            <li><strong>Work, jobs, and tasks:</strong> (e.g., do your homework, do a good job)</li>
+                            <li><strong>General/unspecified activities:</strong> (e.g., do something, do nothing)</li>
+                            <li><strong>Replacing verbs when the action is clear:</strong> (e.g., do the dishes, do your hair)</li>
+                             <li><strong>Important expressions:</strong> (e.g., do well, do business, do a favor)</li>
+                        </ul>
+                        <p class="text-slate-700 mt-4 italic font-bold">Tip: Think about actions, tasks, and responsibilities.</p>
+                    </div>
+                </div>
+            </section>
+            
+            </main>
+    </div>
+
+    <script src="/website/content/content.js"></script>
+    {% include 'universal_footer_dual.html' %}
+</body>
+</html>

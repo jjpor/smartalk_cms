@@ -1,0 +1,73 @@
+{% include 'base_styles.html' %}
+<link rel="stylesheet" href="/website/content/content.css">
+
+{% include 'universal_header_dual.html' %}
+
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl pt-24">
+
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Employee Engagement & Retention</h1>
+            <p class="text-lg text-slate-600 mt-2">Strategies for a motivated and loyal team.</p>
+        </header>
+
+        <nav class="mb-8 sticky top-20 bg-white/80 backdrop-blur-sm z-10 py-2">
+            <ul class="flex justify-center flex-wrap gap-x-4 gap-y-2">
+                <li><a href="#warmup" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Warm-Up</a></li>
+                <li><a href="#part1" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Part 1</a></li>
+                <li><a href="#part2" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Part 2</a></li>
+                <li><a href="#part3" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Part 3</a></li>
+                <li><a href="#scenarios" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Scenarios</a></li>
+                <li><a href="#wrapup" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Wrap-Up</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <section id="warmup" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">1. Warm-Up Discussion</h2>
+                <div class="lesson-card">
+                    <div class="lesson-card-header card-header flex justify-between items-center">
+                        <h3 class="text-slate-800">Setting the Stage</h3>
+                        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="lesson-card-content card-content show">
+                        <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                            <li>What does “employee engagement” mean to you?</li>
+                            <li>How does engagement look different from simply being satisfied with a job?</li>
+                            <li>What’s one factor that has kept you motivated in a past role?</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <hr class="my-12 border-gray-200">
+
+            <section id="part1" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">2. Part 1 – Understanding the Importance</h2>
+                <div class="lesson-card">
+                    <div class="lesson-card-header card-header flex justify-between items-center">
+                        <h3 class="text-slate-800">The Business Case for Engagement</h3>
+                        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="lesson-card-content card-content">
+                        <p class="mt-4 font-semibold text-slate-700">Objective: Understand why engagement and retention are critical for business success.</p>
+                        <div class="mt-4">
+                            <h4 class="font-semibold text-slate-800">Speaking Prompts:</h4>
+                            <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+                                <li>Reflect on a time when you felt highly engaged at work. What contributed to that?</li>
+                                <li>What are the risks for a company when turnover is high?</li>
+                                <li>How does retention connect to employee engagement?</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            </main>
+    </div>
+
+    <script src="/website/content/content.js"></script>
+    {% include 'universal_footer_dual.html' %}
+</body>
+</html>

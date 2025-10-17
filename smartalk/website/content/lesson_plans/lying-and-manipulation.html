@@ -1,0 +1,72 @@
+{% include 'base_styles.html' %}
+<link rel="stylesheet" href="/website/content/content.css">
+
+{% include 'universal_header_dual.html' %}
+
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl pt-24">
+
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Lying and Manipulation: Understanding Deception</h1>
+            <p class="text-lg text-slate-600 mt-2">Identifying the subtle differences between telling lies and purposeful manipulation.</p>
+        </header>
+
+        <nav class="mb-8 sticky top-20 bg-white/80 backdrop-blur-sm z-10 py-2">
+            <ul class="flex justify-center flex-wrap gap-x-3 gap-y-2">
+                <li><a href="#warmup" class="section-nav-link py-2 px-3 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Warm-up</a></li>
+                <li><a href="#discussion1" class="section-nav-link py-2 px-3 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Discussion</a></li>
+                <li><a href="#vocabulary" class="section-nav-link py-2 px-3 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Vocabulary</a></li>
+                <li><a href="#scenarios" class="section-nav-link py-2 px-3 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Scenarios</a></li>
+                <li><a href="#reflection" class="section-nav-link py-2 px-3 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Final Thoughts</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <section id="warmup" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">1. Warm-up Game: 2 Truths & 1 Lie</h2>
+                <div class="lesson-card bg-sky-50 border-sky-200 border-2">
+                    <div class="lesson-card-header card-header flex justify-between items-center">
+                        <h3 class="text-sky-800">Activity Instructions</h3>
+                        <span class="text-2xl text-sky-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="lesson-card-content card-content show">
+                        <div class="mt-4 text-slate-700 space-y-3">
+                            <p class="font-semibold text-lg text-slate-900">Objective: Practice fluency, careful listening, and spotting deception.</p>
+                            <ol class="list-decimal ml-6 space-y-2">
+                                <li>Each person prepares three short statements about themselves.</li>
+                                <li><span class="font-semibold text-slate-800">Two</span> of the statements must be absolutely true.</li>
+                                <li><span class="font-semibold text-slate-800">One</span> of the statements must be a lie.</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <hr class="my-12 border-gray-200">
+            
+            <section id="discussion1" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">2. Defining the Boundaries</h2>
+                <div class="lesson-card">
+                    <div class="lesson-card-header card-header flex justify-between items-center">
+                        <h3 class="text-slate-800">Lying vs. Manipulation: What's the Difference?</h3>
+                        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="lesson-card-content card-content">
+                        <div class="mt-4 text-slate-700 space-y-4">
+                            <p class="font-bold">Discussion Prompts:</p>
+                            <ul class="list-disc ml-6 space-y-2">
+                                <li>What is <span class="font-semibold text-indigo-600">lying</span>? What is <span class="font-semibold text-indigo-600">manipulation</span>?</li>
+                                <li>Why do people lie? (Focus on common motives like fear, protection, or self-interest.)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/website/content/content.js"></script>
+    {% include 'universal_footer_dual.html' %}
+</body>
+</html>

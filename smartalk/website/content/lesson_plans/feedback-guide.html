@@ -1,0 +1,104 @@
+{% include 'base_styles.html' %}
+<link rel="stylesheet" href="/website/content/content.css">
+
+{% include 'universal_header_dual.html' %}
+
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl pt-24">
+
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">The Art of Feedback: Giving and Receiving</h1>
+            <p class="text-lg text-slate-600 mt-2">To tell you off, the nice way (and to respond gracefully when you're told off).</p>
+        </header>
+
+        <nav class="mb-8 sticky top-20 bg-white/80 backdrop-blur-sm z-10 py-2">
+            <ul class="flex justify-center flex-wrap gap-x-3 gap-y-2">
+                <li><a href="#giving" class="section-nav-link py-2 px-3 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Giving Decalogue</a></li>
+                <li><a href="#scripts" class="section-nav-link py-2 px-3 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Script Builder</a></li>
+                <li><a href="#receiving" class="section-nav-link py-2 px-3 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Receiving Decalogue</a></li>
+                <li><a href="#scenarios" class="section-nav-link py-2 px-3 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Practice Quiz</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <section id="giving" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">1. Giving Feedback: The Decalogue</h2>
+                <div class="lesson-card bg-sky-50 border-sky-200 border-2">
+                    <div class="lesson-card-header card-header flex justify-between items-center">
+                        <h3 class="text-sky-800">Ten Rules for Effective, Constructive Feedback</h3>
+                        <span class="text-2xl text-sky-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="lesson-card-content card-content show">
+                        <div class="mt-4 text-slate-700 space-y-2">
+                            <ul class="decalogue-list list-none ml-0">
+                                <li>1. <span>Be Specific and Timely:</span> Give clear examples promptly.</li>
+                                <li>2. <span>Focus on Behavior, Not Personality:</span> Address actions, not traits.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <hr class="my-12 border-gray-200">
+            
+            <section id="scripts" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">2. Practice: The Sandwich Technique Script Builder</h2>
+                <div class="lesson-card bg-teal-50 border-teal-200 border-2">
+                    <div class="lesson-card-header card-header flex justify-between items-center">
+                        <h3 class="text-teal-800">Build Your Own Constructive Conversation</h3>
+                        <span class="text-2xl text-teal-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="lesson-card-content card-content show">
+                        <div class="mt-4 interactive-tool space-y-4">
+                            <p class="text-sm text-slate-700">Use the fields below to construct a feedback conversation.</p>
+                            <div class="input-group">
+                                <label>Positive Opening (Bread)</label>
+                                <textarea id="inputPositive" placeholder="Example: 'Your presentation deck was fantastic...'"></textarea>
+                            </div>
+                            <div class="input-group">
+                                <label>Specific Observation & Impact (Meat)</label>
+                                <textarea id="inputSpecific" placeholder="Example: 'However, I noticed you rushed the Q&A...'"></textarea>
+                            </div>
+                            <div class="input-group">
+                                <label>Suggestion / Request for Change (Action)</label>
+                                <textarea id="inputAction" placeholder="Example: 'For next time, can you reserve an extra five minutes...'"></textarea>
+                            </div>
+                            <div class="input-group">
+                                <label>Positive Closing (Bread)</label>
+                                <textarea id="inputClose" placeholder="Example: 'Overall, it was a huge success.'"></textarea>
+                            </div>
+                            <button onclick="generateScript()" class="check-button">Generate Feedback Script</button>
+                            <pre id="scriptOutput" class="text-sm"></pre>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <hr class="my-12 border-gray-200">
+            
+            <section id="scenarios" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">4. Roleplay: Receiving Feedback Quiz</h2>
+                <div class="lesson-card bg-rose-50 border-rose-200 border-2">
+                    <div class="lesson-card-header card-header flex justify-between items-center">
+                        <h3 class="text-rose-800">What is the BEST Immediate Reaction?</h3>
+                        <span class="text-2xl text-rose-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="lesson-card-content card-content">
+                        <form id="receiving-quiz" class="mt-4 text-slate-700">
+                            <div class="quiz-container">
+                                </div>
+                            <button type="button" class="check-button" onclick="checkReceivingQuiz()">Check My Answers</button>
+                            <p id="score-receiving" class="font-bold mt-4 text-lg"></p>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="/website/content/content.js"></script>
+    {% include 'universal_footer_dual.html' %}
+</body>
+</html>

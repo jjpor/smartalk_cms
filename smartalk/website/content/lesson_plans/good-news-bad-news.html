@@ -1,0 +1,75 @@
+{% include 'base_styles.html' %}
+<link rel="stylesheet" href="/website/content/content.css">
+
+{% include 'universal_header_dual.html' %}
+
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl pt-24">
+
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Good News, Bad News: Delivery Strategies</h1>
+            <p class="text-lg text-slate-600 mt-2">Mastering the art of delivering sensitive information with empathy and clarity.</p>
+        </header>
+
+        <nav class="mb-8 sticky top-20 bg-white/80 backdrop-blur-sm z-10 py-2">
+            <ul class="flex justify-center flex-wrap gap-x-3 gap-y-2">
+                <li><a href="#intro" class="section-nav-link py-2 px-3 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Introduction</a></li>
+                <li><a href="#article" class="section-nav-link py-2 px-3 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Case Study</a></li>
+                <li><a href="#practice" class="section-nav-link py-2 px-3 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Vocabulary Practice</a></li>
+                <li><a href="#creative" class="section-nav-link py-2 px-3 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Role Play Ideas</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <section id="intro" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">1. Setting the Stage</h2>
+                <div class="lesson-card bg-indigo-50 border-indigo-200 border-2">
+                    <div class="lesson-card-header card-header flex justify-between items-center">
+                        <h3 class="text-indigo-800">Video & Reflection Questions</h3>
+                        <span class="text-2xl text-indigo-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="lesson-card-content card-content show">
+                        <div class="mt-4 text-slate-700 space-y-4">
+                            <p class="text-sm italic">Video Link: <a href="https://youtu.be/vsLH70BrnnM" target="_blank" class="text-indigo-600 hover:text-indigo-800 underline">https://youtu.be/vsLH70BrnnM</a></p>
+                            
+                            <p class="font-semibold text-lg text-slate-900">Reflection Questions:</p>
+                            <ul class="list-disc ml-6 space-y-2">
+                                <li>What news did the boss give his employees?</li>
+                                <li>Why was his way of giving the bad news inappropriate?</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <hr class="my-12 border-gray-200">
+            
+            <section id="practice" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">3. Practice: Vocabulary for Delivery</h2>
+                <div class="lesson-card bg-teal-50 border-teal-200 border-2">
+                    <div class="lesson-card-header card-header flex justify-between items-center">
+                        <h3 class="text-teal-800">Fill-in-the-Blanks: Good and Bad News Phrases</h3>
+                        <span class="text-2xl text-teal-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="lesson-card-content card-content show">
+                        <div class="mt-4 interactive-tool space-y-4">
+                            <p class="text-sm text-slate-700 mb-4">Complete the phrases with the correct word.</p>
+                            
+                            <div id="quiz-container" class="space-y-3">
+                                </div>
+                            
+                            <button onclick="checkVocabularyQuiz()" class="check-button">Check My Answers</button>
+                            <p id="vocabulary-feedback" class="feedback"></p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="/website/content/content.js"></script>
+    {% include 'universal_footer_dual.html' %}
+</body>
+</html>

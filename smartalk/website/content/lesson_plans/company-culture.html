@@ -1,0 +1,71 @@
+{% include 'base_styles.html' %}
+<link rel="stylesheet" href="/website/content/content.css">
+
+{% include 'universal_header_dual.html' %}
+
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl pt-24">
+
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">The Guide to Company Culture</h1>
+            <p class="text-lg text-slate-600 mt-2">Exploring values, environments, and communication in the workplace.</p>
+        </header>
+
+        <nav class="mb-8 sticky top-20 bg-white/80 backdrop-blur-sm z-10 py-2">
+            <ul class="flex justify-center flex-wrap gap-x-4 gap-y-2">
+                <li><a href="#warm-up" class="section-nav-link py-2 px-3 md:px-4 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Warm-Up</a></li>
+                <li><a href="#vocabulary" class="section-nav-link py-2 px-3 md:px-4 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Vocabulary</a></li>
+                <li><a href="#discussion" class="section-nav-link py-2 px-3 md:px-4 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Discussion</a></li>
+                <li><a href="#exercises" class="section-nav-link py-2 px-3 md:px-4 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Exercises</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <section id="warm-up" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">Warm-Up</h2>
+                <div class="space-y-4">
+                    <div class="bg-white p-5 rounded-xl shadow-md">
+                        <div class="card-header flex justify-between items-center">
+                            <h3 class="font-bold text-slate-800">Questions to Consider</h3>
+                            <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                        </div>
+                        <div class="card-content">
+                            <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                                <li>What does “company culture” mean to you?</li>
+                                <li>How would you describe the culture at your current or past company?</li>
+                                <li>Do you think company culture matters more than salary?</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr class="my-12 border-gray-200">
+
+            <section id="vocabulary" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">Key Vocabulary</h2>
+                <div class="space-y-4">
+                    <div class="bg-white p-5 rounded-xl shadow-md">
+                        <div class="card-header flex justify-between items-center">
+                            <h3 class="font-bold text-slate-800">Key Terms</h3>
+                            <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                        </div>
+                        <div class="card-content">
+                            <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                                <li><strong>Company culture:</strong> The shared values, beliefs, and behaviors in a workplace.</li>
+                                <li><strong>Mission statement:</strong> A company’s main goal and reason for existing.</li>
+                                <li><strong>Core values:</strong> Important beliefs that guide a company’s decisions and actions.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            </main>
+    </div>
+
+    <script src="/website/content/content.js"></script>
+    {% include 'universal_footer_dual.html' %}
+</body>
+</html>

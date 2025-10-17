@@ -3,13 +3,13 @@ import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException
-from fastapi.middleware.cors import CORSMiddleware  # <-- 1. Importa la middleware
-from starlette.staticfiles import StaticFiles  # <-- Importato
+from fastapi.middleware.cors import CORSMiddleware
+from starlette.staticfiles import StaticFiles
 
 # Importa i componenti chiave
 from smartalk.core.dynamodb import AWS_EGRESS_DB_COUNTER_BYTES, get_dynamodb_resource_context
 from smartalk.core.settings import settings
-from smartalk.routes import auth, coach, student, website  # <-- Aggiunto website
+from smartalk.routes import auth, coach, student, website
 from smartalk.scripts.create_tables import ensure_tables
 from smartalk.scripts.migrate_data import migrate_all_data
 

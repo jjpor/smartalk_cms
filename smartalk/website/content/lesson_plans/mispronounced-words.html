@@ -1,0 +1,72 @@
+{% include 'base_styles.html' %}
+<link rel="stylesheet" href="/website/content/content.css">
+
+{% include 'universal_header_dual.html' %}
+
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl pt-24">
+
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Commonly Mispronounced Words</h1>
+            <p class="text-lg text-slate-600 mt-2">Mastering tricky sounds and patterns in English.</p>
+        </header>
+
+        <nav class="mb-8 sticky top-20 bg-white/80 backdrop-blur-sm z-10 py-2">
+            <ul class="flex justify-center flex-wrap gap-x-4 gap-y-2">
+                <li><a href="#introduction" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Introduction</a></li>
+                <li><a href="#patterns" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Common Patterns</a></li>
+                <li><a href="#stress" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Word Stress</a></li>
+                <li><a href="#other-tricks" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Other Tricky Sounds</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <section id="introduction" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">1. Introduction</h2>
+                <div class="lesson-card">
+                    <div class="lesson-card-header card-header flex justify-between items-center">
+                        <h3 class="text-slate-800">Why Pronunciation Matters</h3>
+                        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="lesson-card-content card-content show">
+                        <p class="text-slate-700 mt-4">English pronunciation can be tricky because words are not always spelled the way they sound. Today we’ll practice groups of words that learners often mispronounce, focusing on patterns, stress, and tricky sounds.</p>
+                    </div>
+                </div>
+            </section>
+            
+            <hr class="my-12 border-gray-200">
+
+            <section id="patterns" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">2. Common Patterns</h2>
+                <div class="lesson-card">
+                    <div class="lesson-card-header card-header flex justify-between items-center">
+                        <h3 class="text-slate-800">Groupings of Difficult Words</h3>
+                        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="lesson-card-content card-content">
+                        <div class="mt-4">
+                            <h4 class="font-semibold text-slate-800">-ous</h4>
+                            <p class="text-slate-700 mt-2">The “ous” rhymes with <em>miss</em> (not “us” or “mouse”).</p>
+                            <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
+                                <li>various, serious, nervous, obvious, previous</li>
+                            </ul>
+                        </div>
+                        <div class="mt-4">
+                            <h4 class="font-semibold text-slate-800">-tion / -sion</h4>
+                            <p class="text-slate-700 mt-2">Pronounced /ʃən/ (like <em>shin</em>).</p>
+                            <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
+                                <li>information, section, decision, population, association</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            </main>
+    </div>
+
+    <script src="/website/content/content.js"></script>
+    {% include 'universal_footer_dual.html' %}
+</body>
+</html>

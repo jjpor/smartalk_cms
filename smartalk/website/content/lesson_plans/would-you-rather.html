@@ -1,0 +1,74 @@
+{% include 'base_styles.html' %}
+<link rel="stylesheet" href="/website/content/content.css">
+
+{% include 'universal_header_dual.html' %}
+
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl pt-24">
+
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Would You Rather? Values and Decision-Making</h1>
+            <p class="text-lg text-slate-600 mt-2">A guide for exploring priorities, ethics, and persuasive justification.</p>
+        </header>
+
+        <nav class="mb-8 sticky top-20 bg-white/80 backdrop-blur-sm z-10 py-2">
+            <ul class="flex justify-center flex-wrap gap-x-4 gap-y-2">
+                <li><a href="#goal" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Goal</a></li>
+                <li><a href="#phase1" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Personal</a></li>
+                <li><a href="#phase2" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Professional</a></li>
+                <li><a href="#phase3" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Future & Ethics</a></li>
+                <li><a href="#exercise" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Debate</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <section id="goal" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">1. Lesson Goal</h2>
+                <div class="lesson-card">
+                    <div class="lesson-card-header card-header flex justify-between items-center">
+                        <h3 class="text-slate-800">The Power of "Why"</h3>
+                        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="lesson-card-content card-content show">
+                        <div class="mt-4 text-slate-600 space-y-3">
+                            <p>This lesson uses structured hypotheticals to force choices between competing values (e.g., money vs. ethics, privacy vs. convenience, personal gain vs. team success). The goal is to articulate not just the choice, but the <strong>underlying principle</strong> driving that choice.</p>
+                            <p class="italic font-medium text-slate-700">Focus: <strong>Justification</strong>. Can you defend your choice using a clear ethical, professional, or personal framework?</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <hr class="my-12 border-gray-200">
+
+            <section id="phase1" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">2. Phase 1: Personal & Lifestyle Lenses</h2>
+                <p class="text-center text-slate-600 mb-6 italic">Goal: Explore fundamental lifestyle choices, trade-offs in leisure, and the balance between past and future.</p>
+                
+                <div class="lesson-card">
+                    <div class="lesson-card-header card-header flex justify-between items-center">
+                        <h3 class="text-slate-800">Pop Culture, Leisure, and Travel</h3>
+                        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="lesson-card-content card-content">
+                        <div class="mt-4 text-slate-700 space-y-4">
+                            <p class="category-title">Personal Preferences</p>
+                            <ul class="question-list">
+                                <li>1. Would you rather attend a private dinner with your favorite movie star or perform on stage with your favorite musician?</li>
+                                <li>2. Would you rather live in the world of the last TV show you watched or the last book you read?</li>
+                            </ul>
+                        </div>
+                        <div class="exercise-box">
+                            <p class="font-bold text-indigo-700">Exercise: The Consistency Check</p>
+                            <p class="text-sm">Based on your answers, identify which value (e.g., novelty, stability, experience, legacy) appeared most consistently.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/website/content/content.js"></script>
+    {% include 'universal_footer_dual.html' %}
+</body>
+</html>

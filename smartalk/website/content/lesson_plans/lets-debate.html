@@ -1,0 +1,71 @@
+{% include 'base_styles.html' %}
+<link rel="stylesheet" href="/website/content/content.css">
+
+{% include 'universal_header_dual.html' %}
+
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl pt-24">
+
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Let's Debate</h1>
+            <p class="text-lg text-slate-600 mt-2">Structured practice for high-level discussion and argumentation.</p>
+        </header>
+
+        <nav class="mb-8 sticky top-20 bg-white/80 backdrop-blur-sm z-10 py-2">
+            <ul class="flex justify-center flex-wrap gap-x-4 gap-y-2">
+                <li><a href="#warmup" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Warm-Up</a></li>
+                <li><a href="#instructions" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Roles</a></li>
+                <li><a href="#topics" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Topics</a></li>
+                <li><a href="#modern_debates" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Modern Debates</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <section id="warmup" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">1. Warm-Up: Pronunciation & Flow</h2>
+                <div class="lesson-card">
+                    <div class="lesson-card-header card-header flex justify-between items-center">
+                        <h3 class="text-slate-800">Tongue Twisters</h3>
+                        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="lesson-card-content card-content show">
+                        <div class="mt-4 text-slate-600 space-y-2">
+                            <p class="font-semibold text-slate-700">Practice saying these quickly to prepare for fast-paced debate!</p>
+                            <ul class="list-disc list-inside mt-2 text-slate-600 space-y-1">
+                                <li>Peter Piper projected profitable prospects for premium products.</li>
+                                <li>Betty’s bustling business buys buzzing bees by the barrel.</li>
+                                <li>Mixed marketing metrics mystify many managers monthly.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <hr class="my-12 border-gray-200">
+
+            <section id="instructions" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">2. Debate Structure & Roles</h2>
+                <div class="lesson-card">
+                    <div class="lesson-card-header card-header flex justify-between items-center">
+                        <h3 class="text-slate-800">Instructions: Three-Person Debate</h3>
+                        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="lesson-card-content card-content show">
+                        <p class="text-slate-600 mt-4">For each topic, each group member has a specific role. Use the vocabulary provided for each topic.</p>
+                        <div class="role-box space-y-2">
+                            <p><strong>Person 1: Argue Side A (Pro)</strong> – Focus on strong, logical evidence.</p>
+                            <p><strong>Person 2: Argue Side B (Con)</strong> – Focus on counter-arguments and weaknesses in the opponent's position.</p>
+                            <p><strong>Person 3: Moderator / Judge</strong> – Stay neutral. Listen to both arguments, ask clarifying questions, and decide who makes the stronger, more persuasive points.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            </main>
+    </div>
+
+    <script src="/website/content/content.js"></script>
+    {% include 'universal_footer_dual.html' %}
+</body>
+</html>

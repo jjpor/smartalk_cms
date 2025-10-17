@@ -1,0 +1,76 @@
+{% include 'base_styles.html' %}
+<link rel="stylesheet" href="/website/content/content.css">
+
+{% include 'universal_header_dual.html' %}
+
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl pt-24">
+
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Accountability</h1>
+            <p class="text-lg text-slate-600 mt-2">A guide to taking responsibility and building trust in the workplace.</p>
+        </header>
+
+        <nav class="mb-8 sticky top-20 bg-white/80 backdrop-blur-sm z-10 py-2">
+            <ul class="flex justify-center flex-wrap gap-x-4 gap-y-2">
+                <li><a href="#initial-discussion" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Initial Discussion</a></li>
+                <li><a href="#guided-discussion" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Guided Discussion</a></li>
+                <li><a href="#vocabulary" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Vocabulary</a></li>
+                <li><a href="#scenarios" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Scenarios</a></li>
+                <li><a href="#clear-framework" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">CLEAR Framework</a></li>
+                <li><a href="#case-study" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Case Study</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <section id="initial-discussion" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">Initial Discussion Questions</h2>
+                <div class="bg-white p-5 rounded-xl shadow-md">
+                    <div class="card-header flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800">Your Perspective on Accountability</h3>
+                        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="card-content">
+                        <ul class="list-disc list-outside mt-4 text-slate-600 space-y-2 ml-4">
+                            <li>What does accountability mean to you in a professional context?</li>
+                            <li>Can you share an example of a time when accountability played a crucial role in a project?</li>
+                            <li>What are some consequences of a lack of accountability in a team?</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <hr class="my-12 border-gray-200">
+
+            <section id="vocabulary" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">Vocabulary: Phrasal Verbs & Idioms</h2>
+                <div class="bg-white p-5 rounded-xl shadow-md">
+                    <div class="card-header flex justify-between items-center">
+                        <h3 class="font-bold text-slate-800">Key Terms</h3>
+                        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="card-content">
+                        <h4 class="font-semibold text-slate-800 mt-4">Phrasal Verbs:</h4>
+                        <ul class="list-disc list-outside mt-2 text-slate-600 space-y-2 ml-4">
+                            <li><strong>Own up to</strong> – To admit to something.</li>
+                            <li><strong>Follow through (with)</strong> – To complete an action or promise.</li>
+                            <li><strong>Step up</strong> – To take responsibility or initiative.</li>
+                        </ul>
+                        <h4 class="font-semibold text-slate-800 mt-4">Idioms:</h4>
+                        <ul class="list-disc list-outside mt-2 text-slate-600 space-y-2 ml-4">
+                            <li><strong>Bite the bullet</strong> – To face a difficult situation bravely.</li>
+                            <li><strong>Come clean</strong> – To confess or admit something.</li>
+                            <li><strong>Throw under the bus</strong> – To betray or blame someone else.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            </main>
+    </div>
+
+    <script src="/website/content/content.js"></script>
+    {% include 'universal_footer_dual.html' %}
+</body>
+</html>

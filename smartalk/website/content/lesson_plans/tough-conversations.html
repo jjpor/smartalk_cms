@@ -1,0 +1,68 @@
+{% include 'base_styles.html' %}
+<link rel="stylesheet" href="/website/content/content.css">
+
+{% include 'universal_header_dual.html' %}
+
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl pt-24">
+
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Tough Conversations</h1>
+            <p class="text-lg text-slate-600 mt-2">A guide to navigating difficult discussions with confidence.</p>
+        </header>
+
+        <nav class="mb-8 sticky top-20 bg-white/80 backdrop-blur-sm z-10 py-2">
+            <ul class="flex justify-center flex-wrap gap-x-4 gap-y-2">
+                <li><a href="#warmup" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Warm-Up</a></li>
+                <li><a href="#vocabulary" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Vocabulary</a></li>
+                <li><a href="#cases" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Case Discussions</a></li>
+                <li><a href="#discussion" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Guided Discussion</a></li>
+                <li><a href="#scenarios" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Scenarios</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <section id="warmup" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">1. Warm-Up Discussion</h2>
+                <div class="lesson-card">
+                    <div class="lesson-card-header card-header flex justify-between items-center">
+                        <h3 class="text-slate-800">Setting the Stage</h3>
+                        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="lesson-card-content card-content show">
+                        <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                            <li>What’s a tough conversation you’ve had recently?</li>
+                            <li>Why do you think some conversations are difficult?</li>
+                            <li>Which is the hardest for you: giving feedback, asking for a raise, or breaking bad news?</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <hr class="my-12 border-gray-200">
+
+            <section id="vocabulary" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">2. Vocabulary</h2>
+                <div class="lesson-card">
+                    <div class="lesson-card-header card-header flex justify-between items-center">
+                        <h3 class="text-slate-800">Key Idioms</h3>
+                        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="lesson-card-content card-content">
+                        <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                            <li><strong>Break the ice</strong> – Start a conversation in an awkward situation.</li>
+                            <li><strong>Get something off your chest</strong> – Say something that’s been bothering you.</li>
+                            <li><strong>Beat around the bush</strong> – Avoid saying something directly.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            </main>
+    </div>
+
+    <script src="/website/content/content.js"></script>
+    {% include 'universal_footer_dual.html' %}
+</body>
+</html>

@@ -1,0 +1,73 @@
+{% include 'base_styles.html' %}
+<link rel="stylesheet" href="/website/content/content.css">
+
+{% include 'universal_header_dual.html' %}
+
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl pt-24">
+
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Salary Negotiation Guide</h1>
+            <p class="text-lg text-slate-600 mt-2">Tips and techniques to stop feeling undervalued and unappreciated at work.</p>
+        </header>
+
+        <nav class="mb-8 sticky top-20 bg-white/80 backdrop-blur-sm z-10 py-2">
+            <ul class="flex justify-center flex-wrap gap-x-4 gap-y-2">
+                <li><a href="#tips" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Tips & Techniques</a></li>
+                <li><a href="#what-to-say" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">What to Ask/Say</a></li>
+                <li><a href="#likely-scenarios" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Likely Scenarios</a></li>
+                <li><a href="#worst-scenarios" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Worst Case Scenarios</a></li>
+                <li><a href="#for-entrepreneurs" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">For Entrepreneurs</a></li>
+                <li><a href="#llm-feature" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Custom Strategy ✨</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <section id="tips" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">Tips & Techniques</h2>
+                <p class="text-slate-700 mb-6">In this section, you will find the fundamental strategies to prepare for a salary negotiation, feel valued in your role, and get what you deserve.</p>
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div class="bg-white p-6 rounded-xl shadow-md"><h3 class="font-bold text-slate-800 mb-2">Research is Key</h3><p class="text-slate-600">Understand the market value for your role in your industry and location. Websites like Glassdoor, Payscale, or industry reports can provide valuable insights. Be ready to explain why you believe you deserve a higher salary.</p></div>
+                    <div class="bg-white p-6 rounded-xl shadow-md"><h3 class="font-bold text-slate-800 mb-2">Timing is Everything</h3><p class="text-slate-600">Ideally, negotiate after you've received a job offer but before you've accepted it. If you're already employed, choose an appropriate time, such as during a performance review.</p></div>
+                    <div class="bg-white p-6 rounded-xl shadow-md"><h3 class="font-bold text-slate-800 mb-2">Practice Your Pitch</h3><p class="text-slate-600">Clearly communicate your value to the organization. Highlight your accomplishments, skills, and any additional responsibilities you've taken on.</p></div>
+                    <div class="bg-white p-6 rounded-xl shadow-md"><h3 class="font-bold text-slate-800 mb-2">Be Confident and Positive</h3><p class="text-slate-600">Approach the negotiation with confidence, but remain positive and respectful. Focus on the value you bring to the organization.</p></div>
+                </div>
+            </section>
+
+            <hr class="my-12 border-gray-200">
+
+            <section id="what-to-say" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">What to Ask/Say</h2>
+                <p class="text-slate-700 mb-6">This section provides specific phrases to use to initiate the discussion. Click on each heading to see the recommended phrases.</p>
+                <div class="space-y-4">
+                    <div class="bg-white rounded-xl shadow-md"><div class="card-header flex justify-between items-center p-5"><h3 class="font-bold text-slate-800">Express gratitude and enthusiasm</h3><span class="text-2xl text-slate-500 arrow-icon">▾</span></div><div class="card-content px-5"><ul class="list-disc list-inside py-4 text-slate-600 space-y-2"><li>"I appreciate the opportunities I've had here and I am excited about the future."</li></ul></div></div>
+                    <div class="bg-white rounded-xl shadow-md"><div class="card-header flex justify-between items-center p-5"><h3 class="font-bold text-slate-800">Presenting your case</h3><span class="text-2xl text-slate-500 arrow-icon">▾</span></div><div class="card-content px-5"><ul class="list-disc list-inside py-4 text-slate-600 space-y-2"><li>"Reflecting on my contributions, I have accomplished [mention successes] and have taken on additional responsibilities."</li></ul></div></div>
+                    <div class="bg-white rounded-xl shadow-md"><div class="card-header flex justify-between items-center p-5"><h3 class="font-bold text-slate-800">Research-based approach</h3><span class="text-2xl text-slate-500 arrow-icon">▾</span></div><div class="card-content px-5"><ul class="list-disc list-inside py-4 text-slate-600 space-y-2"><li>"I've done some market research, and the industry standard for someone in my role and with my experience is [mention a specific figure]."</li></ul></div></div>
+                </div>
+            </section>
+
+            <hr class="my-12 border-gray-200">
+
+            <section id="llm-feature" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">Generate a Custom Scenario ✨</h2>
+                <p class="text-slate-700 mb-6">Describe your specific negotiation situation and get a personalized, AI-powered strategy to handle the conversation.</p>
+                <div class="bg-white p-6 rounded-xl shadow-md">
+                    <label for="user-scenario" class="block font-bold text-slate-800 mb-2">Describe your scenario:</label>
+                    <textarea id="user-scenario" rows="6" class="w-full p-4 border rounded-md resize-y focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Example: I'm about to have my annual review conversation..."></textarea>
+                    <button id="generate-btn" class="mt-4 px-6 py-3 rounded-xl bg-blue-600 text-white font-bold hover:bg-blue-700 transition duration-300">Generate Strategy ✨</button>
+                    <div id="response-container" class="mt-6 p-4 bg-gray-50 rounded-md border border-gray-200 hidden">
+                        <div id="loading-spinner" class="loading-spinner"></div>
+                        <div id="response-content" class="text-slate-700 leading-relaxed prose"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <script src="/website/content/content.js"></script>
+    {% include 'universal_footer_dual.html' %}
+</body>
+</html>

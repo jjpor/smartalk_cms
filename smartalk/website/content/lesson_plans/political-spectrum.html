@@ -1,0 +1,86 @@
+{% include 'base_styles.html' %}
+<link rel="stylesheet" href="/website/content/content.css">
+
+{% include 'universal_header_dual.html' %}
+
+<body class="antialiased">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl pt-24">
+
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">The Political Spectrum</h1>
+            <p class="text-lg text-slate-600 mt-2">Principles, Ideas, and Perspectives</p>
+        </header>
+
+        <nav class="mb-8 sticky top-20 bg-white/80 backdrop-blur-sm z-10 py-2">
+            <ul class="flex justify-center flex-wrap gap-x-4 gap-y-2">
+                <li><a href="#warmup" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Warm-Up</a></li>
+                <li><a href="#principles" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Principles</a></li>
+                <li><a href="#vocabulary" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Vocabulary</a></li>
+                <li><a href="#scenarios" class="section-nav-link py-2 px-3 md:px-6 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Scenarios</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <section id="warmup" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">1. Warm-Up</h2>
+                <div class="lesson-card">
+                    <div class="lesson-card-header card-header flex justify-between items-center">
+                        <h3 class="text-slate-800">Setting the Stage</h3>
+                        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="lesson-card-content card-content show">
+                        <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                            <li>What does "politics" mean to you?</li>
+                            <li>Do you think it's easy or difficult to discuss politics with people who have different ideas? Why?</li>
+                            <li>How do you know if a person's political beliefs are "left" or "right"?</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <hr class="my-12 border-gray-200">
+
+            <section id="principles" class="mb-12 pt-16 -mt-16">
+                <h2 class="section-header">2. Common Principles</h2>
+                <div class="lesson-card">
+                    <div class="lesson-card-header card-header flex justify-between items-center">
+                        <h3 class="text-slate-800">Exploring Different Viewpoints</h3>
+                        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                    </div>
+                    <div class="lesson-card-content card-content">
+                        <div class="mt-4">
+                            <h4 class="text-lg font-bold text-blue-600 mb-2">🔵 Center / Moderates</h4>
+                            <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+                                <li>Respect everyone regardless of gender, race, or religion.</li>
+                                <li>Balance between freedom and responsibility.</li>
+                                <li>Support for democracy and institutions.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-8">
+                            <h4 class="text-lg font-bold text-red-600 mb-2">🔴 Left / Progressive</h4>
+                            <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+                                <li>Strong fight for equality across gender, race, sexuality.</li>
+                                <li>Wealth redistribution through higher taxes for the rich.</li>
+                                <li>Universal healthcare and social safety nets.</li>
+                            </ul>
+                        </div>
+                        <div class="mt-8">
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">⚫ Right / Conservative</h4>
+                            <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+                                <li>Traditional family values as foundation of society.</li>
+                                <li>National identity and cultural heritage first.</li>
+                                <li>Law and order: strict rules and punishments.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            </main>
+    </div>
+
+    <script src="/website/content/content.js"></script>
+    {% include 'universal_footer_dual.html' %}
+</body>
+</html>
