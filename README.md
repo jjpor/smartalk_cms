@@ -28,8 +28,15 @@ poetry run uvicorn smartalk.app:app --host localhost --port 8000 --reload
 
 ## Docker
 
-docker compose up --build
+docker compose up //x vedere edits lato web  
 docker compose down
 
 ## git
 git config core.autocrlf input
+
+## commit/push
+
+git status
+git add . //x mandare a git
+git commit -m "scrivi quello che hai fatto"
+git push

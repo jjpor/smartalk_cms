@@ -1,20 +1,23 @@
-{% include 'base_styles.html' %}
-{% include 'universal_header_dual.html' %}
+{% extends "base.html" %}
 
-<main class="container mx-auto px-4 sm:px-6 md:px-8 max-w-4xl mt-16">
+{% block title %}
+    {% if lang == 'it' %}Termini e Condizioni | Smartalk{% else %}Terms and Conditions | Smartalk{% endif %}
+{% endblock %}
+
+{% block content %}
     <h1 id="main-title" class="text-center mb-8 text-3xl sm:text-4xl">
-        <span data-lang="it" style="display: none;">Termini e Condizioni</span>
-        <span data-lang="en" style="display: none;">Terms and Conditions</span>
+        {% if lang == 'it' %}Termini e Condizioni{% else %}Terms and Conditions{% endif %}
     </h1>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div data-lang="it" class="bg-white p-6 rounded-xl shadow-lg" style="display: none;">
+        {% if lang == 'it' %}
+        <div class="bg-white p-6 rounded-xl shadow-lg">
             <h2 class="text-xl font-bold mb-4">VERSIONE ITALIANA</h2>
             <p><strong>Ultimo aggiornamento:</strong> Settembre 9, 2025</p>
             <p class="mt-4">Benvenuto su Smartalk. Accedendo, prenotando o acquistando i nostri servizi, l’utente accetta di essere vincolato dai presenti Termini e Condizioni. Questi Termini si applicano a tutti i clienti e hanno lo scopo di garantire chiarezza, correttezza e utilizzo appropriato dei nostri servizi.</p>
             
             <h3 class="font-bold text-lg mt-6">1. Servizi offerti</h3>
-            <p class="mt-2">Smartalk fornisce servizi di coaching e formazione in lingua inglese, erogati online e rivolti a imprenditori, professionisti e studenti di ESL. I nostri coach sono esperti e guidano i clienti attraverso un processo strutturato e personalizzato. Pur impegnandoci a garantire la massima qualità e supporto, il raggiungimento dei risultati dipende dall’impegno, dalla partecipazione e dalla costanza del cliente. Smartalk non rilascia certificazioni ufficiali e non garantisce il conseguimento di obiettivi specifici entro tempistiche predeterminate.</p>
+            <p class="mt-2">Smartalk fornisce servizi di coaching e formazione in lingua inglese, erogati online e rivolti a imprenditori, professionisti e studenti di ESL. I nostri coach sono esperti e guidano i clienti attraverso un processo strutturato e personalizzato. Pur impegnandoci a garantire la massima qualità e supporto, il raggiungimento dei risultati dipende dall’impegno, dalla partecipazione e dalla costante del cliente. Smartalk non rilascia certificazioni ufficiali e non garantisce il conseguimento di obiettivi specifici entro tempistiche predeterminate.</p>
             
             <h3 class="font-bold text-lg mt-6">2. Prenotazioni e cancellazioni</h3>
             <p class="mt-2">Tutte le prenotazioni, riprogrammazioni e cancellazioni sono soggette alla nostra policy ufficiale, disponibile al seguente link: <a href="/it/policy" class="text-blue-600 hover:underline">www.smartalk.online/policy</a>. È responsabilità del cliente prendere visione di tale policy prima di effettuare una prenotazione.</p>
@@ -44,7 +47,8 @@
             <p class="mt-2">Smartalk si riserva il diritto di modificare o aggiornare i presenti Termini e Condizioni in qualsiasi momento. Le modifiche avranno effetto immediato dalla pubblicazione sul sito web. L’uso continuato dei servizi dopo tali modifiche costituisce accettazione dei nuovi Termini.</p>
         </div>
 
-        <div data-lang="en" class="bg-white p-6 rounded-xl shadow-lg" style="display: none;">
+        <div class="bg-white p-6 rounded-xl shadow-lg">
+            {% else %}
             <h2 class="text-xl font-bold mb-4">ENGLISH VERSION</h2>
             <p><strong>Last updated:</strong> September 9, 2025</p>
             <p class="mt-4">Welcome to Smartalk. By accessing, booking, or purchasing our services, you agree to be bound by the following Terms and Conditions. These Terms apply to all clients and are intended to ensure clarity, fairness, and proper use of our services.</p>
@@ -79,35 +83,32 @@
             <h3 class="font-bold text-lg mt-6">8. Changes to Terms</h3>
             <p class="mt-2">Smartalk reserves the right to modify or update these Terms and Conditions at any time. Any changes will become effective immediately upon publication on our website. Continued use of the services after such updates constitutes acceptance of the revised Terms.</p>
         </div>
+        {% endif %}
     </div>
     
     <div class="mt-12 p-6 bg-yellow-50 rounded-lg border border-yellow-300">
         <label class="flex items-center gap-2">
             <input type="checkbox" id="ack" class="large-checkbox" />
-            <span data-lang="it" style="display: none;">Ho letto e compreso i Termini e Condizioni.</span>
-            <span data-lang="en" style="display: none;">I have read and understood the Terms and Conditions.</span>
+            <span>{% if lang == 'it' %}Ho letto e compreso i Termini e Condizioni.{% else %}I have read and understood the Terms and Conditions.{% endif %}</span>
         </label>
 
         <label class="block mt-4">
-            <span data-lang="it" style="display: none;">La tua Email:</span>
-            <span data-lang="en" style="display: none;">Your Email:</span>
+            <span>{% if lang == 'it' %}La tua Email:{% else %}Your Email:{% endif %}</span>
             <input type="email" id="userEmail" required class="mt-1 p-2 w-full max-w-sm rounded-md border border-gray-300" />
         </label>
 
         <button onclick="submitConfirmation()" disabled id="confirmBtn" class="mt-4 px-6 py-3 bg-gray-800 text-white border-none rounded-lg cursor-not-allowed">
-            <span data-lang="it" style="display: none;">Conferma</span>
-            <span data-lang="en" style="display: none;">Confirm</span>
+            <span>{% if lang == 'it' %}Conferma{% else %}Confirm{% endif %}</span>
         </button>
 
         <div id="confirmation-message" class="mt-4"></div>
     </div>
-</main>
+{% endblock content %}
 
-{% include 'app.js' %}
+{% block extra_scripts %}
+<script src="/static/app.js"></script>
 <script>
-    handlePageLoad();
-
-    // Script di conferma specifico per questa pagina
+    // Questo script è una copia di quello in terms.html (è lo stesso)
     const checkbox = document.getElementById("ack");
     const button = document.getElementById("confirmBtn");
 
@@ -121,7 +122,7 @@
 
     function showMessage(type) {
         const messageBox = document.getElementById("confirmation-message");
-        const isEnglishPage = window.location.pathname.includes('/en/');
+        const isEnglishPage = '{{ lang }}' === 'en';
         
         if (!messageBox) return;
 
@@ -162,12 +163,11 @@
             if(emailInput) emailInput.disabled = true;
         })
         .catch(err => {
-            const isEnglishPage = window.location.pathname.includes('/en/');
+            const isEnglishPage = '{{ lang }}' === 'en';
             const errorMessage = isEnglishPage ? "Something went wrong: " + err : "Qualcosa è andato storto: " + err;
             document.getElementById("confirmation-message").innerHTML = `<strong class="text-red-600">❌ ${errorMessage}</strong>`;
             if(button) button.disabled = false;
         });
     }
 </script>
-
-{% include 'universal_footer_dual.html' %}
+{% endblock %}

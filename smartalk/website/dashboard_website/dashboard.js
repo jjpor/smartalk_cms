@@ -87,10 +87,6 @@ async function handleGoogleLogin(response) {
   }
 }
 
-// API proxy
-const base_url = "https://vercel-python-proxy.vercel.app/api";
-const deployment_id = "AKfycbwjmnBDZcMdBmP6Dj67S19qGDP61ujNtBvJZU65xqlUfluThOy1pphwjvACS9FVXJeD";
-
 // DOM refs
 const loginForm = document.getElementById('loginForm');
 const loginBtn = document.getElementById('loginBtn');
@@ -256,25 +252,23 @@ function formatLessonPlan(plainText) {
 
 // API helpers
 async function apiGet(action, params = {}) {
-  const url = new URL(base_url + "/get");
-  url.searchParams.set("deployment_id", deployment_id);
-  url.searchParams.set("action", action);
-  url.searchParams.set("_ts", Date.now()); // avoid browser caching
-  Object.entries(params).forEach(([k, v]) => {
-    if (v !== undefined && v !== null) url.searchParams.set(k, v);
-  });
-  const res = await fetch(url.toString());
-  if (!res.ok) throw new Error(`GET ${action} failed: ${res.status}`);
-  return res.json();
+  const url = new URL("/" + action);
+  url.searchParams.set("_ts", Date.now()); // avoid browser caching
+  Object.entries(params).forEach(([k, v]) => {
+    if (v !== undefined && v !== null) url.searchParams.set(k, v);
+  });
+  const res = await fetch(url.toString());
+  if (!res.ok) throw new Error(`GET /${action} failed: ${res.status}`);
+  return res.json();
 }
 
 async function apiPost(action, body = {}) {
-  const res = await fetch(base_url + "/post", {
+  const res = await fetch("/" + action, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ deployment_id, action, ...body })
+    body: JSON.stringify({...body})
   });
-  if (!res.ok) throw new Error(`POST ${action} failed: ${res.status}`);
+  if (!res.ok) throw new Error(`POST /${action} failed: ${res.status}`);
   return res.json();
 }
 
@@ -869,8 +863,8 @@ if (btn && !btn.dataset.bound) {
                   debriefMsg.textContent = "✅ Draft successfully deleted!";
                   showToast("Draft deleted!", 3000, "bg-green-600");
                   
-                  resetDebriefForm(); 
-                  window.debriefLoadedRow = null; 
+                  resetDebriefForm(); 
+                  window.debriefLoadedRow = null; 
                   
               } catch (err) {
                   console.error("Delete draft error:", err);

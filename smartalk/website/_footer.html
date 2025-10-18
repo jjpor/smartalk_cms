@@ -1,17 +1,13 @@
-<footer data-lang="it">
+<footer>
     <div class="bg-gray-50 py-6">
         <div class="flex justify-center space-x-8 text-sm sm:text-base font-semibold text-gray-600">
+            {% if lang == 'it' %}
             <a href="/it/terms" class="hover:text-blue-600 transition-colors duration-300">Termini e Condizioni</a>
             <a href="/it/policy" class="hover:text-blue-600 transition-colors duration-300">Policy</a>
-        </div>
-    </div>
-</footer>
-
-<footer data-lang="en">
-    <div class="bg-gray-50 py-6">
-        <div class="flex justify-center space-x-8 text-sm sm:text-base font-semibold text-gray-600">
+            {% else %}
             <a href="/en/terms" class="hover:text-blue-600 transition-colors duration-300">Terms and Conditions</a>
             <a href="/en/policy" class="hover:text-blue-600 transition-colors duration-300">Policy</a>
+            {% endif %}
         </div>
     </div>
 </footer>

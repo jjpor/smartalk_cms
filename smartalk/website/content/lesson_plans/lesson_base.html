@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block head_links %}
+<link rel="stylesheet" href="/static/content/content.css">
+{% block lesson_head_extras %}{% endblock %}
+{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4 md:p-8 max-w-4xl pt-24">
+    <header class="text-center mb-12">
+        <h1 class="text-3xl md:text-4xl font-bold text-slate-900">{% block lesson_title %}{% endblock %}</h1>
+        <p class="text-lg text-slate-600 mt-2">{% block lesson_subtitle %}{% endblock %}</p>
+    </header>
+
+    <nav class="mb-8 sticky top-20 bg-white/80 backdrop-blur-sm z-10 py-2">
+        <ul class="flex justify-center flex-wrap gap-x-4 gap-y-2">
+            {% block lesson_nav %}{% endblock %}
+        </ul>
+    </nav>
+
+    <main>
+        {% block lesson_content %}{% endblock %}
+    </main>
+</div>
+
+{% block lesson_scripts %}
+<script src="/static/content/content.js"></script>
+{% endblock %}
+
+{% endblock content %}

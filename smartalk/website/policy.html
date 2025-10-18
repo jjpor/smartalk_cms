@@ -1,51 +1,24 @@
-{% include 'base_styles.html' %}
-{% include 'universal_header_dual.html' %}
+{% extends "base.html" %}
 
-<main class="container mx-auto px-4 sm:px-6 md:px-8 max-w-4xl mt-16">
-    <div data-lang="it" style="display: none;">
+{% block title %}
+    {% if lang == 'it' %}Policy | Smartalk{% else %}Policy | Smartalk{% endif %}
+{% endblock %}
+
+{% block content %}
+    <header class="text-center">
+        {% if lang == 'it' %}
         <h1 id="main-title" class="text-center mb-2 text-3xl sm:text-4xl">Accordo Mutuo per il Completamento del Corso</h1>
         <div id="main-subtitle" class="subtitle text-center mb-8 text-lg">Etica per la buona riuscita del percorso di apprendimento</div>
-    </div>
-    <div data-lang="en" style="display: none;">
+        {% else %}
         <h1 id="main-title" class="text-center mb-2 text-3xl sm:text-4xl">Mutual Agreement for the Completion of the Course</h1>
         <div id="main-subtitle" class="subtitle text-center mb-8 text-lg">Ethics for the successful completion of the learning path</div>
-    </div>
+        {% endif %}
+    </header>
 
     <h2 class="text-center text-2xl sm:text-3xl mt-12 mb-6 border-b-2 border-gray-300 pb-2 font-bold">1:1 Lessons</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div data-lang="en" class="bg-white p-6 rounded-xl shadow-lg" style="display: none;">
-            <div class="item">
-                <h3 class="text-xl font-bold mb-1">Rescheduling</h3>
-                <ul class="list-disc pl-5">
-                    <li>At least 24h before the call.</li>
-                    <li>In the course of the same week (except for weekend calls).</li>
-                    <li>Coach can refuse (in which case see Cancellation).</li>
-                </ul>
-            </div>
-            <div class="item mt-6">
-                <h3 class="text-xl font-bold mb-1">Cancellation</h3>
-                <ul class="list-disc pl-5">
-                    <li>At least 24h before the call.</li>
-                    <li>If after term (24h), the call will be considered as done and deducted from the total.</li>
-                </ul>
-            </div>
-            <div class="item mt-6">
-                <h3 class="text-xl font-bold mb-1">Delay</h3>
-                <ul class="list-disc pl-5">
-                    <li><strong class="font-bold">Coach notified in advance</strong>: max wait is 30’ (60’) or 15’ (30’).</li>
-                    <li><strong class="font-bold">Coach not notified</strong>: max wait is 15’ (60’) or 7’ (30’).</li>
-                </ul>
-            </div>
-            <div class="item mt-6">
-                <h3 class="text-xl font-bold mb-1">Expiration</h3>
-                <ul class="list-disc pl-5">
-                    <li>Coach (or referent) will inform the student of the max number of weeks to complete the course.</li>
-                    <li>Max delay factor is 1.7 (e.g. 10 calls = max 17 weeks from the first session).</li>
-                    <li>The expired course is considered done and is non-refundable.</li>
-                </ul>
-            </div>
-        </div>
-        <div data-lang="it" class="bg-white p-6 rounded-xl shadow-lg" style="display: none;">
+        {% if lang == 'it' %}
+        <div class="bg-white p-6 rounded-xl shadow-lg">
             <div class="item">
                 <h3 class="text-xl font-bold mb-1">Riprogrammazione</h3>
                 <ul class="list-disc pl-5">
@@ -77,46 +50,46 @@
                 </ul>
             </div>
         </div>
-    </div>
-
-    <h2 class="text-center text-2xl sm:text-3xl mt-12 mb-6 border-b-2 border-gray-300 pb-2 font-bold">Group Lessons</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div data-lang="en" class="bg-white p-6 rounded-xl shadow-lg" style="display: none;">
+        {% else %}
+        <div class="bg-white p-6 rounded-xl shadow-lg">
             <div class="item">
                 <h3 class="text-xl font-bold mb-1">Rescheduling</h3>
                 <ul class="list-disc pl-5">
-                    <li>Not applicable if at least one student wishes to participate.</li>
                     <li>At least 24h before the call.</li>
-                    <li>In the course of the same week.</li>
+                    <li>In the course of the same week (except for weekend calls).</li>
                     <li>Coach can refuse (in which case see Cancellation).</li>
                 </ul>
             </div>
             <div class="item mt-6">
                 <h3 class="text-xl font-bold mb-1">Cancellation</h3>
                 <ul class="list-disc pl-5">
-                    <li>Not applicable if at least one student wishes to participate.</li>
                     <li>At least 24h before the call.</li>
-                    <li>After that, the call is considered done and deducted from the total.</li>
+                    <li>If after term (24h), the call will be considered as done and deducted from the total.</li>
                 </ul>
             </div>
             <div class="item mt-6">
                 <h3 class="text-xl font-bold mb-1">Delay</h3>
                 <ul class="list-disc pl-5">
-                    <li>No online participants and coach notified: max 30’ (60’) or 15’ (30’).</li>
-                    <li>No online participants and coach not notified: max 15’ (60’) or 7’ (30’).</li>
-                    <li>At least one participant online: the call proceeds normally.</li>
+                    <li><strong class="font-bold">Coach notified in advance</strong>: max wait is 30’ (60’) or 15’ (30’).</li>
+                    <li><strong class="font-bold">Coach not notified</strong>: max wait is 15’ (60’) or 7’ (30’).</li>
                 </ul>
             </div>
             <div class="item mt-6">
                 <h3 class="text-xl font-bold mb-1">Expiration</h3>
                 <ul class="list-disc pl-5">
-                    <li>Coach (or referent) will inform students of the max duration for course completion.</li>
-                    <li>Max delay factor: 1.7 (e.g. 10 calls = max 17 weeks).</li>
-                    <li>The expired course is considered done and non-refundable.</li>
+                    <li>Coach (or referent) will inform the student of the max number of weeks to complete the course.</li>
+                    <li>Max delay factor is 1.7 (e.g. 10 calls = max 17 weeks from the first session).</li>
+                    <li>The expired course is considered done and is non-refundable.</li>
                 </ul>
             </div>
         </div>
-        <div data-lang="it" class="bg-white p-6 rounded-xl shadow-lg" style="display: none;">
+        {% endif %}
+    </div>
+
+    <h2 class="text-center text-2xl sm:text-3xl mt-12 mb-6 border-b-2 border-gray-300 pb-2 font-bold">Group Lessons</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {% if lang == 'it' %}
+        <div class="bg-white p-6 rounded-xl shadow-lg">
             <div class="item">
                 <h3 class="text-xl font-bold mb-1">Riprogrammazione</h3>
                 <ul class="list-disc pl-5">
@@ -151,32 +124,127 @@
                 </ul>
             </div>
         </div>
+        {% else %}
+        <div class="bg-white p-6 rounded-xl shadow-lg">
+            <div class="item">
+                <h3 class="text-xl font-bold mb-1">Rescheduling</h3>
+                <ul class="list-disc pl-5">
+                    <li>Not applicable if at least one student wishes to participate.</li>
+                    <li>At least 24h before the call.</li>
+                    <li>In the course of the same week.</li>
+                    <li>Coach can refuse (in which case see Cancellation).</li>
+                </ul>
+            </div>
+            <div class="item mt-6">
+                <h3 class="text-xl font-bold mb-1">Cancellation</h3>
+                <ul class="list-disc pl-5">
+                    <li>Not applicable if at least one student wishes to participate.</li>
+                    <li>At least 24h before the call.</li>
+                    <li>After that, the call is considered done and deducted from the total.</li>
+                </ul>
+            </div>
+            <div class="item mt-6">
+                <h3 class="text-xl font-bold mb-1">Delay</h3>
+                <ul class="list-disc pl-5">
+                    <li>No online participants and coach notified: max 30’ (60’) or 15’ (30’).</li>
+                    <li>No online participants and coach not notified: max 15’ (60’) or 7’ (30’).</li>
+                    <li>At least one participant online: the call proceeds normally.</li>
+                </ul>
+            </div>
+            <div class="item mt-6">
+                <h3 class="text-xl font-bold mb-1">Expiration</h3>
+                <ul class="list-disc pl-5">
+                    <li>Coach (or referent) will inform students of the max duration for course completion.</li>
+                    <li>Max delay factor: 1.7 (e.g. 10 calls = max 17 weeks).</li>
+                    <li>The expired course is considered done and non-refundable.</li>
+                </ul>
+            </div>
+        </div>
+        {% endif %}
     </div>
 
     <div class="mt-12 p-6 bg-yellow-50 rounded-lg border border-yellow-300">
         <label class="flex items-center gap-2">
             <input type="checkbox" id="ack" class="large-checkbox" />
-            <span data-lang="it" style="display: none;">Ho letto e compreso l'Informativa di Cancellazione e Scadenza.</span>
-            <span data-lang="en" style="display: none;">I have read and understood the Cancellation & Expiration Policy.</span>
+            <span>{% if lang == 'it' %}Ho letto e compreso l'Informativa di Cancellazione e Scadenza.{% else %}I have read and understood the Cancellation & Expiration Policy.{% endif %}</span>
         </label>
 
         <label class="block mt-4">
-            <span data-lang="it" style="display: none;">La tua Email:</span>
-            <span data-lang="en" style="display: none;">Your Email:</span>
+            <span>{% if lang == 'it' %}La tua Email:{% else %}Your Email:{% endif %}</span>
             <input type="email" id="userEmail" required class="mt-1 p-2 w-full max-w-sm rounded-md border border-gray-300" />
         </label>
 
         <button onclick="submitConfirmation()" disabled id="confirmBtn" class="mt-4 px-6 py-3 bg-gray-800 text-white border-none rounded-lg cursor-not-allowed">
-            <span data-lang="it" style="display: none;">Conferma</span>
-            <span data-lang="en" style="display: none;">Confirm</span>
+            <span>{% if lang == 'it' %}Conferma{% else %}Confirm{% endif %}</span>
         </button>
 
         <div id="confirmation-message" class="mt-4"></div>
     </div>
-</main>
+{% endblock content %}
 
-{% include 'app.js' %}
+{% block extra_scripts %}
+<script src="/static/app.js"></script>
 <script>
-    handlePageLoad();
+    // Questo script è una copia di quello in terms.html (è lo stesso)
+    const checkbox = document.getElementById("ack");
+    const button = document.getElementById("confirmBtn");
+
+    if (checkbox && button) {
+        checkbox.addEventListener("change", () => {
+            button.disabled = !checkbox.checked;
+            button.style.cursor = checkbox.checked ? "pointer" : "not-allowed";
+            document.getElementById("confirmation-message").innerHTML = '';
+        });
+    }
+
+    function showMessage(type) {
+        const messageBox = document.getElementById("confirmation-message");
+        const isEnglishPage = '{{ lang }}' === 'en';
+        
+        if (!messageBox) return;
+
+        if (type === 'success') {
+            messageBox.innerHTML = `<strong class="text-green-600">✅ Thank you for accepting the terms.</strong><br><em class="text-green-600">Grazie per aver accettato i termini.</em>`;
+        } else if (type === 'error') {
+            const errorMessage = isEnglishPage ? "❌ Please enter your email." : "❌ Per favore, inserisci la tua email.";
+            messageBox.innerHTML = `<strong class="text-red-600">${errorMessage}</strong>`;
+        } else if (type === 'info') {
+            const infoMessage = isEnglishPage ? "Submitting..." : "Invio in corso...";
+            messageBox.innerHTML = `<span class="text-blue-600">${infoMessage}</span>`;
+        }
+    }
+
+    window.submitConfirmation = function() {
+        const emailInput = document.getElementById("userEmail");
+        if (!emailInput || !emailInput.value) {
+            showMessage("error");
+            return;
+        }
+
+        showMessage("info");
+        button.disabled = true;
+
+        const data = new URLSearchParams();
+        data.append("email", emailInput.value);
+        data.append("name", "Policy Acceptance"); 
+
+        fetch("https://script.google.com/macros/s/AKfycby2NiEUTCFtaauYOnCcLYPkxP8Z4snv_1ZEGOYVbzs_GuTjiUC1KkzPDAw_RW6-l76_tg/exec", {
+            method: "POST",
+            body: data
+        })
+        .then(res => res.text())
+        .then(response => {
+            showMessage("success");
+            if(button) button.style.display = "none";
+            if(checkbox) checkbox.disabled = true;
+            if(emailInput) emailInput.disabled = true;
+        })
+        .catch(err => {
+            const isEnglishPage = '{{ lang }}' === 'en';
+            const errorMessage = isEnglishPage ? "Something went wrong: " + err : "Qualcosa è andato storto: " + err;
+            document.getElementById("confirmation-message").innerHTML = `<strong class="text-red-600">❌ ${errorMessage}</strong>`;
+            if(button) button.disabled = false;
+        });
+    }
 </script>
-{% include 'universal_footer_dual.html' %}
+{% endblock %}
