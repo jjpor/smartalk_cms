@@ -48,11 +48,12 @@ class TokenResponse(BaseModel):
 # -------------------------------------------------
 
 
-def create_jwt_token(user_id: str, email: str) -> str:
+def create_jwt_token(user_id: str, email: str, user_type: str) -> str:
     payload = {
         "sub": user_id,
         "email": email,
-        "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=7),
+        "user_type": user_type,
+        "exp": datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=1),
         "iat": datetime.datetime.now(datetime.timezone.utc),
     }
     return jwt.encode(payload, settings.JWT_SECRET, algorithm=settings.JWT_ALG)
@@ -79,12 +80,13 @@ async def get_current_user(request: Request):
     payload = decode_jwt_token(token)
     user_id = payload.get("sub")
     email = payload.get("email")
+    user_type = payload.get("user_type")
 
-    if not user_id or not email:
+    if not user_id or not email or not user_type:
         raise HTTPException(status_code=401, detail="Invalid token payload")
 
     user = await get_user_by_email(email, DBDependency)
-    if not user or user.get("id") != user_id:
+    if not user or user.get("id") != user_id or user.get("user_type") != user_type:
         raise HTTPException(status_code=401, detail="User not found")
 
     return user
@@ -107,7 +109,7 @@ async def signup(req: AuthRequest):
         raise HTTPException(status_code=400, detail="User already exists")
 
     user = await create_user_if_not_exists(email, req.name or email, req.password, DBDependency)
-    token = create_jwt_token(user.user_id, email)
+    token = create_jwt_token(user["id"], email, user["user_type"])
 
     return TokenResponse(
         access_token=token,
@@ -131,7 +133,7 @@ async def login(req: AuthRequest):
         if not verify_password(req.password, user["password_hash"]):
             raise HTTPException(status_code=404, detail="Wrong credentials.")
 
-    token = create_jwt_token(user["id"], email)
+    token = create_jwt_token(user["id"], email, user["user_type"])
     return TokenResponse(
         access_token=token,
         email=email,
@@ -164,7 +166,7 @@ async def login_with_google(req: GoogleLoginRequest):
         user = await create_user_if_not_exists(email, name, password, DBDependency)
         # TODO: invia email per fargli conoscere la sua password se vuole accedere in modo tradizionale
 
-    token = create_jwt_token(user["id"], email)
+    token = create_jwt_token(user["id"], email, user["user_type"])
 
     return TokenResponse(
         access_token=token,
