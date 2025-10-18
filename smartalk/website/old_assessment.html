@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment - Smartalk</title>
+    <!-- Favicon placeholder. Potrebbe essere necessario sostituirlo con il tuo file. -->
+    <link rel="icon" href="favicon-placeholder.ico" type="image/x-icon">
+    <!-- Importa i font Dosis e Montserrat -->
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;500;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <!-- Carica la libreria Tailwind CSS CDN per classi di utility -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Dosis', sans-serif;
+            font-size: 17px; 
+        }
+        .font-montserrat {
+            font-family: 'Montserrat', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <!-- Header fisso e responsivo -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-white shadow-md">
+        <!-- Riduco la padding verticale (da py-3 a py-2) per compensare l'altezza del logo -->
+        <nav class="container mx-auto px-4 sm:px-6 py-2 flex items-center justify-between">
+            <!-- Logo Smartalk ingrandito ulteriormente e reso cliccabile -->
+            <a href="https://www.smartalk.online/home">
+                <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756747292/smartalk_banner_ke1kkq.svg" alt="Logo Smartalk" class="h-10 sm:h-12">
+            </a>
+            
+            <!-- Menu di navigazione aggiornato con testo più grande -->
+            <ul class="flex items-center space-x-6 sm:space-x-8 text-base sm:text-lg">
+                <li><a href="https://www.smartalk.online/chi-siamo" class="font-semibold hover:text-blue-600 transition-colors duration-300">Chi siamo</a></li>
+                <li><a href="https://www.smartalk.online/home#contact" class="font-semibold hover:text-blue-600 transition-colors duration-300">Contatti</a></li>
+                <li><a href="https://www.smartalk.online/dashboard" class="hover:text-blue-600 transition-colors duration-300 font-semibold">Dashboard</a></li>
+                <!-- Icona per la lingua aggiornata -->
+                <li class="hidden sm:block">
+                    <div class="flex items-center space-x-1">
+                        <a href="https://www.smartalk.online/home" class="hover:text-blue-600 transition-colors duration-300">
+                            <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756760488/it_flag_icon_skdtam.png" alt="Bandiera Italiana" class="w-6 h-auto rounded-full">
+                        </a>
+                        <a href="https://www.smartalk.online/en-home" class="hover:text-blue-600 transition-colors duration-300">
+                            <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756760488/us_flag_icon_peihbg.png" alt="Bandiera Americana" class="w-6 h-auto rounded-full">
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenuto principale con il form di Google -->
+    <main class="container mx-auto px-4 py-8 sm:py-16 mt-[40px] sm:mt-[48px] max-w-6xl">
+        <div class="flex justify-center">
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfLx12gwposcwiu5aSohTIipSZE7HACMkkv8lW4zQbm9rJu0g/viewform?embedded=true" class="w-full" style="min-height: 1000px;" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+        </div>
+    </main>
+        <!-- Nuova fascia grigia per i link del footer, allineata con le sezioni interne del sito -->
+        <div class="bg-gray-50 py-6 -mx-4 sm:-mx-6">
+            <div class="flex justify-center space-x-8 text-sm sm:text-base font-semibold text-gray-600">
+                <a href="https://www.smartalk.online/terms" class="hover:text-blue-600 transition-colors duration-300">Termini e Condizioni</a>
+                <a href="https://www.smartalk.online/policy" class="hover:text-blue-600 transition-colors duration-300">Policy</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
