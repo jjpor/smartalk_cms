@@ -1,44 +1,49 @@
 <!DOCTYPE html>
 <html lang="{{ lang }}">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Smartalk{% endblock %}</title> 
+    <title>{% block title %}Smartalk{% endblock %}</title>
     <link rel="icon" href="/static/favicon-placeholder.ico" type="image/x-icon">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;500;600;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="/static/styles.css"> 
-    
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;500;600;700&family=Montserrat:wght@700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="/static/styles.css">
+
     <script src="https://cdn.tailwindcss.com"></script>
 
     {% block head_links %}{% endblock %}
-    
+
 </head>
+
 <body class="bg-gray-50 text-gray-800">
     {% include "_header.html" %}
 
-    <main class="container mx-auto px-4 sm:px-6 md:px-8 max-w-4xl mt-16">
-        {% block content %}{% endblock %}
-    </main>
+    {% block content %}{% endblock %}
 
     {% include "_footer.html" %}
 
+    <script src="/static/app.js"></script>
+
     {% block extra_scripts %}
-        <script>
-            // Logica per evidenziare il link di navigazione attivo
-            document.addEventListener('DOMContentLoaded', () => {
-                const currentPage = '{{ page_name }}';
-                const activeLink = document.getElementById(`nav-${currentPage}`);
-                if(activeLink) {
-                    const link = activeLink.querySelector('a');
-                    if(link) {
-                        link.classList.add('text-red-600');
-                        link.classList.remove('hover:text-blue-600');
-                    }
+    <script>
+        // Logica per evidenziare il link di navigazione attivo (lasciamo invariata)
+        document.addEventListener('DOMContentLoaded', () => {
+            const currentPage = '{{ page_name }}';
+            const activeLink = document.getElementById(`nav-${currentPage}`);
+            if (activeLink) {
+                const link = activeLink.querySelector('a');
+                if (link) {
+                    link.classList.add('text-red-600');
+                    link.classList.remove('hover:text-blue-600');
                 }
-            });
-        </script>
+            }
+        });
+    </script>
     {% endblock %}
 </body>
+
 </html>
