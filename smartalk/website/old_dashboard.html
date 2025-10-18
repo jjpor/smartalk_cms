@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Smartalk</title>
+    <!-- Favicon placeholder. Potrebbe essere necessario sostituirlo con il tuo file. -->
+    <link rel="icon" href="favicon-placeholder.ico" type="image/x-icon">
+    <!-- Importa il font Dosis -->
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;500;600;700&family=Segoe+UI:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <!-- Carica la libreria Tailwind CSS CDN per classi di utility -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Dosis', sans-serif;
+            font-size: 17px;
+        }
+        /* Stili aggiuntivi per il modulo di login forniti dall'utente */
+        #login_form {
+            background-color: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+            min-width: 320px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            max-width: 400px;
+            margin: 100px auto 0;
+            border: 2px solid #ef4444; /* Bordo rosso per il form di login */
+        }
+
+        #login_form h2 {
+            font-size: 22px;
+            margin: 0 0 25px 0;
+            text-align: center;
+            color: #333;
+        }
+
+        #login_form label {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+            font-size: 16px; /* Aumento la dimensione del font */
+            color: #333;
+        }
+
+        #login_form input {
+            margin-top: 5px;
+            padding: 8px 10px;
+            font-size: 16px; /* Aumento la dimensione del font */
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            transition: border-color 0.2s ease;
+        }
+
+        #login_form input:focus {
+            outline: none;
+            border-color: #00C4D5;
+        }
+        
+        /* Stile del bottone Log in */
+        #login_form button {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px; /* Aumento la dimensione del font */
+            border: 2px solid #ef4444; /* Bordo rosso */
+            border-radius: 6px;
+            background-color: transparent; /* Sfondo trasparente */
+            color: #ef4444; /* Testo rosso */
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-top: 15px;
+        }
+
+        #login_form button:hover {
+            background-color: #ef4444; /* Sfondo rosso al passaggio del mouse */
+            color: white; /* Testo bianco al passaggio del mouse */
+        }
+
+        #iframe_container {
+            width: 100%;
+            height: 100vh;
+            display: none;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Overlay loader */
+        #loaderOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            visibility: hidden;
+        }
+
+        /* Nuovo spinner con gradiente conico per la sfumatura di colore */
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: conic-gradient(#ef4444, #0090A0, #ef4444);
+            /* Crea l'effetto di un bordo colorato con un centro trasparente */
+            mask: radial-gradient(farthest-side, #0000 calc(100% - 6px), #000 0);
+            -webkit-mask: radial-gradient(farthest-side, #0000 calc(100% - 6px), #000 0);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Stile per il contenitore del form che permette lo scorrimento interno */
+        .form-container {
+            height: 1200px; /* Altezza fissa per il contenitore */
+            overflow-y: auto; /* Abilita lo scorrimento verticale solo per questo blocco */
+            max-width: 640px; /* Imposta una larghezza massima per il contenitore del form */
+            width: 100%; /* Rende il contenitore responsivo */
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <!-- Header fisso e responsivo -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-white shadow-md">
+        <!-- Riduco la padding verticale (da py-3 a py-2) per compensare l'altezza del logo -->
+        <nav class="container mx-auto px-4 sm:px-6 py-2 flex items-center justify-between">
+            <!-- Logo Smartalk ingrandito ulteriormente e reso cliccabile -->
+            <a href="https://www.smartalk.online/home">
+                <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756747292/smartalk_banner_ke1kkq.svg" alt="Logo Smartalk" class="h-10 sm:h-12">
+            </a>
+
+            <!-- Menu di navigazione aggiornato con testo più grande -->
+            <ul class="flex items-center space-x-6 sm:space-x-8 text-base sm:text-lg">
+                <li><a href="https://www.smartalk.online/chi-siamo" class="font-semibold hover:text-blue-600 transition-colors duration-300">Chi siamo</a></li>
+                <li><a href="https://www.smartalk.online/home#contact" class="font-semibold hover:text-blue-600 transition-colors duration-300">Contatti</a></li>
+                <li><a href="https://www.smartalk.online/dashboard" class="font-semibold text-red-600 transition-colors duration-300">Dashboard</a></li>
+                <li class="hidden sm:block">
+                    <div class="flex items-center space-x-1">
+                        <a href="https://www.smartalk.online/en-home" class="hover:text-blue-600 transition-colors duration-300">
+                            <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756760488/us_flag_icon_peihbg.png" alt="Bandiera Americana" class="w-6 h-auto rounded-full">
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenuto principale con il form di login -->
+    <main class="container mx-auto px-4 py-8 sm:py-16 mt-[40px] sm:mt-[48px] max-w-6xl">
+        <form id="login_form" class="flex flex-col items-center">
+            <h2>Access your dashboard</h2>
+            <label>
+                ID:
+                <input type="text" id="client_id_input" required />
+            </label>
+            <label>
+                Password:
+                <input type="password" id="password_input" required />
+            </label>
+            <button type="submit">Log in</button>
+            <!-- Messaggio di errore visibile solo se i campi sono vuoti -->
+            <p id="error_message" class="text-red-600 text-sm mt-4 text-center hidden">Per favore, compila entrambi i campi.</p>
+        </form>
+
+        <div id="loaderOverlay" style="visibility: hidden;">
+            <div class="spinner"></div>
+        </div>
+
+        <div id="iframe_container" style="display: none;"></div>
+
+        <script>
+            const form = document.getElementById('login_form');
+            const iframeContainer = document.getElementById('iframe_container');
+            const loaderOverlay = document.getElementById('loaderOverlay');
+            const errorMessage = document.getElementById('error_message');
+
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const rawClientId = document.getElementById('client_id_input').value.trim();
+                const password = document.getElementById('password_input').value.trim();
+
+                // Mostra un messaggio di errore se i campi sono vuoti
+                if (!rawClientId || !password) {
+                    errorMessage.classList.remove('hidden');
+                    return;
+                }
+                
+                // Nasconde il messaggio di errore se i campi sono compilati
+                errorMessage.classList.add('hidden');
+                
+                // Nascondi il form e mostra il loader
+                form.style.display = 'none';
+                loaderOverlay.style.visibility = 'visible';
+
+                const normalizedClientId = rawClientId.replace(".", "-").toUpperCase();
+                const baseUrl = "https://vercel-python-proxy.vercel.app/api?deployment_id=AKfycby2NiEUTCFtaauYOnCcLYPkxP8Z4snv_1ZEGOYVbzs_GuTjiUC1KkzPDAw_RW6-l76_tg";
+                const finalUrl = `${baseUrl}&client_id=${encodeURIComponent(normalizedClientId)}&password=${encodeURIComponent(password)}`;
+
+                const iframe = document.createElement('iframe');
+                iframe.src = finalUrl;
+                iframe.title = "Dashboard";
+
+                iframe.addEventListener('load', () => {
+                    loaderOverlay.style.visibility = 'hidden';
+                    iframeContainer.style.display = 'block';
+                });
+
+                iframeContainer.appendChild(iframe);
+            });
+        </script>
+        
+<div class="mt-16">
+    <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-8">
+        <a href="https://calendar.app.google/h8AvyhRdEKXTWdvD7" class="bg-white text-blue-600 border-2 border-blue-600 font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-blue-600 hover:text-white transition duration-300 w-full text-center sm:w-auto">Book with: JJ</a>
+        <a href="https://calendar.app.google/Ntdm8jBzR3YesREH8" class="bg-white text-blue-600 border-2 border-blue-600 font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-blue-600 hover:text-white transition duration-300 w-full text-center sm:w-auto">Book with: Elaina</a>
+        <a href="https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ3-5BB9abnDt9ijsBfRxhkHSlH-dES1URoQkszwgEG-e2TivvTAm0TY1jJX4bpjcDWep8GYOQFk" class="bg-white text-blue-600 border-2 border-blue-600 font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-blue-600 hover:text-white transition duration-300 w-full text-center sm:w-auto">Book with: Trina</a>
+    </div>
+</div>
+
+
+        <div class="mt-16 text-center">
+            <a href="https://www.smartalk.online/policy" class="bg-white text-red-600 border-2 border-red-600 font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-red-600 hover:text-white transition duration-300">Important: Smartalk Policy</a>
+        </div>
+        
+        <!-- Contenitore con scorrimento interno per il form -->
+        <div class="mt-16 flex flex-col items-center form-container mx-auto">
+            <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSejruqMbRqQERnUjZiOBKNYO-9Y1kbI14fRbkeIy4Le19smPw/viewform?embedded=true" width="640" height="100%" frameborder="0" marginheight="0" marginwidth="0">Caricamento…</iframe>
+        </div>
+    </main>
+
+        <!-- Nuova fascia grigia per i link del footer, allineata con le sezioni interne del sito -->
+        <div class="bg-gray-50 py-6 -mx-4 sm:-mx-6">
+            <div class="flex justify-center space-x-8 text-sm sm:text-base font-semibold text-gray-600">
+                <a href="https://www.smartalk.online/terms" class="hover:text-blue-600 transition-colors duration-300">Termini e Condizioni</a>
+                <a href="https://www.smartalk.online/policy" class="hover:text-blue-600 transition-colors duration-300">Policy</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

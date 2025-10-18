@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smartalk</title>
+    <!-- Favicon placeholder. Potrebbe essere necessario sostituirlo con il tuo file. -->
+    <link rel="icon" href="favicon-placeholder.ico" type="image/x-icon">
+    <!-- Importa il font Dosis dall'originale -->
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Carica la libreria Tailwind CSS CDN per classi di utility -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Dosis', sans-serif;
+            /* Nuova dimensione del font principale come richiesto */
+            font-size: 17px; 
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+    <!-- Header fisso e responsivo -->
+    <header class="fixed top-0 left-0 w-full z-50 bg-white shadow-md">
+        <!-- Riduco la padding verticale (da py-3 a py-2) per compensare l'altezza del logo -->
+        <nav class="container mx-auto px-4 sm:px-6 py-2 flex items-center justify-between">
+            <!-- Logo Smartalk ingrandito ulteriormente e reso cliccabile -->
+            <a href="https://www.smartalk.online/home">
+                <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756747292/smartalk_banner_ke1kkq.svg" alt="Logo Smartalk" class="h-10 sm:h-12">
+            </a>
+            
+            <!-- Menu di navigazione aggiornato con testo più grande e spaziatura ridotta sul mobile -->
+            <ul class="flex items-center space-x-4 sm:space-x-8 text-base sm:text-lg">
+                <li><a href="https://www.smartalk.online/chi-siamo" class="hover:text-blue-600 transition-colors duration-300 font-semibold">Chi siamo</a></li>
+                <!-- Il link "Contatti" ora gestito da JavaScript per scorrere correttamente -->
+                <li>
+                    <a href="#" id="contactLink" class="hover:text-blue-600 transition-colors duration-300 font-semibold">Contatti</a>
+                </li>
+                <!-- LINK ALLA DASHBOARD AGGIORNATO -->
+                <li><a href="https://www.smartalk.online/dashboard" class="hover:text-blue-600 transition-colors duration-300 font-semibold">Dashboard</a></li>
+                <!-- Icona per la lingua aggiornata -->
+                <li class="hidden sm:block">
+                    <a href="https://www.smartalk.online/en-home" class="hover:text-blue-600 transition-colors duration-300">
+                        <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756760488/us_flag_icon_peihbg.png" alt="Bandiera Americana" class="w-6 h-auto rounded-full">
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    
+    <!-- Banner immagine principale, ora cambia in base alla visualizzazione desktop o mobile -->
+    <section class="mt-[40px] sm:mt-[48px] h-[320px]">
+        <!-- Immagine desktop (visibile su schermi medi e più grandi) -->
+        <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756747304/smartalk_background_nuumy8.svg" alt="Banner Smartalk" class="w-full h-full object-cover hidden md:block">
+        <!-- IMMAGINE MOBILE AGGIORNATA -->
+        <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1757407945/smartalk_background_mobile_azrjbk.svg" alt="Banner Smartalk Mobile" class="w-full h-full object-cover block md:hidden">
+    </section>
+
+    <!-- Contenuto principale con effetto di rilievo, ora più ampio -->
+    <main class="container mx-auto px-8 md:px-16 py-8 max-w-6xl shadow-lg bg-white rounded-lg -mt-10 relative z-10">
+        <!-- Sezione "Chi siamo" -->
+        <section id="chi-siamo" class="mb-16">
+            <!-- Contenitore aggiunto per allineare la larghezza con la sezione di Giulia -->
+            <div class="max-w-2xl mx-auto">
+                <!-- Testo giustificato come richiesto -->
+                <p class="text-justify leading-relaxed mb-6">Smartalk è un progetto di English coaching pensato per chi vuole usare l’inglese come strumento di impatto e libertà, non come ostacolo.</p>
+                <p class="text-justify leading-relaxed">Con un team di professionisti madrelingua e bilingue, alleniamo imprenditori e professionisti italiani a comunicare in inglese con sicurezza, chiarezza e presenza, nei momenti che contano davvero: riunioni, presentazioni, viaggi di lavoro e interazioni internazionali.</p>
+            </div>
+        </section>
+
+        <!-- Lista di problemi comuni con immagine a sinistra -->
+        <section class="my-16 flex flex-col sm:flex-row items-center sm:items-center gap-2">
+            <!-- Contenitore dell'immagine aggiornato -->
+            <div class="w-full sm:w-1/2 flex justify-center sm:justify-end items-center">
+                <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756837353/home_1_checks_drtfed.svg" alt="Immagine di una checklist" class="w-full h-auto object-contain rounded-lg">
+            </div>
+            <!-- Lista spostata a destra con meno spazio tra le righe -->
+            <!-- Aggiunta spaziatura tra le righe come richiesto -->
+            <ul class="w-full sm:w-1/2 space-y-2 flex-shrink-0">
+                <li class="flex items-start">
+                    <span class="text-blue-600 mr-2 text-xl">✅</span>
+                    Ti fanno una domanda in inglese e rispondi “ehm… sorry?”
+                </li>
+                <li class="flex items-start">
+                    <span class="text-blue-600 mr-2 text-xl">✅</span>
+                    Ti ritrovi a tradurre mentalmente ogni frase prima di parlare
+                </li>
+                <li class="flex items-start">
+                    <span class="text-blue-600 mr-2 text-xl">✅</span>
+                    Hai paura di sembrare poco competente davanti a clienti stranieri
+                </li>
+                <li class="flex items-start">
+                    <span class="text-blue-600 mr-2 text-xl">✅</span>
+                    Ti preoccupi che il tuo accento possa farti sembrare meno professionale
+                </li>
+                <li class="flex items-start">
+                    <span class="text-blue-600 mr-2 text-xl">✅</span>
+                    Hai detto “I’m agree” a un cliente americano e non dormi da due settimane
+                </li>
+            </ul>
+        </section>
+
+        <!-- Sezione "A chi ci rivolgiamo" con layout invertito e font ridotto -->
+        <section id="a-chi-ci-rivolgiamo" class="my-16 flex flex-col sm:flex-row items-center sm:items-center gap-4">
+            <!-- Testo a sinistra (su desktop) -->
+            <div class="w-full sm:w-1/2">
+                <!-- Dimensione del font aggiornata a "text-xl" come richiesto -->
+                <h2 class="text-xl font-bold text-center mb-6">A chi ci rivolgiamo</h2>
+                <ul class="space-y-1">
+                    <li class="flex items-start">
+                        <span class="text-red-500 mr-2 text-xl">🔺</span>
+                        Imprenditori e professionisti che vogliono parlare inglese con sicurezza nei momenti chiave
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-red-500 mr-2 text-xl">🔺</span>
+                        Manager e team aziendali che comunicano con clienti e partner internazionali
+                    </li>
+                    <li class="flex items-start">
+                        <span class="text-red-500 mr-2 text-xl">🔺</span>
+                        Chi si sente bloccato, escluso o frustrato quando l’inglese entra in gioco
+                    </li>
+                </ul>
+            </div>
+            <!-- Immagine a destra (su desktop) -->
+            <div class="w-full sm:w-1/2 flex justify-center sm:justify-end items-center">
+                <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756837355/home_2_entrepreneurs_agrmiu.svg" alt="Immagine di imprenditori" class="w-full h-auto object-contain rounded-lg">
+            </div>
+        </section>
+
+        <!-- Bottone CTA per la call gratuita -->
+        <div class="flex justify-center my-16">
+            <!-- Dimensione del font aggiornata a "text-xl" come richiesto -->
+            <a href="https://calendar.app.google/KZN4qzSbTEiTw17x6" class="bg-red-600 hover:bg-red-700 transition-colors duration-300 text-white font-bold py-3 px-8 rounded-lg shadow-lg text-xl">
+                Prenota la tua call gratuita di 30'!
+            </a>
+        </div>
+        
+        <!-- Sezione su Giulia (JJ) aggiornata -->
+        <section class="my-16 max-w-4xl mx-auto">
+            <!-- Contenitore con layout flessibile -->
+            <div class="flex flex-col sm:flex-row items-center sm:items-center gap-4">
+                <!-- Contenitore Immagine, ridotto a un quarto della larghezza su schermi grandi -->
+                <div class="w-full sm:w-1/4 flex justify-center sm:justify-start">
+                    <!-- Dimensione dell'immagine ridotta con `max-w-[200px]` e `max-h-80` -->
+                    <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756748556/smartalk_profile_jj_home_yaswnv.svg" alt="Giulia JJ Smartalk" class="w-full h-auto object-cover rounded-lg shadow-lg max-w-[200px] max-h-80">
+                </div>
+                <!-- Contenitore Testo (allineato a sinistra) -->
+                <div class="w-full sm:w-3/4 flex-1 text-left">
+                    <!-- Dimensione del font aggiornata a "text-base" per coerenza -->
+                    <p class="text-base leading-relaxed">
+                        Sono Giulia, per tutti <strong>JJ</strong>.<br>
+                        Coach d’inglese dal 2018, con un background accademico in giurisprudenza.<br>
+                        Aiuto imprenditori e professionisti italiani a comunicare con sicurezza in inglese, anche sotto pressione.<br>
+                        Collaboro con coach madrelingua da Stati Uniti e Canada: niente inglese scolastico, solo quello che serve davvero.<br>
+                        Call internazionali, presentazioni, pitch, negoziazioni.<br>
+                        Lavoriamo su casi reali, con un approccio pratico e personalizzato.
+                    </p>
+                    <p class="font-bold text-red-700 mt-4">Allenamento strategico. Risultati concreti. Sicurezza vera.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Bottone CTA per il team, ora centrato e posizionato tra le sezioni -->
+        <div class="flex justify-center my-16">
+            <!-- L'URL del bottone è stato aggiornato come richiesto -->
+            <a href="https://www.smartalk.online/chi-siamo" class="bg-white text-red-600 border border-red-600 hover:bg-red-50 transition-colors duration-300 font-bold py-3 px-8 rounded-lg shadow-lg text-xl">
+                Scopri chi sono le coach di Smartalk
+            </a>
+        </div>
+        
+        <!-- Nuova sezione con separatore aggiornato -->
+        <div class="my-16">
+            <hr class="w-full sm:w-3/4 mx-auto border-t border-red-600 my-8">
+            <p class="text-center font-bold leading-loose px-4 sm:px-6 max-w-2xl mx-auto">
+                Un approccio su misura, senza materiali standard.<br>
+                Ogni lezione si costruisce attorno a te: il tuo stile, il tuo ritmo, i tuoi obiettivi.<br>
+                Lavoriamo con roleplay, feedback, stage training e real-life English: quello che si usa davvero in contesti professionali.<br>
+                <br>
+                <span class="text-red-700">Non è un corso. È un percorso. E lo costruiamo insieme.</span>
+            </p>
+            <hr class="w-full sm:w-3/4 mx-auto border-t border-red-600 my-8">
+        </div>
+
+        <!-- Sezione "Come lavoriamo" aggiornata -->
+        <section id="come-lavoriamo" class="my-16">
+            <!-- Dimensione del font aggiornata a "text-xl" come richiesto -->
+            <h2 class="text-xl font-bold text-center mb-6">Come lavoriamo</h2>
+            <!-- Nuovo contenitore per rendere il testo più stretto e centrato -->
+            <div class="max-w-2xl mx-auto">
+                <p class="mb-6 leading-relaxed">Ogni percorso è costruito su misura: niente materiali standard, niente programmi preconfezionati. Partiamo dai tuoi obiettivi, dal tuo ruolo e dalle situazioni reali in cui ti trovi a comunicare in inglese.</p>
+            </div>
+            <div>
+                <!-- Prima riga con immagine a sinistra -->
+                <div class="flex flex-col sm:flex-row items-center sm:items-center gap-4 mb-8">
+                    <div class="w-full sm:w-1/3 flex justify-center sm:justify-start flex-1">
+                        <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756837352/home_3_stage_tq30np.svg" alt="Immagine di un palco" class="w-full h-auto object-contain rounded-lg">
+                    </div>
+                    <ul class="w-full sm:w-2/3 space-y-2 flex-1">
+                        <li class="flex items-start">
+                            <span class="text-red-500 mr-2 text-xl">✓</span>
+                            <div>
+                                <!-- Font aumentato per il titolo come richiesto -->
+                                <strong class="text-lg">Percorsi 100% personalizzati</strong><br>
+                                Ogni sessione è pensata per te, non per un pubblico generico. Lavoriamo su ciò che ti serve oggi, non su un syllabus teorico.
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-500 mr-2 text-xl">✓</span>
+                            <div>
+                                <!-- Font aumentato per il titolo come richiesto -->
+                                <strong class="text-lg">Stage training e public speaking</strong><br>
+                                Ti prepariamo a parlare in inglese davanti a un pubblico, con tecniche pratiche per pitch, presentazioni e interventi in contesti formali.
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-500 mr-2 text-xl">✓</span>
+                            <div>
+                                <!-- Font aumentato per il titolo come richiesto -->
+                                <strong class="text-lg">Simulazioni realistiche</strong><br>
+                                Meeting, trattative, interviste, conference call: tutto viene simulato in roleplay, per aiutarti a gestire ogni situazione con scioltezza.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Seconda riga con immagine a destra -->
+                <div class="flex flex-col sm:flex-row-reverse items-center sm:items-center gap-4 mb-8">
+                    <div class="w-full sm:w-1/3 flex justify-center sm:justify-end flex-1">
+                        <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756837357/home_4_audience_cfeltd.svg" alt="Immagine di un pubblico" class="w-full h-auto object-contain rounded-lg">
+                    </div>
+                    <ul class="w-full sm:w-2/3 space-y-2 flex-1">
+                        <li class="flex items-start">
+                            <span class="text-red-500 mr-2 text-xl">✓</span>
+                            <div>
+                                <!-- Font aumentato per il titolo come richiesto -->
+                                <strong class="text-lg">Focus sull’inglese nordamericano</strong><br>
+                                Lavoriamo in collaborazione con coach madrelingua da Stati Uniti e Canada: l’inglese che usiamo è quello vero, parlato ogni giorno nel business.
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-500 mr-2 text-xl">✓</span>
+                            <div>
+                                <!-- Font aumentato per il titolo come richiesto -->
+                                <strong class="text-lg">Supporto concreto tra una lezione e l’altra</strong><br>
+                                Ricevi feedback mirati, esercizi personalizzati e training strategico per continuare a crescere anche fuori dalle sessioni.
+                            </div>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-red-500 mr-2 text-xl">✓</span>
+                            <div>
+                                <!-- Font aumentato per il titolo come richiesto -->
+                                <strong class="text-lg">Obiettivo finale: usare l’inglese, non solo conoscerlo</strong><br>
+                                Ti aiutiamo a superare blocchi, insicurezze e automatismi scolastici, per arrivare a parlare inglese in modo fluido, professionale e sicuro.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sezione dedicata al bottone del test, ora con lo stesso stile della sezione testuale -->
+        <section class="bg-gray-50 flex flex-col items-center text-center py-16 -mx-4 sm:-mx-6">
+            <p class="font-bold text-base mb-4">
+                Prova il nostro
+            </p>
+            <!-- L'URL del bottone è stato aggiornato come richiesto -->
+            <a href="https://www.smartalk.online/assessment" class="bg-red-600 hover:bg-red-700 transition-colors duration-300 text-white font-bold py-3 px-8 rounded-lg shadow-lg inline-block my-4 text-xl">
+                ENGLISH LEVEL ASSESSMENT
+            </a>
+            <p class="font-bold text-base mt-4">
+                per testare DAVVERO il tuo livello di inglese
+            </p>
+        </section>
+
+        <!-- Sezione Form di contatto. Ora tutta la sezione ha l'id 'contact'. -->
+        <section id="contact" class="my-16 max-w-xl mx-auto">
+            <!-- Font del testo sopra il form aumentato -->
+            <p class="text-center font-bold text-lg mb-8">Hai domande? Scrivici con il form o raggiungici sui nostri canali social!</p>
+            <!-- Aggiunta iframe per il Google Form -->
+            <div class="flex justify-center w-full">
+                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSeoJABna5-lBoLAhEABahwz_pc-jCtCDsgxELUsvV0l6S3lzw/viewform?embedded=true" class="w-full max-w-2xl h-[950px]" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
+            </div>
+            
+            <div class="flex justify-center space-x-4 mt-6">
+                <!-- Icone social aggiornate con bordi arrotondati -->
+                <a href="https://www.instagram.com/smartalk.online/" class="hover:opacity-80 transition-opacity duration-300">
+                    <div class="h-8 w-8 overflow-hidden rounded-md">
+                        <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756896977/social_ico_insta_jra8qi.svg" alt="Instagram" class="h-full w-full object-cover">
+                    </div>
+                </a>
+                <a href="https://www.facebook.com/smartalkonlinefb/" class="hover:opacity-80 transition-opacity duration-300">
+                    <div class="h-8 w-8 overflow-hidden rounded-md">
+                        <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756896977/social_ico_fb_gvsj66.svg" alt="Facebook" class="h-full w-full object-cover">
+                    </div>
+                </a>
+                <a href="https://www.linkedin.com/company/smartalk-online" class="hover:opacity-80 transition-opacity duration-300">
+                    <div class="h-8 w-8 overflow-hidden rounded-md">
+                        <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756896977/social_ico_ln_y5vkry.svg" alt="LinkedIn" class="h-full w-full object-cover">
+                    </div>
+                </a>
+                <a href="https://wa.me/393488140813?text=Hello%20Smartalk%20team%2C%20I%20would%20like%20to%20get%20in%20touch!" class="hover:opacity-80 transition-opacity duration-300">
+                    <div class="h-8 w-8 overflow-hidden rounded-md">
+                        <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756896977/social_ico_wha_oyil2s.svg" alt="WhatsApp" class="h-full w-full object-cover">
+                    </div>
+                </a>
+                <a href="mailto:info@smartalk.online" class="hover:opacity-80 transition-opacity duration-300">
+                    <div class="h-8 w-8 overflow-hidden rounded-md">
+                        <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756896977/social_ico_mail_qcbzv2.svg" alt="Email" class="h-full w-full object-cover">
+                    </div>
+                </a>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer a tutta larghezza con immagine affiliati e nuova sezione con link -->
+    <footer class="mt-16">
+        <!-- IMMAGINI RESPONSIVE DEL FOOTER AGGIORNATE -->
+        <!-- Immagine desktop (visibile su schermi medi e più grandi) -->
+        <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1757338327/smartalk_affiliates_xyn7be.svg" alt="Smartalk Affiliates" class="w-full h-auto hidden md:block">
+        <!-- Immagine mobile (visibile su schermi più piccoli) -->
+        <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1757407612/smartalk_affiliates_mobile_vp8vcp.svg" alt="Smartalk Affiliates Mobile" class="w-full h-auto block md:hidden">
+
+        <p class="text-right text-gray-400 pr-4 pt-2" style="font-size: 10px;">
+            * I loghi dei clienti sono mostrati a scopo illustrativo. Tutti i marchi sono di proprietà dei rispettivi titolari.
+        </p>
+        <!-- Nuova fascia grigia per i link del footer, allineata con le sezioni interne del sito -->
+        <div class="bg-gray-50 py-6 -mx-4 sm:-mx-6">
+            <div class="flex justify-center space-x-8 text-sm sm:text-base font-semibold text-gray-600">
+                <a href="https://www.smartalk.online/terms" class="hover:text-blue-600 transition-colors duration-300">Termini e Condizioni</a>
+                <a href="https://www.smartalk.online/policy" class="hover:text-blue-600 transition-colors duration-300">Policy</a>
+            </div>
+        </div>
+    </footer>
+    <script>
+        document.getElementById('contactLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
