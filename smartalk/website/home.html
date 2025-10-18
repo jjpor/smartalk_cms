@@ -1,6 +1,7 @@
-{% include 'base_styles.html' %}
+{% extends 'base_styles.html' %}
 {% include 'universal_header_dual.html' %}
 
+{% block main %}
 <div data-lang="it" style="display: none;">
     <section class="mt-[40px] sm:mt-[48px] h-[320px]">
         <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756747304/smartalk_background_nuumy8.svg" alt="Banner Smartalk" class="w-full h-full object-cover hidden md:block">
@@ -173,6 +174,7 @@
         </section>
     </main>
 </div>
+{% endblock %}
 
 {% include 'app.js' %}
 <script>

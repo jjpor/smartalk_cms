@@ -189,7 +189,7 @@ class Debrief(BaseModel):
 class ReportCard(BaseModel):
     report_date: date = Field(..., alias='Date')
     student_id: str = Field(..., alias='Student ID')
-    contract_id: str = Field(..., alias='Contract ID')
+    contract_id: str = Field(..., alias='Contract ID') # obbligatorio, se non c'é viene riscostruito dai dati sui contracts
     coach_id: str = Field(..., alias='Coach ID')
     attendance: Optional[str] = Field(None, alias='Attendance')
     report: Optional[str] = Field(None, alias='Report')
@@ -242,45 +242,67 @@ def to_dynamodb_item(item: Dict[str, Any]) -> Dict[str, Any]:
             final_item[key] = value
     return final_item
 
+key_map = {
+    "Coaches" : ["id"],
+    "Students": ["id"],
+    "Clients": ["id"],
+    "Products": ["product_id"],
+    "Contracts": ["contract_id"],
+    "Tracker": ["contract_id", "session_id"],
+    "Invoices": ["invoice_id"],
+    "Debriefs": ["student_id", "date"],
+    "Report Cards" : ["student_id", "report_id"]
+}
+
+user_class_map={
+    "Coaches": CoachUser, "Students": StudentUser, "Clients": ClientUser
+}
+user_type_map={
+    "Coaches": "coach", "Students": "student", "Clients": "company"
+}
+
 async def migrate_users(db: Any):
     table = await db.Table(settings.USERS_TABLE)
-    # Coaches
-    for row in await fetch_sheet_data("Coaches"):
-        try:
-            data = CoachUser.model_validate(row)
-            item = data.model_dump(by_alias=False, exclude={"password"})
-            item["user_type"] = "coach"
-            item["password_hash"] = hash_password(str(data.password))
-            await table.put_item(Item=to_dynamodb_item(item))
-        except ValidationError as e:
-            logger.warning(f"  -> Skipping invalid Coach row: {e} | Data: {row}")
-    # Students
-    for row in await fetch_sheet_data("Students"):
-        try:           
-            # not real error
-            if row.get('Password') == '' and row.get('Email') == '':
-                continue
-            data = StudentUser.model_validate(row)
-            item = data.model_dump(by_alias=False, exclude={"password"})
-            item["user_type"] = "student"
-            item["password_hash"] = hash_password(str(data.password))
-            await table.put_item(Item=to_dynamodb_item(item))
-        except ValidationError as e:
-            logger.warning(f"  -> Skipping invalid Student row: {e} | Data: {row}")
-    # Clients (Companies only)
-    for row in await fetch_sheet_data("Clients"):
-        try:
-            data = ClientUser.model_validate(row)
-            item = {
-                "id": data.id,
-                "name": data.name,
-                "user_type": "company",
-                "password_hash": hash_password(str(data.password))
-            }
-            await table.put_item(Item=to_dynamodb_item(item))
-        except ValidationError:
-            # Salta silenziosamente le righe che non sono "Company" (es. clienti individuali)
-            continue
+
+    for user_type in ["Coaches", "Students", "Clients"]:
+        # user_type
+        row_index = 2
+        for row in await fetch_sheet_data(user_type):
+            try:
+                # not real error
+                if user_type == "Students" and row.get('Password') == '' and row.get('Email') == '':
+                    continue
+                data = user_class_map[user_type].model_validate(row)
+                item = data.model_dump(by_alias=False, exclude={"password"})
+                item["user_type"] = user_type_map[user_type]
+                item["password_hash"] = hash_password(str(data.password))
+                key = None
+                if user_type in key_map:
+                    key = {k: item[k] for k in key_map[user_type]}
+                if key:
+                    previous_item_response = await table.get_item(Key=key)
+                    previous_item = previous_item_response.get('Item', None)
+                    if previous_item:
+                        logger.info(f"{user_type}, row_index: {row_index}")
+                        logger.info(f"Already inserted overwritten item {user_type}: {previous_item}")
+                    await table.put_item(Item=to_dynamodb_item(item))
+            except ValidationError as e:
+                logger.warning(f"  -> Skipping invalid {user_type} row {row_index}: {e} | Data: {row}")
+            row_index += 1
+            
+
+async def get_contract_id(db, student_id):
+    contract_table = await db.Table(settings.CONTRACTS_TABLE)
+    response = await contract_table.query(
+        IndexName="student-id-index",
+        KeyConditionExpression="student_id = :student_id",
+        ExpressionAttributeValues={":student_id": student_id},
+        Limit=1,
+    )
+    if 'Items' in response and len(response['Items']) > 0:
+        return response['Items'][0]['contract_id']
+    else:
+        return None
 
 async def migrate_generic(db: Any, table_name: str, sheet_name: str, model_cls: BaseModel, special_logic=None):
     table = await db.Table(table_name)
@@ -293,19 +315,26 @@ async def migrate_generic(db: Any, table_name: str, sheet_name: str, model_cls: 
             if sheet_name == "Debriefs" and (row.get("Coach ID") in ["", None] or row.get("Student ID") in ["", None]):
                 continue
 
+            if sheet_name == "Report Cards" and row.get("Contract ID") in ["", None]:
+                # prendere contract_id del primo contract in cui compare row['Student ID']
+                row["Contract ID"] = await get_contract_id(db, row['Student ID'])
+
             data = model_cls.model_validate(row)
             item = to_dynamodb_item(data.model_dump())
             if special_logic:
                 item = special_logic(item)
-            logger.info(f"{sheet_name}, row_index: {row_index}")
-            if sheet_name == "Debriefs":
-                previous_item_response = await table.get_item(Key={"student_id": item["student_id"], "date": item["date"]})
+            key = None
+            if sheet_name in key_map:
+                key = {k: item[k] for k in key_map[sheet_name]}
+            if key:
+                previous_item_response = await table.get_item(Key=key)
                 previous_item = previous_item_response.get('Item', None)
                 if previous_item:
-                    raise Exception(f"Already inserted: {previous_item}")
+                    logger.info(f"{sheet_name}, row_index: {row_index}")
+                    logger.info(f"Already inserted overwritten item {sheet_name}: {previous_item}")
             await table.put_item(Item=item)
         except Exception as e:
-            logger.warning(f"  -> Skipping invalid {sheet_name} row: {e} | Data: {row}")
+            logger.warning(f"  -> Skipping invalid {sheet_name} row {row_index}: {e} | Data: {row}")
         row_index += 1
 
 # ---
@@ -332,7 +361,7 @@ async def migrate_all_data(db: Any):
     
     def tracker_logic(item):
         item["date"] = item.pop("session_date")
-        item["session_id"] = f"{item['student_id']}#{item['date']}"
+        item["session_id"] = f"{item['coach_id']}#{item['student_id']}#{item['date']}"
         return item
     logger.info("\n--- Migrating Tracker ---")
     await migrate_generic(db, settings.TRACKER_TABLE, "Tracker", Tracker, special_logic=tracker_logic)
@@ -354,6 +383,7 @@ async def migrate_all_data(db: Any):
 
     def report_card_logic(item):
         item["date"] = item.pop("report_date")
+        item["report_id"] = f"{item['coach_id']}#{item['contract_id']}#{item['date']}"
         return item
     logger.info("\n--- Migrating Report Cards ---")
     await migrate_generic(db, settings.REPORT_CARDS_TABLE, "Report Cards", ReportCard, special_logic=report_card_logic)

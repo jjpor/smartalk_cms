@@ -8,7 +8,7 @@ from passlib.context import CryptContext
 
 from smartalk.core.settings import settings
 
-logger = logging.Logger("Auth")
+logger = logging.getLogger("Auth")
 
 # Contesto per l'hashing delle password. Usiamo bcrypt, lo standard moderno.
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

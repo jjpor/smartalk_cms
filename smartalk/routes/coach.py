@@ -56,7 +56,7 @@ class CallLogRequest(BaseModel):
 class DebriefSubmitRequest(BaseModel):
     coach_id: str
     student_id: str
-    date: Optional[datetime.datetime] = None
+    date: datetime.date
     goals: str = ""
     topics: str = ""
     grammar: str = ""
@@ -69,6 +69,7 @@ class DebriefSubmitRequest(BaseModel):
 class ReportCardSubmitRequest(BaseModel):
     student_id: str
     contract_id: str
+    date: datetime.date
     coach_id: str
     attendance: str
     report: str
@@ -160,7 +161,7 @@ async def log_call(data: CallLogRequest, db: Any = DBDependency):
     tracker_table = await db.Table(settings.TRACKER_TABLE)
     try:
         for student_id in data.student_ids:
-            session_id = f"{student_id}#{data.call_date.isoformat()}"
+            session_id = f"{data.coach_id}#{student_id}#{data.call_date.isoformat()}"
             item = {
                 'contract_id': data.contract_id,
                 'session_id': session_id,
@@ -197,8 +198,8 @@ async def get_monthly_earnings(coach_id: str, db: Any = DBDependency):
 async def submit_debrief(data: DebriefSubmitRequest, db: Any = DBDependency):
     """Salva un debrief."""
     table = await db.Table(settings.DEBRIEFS_TABLE)
-    item_date = data.date or datetime.datetime.now()
-    item = data.dict()
+    item_date = data.date
+    item = data.model_dump()
     item['date'] = item_date.isoformat()
     
     try:
@@ -212,10 +213,11 @@ async def submit_debrief(data: DebriefSubmitRequest, db: Any = DBDependency):
 async def submit_report_card(data: ReportCardSubmitRequest, db: Any = DBDependency):
     """Salva una report card."""
     table = await db.Table(settings.REPORT_CARDS_TABLE)
-    date_key = datetime.date.today().isoformat()
-    item = data.dict()
+    date_key = data.date.isoformat()
+    item = data.model_dump()
     item['date'] = date_key
     item['sent'] = False
+    item["report_id"] = f"{item['coach_id']}#{item['contract_id']}#{item['date']}"
     
     try:
         await table.put_item(Item=item)

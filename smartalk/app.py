@@ -2,9 +2,8 @@ import asyncio
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.staticfiles import StaticFiles
 
 # Importa i componenti chiave
 from smartalk.core.dynamodb import AWS_EGRESS_DB_COUNTER_BYTES, get_dynamodb_resource_context
@@ -37,10 +36,11 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# --- MONTAGGIO FILE STATICI ---
-# Questo serve tutti i file (CSS, JS, immagini) direttamente dalla cartella 'website'
-# Qualsiasi richiesta a /static/... verrà cercata in website/...
-app.mount("/static", StaticFiles(directory="smartalk/website"), name="website")
+# every not defined path
+@app.exception_handler(404)
+async def custom_404_handler(request: Request,_):
+    return await website.get_no_handled_path(request)
+
 
 # --- 2. CONFIGURAZIONE CORS ---
 # Definisci quali origini (frontend) possono chiamare le tue API
@@ -50,15 +50,14 @@ origins = [
     "http://127.0.0.1",
     "http://127.0.0.1:8000",
     "http://smartalk.online"
-    # Aggiungi qui l'URL del tuo sito in produzione se necessario
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"], # Permette tutti i metodi (GET, POST, etc.)
-    allow_headers=["*"], # Permette tutti gli header
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # --- INCLUSIONE ROUTERS ---
@@ -86,7 +85,19 @@ async def migration():
 # test see data ENDPOINTS
 # -------------------------------------------------
 
-
+@app.get("/test_gsi")
+async def test_gsi(student_id):
+    db_context_manager = get_dynamodb_resource_context()
+    async with db_context_manager as db:  
+        contract_table = await db.Table(settings.CONTRACTS_TABLE)
+        response = await contract_table.query(
+            IndexName="student-id-index",
+            KeyConditionExpression="student_id = :student_id",
+            ExpressionAttributeValues={":student_id": student_id},
+            Limit=1,
+        )
+        contract_id = response['Items'][0]['contract_id']
+        return contract_id
 
 # Mappa per mappare i nomi brevi ai nomi completi delle tabelle
 TABLE_MAP = {

@@ -1,9 +1,11 @@
-import os
-from fastapi import APIRouter, HTTPException
-from starlette.responses import FileResponse, RedirectResponse
+import logging
 
-# Definiamo il percorso della cartella 'website' in modo robusto
-WEBSITE_DIR = os.path.join(os.path.dirname(__file__), "..", "website")
+from fastapi import APIRouter, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from starlette.staticfiles import StaticFiles
+
+logger = logging.getLogger('Website')
 
 router = APIRouter(tags=["Website"])
 
@@ -16,28 +18,41 @@ pages = {
     "content": "content/content.html",  # Aggiunta la nuova pagina
 }
 
-@router.get("/{lang}/{page_name}", response_class=FileResponse)
-async def get_website_page(lang: str, page_name: str):
+# --- MONTAGGIO FILE STATICI ---
+# Questo serve tutti i file (CSS, JS, immagini) direttamente dalla cartella 'website'
+# Qualsiasi richiesta a /static/... verrà cercata in website/...
+router.mount("/static", StaticFiles(directory="smartalk/website"), name="website")
+
+# --- MONTAGGIO FILE DINAMICI ---
+# templates dinamici sotto la cartella smartalk/website
+templates = Jinja2Templates(directory="smartalk/website")
+
+
+###########################################################
+
+##################### IMPORTANTISSIMO ################
+
+# PER CHATGPT: Usare logiche di templating strutturate come da documentazione:
+#### https://tedboy.github.io/jinja2/templ9.html#base-template ###
+
+###########################################################
+
+async def get_no_handled_path(request: Request):
+    return templates.TemplateResponse(request=request, name="404.html")
+
+@router.get("/{lang}/{page_name}", response_class=HTMLResponse)
+async def get_website_page(request: Request, lang: str, page_name: str):
     """
     Serve le pagine principali del sito web (es. /it/home, /en/about).
     La logica della lingua è gestita dal JavaScript sul client.
     """
-    if page_name not in pages or lang not in ['it', 'en']:
-        raise HTTPException(status_code=404, detail="Page not found")
 
     # Serve sempre il file HTML unificato, indipendentemente dalla lingua
     file_name = pages[page_name]
-    file_path = os.path.join(WEBSITE_DIR, file_name)
 
-    if not os.path.exists(file_path):
-        raise HTTPException(status_code=404, detail=f"File '{file_name}' not found")
+    # template engine
+    return templates.TemplateResponse(request=request, name=file_name)
 
-    return FileResponse(file_path)
-
-@router.get("/", response_class=RedirectResponse, include_in_schema=False)
-async def get_homepage_redirect():
-    """
-    Redirect dalla root '/' alla homepage in italiano per comodità.
-    L'URL /it/home caricherà comunque il file unificato home.html.
-    """
-    return RedirectResponse(url="/it/home")
+@router.get("/", response_class=HTMLResponse)
+async def get_homepage_redirect(request: Request):
+    return await get_website_page(request, "it", "home")

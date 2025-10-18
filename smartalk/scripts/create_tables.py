@@ -94,7 +94,9 @@ async def _create_invoices_table(db, table_name) -> None:
     await db.create_table(
         TableName=table_name,
         BillingMode="PAY_PER_REQUEST",
-        KeySchema=[{"AttributeName": "invoice_id", "KeyType": "HASH"}],
+        KeySchema=[
+            {"AttributeName": "invoice_id", "KeyType": "HASH"}
+        ],
         AttributeDefinitions=[
             {"AttributeName": "invoice_id", "AttributeType": "S"},
             {"AttributeName": "client_id", "AttributeType": "S"},
@@ -112,7 +114,7 @@ async def _create_tracker_table(db, table_name) -> None:
     """
     Tabella Tracker (tracciamento sessioni).
     - PK (composita): contract_id (HASH) + session_id (RANGE)
-    - La Sort Key 'session_id' è una chiave composita (es. "STUDENT_ID#ISO_DATE")
+    - La Sort Key 'session_id' è una chiave composita (es. "COACH_ID#STUDENT_ID#ISO_DATE")
       per garantire l'unicità di ogni sessione, anche in lezioni di gruppo.
     - I GSI servono per access patterns alternativi (query per studente o per coach).
     """
@@ -151,18 +153,23 @@ async def _create_tracker_table(db, table_name) -> None:
     )
 
 async def _create_report_cards_table(db, table_name) -> None:
-    """Tabella Report Cards (pagelle)."""
+    """Tabella Report Cards (pagelle).
+        report_id = coach_id#contract_id#date
+
+        contract_id serve solo per recuperare l'email referente 
+    """
     await db.create_table(
         TableName=table_name,
         BillingMode="PAY_PER_REQUEST",
         KeySchema=[
-            {"AttributeName": "contract_id", "KeyType": "HASH"},
-            {"AttributeName": "date", "KeyType": "RANGE"},
+            {"AttributeName": "student_id", "KeyType": "HASH"},
+            {"AttributeName": "report_id", "KeyType": "RANGE"},
         ],
         AttributeDefinitions=[
-            {"AttributeName": "contract_id", "AttributeType": "S"},
+            {"AttributeName": "report_id", "AttributeType": "S"},
             {"AttributeName": "date", "AttributeType": "S"},
             {"AttributeName": "student_id", "AttributeType": "S"},
+            {"AttributeName": "coach_id", "AttributeType": "S"},
         ],
         GlobalSecondaryIndexes=[
             {
@@ -172,7 +179,15 @@ async def _create_report_cards_table(db, table_name) -> None:
                     {"AttributeName": "date", "KeyType": "RANGE"},
                 ],
                 "Projection": {"ProjectionType": "KEYS_ONLY"},
-            }
+            },
+            {
+                "IndexName": "coach-id-date-index",
+                "KeySchema": [
+                    {"AttributeName": "coach_id", "KeyType": "HASH"},
+                    {"AttributeName": "date", "KeyType": "RANGE"},
+                ],
+                "Projection": {"ProjectionType": "KEYS_ONLY"},
+            },
         ],
     )
 
