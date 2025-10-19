@@ -1,11 +1,12 @@
 import datetime
 import uuid
-from typing import Optional
+from typing import Any, Dict, Optional
 
 import google.auth.transport.requests
 import google.oauth2.id_token
 import jwt
 from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, EmailStr
 
 from smartalk.core.dynamodb import get_dynamodb_connection
@@ -17,7 +18,7 @@ from smartalk.db_usage.dynamodb_auth import (
     verify_password,
 )
 
-router = APIRouter(prefix="/auth", tags=["auth"])
+router = APIRouter(prefix="/api/auth", tags=["auth"])
 
 # Uso della Dependency Injection per ottenere la connessione resiliente
 DBDependency = Depends(get_dynamodb_connection)
@@ -70,7 +71,7 @@ def decode_jwt_token(token: str) -> dict:
 
 async def get_current_user(request: Request):
     """
-    Dipendenza FastAPI per ottenere l’utente autenticato dal JWT.
+    Dipendenza FastAPI per ottenere l'utente autenticato dal JWT.
     """
     auth_header = request.headers.get("Authorization")
     if not auth_header or not auth_header.startswith("Bearer "):
@@ -91,6 +92,30 @@ async def get_current_user(request: Request):
 
     return user
 
+# ====================================================================
+# UTILITY PER IL REFRESH E RISPOSTA
+# ====================================================================
+
+def create_token_response(data: Any, user_data: Dict[str, Any]) -> JSONResponse:
+    """
+    Crea una JSONResponse, aggiungendo un nuovo token nell'header X-New-Auth-Token.
+    Utilizza i campi 'id', 'email', 'user_type' dall'oggetto utente completo.
+    """
+    user_id = user_data.get("id")
+    email = user_data.get("email")
+    user_type = user_data.get("user_type")
+
+    if not user_id or not email or not user_type:
+        raise HTTPException(status_code=500, detail="Internal error: User data missing fields for token refresh.")
+
+    # Emettiamo un nuovo token utilizzando la firma esatta di create_jwt_token
+    new_token = create_jwt_token(user_id, email, user_type)
+    
+    response = JSONResponse(
+        content={"success": True, **data},
+        headers={"X-New-Auth-Token": new_token}
+    )
+    return response
 
 # -------------------------------------------------
 # AUTH ENDPOINTS
@@ -121,7 +146,7 @@ async def signup(req: AuthRequest):
 @router.post("/login", response_model=TokenResponse)
 async def login(req: AuthRequest):
     """
-    Login classico basato su email (senza password per ora).
+    Login classico basato su email e password.
     """
     email = normalize_email(req.email)
     user = await get_user_by_email(email, DBDependency)

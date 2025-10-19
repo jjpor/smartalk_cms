@@ -1,227 +1,213 @@
-import datetime
-import logging
-from decimal import Decimal
-from typing import Any, List, Optional
+# smartalk/routes/coach.py
 
-from boto3.dynamodb.conditions import Attr, Key
-from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel, Field
+from typing import Any, Dict, List
+
+from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi.responses import JSONResponse
 
 from smartalk.core.dynamodb import get_dynamodb_connection
 from smartalk.core.settings import settings
+from smartalk.db_usage import dynamodb_coach as db_ops
+from smartalk.routes.auth import create_token_response, get_current_user
 
-# --- IMPOSTAZIONI INIZIALI ---
-router = APIRouter(prefix="/coach", tags=["coach"])
-DBDependency = Depends(get_dynamodb_connection)
-logger = logging.getLogger("coach_routes")
+router = APIRouter(tags=["Coach Dashboard"], prefix="/api/coach")
 
+# ====================================================================
+# DEFINIZIONE DELLE DIPENDENZE DELLE TABELLE
+# ====================================================================
 
-# -------------------------------------------------
-# 1. MODELLI PYDANTIC (Data Shapes)
-# -------------------------------------------------
-class Student(BaseModel):
-    id: str
-    name: str
-    surname: str
+def get_specific_table(table_name: str):
+    """Factory che crea una dependency per iniettare una Tabella specifica."""
+    async def _get_table_dependency():
+        # Chiama la funzione di connessione con il nome della tabella desiderata
+        return await get_dynamodb_connection(table_name)
+    # L'oggetto restituito è una Dependency, non la Tabella stessa
+    return Depends(_get_table_dependency)
 
-class ProductRate(BaseModel):
-    head_coach: Decimal = Field(..., alias="Head Coach")
-    senior_coach: Decimal = Field(..., alias="Senior Coach")
-    junior_coach: Decimal = Field(..., alias="Junior Coach")
+# Dependency Factory: Usiamo i nomi delle tabelle da settings
+DBUsers = get_specific_table(settings.USERS_TABLE)
+DBTracker = get_specific_table(settings.TRACKER_TABLE)
+DBReportCards = get_specific_table(settings.REPORT_CARDS_TABLE)
+DBDebriefs = get_specific_table(settings.DEBRIEFS_TABLE)
+# Flashcards: assumiamo che il nome sia qui
+DBFlashcards = get_specific_table(settings.FLASHCARDS_TABLE) 
 
-class Product(BaseModel):
-    product_id: str
-    product_name: str
-    duration: int
-    participants: int
-    rates: ProductRate
+# ====================================================================
+# VALIDAZIONE TIPO UTENTE (Dependency)
+# ====================================================================
+async def validate_coach_access(user: Dict[str, Any] = Depends(get_current_user)) -> Dict[str, Any]:
+    """Verifica che l'utente loggato sia di tipo 'coach' e restituisce l'oggetto utente completo."""
+    if user.get('user_type') != 'coach':
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Accesso riservato ai coach")
+    return user
 
-class Contract(BaseModel):
-    contract_id: str
-    product_id: str
-    left_calls: Optional[int] = None
-    unlimited: bool = False
-    product: Product
+# ====================================================================
+# GET ENDPOINTS 
+# ====================================================================
 
-class CallLogRequest(BaseModel):
-    coach_id: str
-    product_id: str
-    contract_id: Optional[str] = None
-    student_ids: List[str]
-    call_date: datetime.date
-    call_duration: int
-    attendance: str = "YES"
-    notes: Optional[str] = ""
-
-class DebriefSubmitRequest(BaseModel):
-    coach_id: str
-    student_id: str
-    date: datetime.date
-    goals: str = ""
-    topics: str = ""
-    grammar: str = ""
-    vocabulary: str = ""
-    pronunciation: str = ""
-    other: str = ""
-    homework: str = ""
-    draft: bool = True
-
-class ReportCardSubmitRequest(BaseModel):
-    student_id: str
-    contract_id: str
-    date: datetime.date
-    coach_id: str
-    attendance: str
-    report: str
-
-# -------------------------------------------------
-# 2. FUNZIONI DI SERVIZIO (Interazione con DB)
-# -------------------------------------------------
-
-async def get_active_students_from_db(db) -> List[Student]:
-    table = await db.Table(settings.USERS_TABLE)
-    response = await table.query(
-        IndexName='user-type-index',
-        KeyConditionExpression=Key('user_type').eq('student'),
-        FilterExpression=Attr('status').eq('Active')
-    )
-    students = response.get("Items", [])
-    # Filtra per assicurarsi che gli studenti abbiano un ID
-    return [Student(id=s['id'], name=s.get('name', ''), surname=s.get('surname', '')) for s in students if 'id' in s]
-
-
-async def get_student_contracts_from_db(student_id: str, db) -> List[Contract]:
-    contracts_table = await db.Table(settings.CONTRACTS_TABLE)
-    products_table = await db.Table(settings.PRODUCTS_TABLE)
-
-    response = await contracts_table.query(
-        IndexName='student-id-index',
-        KeyConditionExpression=Key('student_id').eq(student_id),
-        FilterExpression=Attr('status').eq('Active')
-    )
-    contracts_data = response.get("Items", [])
-    if not contracts_data:
-        return []
-
-    product_ids = list(set([c['product_id'] for c in contracts_data]))
-    products_response = await products_table.scan(
-        FilterExpression=Attr('product_id').is_in(product_ids)
-    )
-    products_map = {p['product_id']: p for p in products_response.get("Items", [])}
-
-    result = []
-    for c in contracts_data:
-        prod_id = c['product_id']
-        product_details = products_map.get(prod_id)
-        if product_details:
-            product = Product(
-                product_id=prod_id,
-                product_name=product_details.get('product_name', prod_id),
-                duration=int(product_details.get('duration', 60)),
-                participants=int(product_details.get('participants', 1)),
-                rates=product_details.get('rates', {})
-            )
-            contract = Contract(
-                contract_id=c['contract_id'],
-                product_id=prod_id,
-                left_calls=c.get('left_calls'),
-                unlimited=c.get('unlimited', False),
-                product=product
-            )
-            result.append(contract)
-    return result
-
-# -------------------------------------------------
-# 3. ROTTE API (Endpoints)
-# -------------------------------------------------
-
-@router.get("/students", response_model=List[Student])
-async def get_students(db: Any = DBDependency):
-    """Restituisce una lista di tutti gli studenti attivi."""
-    try:
-        return await get_active_students_from_db(db)
-    except Exception as e:
-        logger.error(f"Error in get_students: {e}")
-        raise HTTPException(status_code=500, detail="Internal Server Error")
-
-@router.get("/student/{student_id}/contracts", response_model=List[Contract])
-async def get_student_contracts(student_id: str, db: Any = DBDependency):
-    """Restituisce i contratti attivi per un singolo studente."""
-    if not student_id:
-        raise HTTPException(status_code=400, detail="student_id is required")
-    try:
-        return await get_student_contracts_from_db(student_id, db)
-    except Exception as e:
-        logger.error(f"Error in get_student_contracts: {e}")
-        raise HTTPException(status_code=500, detail="Internal Server Error")
-
-@router.post("/log-call")
-async def log_call(data: CallLogRequest, db: Any = DBDependency):
-    """Registra una nuova chiamata nel tracker."""
-    tracker_table = await db.Table(settings.TRACKER_TABLE)
-    try:
-        for student_id in data.student_ids:
-            session_id = f"{data.coach_id}#{student_id}#{data.call_date.isoformat()}"
-            item = {
-                'contract_id': data.contract_id,
-                'session_id': session_id,
-                'student_id': student_id,
-                'coach_id': data.coach_id,
-                'product_id': data.product_id,
-                'date': data.call_date.isoformat(),
-                'duration': data.call_duration,
-                'attendance': data.attendance,
-                'notes': data.notes,
-            }
-            await tracker_table.put_item(Item=item)
-        return {"success": True, "message": "Call logged successfully."}
-    except Exception as e:
-        logger.error(f"Error in log_call: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-@router.get("/{coach_id}/monthly-earnings")
-async def get_monthly_earnings(coach_id: str, db: Any = DBDependency):
-    """Calcola i guadagni del coach nel mese corrente."""
-    today = datetime.date.today()
-    start_of_month = today.replace(day=1).isoformat()
+@router.get("/getStudents")
+async def get_students_endpoint(
+    user_data: Dict[str, Any] = Depends(validate_coach_access),
+    db_users: Any = DBUsers # USERS TABLE
+) -> JSONResponse:
+    """Replica doGet(action='getStudents')."""
     
-    table = await db.Table(settings.TRACKER_TABLE)
-    response = await table.query(
-        IndexName='coach-id-date-index',
-        KeyConditionExpression=Key('coach_id').eq(coach_id) & Key('date').gte(start_of_month)
-    )
-    items = response.get("Items", [])
-    total_earnings = sum(item.get('coach_rate', Decimal(0)) for item in items)
-    return {"success": True, "earnings": total_earnings}
-
-@router.post("/submit-debrief")
-async def submit_debrief(data: DebriefSubmitRequest, db: Any = DBDependency):
-    """Salva un debrief."""
-    table = await db.Table(settings.DEBRIEFS_TABLE)
-    item_date = data.date
-    item = data.model_dump()
-    item['date'] = item_date.isoformat()
+    coach_id = user_data.get("id") 
+    students_data = db_ops.get_active_students(db_users, coach_id) # Passo db_users
     
-    try:
-        await table.put_item(Item=item)
-        return {"success": True, "message": "Debrief saved."}
-    except Exception as e:
-        logger.error(f"Error in submit_debrief: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+    return create_token_response({"students": students_data}, user_data)
 
-@router.post("/submit-report-card")
-async def submit_report_card(data: ReportCardSubmitRequest, db: Any = DBDependency):
-    """Salva una report card."""
-    table = await db.Table(settings.REPORT_CARDS_TABLE)
-    date_key = data.date.isoformat()
-    item = data.model_dump()
-    item['date'] = date_key
-    item['sent'] = False
-    item["report_id"] = f"{item['coach_id']}#{item['contract_id']}#{item['date']}"
+
+@router.get("/getMonthlyEarnings")
+async def get_earnings_endpoint(
+    user_data: Dict[str, Any] = Depends(validate_coach_access),
+    db_tracker: Any = DBTracker # TRACKER TABLE
+) -> JSONResponse:
+    """Replica doGet(action='getMonthlyEarnings' e 'getCallHistory')."""
     
-    try:
-        await table.put_item(Item=item)
-        return {"success": True, "message": "Report card saved."}
-    except Exception as e:
-        logger.error(f"Error in submit_report_card: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
+    coach_id = user_data.get("id")
+    earnings = db_ops.get_monthly_earnings(db_tracker, coach_id) # Passo db_tracker
+    history = db_ops.get_call_history(db_tracker, coach_id)       # Passo db_tracker
+    
+    return create_token_response({"earnings": earnings, "history": history}, user_data)
+
+
+@router.get("/getStudentInfo")
+async def get_student_info_endpoint(
+    studentId: str = Query(..., description="ID dello studente"),
+    user_data: Dict[str, Any] = Depends(validate_coach_access),
+    db_users: Any = DBUsers # USERS TABLE
+) -> JSONResponse:
+    """Replica doGet(action='getStudentInfo')."""
+    
+    info = db_ops.get_student_info(db_users, studentId) # Passo db_users
+    if not info:
+        raise HTTPException(status_code=404, detail="Student not found")
+        
+    return create_token_response({"studentInfo": info}, user_data)
+
+@router.get("/getReportCardTasks")
+async def get_report_card_tasks_endpoint(
+    user_data: Dict[str, Any] = Depends(validate_coach_access),
+    db_tracker: Any = DBTracker # TRACKER TABLE
+) -> JSONResponse:
+    """Replica doGet(action='getReportCardTasks')."""
+    
+    coach_id = user_data.get("id")
+    tasks = db_ops.get_report_card_tasks_db(db_tracker, coach_id) # Passo db_tracker
+    
+    return create_token_response(tasks, user_data)
+
+@router.get("/getFlashcards")
+async def get_flashcards_endpoint(
+    studentId: str = Query(..., description="ID dello studente"),
+    user_data: Dict[str, Any] = Depends(validate_coach_access),
+    db_flashcards: Any = DBFlashcards # FLASHCARDS TABLE
+) -> JSONResponse:
+    """Replica doGet(action='getFlashcards')."""
+    
+    cards = db_ops.get_flashcards(db_flashcards, studentId) # Passo db_flashcards
+    
+    return create_token_response({"cards": cards}, user_data)
+
+@router.get("/getLessonPlanContent")
+async def get_lesson_plan_content_endpoint(
+    studentId: str = Query(..., description="ID dello studente"),
+    user_data: Dict[str, Any] = Depends(validate_coach_access),
+    db_users: Any = DBUsers # USERS TABLE
+) -> JSONResponse:
+    """Replica doGet(action='getLessonPlanContent')."""
+    
+    content = db_ops.get_lesson_plan_content_db(db_users, studentId) # Passo db_users
+    if not content:
+        raise HTTPException(status_code=404, detail="Lesson Plan not found")
+    return create_token_response({"content": content}, user_data)
+
+# ====================================================================
+# POST ENDPOINTS 
+# ====================================================================
+
+@router.post("/logCall")
+async def log_call_endpoint(
+    data: Dict[str, Any],
+    user_data: Dict[str, Any] = Depends(validate_coach_access),
+    db_tracker: Any = DBTracker # TRACKER TABLE
+) -> JSONResponse:
+    """Replica doPost(action='logCall')."""
+    
+    data["coachId"] = user_data.get("id") 
+    data["role"] = user_data.get("role", "Senior Coach")
+
+    result = db_ops.log_call_to_db(db_tracker, data) # Passo db_tracker
+    
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail=result.get("error"))
+    
+    return create_token_response({"message": result.get("message", "Chiamata registrata!")}, user_data)
+
+
+@router.post("/saveDebrief")
+async def save_debrief_endpoint(
+    data: Dict[str, Any],
+    user_data: Dict[str, Any] = Depends(validate_coach_access),
+    db_debriefs: Any = DBDebriefs # DEBRIEFS TABLE
+) -> JSONResponse:
+    """Replica doPost(action='saveDebrief')."""
+    
+    data["coachId"] = user_data.get("id") 
+    
+    result = db_ops.handle_debrief_submission_db(db_debriefs, data) # Passo db_debriefs
+    
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail=result.get("error"))
+        
+    return create_token_response(result, user_data)
+
+
+@router.post("/submitReportCard")
+async def submit_report_card_endpoint(
+    data: Dict[str, Any],
+    user_data: Dict[str, Any] = Depends(validate_coach_access),
+    db_reports: Any = DBReportCards # REPORT_CARDS TABLE
+) -> JSONResponse:
+    """Replica doPost(action='submitReportCard')."""
+    
+    data["coachId"] = user_data.get("id")
+    
+    result = db_ops.handle_report_card_submission(db_reports, data) # Passo db_reports
+    
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail=result.get("error"))
+        
+    return create_token_response(result, user_data)
+
+
+@router.post("/updateFlashcardStatus")
+async def update_flashcard_status_endpoint(
+    data: Dict[str, Any],
+    user_data: Dict[str, Any] = Depends(validate_coach_access),
+    db_flashcards: Any = DBFlashcards # FLASHCARDS TABLE
+) -> JSONResponse:
+    """Replica doPost(action='updateFlashcardStatus')."""
+    
+    result = db_ops.update_flashcard_status(db_flashcards, data) # Passo db_flashcards
+    
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail=result.get("error"))
+        
+    return create_token_response(result, user_data)
+
+@router.post("/saveLessonPlanContent")
+async def save_lesson_plan_content_endpoint(
+    data: Dict[str, Any],
+    user_data: Dict[str, Any] = Depends(validate_coach_access),
+    db_users: Any = DBUsers # USERS TABLE
+) -> JSONResponse:
+    """Replica doPost(action='saveLessonPlanContent')."""
+    
+    result = db_ops.save_lesson_plan_content_db(db_users, data.get('studentId'), data.get('content')) # Passo db_users
+    
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail=result.get("error"))
+        
+    return create_token_response(result, user_data)

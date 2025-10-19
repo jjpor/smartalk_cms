@@ -249,28 +249,126 @@ function formatLessonPlan(plainText) {
 
     return html;
 }
+// ====================================================================
+// GESTIONE DEL TOKEN (Client-Side)
+// ====================================================================
 
-// API helpers
+const TOKEN_STORAGE_KEY = "smartalk_auth_token";
+const TOKEN_REFRESH_HEADER = "X-New-Auth-Token"; 
+
+function getAuthToken() {
+    return localStorage.getItem(TOKEN_STORAGE_KEY);
+}
+
+function setAuthToken(token) {
+    if (token) {
+        localStorage.setItem(TOKEN_STORAGE_KEY, token);
+    } else {
+        localStorage.removeItem(TOKEN_STORAGE_KEY);
+    }
+}
+
+/**
+ * Controlla la risposta API e aggiorna il token se presente nell'header custom.
+ */
+function checkAndRefreshAuthToken(res) {
+    const newToken = res.headers.get(TOKEN_REFRESH_HEADER);
+    if (newToken) {
+        setAuthToken(newToken);
+        console.log("JWT token refreshed successfully.");
+    }
+}
+
+// ====================================================================
+// API HELPERS AGGIORNATI (apiGet / apiPost)
+// ====================================================================
+
+/**
+ * Esegue una richiesta GET autenticata al router coach.
+ */
 async function apiGet(action, params = {}) {
-  const url = new URL("/" + action);
-  url.searchParams.set("_ts", Date.now()); // avoid browser caching
-  Object.entries(params).forEach(([k, v]) => {
-    if (v !== undefined && v !== null) url.searchParams.set(k, v);
-  });
-  const res = await fetch(url.toString());
-  if (!res.ok) throw new Error(`GET /${action} failed: ${res.status}`);
-  return res.json();
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error("Missing token for authenticated request. Please log in.");
+    }
+    
+    // Prefisso: /api/coach/
+    const url = new URL("/api/coach/" + action, window.location.origin);
+    url.searchParams.set("_ts", Date.now()); 
+    Object.entries(params).forEach(([k, v]) => {
+        if (v !== undefined && v !== null) url.searchParams.set(k, v);
+    });
+
+    const headers = {
+        "Authorization": `Bearer ${token}`, 
+    };
+
+    const res = await fetch(url.toString(), { headers });
+    
+    if (res.status === 401 || res.status === 403) {
+        setAuthToken(null); 
+        throw new Error(`Authentication failed: ${res.status}. Session expired.`);
+    }
+    if (!res.ok) {
+        const errorBody = await res.json().catch(() => ({ detail: res.statusText }));
+        throw new Error(`GET /${action} failed: ${res.status} - ${errorBody.detail}`);
+    }
+    
+    checkAndRefreshAuthToken(res);
+    
+    return res.json();
 }
 
+/**
+ * Esegue una richiesta POST autenticata (o di login).
+ */
 async function apiPost(action, body = {}) {
-  const res = await fetch("/" + action, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({...body})
-  });
-  if (!res.ok) throw new Error(`POST /${action} failed: ${res.status}`);
-  return res.json();
+    const token = getAuthToken();
+    const isLogin = action === 'login';
+    const urlPath = isLogin ? "/api/auth/login" : "/api/coach/" + action;
+
+    const headers = {
+        "Content-Type": "application/json",
+    };
+    
+    if (!isLogin) {
+        if (!token) {
+            throw new Error("Missing token for authenticated request. Please log in.");
+        }
+         headers["Authorization"] = `Bearer ${token}`;
+    }
+
+    const res = await fetch(urlPath, {
+        method: "POST",
+        headers: headers,
+        body: JSON.stringify({...body})
+    });
+
+    if (res.status === 401 || res.status === 403) {
+        setAuthToken(null); 
+        throw new Error(`Authentication failed: ${res.status}. Session expired.`);
+    }
+    if (!res.ok) {
+        const errorBody = await res.json().catch(() => ({ detail: res.statusText }));
+        throw new Error(`POST /${action} failed: ${res.status} - ${errorBody.detail}`);
+    }
+    
+    checkAndRefreshAuthToken(res);
+
+    if (isLogin) {
+        const jsonResponse = await res.json();
+        if (jsonResponse.success && jsonResponse.token) {
+            setAuthToken(jsonResponse.token);
+        }
+        return jsonResponse;
+    }
+
+    return res.json();
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log("Smartalk API Helpers with strict JWT management initialized.");
+});
 
 // --- Load Students Dropdown
 async function loadStudentsDropdown() {
