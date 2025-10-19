@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}
+{% if lang == 'it' %}Assessment - Smartalk{% else %}Assessment - Smartalk{% endif %}
+{% endblock %}
+
+{% block content %}
+<main class="container mx-auto px-4 py-8 sm:py-16 mt-[40px] sm:mt-[48px] max-w-6xl">
+    <div class="flex justify-center">
+        <iframe
+            src="https://docs.google.com/forms/d/e/1FAIpQLSfLx12gwposcwiu5aSohTIipSZE7HACMkkv8lW4zQbm9rJu0g/viewform?embedded=true"
+            class="w-full" style="min-height: 1000px;" frameborder="0" marginheight="0" marginwidth="0">
+            Loading…
+        </iframe>
+    </div>
+</main>
+{% endblock content %}

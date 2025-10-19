@@ -1,57 +1,22 @@
 {% extends "base.html" %}
 
 {% block title %}
-    {% if lang == 'it' %}Policy | Smartalk{% else %}Policy | Smartalk{% endif %}
+{% if lang == 'it' %}Policy di Cancellazione{% else %}Cancellation Policy{% endif %} - Smartalk
 {% endblock %}
 
 {% block content %}
-    <header class="text-center">
-        {% if lang == 'it' %}
-        <h1 id="main-title" class="text-center mb-2 text-3xl sm:text-4xl">Accordo Mutuo per il Completamento del Corso</h1>
-        <div id="main-subtitle" class="subtitle text-center mb-8 text-lg">Etica per la buona riuscita del percorso di apprendimento</div>
-        {% else %}
-        <h1 id="main-title" class="text-center mb-2 text-3xl sm:text-4xl">Mutual Agreement for the Completion of the Course</h1>
-        <div id="main-subtitle" class="subtitle text-center mb-8 text-lg">Ethics for the successful completion of the learning path</div>
-        {% endif %}
-    </header>
+<main class="container mx-auto px-4 sm:px-6 md:px-8 max-w-4xl py-16 mt-16">
+    <h1 class="text-center mb-2 text-3xl sm:text-4xl">
+        {% if lang == 'it' %}Accordo reciproco per il completamento del corso{% else %}Mutual Agreement for the
+        Completion of the Course{% endif %}
+    </h1>
+    <div class="subtitle text-center mb-8 text-lg">{% if lang == 'it' %}Etica per la buona riuscita del percorso di
+        apprendimento{% else %}Etica per la buona riuscita del percorso di apprendimento{% endif %}</div>
 
-    <h2 class="text-center text-2xl sm:text-3xl mt-12 mb-6 border-b-2 border-gray-300 pb-2 font-bold">1:1 Lessons</h2>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {% if lang == 'it' %}
         <div class="bg-white p-6 rounded-xl shadow-lg">
-            <div class="item">
-                <h3 class="text-xl font-bold mb-1">Riprogrammazione</h3>
-                <ul class="list-disc pl-5">
-                    <li>Consentita se almeno 24 ore prima.</li>
-                    <li>Nel corso della stessa settimana.</li>
-                    <li>Coach può rifiutarsi se impossibilitato (in questo caso rimando a Cancellazione).</li>
-                </ul>
-            </div>
-            <div class="item mt-6">
-                <h3 class="text-xl font-bold mb-1">Cancellazione</h3>
-                <ul class="list-disc pl-5">
-                    <li>Consentita se almeno 24 ore prima.</li>
-                    <li>Entro le 24 ore precedenti la call si considera avvenuta.</li>
-                </ul>
-            </div>
-            <div class="item mt-6">
-                <h3 class="text-xl font-bold mb-1">Ritardo</h3>
-                <ul class="list-disc pl-5">
-                    <li><strong class="font-bold">Coach avvisato</strong>: attesa max 30’ (60’) o 15’ (30’).</li>
-                    <li><strong class="font-bold">Coach non avvisato</strong>: attesa max 15’ (60’) o 7’ (30’).</li>
-                </ul>
-            </div>
-            <div class="item mt-6">
-                <h3 class="text-xl font-bold mb-1">Scadenza</h3>
-                <ul class="list-disc pl-5">
-                    <li>Il coach informerà del numero massimo di settimane per completare il corso.</li>
-                    <li>Fattore massimo di ritardo: 1,7 (es. 10 lezioni = max 17 settimane).</li>
-                    <li>Il corso scaduto si considera completato, non rimborsabile.</li>
-                </ul>
-            </div>
-        </div>
-        {% else %}
-        <div class="bg-white p-6 rounded-xl shadow-lg">
+            <h2 class="text-center text-2xl sm:text-3xl mt-2 mb-6 border-b-2 border-gray-300 pb-2 font-bold">1:1 Lessons
+            </h2>
             <div class="item">
                 <h3 class="text-xl font-bold mb-1">Rescheduling</h3>
                 <ul class="list-disc pl-5">
@@ -70,62 +35,23 @@
             <div class="item mt-6">
                 <h3 class="text-xl font-bold mb-1">Delay</h3>
                 <ul class="list-disc pl-5">
-                    <li><strong class="font-bold">Coach notified in advance</strong>: max wait is 30’ (60’) or 15’ (30’).</li>
+                    <li><strong class="font-bold">Coach notified in advance</strong>: max wait is 30’ (60’) or 15’
+                        (30’).</li>
                     <li><strong class="font-bold">Coach not notified</strong>: max wait is 15’ (60’) or 7’ (30’).</li>
                 </ul>
             </div>
             <div class="item mt-6">
                 <h3 class="text-xl font-bold mb-1">Expiration</h3>
                 <ul class="list-disc pl-5">
-                    <li>Coach (or referent) will inform the student of the max number of weeks to complete the course.</li>
+                    <li>Coach (or referent) will inform the student of the max number of weeks to complete the course.
+                    </li>
                     <li>Max delay factor is 1.7 (e.g. 10 calls = max 17 weeks from the first session).</li>
                     <li>The expired course is considered done and is non-refundable.</li>
                 </ul>
             </div>
-        </div>
-        {% endif %}
-    </div>
 
-    <h2 class="text-center text-2xl sm:text-3xl mt-12 mb-6 border-b-2 border-gray-300 pb-2 font-bold">Group Lessons</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {% if lang == 'it' %}
-        <div class="bg-white p-6 rounded-xl shadow-lg">
-            <div class="item">
-                <h3 class="text-xl font-bold mb-1">Riprogrammazione</h3>
-                <ul class="list-disc pl-5">
-                    <li>Non applicabile se almeno uno studente desidera partecipare.</li>
-                    <li>Consentita se almeno 24 ore prima.</li>
-                    <li>Nel corso della stessa settimana.</li>
-                    <li>Coach può rifiutarsi se impossibilitato (in questo caso rimando a Cancellazione).</li>
-                </ul>
-            </div>
-            <div class="item mt-6">
-                <h3 class="text-xl font-bold mb-1">Cancellazione</h3>
-                <ul class="list-disc pl-5">
-                    <li>Non applicabile se almeno uno studente desidera partecipare.</li>
-                    <li>Consentita se almeno 24 ore prima.</li>
-                    <li>Entro le 24 ore precedenti la call si considera avvenuta.</li>
-                </ul>
-            </div>
-            <div class="item mt-6">
-                <h3 class="text-xl font-bold mb-1">Ritardo</h3>
-                <ul class="list-disc pl-5">
-                    <li>Nessun partecipante e coach avvisato: attesa max 30’ (60’) o 15’ (30’).</li>
-                    <li>Nessun partecipante e coach non avvisato: attesa max 15’ (60’) o 7’ (30’).</li>
-                    <li>Almeno un partecipante presente: la call procede normalmente.</li>
-                </ul>
-            </div>
-            <div class="item mt-6">
-                <h3 class="text-xl font-bold mb-1">Scadenza</h3>
-                <ul class="list-disc pl-5">
-                    <li>Il coach informerà delle tempistiche massime per completare il corso.</li>
-                    <li>Fattore massimo di ritardo: 1,7 (es. 10 lezioni = max 17 settimane).</li>
-                    <li>Il corso scaduto si considera completato e non rimborsabile.</li>
-                </ul>
-            </div>
-        </div>
-        {% else %}
-        <div class="bg-white p-6 rounded-xl shadow-lg">
+            <h2 class="text-center text-2xl sm:text-3xl mt-12 mb-6 border-b-2 border-gray-300 pb-2 font-bold">Group
+                Lessons</h2>
             <div class="item">
                 <h3 class="text-xl font-bold mb-1">Rescheduling</h3>
                 <ul class="list-disc pl-5">
@@ -160,91 +86,162 @@
                 </ul>
             </div>
         </div>
-        {% endif %}
+
+        <div class="bg-white p-6 rounded-xl shadow-lg">
+            <h2 class="text-center text-2xl sm:text-3xl mt-2 mb-6 border-b-2 border-gray-300 pb-2 font-bold">Lezioni 1:1
+            </h2>
+            <div class="item">
+                <h3 class="text-xl font-bold mb-1">Riprogrammazione</h3>
+                <ul class="list-disc pl-5">
+                    <li>Consentita se almeno 24 ore prima.</li>
+                    <li>Nel corso della stessa settimana.</li>
+                    <li>Coach può rifiutarsi se impossibilitato (in questo caso rimando a Cancellazione).</li>
+                </ul>
+            </div>
+            <div class="item mt-6">
+                <h3 class="text-xl font-bold mb-1">Cancellazione</h3>
+                <ul class="list-disc pl-5">
+                    <li>Consentita se almeno 24 ore prima.</li>
+                    <li>Entro le 24 ore precedenti la call si considera avvenuta.</li>
+                </ul>
+            </div>
+            <div class="item mt-6">
+                <h3 class="text-xl font-bold mb-1">Ritardo</h3>
+                <ul class="list-disc pl-5">
+                    <li><strong class="font-bold">Coach avvisato</strong>: attesa max 30’ (60’) o 15’ (30’).</li>
+                    <li><strong class="font-bold">Coach non avvisato</strong>: attesa max 15’ (60’) o 7’ (30’).</li>
+                </ul>
+            </div>
+            <div class="item mt-6">
+                <h3 class="text-xl font-bold mb-1">Scadenza</h3>
+                <ul class="list-disc pl-5">
+                    <li>Il coach informerà del numero massimo di settimane per completare il corso.</li>
+                    <li>Fattore massimo di ritardo: 1,7 (es. 10 lezioni = max 17 settimane).</li>
+                    <li>Il corso scaduto si considera completato, non rimborsabile.</li>
+                </ul>
+            </div>
+
+            <h2 class="text-center text-2xl sm:text-3xl mt-12 mb-6 border-b-2 border-gray-300 pb-2 font-bold">Lezioni di
+                Gruppo</h2>
+            <div class="item">
+                <h3 class="text-xl font-bold mb-1">Riprogrammazione</h3>
+                <ul class="list-disc pl-5">
+                    <li>Non applicabile se almeno uno studente desidera partecipare.</li>
+                    <li>Consentita se almeno 24 ore prima.</li>
+                    <li>Nel corso della stessa settimana.</li>
+                    <li>Coach può rifiutarsi se impossibilitato (in questo caso rimando a Cancellazione).</li>
+                </ul>
+            </div>
+            <div class="item mt-6">
+                <h3 class="text-xl font-bold mb-1">Cancellazione</h3>
+                <ul class="list-disc pl-5">
+                    <li>Non applicabile se almeno uno studente desidera partecipare.</li>
+                    <li>Consentita se almeno 24 ore prima.</li>
+                    <li>Entro le 24 ore precedenti la call si considera avvenuta.</li>
+                </ul>
+            </div>
+            <div class="item mt-6">
+                <h3 class="text-xl font-bold mb-1">Ritardo</h3>
+                <ul class="list-disc pl-5">
+                    <li>Nessun partecipante e coach avvisato: attesa max 30’ (60’) o 15’ (30’).</li>
+                    <li>Nessun partecipante e coach non avvisato: attesa max 15’ (60’) o 7’ (30’).</li>
+                    <li>Almeno un partecipante presente: la call procede normalmente.</li>
+                </ul>
+            </div>
+            <div class="item mt-6">
+                <h3 class="text-xl font-bold mb-1">Scadenza</h3>
+                <ul class="list-disc pl-5">
+                    <li>Il coach informerà delle tempistiche massime per completare il corso.</li>
+                    <li>Fattore massimo di ritardo: 1,7 (es. 10 lezioni = max 17 settimane).</li>
+                    <li>Il corso scaduto si considera completato e non rimborsabile.</li>
+                </ul>
+            </div>
+        </div>
     </div>
 
     <div class="mt-12 p-6 bg-yellow-50 rounded-lg border border-yellow-300">
         <label class="flex items-center gap-2">
             <input type="checkbox" id="ack" class="large-checkbox" />
-            <span>{% if lang == 'it' %}Ho letto e compreso l'Informativa di Cancellazione e Scadenza.{% else %}I have read and understood the Cancellation & Expiration Policy.{% endif %}</span>
+            <span>
+                {% if lang == 'it' %}Ho letto e compreso la Policy di Cancellazione e Scadenza.{% else %}I have read and
+                understood the Cancellation & Expiration Policy.{% endif %}
+            </span>
         </label>
 
         <label class="block mt-4">
             <span>{% if lang == 'it' %}La tua Email:{% else %}Your Email:{% endif %}</span>
-            <input type="email" id="userEmail" required class="mt-1 p-2 w-full max-w-sm rounded-md border border-gray-300" />
+            <input type="email" id="userEmail" required
+                class="mt-1 p-2 w-full max-w-sm rounded-md border border-gray-300" />
         </label>
 
-        <button onclick="submitConfirmation()" disabled id="confirmBtn" class="mt-4 px-6 py-3 bg-gray-800 text-white border-none rounded-lg cursor-not-allowed">
-            <span>{% if lang == 'it' %}Conferma{% else %}Confirm{% endif %}</span>
+        <button onclick="submitConfirmation()" disabled id="confirmBtn"
+            class="mt-4 px-6 py-3 bg-gray-800 text-white border-none rounded-lg cursor-not-allowed">
+            {% if lang == 'it' %}Conferma{% else %}Confirm{% endif %}
         </button>
 
         <div id="confirmation-message" class="mt-4"></div>
     </div>
+</main>
 {% endblock content %}
 
 {% block extra_scripts %}
-<script src="/static/app.js"></script>
 <script>
-    // Questo script è una copia di quello in terms.html (è lo stesso)
     const checkbox = document.getElementById("ack");
     const button = document.getElementById("confirmBtn");
 
-    if (checkbox && button) {
-        checkbox.addEventListener("change", () => {
-            button.disabled = !checkbox.checked;
-            button.style.cursor = checkbox.checked ? "pointer" : "not-allowed";
-            document.getElementById("confirmation-message").innerHTML = '';
-        });
-    }
+    checkbox.addEventListener("change", () => {
+        button.disabled = !checkbox.checked;
+        button.style.cursor = checkbox.checked ? "pointer" : "not-allowed";
+    });
 
-    function showMessage(type) {
+    function showMessage(message, type) {
         const messageBox = document.getElementById("confirmation-message");
-        const isEnglishPage = '{{ lang }}' === 'en';
-        
-        if (!messageBox) return;
-
         if (type === 'success') {
-            messageBox.innerHTML = `<strong class="text-green-600">✅ Thank you for accepting the terms.</strong><br><em class="text-green-600">Grazie per aver accettato i termini.</em>`;
+            messageBox.innerHTML = `<strong class="text-green-600">✅ Thank you for accepting the policy.</strong><br><em class="text-green-600">Grazie per aver accettato l'informativa.</em>`;
         } else if (type === 'error') {
-            const errorMessage = isEnglishPage ? "❌ Please enter your email." : "❌ Per favore, inserisci la tua email.";
-            messageBox.innerHTML = `<strong class="text-red-600">${errorMessage}</strong>`;
+            const errorMessage = "{% if lang == 'it' %}Per favore, inserisci la tua email.{% else %}Please enter your email.{% endif %}";
+            const genericError = "{% if lang == 'it' %}Qualcosa è andato storto: {{err}}{% else %}Something went wrong: {{err}}{% endif %}";
+            messageBox.innerHTML = `<strong class="text-red-600">❌ ${message === "Please enter your email." ? errorMessage : genericError}</strong>`;
         } else if (type === 'info') {
-            const infoMessage = isEnglishPage ? "Submitting..." : "Invio in corso...";
-            messageBox.innerHTML = `<span class="text-blue-600">${infoMessage}</span>`;
+            const infoMessage = "{% if lang == 'it' %}Invio in corso...{% else %}Submitting...{% endif %}";
+            messageBox.innerHTML = `<span class="text-blue-600">${message === "Submitting..." ? infoMessage : message}</span>`;
         }
     }
 
-    window.submitConfirmation = function() {
-        const emailInput = document.getElementById("userEmail");
-        if (!emailInput || !emailInput.value) {
-            showMessage("error");
+    function submitConfirmation() {
+        const emailInput = document.getElementById("userEmail").value;
+        if (!emailInput) {
+            showMessage("Please enter your email.", "error");
             return;
         }
 
-        showMessage("info");
+        showMessage("Submitting...", "info");
         button.disabled = true;
 
         const data = new URLSearchParams();
-        data.append("email", emailInput.value);
-        data.append("name", "Policy Acceptance"); 
+        data.append("email", emailInput);
+        data.append("name", ""); // optional
 
         fetch("https://script.google.com/macros/s/AKfycby2NiEUTCFtaauYOnCcLYPkxP8Z4snv_1ZEGOYVbzs_GuTjiUC1KkzPDAw_RW6-l76_tg/exec", {
             method: "POST",
             body: data
         })
-        .then(res => res.text())
-        .then(response => {
-            showMessage("success");
-            if(button) button.style.display = "none";
-            if(checkbox) checkbox.disabled = true;
-            if(emailInput) emailInput.disabled = true;
-        })
-        .catch(err => {
-            const isEnglishPage = '{{ lang }}' === 'en';
-            const errorMessage = isEnglishPage ? "Something went wrong: " + err : "Qualcosa è andato storto: " + err;
-            document.getElementById("confirmation-message").innerHTML = `<strong class="text-red-600">❌ ${errorMessage}</strong>`;
-            if(button) button.disabled = false;
-        });
+            .then(res => res.text())
+            .then(response => {
+                showMessage("", "success");
+                button.style.display = "none";
+                checkbox.disabled = true;
+                document.getElementById("userEmail").disabled = true;
+            })
+            .catch(err => {
+                showMessage(`Something went wrong: ${err}`, "error");
+                button.disabled = false;
+            });
     }
+
+    // Custom style for the checkbox to make it larger (from old_policy.html)
+    const style = document.createElement('style');
+    style.innerHTML = '.large-checkbox { transform: scale(1.5); }';
+    document.head.appendChild(style);
 </script>
-{% endblock %}
+{% endblock extra_scripts %}

@@ -11,9 +11,16 @@
         href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;500;600;700&family=Montserrat:wght@700&display=swap"
         rel="stylesheet">
 
+    <script src="https://cdn.tailwindcss.com"></script>
+
     <link rel="stylesheet" href="/static/styles.css">
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Dosis', sans-serif;
+            font-size: 17px;
+        }
+    </style>
 
     {% block head_links %}{% endblock %}
 
@@ -30,7 +37,7 @@
 
     {% block extra_scripts %}
     <script>
-        // Logica per evidenziare il link di navigazione attivo (lasciamo invariata)
+        // Logica per evidenziare il link di navigazione attivo
         document.addEventListener('DOMContentLoaded', () => {
             const currentPage = '{{ page_name }}';
             const activeLink = document.getElementById(`nav-${currentPage}`);
