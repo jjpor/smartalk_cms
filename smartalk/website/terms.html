@@ -1,173 +1,173 @@
 {% extends "base.html" %}
 
 {% block title %}
-    {% if lang == 'it' %}Termini e Condizioni | Smartalk{% else %}Terms and Conditions | Smartalk{% endif %}
+{% if lang == 'it' %}Termini e Condizioni{% else %}Terms and Conditions{% endif %} - Smartalk
 {% endblock %}
 
 {% block content %}
-    <h1 id="main-title" class="text-center mb-8 text-3xl sm:text-4xl">
+<main class="container mx-auto px-4 sm:px-6 md:px-8 max-w-4xl py-16 mt-16">
+    <h1 class="text-center mb-8 text-3xl sm:text-4xl">
         {% if lang == 'it' %}Termini e Condizioni{% else %}Terms and Conditions{% endif %}
     </h1>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {% if lang == 'it' %}
-        <div class="bg-white p-6 rounded-xl shadow-lg">
-            <h2 class="text-xl font-bold mb-4">VERSIONE ITALIANA</h2>
-            <p><strong>Ultimo aggiornamento:</strong> Settembre 9, 2025</p>
-            <p class="mt-4">Benvenuto su Smartalk. Accedendo, prenotando o acquistando i nostri servizi, l’utente accetta di essere vincolato dai presenti Termini e Condizioni. Questi Termini si applicano a tutti i clienti e hanno lo scopo di garantire chiarezza, correttezza e utilizzo appropriato dei nostri servizi.</p>
-            
-            <h3 class="font-bold text-lg mt-6">1. Servizi offerti</h3>
-            <p class="mt-2">Smartalk fornisce servizi di coaching e formazione in lingua inglese, erogati online e rivolti a imprenditori, professionisti e studenti di ESL. I nostri coach sono esperti e guidano i clienti attraverso un processo strutturato e personalizzato. Pur impegnandoci a garantire la massima qualità e supporto, il raggiungimento dei risultati dipende dall’impegno, dalla partecipazione e dalla costante del cliente. Smartalk non rilascia certificazioni ufficiali e non garantisce il conseguimento di obiettivi specifici entro tempistiche predeterminate.</p>
-            
-            <h3 class="font-bold text-lg mt-6">2. Prenotazioni e cancellazioni</h3>
-            <p class="mt-2">Tutte le prenotazioni, riprogrammazioni e cancellazioni sono soggette alla nostra policy ufficiale, disponibile al seguente link: <a href="/it/policy" class="text-blue-600 hover:underline">www.smartalk.online/policy</a>. È responsabilità del cliente prendere visione di tale policy prima di effettuare una prenotazione.</p>
-            
-            <h3 class="font-bold text-lg mt-6">3. Pagamenti</h3>
-            <p class="mt-2">Smartalk emette regolare fattura per ogni servizio, che deve essere saldata anticipatamente. I pacchetti di lezioni, una volta iniziati, non sono rimborsabili, salvo casi eccezionali e debitamente documentati. Effettuando il pagamento, il cliente conferma di accettare integralmente i presenti Termini.</p>
-            
-            <h3 class="font-bold text-lg mt-6">4. Uso dei materiali e delle sessioni</h3>
-            <p class="mt-2">Tutti i materiali forniti da Smartalk sono di proprietà esclusiva della società e destinati esclusivamente a un uso personale e individuale. Non è consentito copiare, distribuire, rivendere o rendere disponibili a terzi i suddetti materiali senza preventiva autorizzazione scritta.</p>
-            <p class="mt-2">Le sessioni si svolgono esclusivamente su Google Meet. È vietata qualsiasi registrazione delle sessioni salvo espressa autorizzazione scritta di Smartalk.</p>
-            
-            <h3 class="font-bold text-lg mt-6">5. Responsabilità e limitazioni</h3>
-            <p class="mt-2">Smartalk garantisce la preparazione professionale e l’erogazione diligente delle sessioni. Tuttavia:</p>
-            <ul class="list-disc pl-5 mt-2 space-y-2">
-                <li>Smartalk non è responsabile di eventuali problemi tecnici legati alla connessione internet del cliente, ai dispositivi utilizzati o a piattaforme di terzi (incluso Google Meet).</li>
-                <li>Smartalk non potrà essere ritenuta responsabile per danni indiretti, incidentali o consequenziali derivanti dall’uso dei servizi.</li>
-                <li>I risultati dell’apprendimento dipendono da molteplici fattori, tra cui l’impegno del cliente, e non possono essere garantiti contrattualmente.</li>
-            </ul>
-            
-            <h3 class="font-bold text-lg mt-6">6. Dati personali</h3>
-            <p class="mt-2">Smartalk raccoglie e tratta dati personali (quali nome, indirizzo email, recapiti e informazioni di pagamento) esclusivamente per finalità amministrative e per la corretta erogazione dei servizi. I dati non saranno mai venduti o ceduti a terzi, salvo obblighi di legge. Utilizzando i nostri servizi, il cliente acconsente alla raccolta e all’uso responsabile dei propri dati personali come descritto nei presenti Termini.</p>
-            
-            <h3 class="font-bold text-lg mt-6">7. Legge applicabile</h3>
-            <p class="mt-2">I presenti Termini e Condizioni sono regolati e interpretati in conformità alla legge italiana. Per ogni controversia sarà competente in via esclusiva il Foro di Treviso, Italia.</p>
-            
-            <h3 class="font-bold text-lg mt-6">8. Modifiche ai Termini</h3>
-            <p class="mt-2">Smartalk si riserva il diritto di modificare o aggiornare i presenti Termini e Condizioni in qualsiasi momento. Le modifiche avranno effetto immediato dalla pubblicazione sul sito web. L’uso continuato dei servizi dopo tali modifiche costituisce accettazione dei nuovi Termini.</p>
-        </div>
-
-        <div class="bg-white p-6 rounded-xl shadow-lg">
-            {% else %}
-            <h2 class="text-xl font-bold mb-4">ENGLISH VERSION</h2>
-            <p><strong>Last updated:</strong> September 9, 2025</p>
-            <p class="mt-4">Welcome to Smartalk. By accessing, booking, or purchasing our services, you agree to be bound by the following Terms and Conditions. These Terms apply to all clients and are intended to ensure clarity, fairness, and proper use of our services.</p>
-            
-            <h3 class="font-bold text-lg mt-6">1. Services Provided</h3>
-            <p class="mt-2">Smartalk provides online English coaching and training for entrepreneurs, professionals, and ESL students. Our coaches are experienced and committed to guiding each client through a structured and personalized learning process. While every effort is made to support improvement and achieve results, the success of the program depends on the client’s active participation, practice, and dedication. Smartalk does not provide official language certifications, nor does it guarantee specific outcomes within a predetermined timeframe.</p>
-            
-            <h3 class="font-bold text-lg mt-6">2. Booking and Cancellations</h3>
-            <p class="mt-2">All bookings, rescheduling, and cancellations are subject to our official policy, which is available at: <a href="/en/policy" class="text-blue-600 hover:underline">www.smartalk.online/policy</a>. Clients are responsible for familiarizing themselves with this policy before booking services.</p>
-            
-            <h3 class="font-bold text-lg mt-6">3. Payments</h3>
-            <p class="mt-2">Smartalk issues invoices for all services, which must be settled in advance. Coaching packages, once initiated, are non-refundable, except in exceptional and duly documented circumstances. By making a payment, the client confirms acceptance of these terms.</p>
-            
-            <h3 class="font-bold text-lg mt-6">4. Use of Materials and Sessions</h3>
-            <p class="mt-2">All materials provided during the coaching process are the exclusive property of Smartalk and are supplied solely for personal and individual use. Clients may not copy, distribute, resell, or otherwise make such materials available to third parties without prior written consent.</p>
-            <p class="mt-2">All sessions are held via Google Meet. Recording of sessions is strictly prohibited unless expressly authorized in writing by Smartalk.</p>
-            
-            <h3 class="font-bold text-lg mt-6">5. Responsibilities and Limitations</h3>
-            <p class="mt-2">Smartalk ensures that sessions are delivered in a professional manner and with appropriate preparation. However:</p>
-            <ul class="list-disc pl-5 mt-2 space-y-2">
-                <li>Smartalk is not responsible for any technical issues related to the client's internet connection, devices used, or third-party platforms (including Google Meet).</li>
-                <li>Smartalk cannot be held responsible for indirect, incidental, or consequential damages resulting from the use of the services.</li>
-                <li>Learning results depend on multiple factors, including the client's commitment, and cannot be contractually guaranteed.</li>
-            </ul>
-            
-            <h3 class="font-bold text-lg mt-6">6. Personal Data</h3>
-            <p class="mt-2">Smartalk collects and processes personal data (such as name, email, contact details, and payment information) exclusively for administrative purposes and for the proper delivery of services. Data will never be sold or shared with third parties, except where required by law. By using our services, clients consent to the collection and responsible use of their personal data as described herein.</p>
-            
-            <h3 class="font-bold text-lg mt-6">7. Governing Law</h3>
-            <p class="mt-2">These Terms and Conditions are governed by and construed in accordance with the laws of Italy. Any dispute arising from these Terms shall be subject to the exclusive jurisdiction of the Court of Treviso, Italy.</p>
-            
-            <h3 class="font-bold text-lg mt-6">8. Changes to Terms</h3>
-            <p class="mt-2">Smartalk reserves the right to modify or update these Terms and Conditions at any time. Any changes will become effective immediately upon publication on our website. Continued use of the services after such updates constitutes acceptance of the revised Terms.</p>
-        </div>
-        {% endif %}
-    </div>
-    
-    <div class="mt-12 p-6 bg-yellow-50 rounded-lg border border-yellow-300">
-        <label class="flex items-center gap-2">
-            <input type="checkbox" id="ack" class="large-checkbox" />
-            <span>{% if lang == 'it' %}Ho letto e compreso i Termini e Condizioni.{% else %}I have read and understood the Terms and Conditions.{% endif %}</span>
-        </label>
-
-        <label class="block mt-4">
-            <span>{% if lang == 'it' %}La tua Email:{% else %}Your Email:{% endif %}</span>
-            <input type="email" id="userEmail" required class="mt-1 p-2 w-full max-w-sm rounded-md border border-gray-300" />
-        </label>
-
-        <button onclick="submitConfirmation()" disabled id="confirmBtn" class="mt-4 px-6 py-3 bg-gray-800 text-white border-none rounded-lg cursor-not-allowed">
-            <span>{% if lang == 'it' %}Conferma{% else %}Confirm{% endif %}</span>
+    <div class="collapsible-section bg-white p-6 rounded-xl shadow-lg mt-8">
+        <button
+            class="toggle-btn w-full text-left text-xl sm:text-2xl flex justify-between items-center text-gray-800 hover:text-blue-800">
+            <span>VERSIONE ITALIANA</span>
+            <span class="toggle-icon text-3xl">+</span>
         </button>
+        <div class="toggle-content hidden mt-4 border-t pt-4 border-gray-200">
+            <p><strong>Ultimo aggiornamento:</strong> Settembre 9, 2025</p>
+            <p class="mt-4">Benvenuto su Smartalk. Accedendo, prenotando o acquistando i nostri servizi, l’utente
+                accetta di essere vincolato dai presenti Termini e Condizioni. Questi Termini si applicano a tutti i
+                clienti e hanno lo scopo di garantire chiarezza, correttezza e utilizzo appropriato dei nostri servizi.
+            </p>
 
-        <div id="confirmation-message" class="mt-4"></div>
+            <h3 class="font-bold text-lg mt-6">1. Servizi offerti</h3>
+            <p class="mt-2">Smartalk fornisce servizi di coaching e formazione in lingua inglese, erogati online e
+                rivolti a imprenditori, professionisti e studenti di ESL. I nostri coach sono esperti e guidano i
+                clienti attraverso un processo strutturato e personalizzato. Pur impegnandoci a garantire la massima
+                qualità e supporto, il raggiungimento dei risultati dipende dall’impegno, dalla partecipazione e dalla
+                costanza del cliente. Smartalk non rilascia certificazioni ufficiali e non garantisce il conseguimento
+                di obiettivi specifici entro tempistiche predeterminate.</p>
+
+            <h3 class="font-bold text-lg mt-6">2. Prenotazioni e cancellazioni</h3>
+            <p class="mt-2">Tutte le prenotazioni, riprogrammazioni e cancellazioni sono soggette alla nostra policy
+                ufficiale, disponibile al seguente link: <a href="/it/policy"
+                    class="text-blue-600 hover:underline">www.smartalk.online/policy</a>. È responsabilità del cliente
+                prendere visione di tale policy prima di effettuare una prenotazione.</p>
+
+            <h3 class="font-bold text-lg mt-6">3. Pagamenti</h3>
+            <p class="mt-2">Smartalk emette regolare fattura per ogni servizio, che deve essere saldata anticipatamente.
+                I pacchetti di lezioni, una volta iniziati, non sono rimborsabili, salvo casi eccezionali e debitamente
+                documentati. Effettuando il pagamento, il cliente conferma di accettare integralmente i presenti
+                Termini.</p>
+
+            <h3 class="font-bold text-lg mt-6">4. Uso dei materiali e delle sessioni</h3>
+            <p class="mt-2">Tutti i materiali forniti da Smartalk sono di proprietà esclusiva della società e destinati
+                esclusivamente a un uso personale e individuale. Non è consentito copiare, distribuire, rivendere o
+                rendere disponibili a terzi i suddetti materiali senza preventiva autorizzazione scritta.</p>
+            <p class="mt-2">Le sessioni si svolgono esclusivamente su Google Meet. È vietata qualsiasi registrazione
+                delle sessioni salvo espressa autorizzazione scritta di Smartalk.</p>
+
+            <h3 class="font-bold text-lg mt-6">5. Responsabilità e limitazioni</h3>
+            <p class="mt-2">Smartalk garantisce la preparazione professionale e l’erogazione diligente delle sessioni.
+                Tuttavia:</p>
+            <ul class="list-disc pl-5 mt-2 space-y-2">
+                <li>Smartalk non è responsabile di eventuali problemi tecnici legati alla connessione internet del
+                    cliente, ai dispositivi utilizzati o a piattaforme di terzi (incluso Google Meet).</li>
+                <li>Smartalk non potrà essere ritenuta responsabile per danni indiretti, incidentali o consequenziali
+                    derivanti dall’uso dei servizi.</li>
+                <li>I risultati dell’apprendimento dipendono da molteplici fattori, tra cui l’impegno del cliente, e non
+                    possono essere garantiti contrattualmente.</li>
+            </ul>
+
+            <h3 class="font-bold text-lg mt-6">6. Dati personali</h3>
+            <p class="mt-2">Smartalk raccoglie e tratta dati personali (quali nome, indirizzo email, recapiti e
+                informazioni di pagamento) esclusivamente per finalità amministrative e per la corretta erogazione dei
+                servizi. I dati non saranno mai venduti o ceduti a terzi, salvo obblighi di legge. Utilizzando i nostri
+                servizi, il cliente acconsente alla raccolta e all’uso responsabile dei propri dati personali come
+                descritto nei presenti Termini.</p>
+
+            <h3 class="font-bold text-lg mt-6">7. Legge applicabile</h3>
+            <p class="mt-2">I presenti Termini e Condizioni sono regolati e interpretati in conformità alla legge
+                italiana. Per ogni controversia sarà competente in via esclusiva il Foro di Treviso, Italia.</p>
+
+            <h3 class="font-bold text-lg mt-6">8. Modifiche ai Termini</h3>
+            <p class="mt-2">Smartalk si riserva il diritto di modificare o aggiornare i presenti Termini e Condizioni in
+                qualsiasi momento. Le modifiche avranno effetto immediato dalla pubblicazione sul sito web. L’uso
+                continuato dei servizi dopo tali modifiche costituisce accettazione dei nuovi Termini.</p>
+        </div>
     </div>
+
+    <div class="collapsible-section bg-white p-6 rounded-xl shadow-lg mt-8">
+        <button
+            class="toggle-btn w-full text-left text-xl sm:text-2xl flex justify-between items-center text-gray-800 hover:text-blue-800">
+            <span>ENGLISH VERSION</span>
+            <span class="toggle-icon text-3xl">+</span>
+        </button>
+        <div class="toggle-content hidden mt-4 border-t pt-4 border-gray-200">
+            <p><strong>Last updated:</strong> September 9, 2025</p>
+            <p class="mt-4">Welcome to Smartalk. By accessing, booking, or purchasing our services, you agree to be
+                bound by the following Terms and Conditions. These Terms apply to all clients and are intended to ensure
+                clarity, fairness, and proper use of our services.</p>
+
+            <h3 class="font-bold text-lg mt-6">1. Services Provided</h3>
+            <p class="mt-2">Smartalk provides online English coaching and training for entrepreneurs, professionals, and
+                ESL students. Our coaches are experienced and committed to guiding each client through a structured and
+                personalized learning process. While every effort is made to support improvement and achieve results,
+                the success of the program depends on the client’s active participation, practice, and dedication.
+                Smartalk does not provide official language certifications, nor does it guarantee specific outcomes
+                within a predetermined timeframe.</p>
+
+            <h3 class="font-bold text-lg mt-6">2. Booking and Cancellations</h3>
+            <p class="mt-2">All bookings, rescheduling, and cancellations are subject to our official policy, which is
+                available at: <a href="/en/policy" class="text-blue-600 hover:underline">www.smartalk.online/policy</a>.
+                Clients are responsible for familiarizing themselves with this policy before booking services.</p>
+
+            <h3 class="font-bold text-lg mt-6">3. Payments</h3>
+            <p class="mt-2">Smartalk issues invoices for all services, which must be settled in advance. Coaching
+                packages, once initiated, are non-refundable, except in exceptional and duly documented circumstances.
+                By making a payment, the client confirms acceptance of these terms.</p>
+
+            <h3 class="font-bold text-lg mt-6">4. Use of Materials and Sessions</h3>
+            <p class="mt-2">All materials provided during the coaching process are the exclusive property of Smartalk
+                and are supplied solely for personal and individual use. Clients may not copy, distribute, resell, or
+                otherwise make such materials available to third parties without prior written consent.</p>
+            <p class="mt-2">All sessions are held via Google Meet. Recording of sessions is strictly prohibited unless
+                expressly authorized in writing by Smartalk.</p>
+
+            <h3 class="font-bold text-lg mt-6">5. Responsibilities and Limitations</h3>
+            <p class="mt-2">Smartalk ensures that sessions are delivered in a professional manner and with appropriate
+                preparation. However:</p>
+            <ul class="list-disc pl-5 mt-2 space-y-2">
+                <li>Smartalk is not responsible for technical issues related to the client's internet connection,
+                    devices, or third-party platforms (including Google Meet).</li>
+                <li>Smartalk shall not be liable for indirect, incidental, or consequential damages arising from the use
+                    of the services.</li>
+                <li>Learning outcomes depend on multiple factors, including client commitment, and cannot be
+                    contractually guaranteed.</li>
+            </ul>
+
+            <h3 class="font-bold text-lg mt-6">6. Personal Data</h3>
+            <p class="mt-2">Smartalk collects and processes personal data (such as name, email, contact details, and
+                payment information) exclusively for administrative purposes and for the proper delivery of services.
+                Data will never be sold or shared with third parties, except where required by law. By using our
+                services, clients consent to the collection and responsible use of their personal data as described
+                herein.</p>
+
+            <h3 class="font-bold text-lg mt-6">7. Governing Law</h3>
+            <p class="mt-2">These Terms and Conditions are governed by and construed in accordance with the laws of
+                Italy. Any dispute arising from these Terms shall be subject to the exclusive jurisdiction of the Court
+                of Treviso, Italy.</p>
+
+            <h3 class="font-bold text-lg mt-6">8. Changes to Terms</h3>
+            <p class="mt-2">Smartalk reserves the right to modify or update these Terms and Conditions at any time. Any
+                changes will become effective immediately upon publication on our website. Continued use of the services
+                after such updates constitutes acceptance of the revised Terms.</p>
+        </div>
+    </div>
+</main>
 {% endblock content %}
 
 {% block extra_scripts %}
-<script src="/static/app.js"></script>
 <script>
-    // Questo script è una copia di quello in terms.html (è lo stesso)
-    const checkbox = document.getElementById("ack");
-    const button = document.getElementById("confirmBtn");
+    document.addEventListener('DOMContentLoaded', function () {
+        const toggleButtons = document.querySelectorAll('.toggle-btn');
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                const icon = button.querySelector('.toggle-icon');
 
-    if (checkbox && button) {
-        checkbox.addEventListener("change", () => {
-            button.disabled = !checkbox.checked;
-            button.style.cursor = checkbox.checked ? "pointer" : "not-allowed";
-            document.getElementById("confirmation-message").innerHTML = '';
+                content.classList.toggle('hidden');
+
+                if (content.classList.contains('hidden')) {
+                    icon.textContent = '+';
+                } else {
+                    icon.textContent = '-';
+                }
+            });
         });
-    }
-
-    function showMessage(type) {
-        const messageBox = document.getElementById("confirmation-message");
-        const isEnglishPage = '{{ lang }}' === 'en';
-        
-        if (!messageBox) return;
-
-        if (type === 'success') {
-            messageBox.innerHTML = `<strong class="text-green-600">✅ Thank you for accepting the terms.</strong><br><em class="text-green-600">Grazie per aver accettato i termini.</em>`;
-        } else if (type === 'error') {
-            const errorMessage = isEnglishPage ? "❌ Please enter your email." : "❌ Per favore, inserisci la tua email.";
-            messageBox.innerHTML = `<strong class="text-red-600">${errorMessage}</strong>`;
-        } else if (type === 'info') {
-            const infoMessage = isEnglishPage ? "Submitting..." : "Invio in corso...";
-            messageBox.innerHTML = `<span class="text-blue-600">${infoMessage}</span>`;
-        }
-    }
-
-    window.submitConfirmation = function() {
-        const emailInput = document.getElementById("userEmail");
-        if (!emailInput || !emailInput.value) {
-            showMessage("error");
-            return;
-        }
-
-        showMessage("info");
-        button.disabled = true;
-
-        const data = new URLSearchParams();
-        data.append("email", emailInput.value);
-        data.append("name", "Terms Acceptance"); 
-
-        fetch("https://script.google.com/macros/s/AKfycby2NiEUTCFtaauYOnCcLYPkxP8Z4snv_1ZEGOYVbzs_GuTjiUC1KkzPDAw_RW6-l76_tg/exec", {
-            method: "POST",
-            body: data
-        })
-        .then(res => res.text())
-        .then(response => {
-            showMessage("success");
-            if(button) button.style.display = "none";
-            if(checkbox) checkbox.disabled = true;
-            if(emailInput) emailInput.disabled = true;
-        })
-        .catch(err => {
-            const isEnglishPage = '{{ lang }}' === 'en';
-            const errorMessage = isEnglishPage ? "Something went wrong: " + err : "Qualcosa è andato storto: " + err;
-            document.getElementById("confirmation-message").innerHTML = `<strong class="text-red-600">❌ ${errorMessage}</strong>`;
-            if(button) button.disabled = false;
-        });
-    }
+    });
 </script>
-{% endblock %}
+{% endblock extra_scripts %}
