@@ -1,11 +1,10 @@
-import asyncio
 import logging
 import os
 
 # Permette allo script di trovare i moduli del progetto
 import sys
 from datetime import date, datetime
-from decimal import Decimal, InvalidOperation
+from decimal import Decimal
 from typing import Any, Dict, List, Optional
 
 import httpx

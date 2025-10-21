@@ -69,7 +69,7 @@ def decode_jwt_token(token: str) -> dict:
         raise HTTPException(status_code=401, detail="Invalid token")
 
 
-async def get_current_user(request: Request):
+async def get_current_user(request: Request, DBDependency: Any = DBDependency):
     """
     Dipendenza FastAPI per ottenere l'utente autenticato dal JWT.
     """
@@ -121,9 +121,9 @@ def create_token_response(data: Any, user_data: Dict[str, Any]) -> JSONResponse:
 # AUTH ENDPOINTS
 # -------------------------------------------------
 
-
+'''
 @router.post("/signup", response_model=TokenResponse)
-async def signup(req: AuthRequest):
+async def signup(req: AuthRequest, DBDependency: Any = DBDependency):
     """
     Crea un nuovo utente se non esiste già (signup tradizionale).
     """
@@ -141,10 +141,10 @@ async def signup(req: AuthRequest):
         email=email,
         name=user["name"],
     )
-
+'''
 
 @router.post("/login", response_model=TokenResponse)
-async def login(req: AuthRequest):
+async def login(req: AuthRequest, DBDependency: Any = DBDependency):
     """
     Login classico basato su email e password.
     """
@@ -167,7 +167,7 @@ async def login(req: AuthRequest):
 
 
 @router.post("/google", response_model=TokenResponse)
-async def login_with_google(req: GoogleLoginRequest):
+async def login_with_google(req: GoogleLoginRequest, DBDependency: Any = DBDependency):
     """
     Login con Google OAuth (client → token credential → verify).
     """
@@ -187,9 +187,10 @@ async def login_with_google(req: GoogleLoginRequest):
     user = await get_user_by_email(email, DBDependency)
     if not user:
         # Crea un user con una nuova password
-        password = f"{uuid.uuid4().hex[:8]}"
-        user = await create_user_if_not_exists(email, name, password, DBDependency)
+        #password = f"{uuid.uuid4().hex[:8]}"
+        #user = await create_user_if_not_exists(email, name, password, DBDependency)
         # TODO: invia email per fargli conoscere la sua password se vuole accedere in modo tradizionale
+        raise HTTPException(status_code=401, detail="Invalid Login")
 
     token = create_jwt_token(user["id"], email, user["user_type"])
 
@@ -204,9 +205,9 @@ async def login_with_google(req: GoogleLoginRequest):
 # PASSWORD RESET (PLACEHOLDER)
 # -------------------------------------------------
 
-
+'''
 @router.post("/forgot")
-async def forgot_password(req: AuthRequest):
+async def forgot_password(req: AuthRequest, DBDependency: Any = DBDependency):
     """
     Placeholder: invio email reset (non implementato).
     """
@@ -217,3 +218,4 @@ async def forgot_password(req: AuthRequest):
 
     # TODO: invia email reset (in futuro)
     return {"message": f"Password reset email sent to {email}"}
+'''

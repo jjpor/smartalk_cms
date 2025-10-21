@@ -179,6 +179,6 @@ async def reset_database():
         await asyncio.sleep(5)
 
         # FASE 2: Ricrea le tabelle vuote
-        logger.info("--- Rrecreazione di tutte le tabelle ---")
+        logger.info("--- Recreazione di tutte le tabelle ---")
         await ensure_tables(db)
         logger.warning("--- RESET DATABASE COMPLETATO ---")
