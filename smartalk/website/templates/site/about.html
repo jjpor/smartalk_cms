@@ -1,0 +1,131 @@
+{% extends "abstract_templates/base.html" %}
+
+{% block title %}
+    {% if lang == 'it' %}
+        Chi Siamo - Smartalk
+    {% else %}
+        About Us - Smartalk
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+
+    {% if lang == 'it' %}
+        <section class="mt-[40px] sm:mt-[48px] py-16 text-center">
+            <div class="container mx-auto px-8 md:px-16">
+                <h1 class="font-dosis font-thin text-5xl sm:text-[50px] text-gray-800 mb-2">Chi Siamo</h1>
+                <h2 class="font-dosis text-xl sm:text-2xl text-gray-700">Tre approcci diversi, una sola missione: aiutarti a
+                    parlare davvero in inglese.</h2>
+            </div>
+        </section>
+
+        <main class="container mx-auto px-8 md:px-16 py-8 max-w-6xl shadow-lg bg-white rounded-lg -mt-10 relative z-10">
+            <section class="my-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div
+                    class="bg-gray-50 rounded-lg p-6 shadow-md flex flex-col items-center text-center transition-all duration-300 hover:shadow-xl hover:scale-105 hover:ring-2 hover:ring-red-500">
+                    <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756747132/smartalk_profile_jj_mubo6r.svg"
+                        alt="Ritratto di JJ" class="w-full h-auto object-cover rounded-lg mb-4 shadow-lg">
+                    <h3 class="text-xl font-bold font-montserrat mt-2">JJ</h3>
+                    <p class="text-sm font-semibold text-gray-600 mb-4">Fondatrice e Head Coach</p>
+                    <p class="text-justify leading-relaxed text-sm">Lavora con persone molto diverse tra loro, da chi vuole
+                        acquisire sicurezza nel parlare a chi punta a raffinare l’inglese in contesti professionali complessi.
+                        Bilingue italiano-inglese, con una formazione in giurisprudenza, ha un approccio chiaro, strategico e
+                        flessibile, adatto a chi cerca risultati concreti. Affianca da anni manager, imprenditori e
+                        professionisti, aiutandoli a portare il proprio inglese su un piano più strategico, mirato e
+                        consapevole. Coglie al volo le dinamiche linguistiche, ma anche emotive: sa quando il problema è una
+                        frase, quando è una convinzione limitante. Lavora su ciò che fa davvero la differenza: pronuncia,
+                        struttura, fluidità e sicurezza. Nel tempo ha aiutato i suoi studenti a trasformare il proprio inglese:
+                        non solo per parlare meglio, ma per farsi ascoltare davvero.</p>
+                </div>
+
+                <div
+                    class="bg-gray-50 rounded-lg p-6 shadow-md flex flex-col items-center text-center transition-all duration-300 hover:shadow-xl hover:scale-105 hover:ring-2 hover:ring-blue-500">
+                    <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756747187/smartalk_profile_el_qndjmv.svg"
+                        alt="Ritratto di Elaina" class="w-full h-auto object-cover rounded-lg mb-4 shadow-lg">
+                    <h3 class="text-xl font-bold font-montserrat mt-2">Elaina</h3>
+                    <p class="text-sm font-semibold text-gray-600 mb-4">Coach per professionisti e imprenditori</p>
+                    <p class="text-justify leading-relaxed text-sm">È diretta ma rilassante, strutturata ma mai rigida. Con una
+                        solida formazione in marketing e competenze anche in spagnolo, Elaina lavora con precisione e intuito,
+                        aiutando anche chi parte da una comunicazione frammentata a sviluppare sicurezza e fluidità. Chi lavora
+                        con lei la descrive come ferma ma giusta, una figura stabile che guida con chiarezza e senso pratico,
+                        senza perdersi in complicazioni inutili. Ha la capacità di individuare rapidamente ciò che ostacola il
+                        progresso e trasformarlo in un piano di miglioramento concreto. Spesso chi si rivolge a lei convinto di
+                        avere già un buon livello si ritrova a fare passi avanti significativi e inaspettati.</p>
+                </div>
+
+                <div
+                    class="bg-gray-50 rounded-lg p-6 shadow-md flex flex-col items-center text-center transition-all duration-300 hover:shadow-xl hover:scale-105 hover:ring-2 hover:ring-red-500">
+                    <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756747106/smartalk_profile_th_dmqypu.svg"
+                        alt="Ritratto di Trina" class="w-full h-auto object-cover rounded-lg mb-4 shadow-lg">
+                    <h3 class="text-xl font-bold font-montserrat mt-2">Trina</h3>
+                    <p class="text-sm font-semibold text-gray-600 mb-4">Coach per chi vuole sentirsi finalmente sicuro</p>
+                    <p class="text-justify leading-relaxed text-sm">Trina è dolce, empatica e precisa, ma mantiene sempre alta
+                        l’attenzione sul percorso di miglioramento. È esperta nell’insegnamento della grammatica, rendendo i
+                        concetti accessibili e coinvolgenti senza appesantire l’apprendimento. I suoi studenti la descrivono
+                        come accogliente ma ferma, capace di infondere fiducia pur indicando con chiarezza gli aspetti da
+                        migliorare. In un caso memorabile, è riuscita a far esprimere in inglese con sicurezza una persona che
+                        fino a quel momento credeva di non riuscire nemmeno a formulare due parole in presenza di un
+                        madrelingua. E da quel momento la crescita è stata inarrestabile.</p>
+                </div>
+            </section>
+        </main>
+    {% else %}
+        <section class="mt-[40px] sm:mt-[48px] py-16 text-center">
+            <div class="container mx-auto px-8 md:px-16">
+                <h1 class="font-dosis font-thin text-5xl sm:text-[50px] text-gray-800 mb-2">About Us</h1>
+                <h2 class="font-dosis text-xl sm:text-2xl text-gray-700">Three different approaches. One mission: to help you
+                    truly speak English.</h2>
+            </div>
+        </section>
+
+        <main class="container mx-auto px-8 md:px-16 py-8 max-w-6xl shadow-lg bg-white rounded-lg -mt-10 relative z-10">
+            <section class="my-16 grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div
+                    class="bg-gray-50 rounded-lg p-6 shadow-md flex flex-col items-center text-center transition-all duration-300 hover:shadow-xl hover:scale-105 hover:ring-2 hover:ring-red-500">
+                    <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756747132/smartalk_profile_jj_mubo6r.svg"
+                        alt="Portrait of JJ" class="w-full h-auto object-cover rounded-lg mb-4 shadow-lg">
+                    <h3 class="text-xl font-bold font-montserrat mt-2">JJ</h3>
+                    <p class="text-sm font-semibold text-gray-600 mb-4">Founder & Head Coach</p>
+                    <p class="text-justify leading-relaxed text-sm">JJ works with a wide range of clients: from those who want
+                        to gain confidence speaking English to professionals aiming to refine their skills in complex business
+                        settings. Bilingual in Italian and English, with a background in law, she offers a clear, strategic, and
+                        flexible coaching style tailored for those who want concrete results. For years, JJ has supported
+                        managers, entrepreneurs, and professionals in taking their English to a more strategic, focused, and
+                        mindful level. She quickly picks up on linguistic nuances, but also emotional ones. She knows when the
+                        problem is just a phrase and when it’s a limiting belief. Her focus is on what truly makes a difference:
+                        pronunciation, structure, fluency, and confidence. Over time, JJ has helped her students transform their
+                        English: not just to speak better, but to really be heard.</p>
+                </div>
+
+                <div
+                    class="bg-gray-50 rounded-lg p-6 shadow-md flex flex-col items-center text-center transition-all duration-300 hover:shadow-xl hover:scale-105 hover:ring-2 hover:ring-blue-500">
+                    <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756747187/smartalk_profile_el_qndjmv.svg"
+                        alt="Portrait of Elaina" class="w-full h-auto object-cover rounded-lg mb-4 shadow-lg">
+                    <h3 class="text-xl font-bold font-montserrat mt-2">Elaina</h3>
+                    <p class="text-sm font-semibold text-gray-600 mb-4">Coach for Professionals and Entrepreneurs</p>
+                    <p class="text-justify leading-relaxed text-sm">Elaina’s style is direct yet relaxed, structured without
+                        being rigid. With a solid marketing background and skills in Spanish, she works precisely and
+                        intuitively, helping even those with fragmented communication build confidence and fluency. Clients
+                        describe her as firm but fair — a steady guide who leads with clarity and practicality, avoiding
+                        unnecessary complications. She has a knack for quickly identifying what blocks progress and turning it
+                        into a concrete plan for improvement. Often, clients who thought they already had a good level find
+                        themselves making significant, unexpected leaps forward under her guidance.</p>
+                </div>
+
+                <div
+                    class="bg-gray-50 rounded-lg p-6 shadow-md flex flex-col items-center text-center transition-all duration-300 hover:shadow-xl hover:scale-105 hover:ring-2 hover:ring-red-500">
+                    <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756747106/smartalk_profile_th_dmqypu.svg"
+                        alt="Portrait of Trina" class="w-full h-auto object-cover rounded-lg mb-4 shadow-lg">
+                    <h3 class="text-xl font-bold font-montserrat mt-2">Trina</h3>
+                    <p class="text-sm font-semibold text-gray-600 mb-4">Coach for Those Seeking Real Confidence</p>
+                    <p class="text-justify leading-relaxed text-sm">Trina is gentle, empathetic, and precise, while keeping a
+                        strong focus on continuous improvement. An expert in grammar teaching, she makes concepts accessible and
+                        engaging without weighing down the learning process. Her students describe her as welcoming yet firm,
+                        capable of instilling confidence while clearly pointing out areas to improve. In one memorable case,
+                        Trina helped a student who believed they couldn’t even say two words in English around a native speaker
+                        to finally speak with confidence — and from that moment on, their progress was unstoppable.</p>
+                </div>
+            </section>
+        </main>
+    {% endif %}
+{% endblock content %}

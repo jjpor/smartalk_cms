@@ -233,7 +233,7 @@ body {
     border-bottom: 2px solid #00A3B5;
 }
 
-/* Stili per input corretti/errati (usati da engine.js) */
+/* Stili per input corretti/errati (usati da lesson_plan.js) */
 .quiz-input-text.correct {
     border-color: #10B981;
     background-color: #ECFDF5;

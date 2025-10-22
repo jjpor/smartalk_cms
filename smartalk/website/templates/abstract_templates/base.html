@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+    <head>
+        <link rel="icon" href="{{ url_for('static', path='img/favicon.ico') }}">
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Smartalk{% endblock %}</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Dosis:wght@400;500;600;700&family=Montserrat:wght@700&display=swap"
+            rel="stylesheet"
+        >
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="{{ url_for('static', path='css/site.css') }}?v={{ random() }}">
+        {% block head_links %}{% endblock %}
+    </head>
+    <body class="bg-gray-50 text-gray-800">
+        {% include "site/_header.html" %}
+        {% block content %}{% endblock %}
+        {% include "site/_footer.html" %}
+        <script src="{{ url_for('static', path='js/site.js') }}?v={{ random() }}"></script>
+        {% block extra_scripts %}
+            <script src="{{ url_for('static', path='js/active_nav.js') }}?v={{ random() }}"></script>
+        {% endblock %}
+    </body>
+</html>

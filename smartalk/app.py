@@ -4,6 +4,7 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 # Importa i componenti chiave
 from smartalk.core.dynamodb import AWS_EGRESS_DB_COUNTER_BYTES, get_dynamodb_resource_context
@@ -37,6 +38,10 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan,
 )
+# --- MONTAGGIO FILE STATICI ---
+# Questo serve tutti i file (CSS, JS, immagini) direttamente dalla cartella 'smartalk/website/static'
+# Qualsiasi richiesta a /static verrà cercata in smartalk/website/static
+app.mount("/static", StaticFiles(directory="smartalk/website/static"), name="static")
 
 
 # every not defined path
