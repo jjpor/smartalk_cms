@@ -147,7 +147,7 @@ async def _create_tracker_table(db, table_name) -> None:
                     {"AttributeName": "coach_id", "KeyType": "HASH"},
                     {"AttributeName": "date", "KeyType": "RANGE"},
                 ],
-                "Projection": {"ProjectionType": "KEYS_ONLY"},
+                "Projection": {"ProjectionType": "INCLUDE"},
             },
         ],
     )

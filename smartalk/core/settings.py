@@ -1,7 +1,7 @@
 from pydantic_settings import BaseSettings
 
 
-class Settings(BaseSettings):
+class settings(BaseSettings):
     # DynamoDB
     AWS_REGION: str
     DYNAMO_ENDPOINT: str | None = None
@@ -32,4 +32,4 @@ class Settings(BaseSettings):
         env_file = ".env"
 
 
-settings = Settings()
+settings = settings()
