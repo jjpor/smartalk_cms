@@ -2,7 +2,7 @@ import datetime
 import logging
 import uuid
 from typing import Any, Dict, Optional
-
+from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 from passlib.context import CryptContext
 
@@ -56,7 +56,7 @@ def utc_now_iso() -> str:
 # -----------------------------
 
 
-async def get_user_by_email(email: str, db: dict) -> Optional[Dict[str, Any]]:
+async def get_user_by_email(email: str, db) -> Optional[Dict[str, Any]]:
     """
     Recupera un utente tramite il GSI email-index (KEYS_ONLY).
     """
@@ -65,8 +65,7 @@ async def get_user_by_email(email: str, db: dict) -> Optional[Dict[str, Any]]:
 
     resp = await table.query(
         IndexName="email-index",
-        KeyConditionExpression="email = :email",
-        ExpressionAttributeValues={":email": {"S": norm}},
+        KeyConditionExpression=Key("email").eq(norm),
         Limit=1,
     )
 
@@ -74,14 +73,14 @@ async def get_user_by_email(email: str, db: dict) -> Optional[Dict[str, Any]]:
     if not items:
         return None
 
-    user_id = items[0]["id"]["S"]
-    full = await table.get_item(Key={"id": {"S": user_id}})
+    user_id = items[0]["id"]
+    full = await table.get_item(Key={"id": user_id})
     return full.get("Item")
 
 
 async def get_user_by_id(user_id: str, db: dict) -> Optional[Dict[str, Any]]:
     table = await db.Table(settings.USERS_TABLE)
-    full = await table.get_item(Key={"id": {"S": user_id}})
+    full = await table.get_item(Key={"id": user_id})
     return full.get("Item")
 
 

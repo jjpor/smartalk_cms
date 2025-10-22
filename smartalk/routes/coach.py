@@ -28,38 +28,38 @@ async def validate_coach_access(user: Dict[str, Any] = Depends(get_current_user)
 # ====================================================================
 
 @router.get("/getStudents")
-async def get_students_endpoint(user_data: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency) -> JSONResponse:
+async def get_students_endpoint(coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency) -> JSONResponse:
     """Replica doGet(action='getStudents')."""
     
-    coach_id = user_data.get("id") 
+    coach_id = coach.get("id") 
     students_data = await dynamodb_coach.get_active_students(coach_id, DBDependency)
     
-    return create_token_response({"students": students_data}, user_data)
+    return create_token_response({"students": students_data}, coach)
 
 
 @router.get("/getMonthlyEarnings")
-async def get_earnings_endpoint(user_data: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency) -> JSONResponse:
+async def get_earnings_endpoint(coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency) -> JSONResponse:
     """Replica doGet(action='getMonthlyEarnings')."""
     
-    coach_id = user_data.get("id")
+    coach_id = coach.get("id")
     earnings = dynamodb_coach.get_monthly_earnings(coach_id, DBDependency)
     
-    return create_token_response({"earnings": earnings}, user_data)
+    return create_token_response({"earnings": earnings}, coach)
 
 @router.get("/getCallHistory")
-async def get_call_history_endpoint(user_data: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency) -> JSONResponse:
+async def get_call_history_endpoint(coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency) -> JSONResponse:
     """Replica doGet(action='getCallHistory')."""
     
-    coach_id = user_data.get("id")
+    coach_id = coach.get("id")
     history = dynamodb_coach.get_calls_by_coach(coach_id, DBDependency)
     
-    return create_token_response({"history": history}, user_data)
+    return create_token_response({"history": history}, coach)
 
 
 @router.get("/getStudentInfo")
 async def get_student_info_endpoint(
     request: Request,
-    user_data: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
+    coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
 ) -> JSONResponse:
     """Replica doGet(action='getStudentInfo')."""
     
@@ -70,142 +70,140 @@ async def get_student_info_endpoint(
     
     calls = dynamodb_coach.get_calls_by_student(params.get("studentId"), DBDependency)
     student_info["calls"] = calls
-    return create_token_response({"studentInfo": student_info}, user_data)
+    return create_token_response({"studentInfo": student_info}, coach)
 
 @router.get("/getStudentContracts")
 async def get_student_contracts_endpoint(
     request: Request,
-    user_data: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
+    coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
 ) -> JSONResponse:
     """Replica doGet(action='getStudentContracts')."""
     
     params = dict(request.query_params)
     student_contracts = await dynamodb_coach.get_student_contracts(params.get("studentId"), DBDependency)
 
-    return create_token_response({"contracts": student_contracts}, user_data)
+    return create_token_response({"contracts": student_contracts}, coach)
 
 @router.get("/getReportCardTasks")
 async def get_report_card_tasks_endpoint(
-    user_data: Dict[str, Any] = Depends(validate_coach_access),
-    db_tracker: Any = DBTracker # TRACKER TABLE
+    coach: Dict[str, Any] = Depends(validate_coach_access),
+    DBDependency: Any = DBDependency
 ) -> JSONResponse:
     """Replica doGet(action='getReportCardTasks')."""
+    tasks = dynamodb_coach.get_report_card_tasks_db(coach, DBDependency)
     
-    coach_id = user_data.get("id")
-    tasks = dynamodb_coach.get_report_card_tasks_db(db_tracker, coach_id) # Passo db_tracker
-    
-    return create_token_response(tasks, user_data)
+    return create_token_response(tasks, coach)
 
-@router.get("/getFlashcards")
-async def get_flashcards_endpoint(
-    studentId: str = Query(..., description="ID dello studente"),
-    user_data: Dict[str, Any] = Depends(validate_coach_access),
-    db_flashcards: Any = DBFlashcards # FLASHCARDS TABLE
-) -> JSONResponse:
-    """Replica doGet(action='getFlashcards')."""
+# @router.get("/getFlashcards")
+# async def get_flashcards_endpoint(
+#     studentId: str = Query(..., description="ID dello studente"),
+#     coach: Dict[str, Any] = Depends(validate_coach_access),
+#     db_flashcards: Any = DBFlashcards # FLASHCARDS TABLE
+# ) -> JSONResponse:
+#     """Replica doGet(action='getFlashcards')."""
     
-    cards = dynamodb_coach.get_flashcards(db_flashcards, studentId) # Passo db_flashcards
+#     cards = dynamodb_coach.get_flashcards(db_flashcards, studentId) # Passo db_flashcards
     
-    return create_token_response({"cards": cards}, user_data)
+#     return create_token_response({"cards": cards}, coach)
 
-@router.get("/getLessonPlanContent")
-async def get_lesson_plan_content_endpoint(
-    studentId: str = Query(..., description="ID dello studente"),
-    user_data: Dict[str, Any] = Depends(validate_coach_access),
-    db_users: Any = DBUsers # USERS TABLE
-) -> JSONResponse:
-    """Replica doGet(action='getLessonPlanContent')."""
+# @router.get("/getLessonPlanContent")
+# async def get_lesson_plan_content_endpoint(
+#     studentId: str = Query(..., description="ID dello studente"),
+#     coach: Dict[str, Any] = Depends(validate_coach_access),
+#     db_users: Any = DBUsers # USERS TABLE
+# ) -> JSONResponse:
+#     """Replica doGet(action='getLessonPlanContent')."""
     
-    content = dynamodb_coach.get_lesson_plan_content_db(db_users, studentId) # Passo db_users
-    if not content:
-        raise HTTPException(status_code=404, detail="Lesson Plan not found")
-    return create_token_response({"content": content}, user_data)
+#     content = dynamodb_coach.get_lesson_plan_content_db(db_users, studentId) # Passo db_users
+#     if not content:
+#         raise HTTPException(status_code=404, detail="Lesson Plan not found")
+#     return create_token_response({"content": content}, coach)
 
-# ====================================================================
-# POST ENDPOINTS 
-# ====================================================================
+# # ====================================================================
+# # POST ENDPOINTS 
+# # ====================================================================
 
-@router.post("/logCall")
-async def log_call_endpoint(
-    data: Dict[str, Any],
-    user_data: Dict[str, Any] = Depends(validate_coach_access),
-    db_tracker: Any = DBTracker # TRACKER TABLE
-) -> JSONResponse:
-    """Replica doPost(action='logCall')."""
+# @router.post("/logCall")
+# async def log_call_endpoint(
+#     data: Dict[str, Any],
+#     coach: Dict[str, Any] = Depends(validate_coach_access),
+#     db_tracker: Any = DBTracker # TRACKER TABLE
+# ) -> JSONResponse:
+#     """Replica doPost(action='logCall')."""
     
-    data["coachId"] = user_data.get("id") 
-    data["role"] = user_data.get("role", "Senior Coach")
+#     data["coachId"] = coach.get("id") 
+#     data["role"] = coach.get("role", "Senior Coach")
 
-    result = dynamodb_coach.log_call_to_db(db_tracker, data) # Passo db_tracker
+#     result = dynamodb_coach.log_call_to_db(db_tracker, data) # Passo db_tracker
     
-    if not result.get("success"):
-        raise HTTPException(status_code=400, detail=result.get("error"))
+#     if not result.get("success"):
+#         raise HTTPException(status_code=400, detail=result.get("error"))
     
-    return create_token_response({"message": result.get("message", "Chiamata registrata!")}, user_data)
+#     return create_token_response({"message": result.get("message", "Chiamata registrata!")}, coach)
 
 
-@router.post("/saveDebrief")
-async def save_debrief_endpoint(
-    data: Dict[str, Any],
-    user_data: Dict[str, Any] = Depends(validate_coach_access),
-    db_debriefs: Any = DBDebriefs # DEBRIEFS TABLE
-) -> JSONResponse:
-    """Replica doPost(action='saveDebrief')."""
+# @router.post("/saveDebrief")
+# async def save_debrief_endpoint(
+#     data: Dict[str, Any],
+#     coach: Dict[str, Any] = Depends(validate_coach_access),
+#     db_debriefs: Any = DBDebriefs # DEBRIEFS TABLE
+# ) -> JSONResponse:
+#     """Replica doPost(action='saveDebrief')."""
     
-    data["coachId"] = user_data.get("id") 
+#     data["coachId"] = coach.get("id") 
     
-    result = dynamodb_coach.handle_debrief_submission_db(db_debriefs, data) # Passo db_debriefs
+#     result = dynamodb_coach.handle_debrief_submission_db(db_debriefs, data) # Passo db_debriefs
     
-    if not result.get("success"):
-        raise HTTPException(status_code=400, detail=result.get("error"))
+#     if not result.get("success"):
+#         raise HTTPException(status_code=400, detail=result.get("error"))
         
-    return create_token_response(result, user_data)
+#     return create_token_response(result, coach)
 
 
-@router.post("/submitReportCard")
-async def submit_report_card_endpoint(
-    data: Dict[str, Any],
-    user_data: Dict[str, Any] = Depends(validate_coach_access),
-    db_reports: Any = DBReportCards # REPORT_CARDS TABLE
-) -> JSONResponse:
-    """Replica doPost(action='submitReportCard')."""
+# @router.post("/submitReportCard")
+# async def submit_report_card_endpoint(
+#     data: Dict[str, Any],
+#     coach: Dict[str, Any] = Depends(validate_coach_access),
+#     db_reports: Any = DBReportCards # REPORT_CARDS TABLE
+# ) -> JSONResponse:
+#     """Replica doPost(action='submitReportCard')."""
     
-    data["coachId"] = user_data.get("id")
+#     data["coachId"] = coach.get("id")
     
-    result = dynamodb_coach.handle_report_card_submission(db_reports, data) # Passo db_reports
+#     result = dynamodb_coach.handle_report_card_submission(db_reports, data) # Passo db_reports
     
-    if not result.get("success"):
-        raise HTTPException(status_code=400, detail=result.get("error"))
+#     if not result.get("success"):
+#         raise HTTPException(status_code=400, detail=result.get("error"))
         
-    return create_token_response(result, user_data)
+#     return create_token_response(result, coach)
 
 
-@router.post("/updateFlashcardStatus")
-async def update_flashcard_status_endpoint(
-    data: Dict[str, Any],
-    user_data: Dict[str, Any] = Depends(validate_coach_access),
-    db_flashcards: Any = DBFlashcards # FLASHCARDS TABLE
-) -> JSONResponse:
-    """Replica doPost(action='updateFlashcardStatus')."""
+# @router.post("/updateFlashcardStatus")
+# async def update_flashcard_status_endpoint(
+#     data: Dict[str, Any],
+#     coach: Dict[str, Any] = Depends(validate_coach_access),
+#     db_flashcards: Any = DBFlashcards # FLASHCARDS TABLE
+# ) -> JSONResponse:
+#     """Replica doPost(action='updateFlashcardStatus')."""
     
-    result = dynamodb_coach.update_flashcard_status(db_flashcards, data) # Passo db_flashcards
+#     result = dynamodb_coach.update_flashcard_status(db_flashcards, data) # Passo db_flashcards
     
-    if not result.get("success"):
-        raise HTTPException(status_code=400, detail=result.get("error"))
+#     if not result.get("success"):
+#         raise HTTPException(status_code=400, detail=result.get("error"))
         
-    return create_token_response(result, user_data)
+#     return create_token_response(result, coach)
 
-@router.post("/saveLessonPlanContent")
-async def save_lesson_plan_content_endpoint(
-    data: Dict[str, Any],
-    user_data: Dict[str, Any] = Depends(validate_coach_access),
-    db_users: Any = DBUsers # USERS TABLE
-) -> JSONResponse:
-    """Replica doPost(action='saveLessonPlanContent')."""
+# @router.post("/saveLessonPlanContent")
+# async def save_lesson_plan_content_endpoint(
+#     data: Dict[str, Any],
+#     coach: Dict[str, Any] = Depends(validate_coach_access),
+#     db_users: Any = DBUsers # USERS TABLE
+# ) -> JSONResponse:
+#     """Replica doPost(action='saveLessonPlanContent')."""
     
-    result = dynamodb_coach.save_lesson_plan_content_db(db_users, data.get('studentId'), data.get('content')) # Passo db_users
+#     result = dynamodb_coach.save_lesson_plan_content_db(db_users, data.get('studentId'), data.get('content')) # Passo db_users
     
-    if not result.get("success"):
-        raise HTTPException(status_code=400, detail=result.get("error"))
+#     if not result.get("success"):
+#         raise HTTPException(status_code=400, detail=result.get("error"))
         
-    return create_token_response(result, user_data)
+#     return create_token_response(result, coach)

@@ -3,1039 +3,1039 @@ const DATA_SHEET_ID = "1WZ-ybCFwrI7-NPd6TxDS7dux1NUhvaXNe3zXIJ3fRFQ"; // aggiorn
 
 // ------------------- ENTRYPOINTS -------------------
 function doGet(e) {
-  try {
-    const ss = SpreadsheetApp.openById(DATA_SHEET_ID);
-    const params = e?.parameter || {};
-    const action = params.action;
+    try {
+        const ss = SpreadsheetApp.openById(DATA_SHEET_ID);
+        const params = e?.parameter || {};
+        const action = params.action;
 
-    switch (action) {
-      case "login":                 return jsonResponse(handleLogin(params, ss));
-      case "getStudents":           return jsonResponse(getStudents(ss));
-      case "getDebriefDrafts":      return jsonResponse(getDebriefDrafts(params, ss));
-      case "getDebriefByRow":       return jsonResponse(getDebriefByRow(params, ss));
-      case "getLessonPlanContent":  return jsonResponse(getLessonPlanContent(params, ss));
-      case "getStudentContracts":   return jsonResponse(getStudentContracts(params.studentId, ss));
-      case "getGroupProducts":      return jsonResponse(getGroupProducts(ss));
-      case "getGroupStudents":      return jsonResponse(getGroupStudents(params.productId, ss));
-      case "getStudentInfo":        return jsonResponse(getStudentInfo(params.studentId, ss));
-      case "getMonthlyEarnings":    return jsonResponse({ success: true, earnings: getMonthlyEarnings(params.coachId, ss) });
-      case "getCallHistory":        return jsonResponse({ success: true, history: getCallHistory(params.coachId, ss) });
-      case "getPaymentFolderUrl":   return jsonResponse({ success: true, url: getCoachDashboardInfo(params.coachId, ss).paymentFolderUrl });
-      case "getReportCardTasks":    return jsonResponse(getReportCardTasks(params.coachId, ss));
-      case "getReportCardDrafts":   return jsonResponse(getReportCardDrafts(params.coachId, ss));
-      case "getCoachBookings":      return jsonResponse(getCoachBookings(params.coachId, ss));
-      case "getStudentCallsForMonth": return jsonResponse(getStudentCallsForMonth(params.studentId, params.coachId, ss));
-      case "getReportCardHistory": return jsonResponse(getReportCardHistory(params.coachId, ss));
-      case "getFlashcards":        return jsonResponse(getFlashcards(params.studentId, ss));
-      case "ping": return jsonResponse({ success: true, message: "pong" });
+        switch (action) {
+            case "login": return jsonResponse(handleLogin(params, ss));
+            case "getStudents": return jsonResponse(getStudents(ss));
+            case "getDebriefDrafts": return jsonResponse(getDebriefDrafts(params, ss));
+            case "getDebriefByRow": return jsonResponse(getDebriefByRow(params, ss));
+            case "getLessonPlanContent": return jsonResponse(getLessonPlanContent(params, ss));
+            case "getStudentContracts": return jsonResponse(getStudentContracts(params.studentId, ss));
+            case "getGroupProducts": return jsonResponse(getGroupProducts(ss));
+            case "getGroupStudents": return jsonResponse(getGroupStudents(params.productId, ss));
+            case "getStudentInfo": return jsonResponse(getStudentInfo(params.studentId, ss));
+            case "getMonthlyEarnings": return jsonResponse({ success: true, earnings: getMonthlyEarnings(params.coachId, ss) });
+            case "getCallHistory": return jsonResponse({ success: true, history: getCallHistory(params.coachId, ss) });
+            case "getPaymentFolderUrl": return jsonResponse({ success: true, url: getCoachDashboardInfo(params.coachId, ss).paymentFolderUrl });
+            case "getReportCardTasks": return jsonResponse(getReportCardTasks(params.coachId, ss));
+            case "getReportCardDrafts": return jsonResponse(getReportCardDrafts(params.coachId, ss));
+            case "getCoachBookings": return jsonResponse(getCoachBookings(params.coachId, ss));
+            case "getStudentCallsForMonth": return jsonResponse(getStudentCallsForMonth(params.studentId, params.coachId, ss));
+            case "getReportCardHistory": return jsonResponse(getReportCardHistory(params.coachId, ss));
+            case "getFlashcards": return jsonResponse(getFlashcards(params.studentId, ss));
+            case "ping": return jsonResponse({ success: true, message: "pong" });
 
 
 
-      default:
-        return jsonResponse({ success: false, error: "Azione non valida" });
+            default:
+                return jsonResponse({ success: false, error: "Azione non valida" });
+        }
+    } catch (err) {
+        return jsonResponse({ success: false, error: "doGet error: " + err.message });
     }
-  } catch (err) {
-    return jsonResponse({ success: false, error: "doGet error: " + err.message });
-  }
 }
 
 function doPost(e) {
-  try {
-    const raw = (e && e.postData && e.postData.contents) ? e.postData.contents : "{}";
-    const data = JSON.parse(raw);
-    const ss = SpreadsheetApp.openById(DATA_SHEET_ID);
+    try {
+        const raw = (e && e.postData && e.postData.contents) ? e.postData.contents : "{}";
+        const data = JSON.parse(raw);
+        const ss = SpreadsheetApp.openById(DATA_SHEET_ID);
 
-    switch (data.action) {
-      case "login":                       return jsonResponse(handleLogin(data, ss));
-      case "loginWithGoogle":             return jsonResponse(handleGoogleLogin(data, ss)); 
-      case "logCall":                     return jsonResponse(handleCallSubmission(data, ss));
-      case "saveLessonPlanContent":       return jsonResponse(saveLessonPlanContent(data, ss)); 
-      case "submitReportCard":            return jsonResponse(handleReportCardSubmission(data, ss));
-      case "submitNoShow":                return jsonResponse(handleNoShowSubmission(data, ss));
-      case "saveDebrief":                 return jsonResponse(handleDebriefSubmission(data, ss));
-      case "generateReportCardText":      return jsonResponse(generateReportCardText_(data));
-      case "sendDebrief":                 return jsonResponse(handleSendDebrief(data, ss));
-      case "generateDebriefText":         return jsonResponse(generateDebriefText(data));
-      case "sendReportCard":              return jsonResponse(sendReportCard(data.studentId, data.contractId, data.coachId, ss));
-      case "sendAllReportCards":          return jsonResponse(handleSendAllReportCards(data, ss));
-      case "updateFlashcardStatus":       return jsonResponse(updateFlashcardStatus(data, ss));
+        switch (data.action) {
+            case "login": return jsonResponse(handleLogin(data, ss));
+            case "loginWithGoogle": return jsonResponse(handleGoogleLogin(data, ss));
+            case "logCall": return jsonResponse(handleCallSubmission(data, ss));
+            case "saveLessonPlanContent": return jsonResponse(saveLessonPlanContent(data, ss));
+            case "submitReportCard": return jsonResponse(handleReportCardSubmission(data, ss));
+            case "submitNoShow": return jsonResponse(handleNoShowSubmission(data, ss));
+            case "saveDebrief": return jsonResponse(handleDebriefSubmission(data, ss));
+            case "generateReportCardText": return jsonResponse(generateReportCardText_(data));
+            case "sendDebrief": return jsonResponse(handleSendDebrief(data, ss));
+            case "generateDebriefText": return jsonResponse(generateDebriefText(data));
+            case "sendReportCard": return jsonResponse(sendReportCard(data.studentId, data.contractId, data.coachId, ss));
+            case "sendAllReportCards": return jsonResponse(handleSendAllReportCards(data, ss));
+            case "updateFlashcardStatus": return jsonResponse(updateFlashcardStatus(data, ss));
 
 
-      default:
-        return jsonResponse({ success: false, error: "Azione non valida" });
+            default:
+                return jsonResponse({ success: false, error: "Azione non valida" });
+        }
+    } catch (err) {
+        return jsonResponse({ success: false, error: "doPost error: " + err.message });
     }
-  } catch (err) {
-    return jsonResponse({ success: false, error: "doPost error: " + err.message });
-  }
 }
 
 
 // ------------------- LOGIN -------------------
 function handleLogin(data, ss) {
-  const sheet = ss.getSheetByName("Coaches");
-  if (!sheet) return { success: false, error: "Foglio Coaches non trovato" };
-  const H = getHeaders(sheet);
-  const rows = getBodyValues(sheet);
-
-  const idxId    = H.indexOf("Coach ID");
-  const idxPwd   = H.indexOf("Password");
-  const idxName  = H.indexOf("Name");
-  const idxRole  = H.indexOf("Role");
-  const idxFolder= H.indexOf("Payment Folder");
-
-  const cidLower = String(data.coachId || "").trim().toLowerCase();
-  const row = rows.find(r =>
-    String(r[idxId] || "").trim().toLowerCase() === cidLower &&
-    String(r[idxPwd] || "").trim() === String(data.password || "").trim()
-  );
-  if (!row) return { success: false, error: "ID Coach o password errati" };
-
-  return {
-    success: true,
-    coachId: String(data.coachId),
-    coachName: idxName !== -1 ? row[idxName] : String(data.coachId),
-    role: (idxRole !== -1 && row[idxRole]) ? String(row[idxRole]).trim() : "",
-    paymentFolderUrl: idxFolder !== -1 ? (row[idxFolder] || "") : ""
-  };
-}
-
-function handleGoogleLogin(data, ss) {
-  try {
-    const token = data.credential;
-    if (!token) return { success: false, error: "Missing credential" };
-
-    // ✅ Verifica il token con Google
-    const url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + encodeURIComponent(token);
-    const resp = UrlFetchApp.fetch(url);
-    const info = JSON.parse(resp.getContentText());
-
-    if (!info || !info.email_verified) {
-      return { success: false, error: "Invalid Google login" };
-    }
-
-    const email = (info.email || "").toLowerCase();
-
-    // ✅ Carica foglio Coaches
     const sheet = ss.getSheetByName("Coaches");
     if (!sheet) return { success: false, error: "Foglio Coaches non trovato" };
-
     const H = getHeaders(sheet);
     const rows = getBodyValues(sheet);
 
-    // Trova indici con più tolleranza (minuscole, spazi)
-    const idxId    = H.findIndex(h => h.toLowerCase().trim() === "coach id");
-    const idxEmail = H.findIndex(h => h.toLowerCase().trim() === "email");
-    const idxName  = H.findIndex(h => h.toLowerCase().trim() === "name");
-    const idxRole  = H.findIndex(h => h.toLowerCase().trim() === "role");
+    const idxId = H.indexOf("Coach ID");
+    const idxPwd = H.indexOf("Password");
+    const idxName = H.indexOf("Name");
+    const idxRole = H.indexOf("Role");
+    const idxFolder = H.indexOf("Payment Folder");
 
-    if (idxEmail === -1) {
-      return { success: false, error: "Colonna Email non trovata nel foglio Coaches" };
-    }
+    const cidLower = String(data.coachId || "").trim().toLowerCase();
+    const row = rows.find(r =>
+        String(r[idxId] || "").trim().toLowerCase() === cidLower &&
+        String(r[idxPwd] || "").trim() === String(data.password || "").trim()
+    );
+    if (!row) return { success: false, error: "ID Coach o password errati" };
 
-    // ✅ Cerca la riga con quell'email
-    const row = rows.find(r => String(r[idxEmail] || "").toLowerCase() === email);
-
-    if (!row) {
-      return { success: false, error: "Nessun coach con email " + email, debugEmail: email };
-    }
-
-    // ✅ Ritorna i dati
     return {
-      success: true,
-      coachId: (idxId !== -1 ? row[idxId] : email),
-      coachName: (idxName !== -1 && row[idxName]) ? String(row[idxName]) : (info.given_name || email),
-      role: (idxRole !== -1 && row[idxRole]) ? String(row[idxRole]).trim() : "",
-      debugEmail: email,
-      debugRow: row
+        success: true,
+        coachId: String(data.coachId),
+        coachName: idxName !== -1 ? row[idxName] : String(data.coachId),
+        role: (idxRole !== -1 && row[idxRole]) ? String(row[idxRole]).trim() : "",
+        paymentFolderUrl: idxFolder !== -1 ? (row[idxFolder] || "") : ""
     };
+}
 
-  } catch (err) {
-    return { success: false, error: "Errore Google login: " + err.message };
-  }
+function handleGoogleLogin(data, ss) {
+    try {
+        const token = data.credential;
+        if (!token) return { success: false, error: "Missing credential" };
+
+        // ✅ Verifica il token con Google
+        const url = "https://oauth2.googleapis.com/tokeninfo?id_token=" + encodeURIComponent(token);
+        const resp = UrlFetchApp.fetch(url);
+        const info = JSON.parse(resp.getContentText());
+
+        if (!info || !info.email_verified) {
+            return { success: false, error: "Invalid Google login" };
+        }
+
+        const email = (info.email || "").toLowerCase();
+
+        // ✅ Carica foglio Coaches
+        const sheet = ss.getSheetByName("Coaches");
+        if (!sheet) return { success: false, error: "Foglio Coaches non trovato" };
+
+        const H = getHeaders(sheet);
+        const rows = getBodyValues(sheet);
+
+        // Trova indici con più tolleranza (minuscole, spazi)
+        const idxId = H.findIndex(h => h.toLowerCase().trim() === "coach id");
+        const idxEmail = H.findIndex(h => h.toLowerCase().trim() === "email");
+        const idxName = H.findIndex(h => h.toLowerCase().trim() === "name");
+        const idxRole = H.findIndex(h => h.toLowerCase().trim() === "role");
+
+        if (idxEmail === -1) {
+            return { success: false, error: "Colonna Email non trovata nel foglio Coaches" };
+        }
+
+        // ✅ Cerca la riga con quell'email
+        const row = rows.find(r => String(r[idxEmail] || "").toLowerCase() === email);
+
+        if (!row) {
+            return { success: false, error: "Nessun coach con email " + email, debugEmail: email };
+        }
+
+        // ✅ Ritorna i dati
+        return {
+            success: true,
+            coachId: (idxId !== -1 ? row[idxId] : email),
+            coachName: (idxName !== -1 && row[idxName]) ? String(row[idxName]) : (info.given_name || email),
+            role: (idxRole !== -1 && row[idxRole]) ? String(row[idxRole]).trim() : "",
+            debugEmail: email,
+            debugRow: row
+        };
+
+    } catch (err) {
+        return { success: false, error: "Errore Google login: " + err.message };
+    }
 }
 
 
 // ------------------- STUDENTS -------------------
 function getStudents(ss) {
-  const sheet = ss.getSheetByName("Students");
-  if (!sheet) return { success: false, error: "Foglio Students non trovato" };
-  const H = getHeaders(sheet);
-  const rows = getBodyValues(sheet);
+    const sheet = ss.getSheetByName("Students");
+    if (!sheet) return { success: false, error: "Foglio Students non trovato" };
+    const H = getHeaders(sheet);
+    const rows = getBodyValues(sheet);
 
-  const idxId = H.indexOf("Student ID");
-  const idxStatus = H.indexOf("Status");
+    const idxId = H.indexOf("Student ID");
+    const idxStatus = H.indexOf("Status");
 
-  const activeIds = rows
-    .filter(r => (idxStatus === -1) ? true : String(r[idxStatus]) === "Active")
-    .map(r => String(r[idxId] || "").trim())
-    .filter(Boolean);
+    const activeIds = rows
+        .filter(r => (idxStatus === -1) ? true : String(r[idxStatus]) === "Active")
+        .map(r => String(r[idxId] || "").trim())
+        .filter(Boolean);
 
-  const unique = Array.from(new Set(activeIds));
-  return { success: true, students: unique };
+    const unique = Array.from(new Set(activeIds));
+    return { success: true, students: unique };
 }
 
 // ------------------- CONTRACTS & PRODUCTS -------------------
 function getStudentContracts(studentId, ss) {
-  if (!studentId) return { success: false, error: "Missing studentId" };
+    if (!studentId) return { success: false, error: "Missing studentId" };
 
-  const contracts = ss.getSheetByName("Contracts");
-  const products  = ss.getSheetByName("Products");
-  if (!contracts) return { success: false, error: "Foglio Contracts non trovato" };
-  if (!products)  return { success: false, error: "Foglio Products non trovato" };
+    const contracts = ss.getSheetByName("Contracts");
+    const products = ss.getSheetByName("Products");
+    if (!contracts) return { success: false, error: "Foglio Contracts non trovato" };
+    if (!products) return { success: false, error: "Foglio Products non trovato" };
 
-  const Hc = getHeaders(contracts);
-  const Hp = getHeaders(products);
+    const Hc = getHeaders(contracts);
+    const Hp = getHeaders(products);
 
-  const idxCStudent = Hc.indexOf("Student ID");
-  const idxCId      = Hc.indexOf("Contract ID");
-  const idxCProd    = Hc.indexOf("Product ID");
-  const idxCStatus  = Hc.indexOf("Status");
-  const idxCLeft    = Hc.indexOf("Left Calls");
+    const idxCStudent = Hc.indexOf("Student ID");
+    const idxCId = Hc.indexOf("Contract ID");
+    const idxCProd = Hc.indexOf("Product ID");
+    const idxCStatus = Hc.indexOf("Status");
+    const idxCLeft = Hc.indexOf("Left Calls");
 
-  const idxPId     = Hp.indexOf("Product ID");
-  const idxPName   = Hp.indexOf("Product Name");
-  const idxPDur    = Hp.indexOf("Duration");
-  const idxPPart   = Hp.indexOf("Participants");
-  const idxPHead   = Hp.indexOf("Head Coach");
-  const idxPSenior = Hp.indexOf("Senior Coach");
-  const idxPJunior = Hp.indexOf("Junior Coach");
+    const idxPId = Hp.indexOf("Product ID");
+    const idxPName = Hp.indexOf("Product Name");
+    const idxPDur = Hp.indexOf("Duration");
+    const idxPPart = Hp.indexOf("Participants");
+    const idxPHead = Hp.indexOf("Head Coach");
+    const idxPSenior = Hp.indexOf("Senior Coach");
+    const idxPJunior = Hp.indexOf("Junior Coach");
 
-  // Mappa prodotti completa (serve per IND)
-  const prodMap = {};
-  getBodyValues(products).forEach(r => {
-    const pid = String(r[idxPId] || "");
-    if (!pid) return;
-    prodMap[pid] = {
-      productId: pid,
-      productName: idxPName !== -1 ? r[idxPName] : pid,
-      duration: Number(idxPDur !== -1 ? r[idxPDur] : 60) || 60,
-      participants: Number(idxPPart !== -1 ? r[idxPPart] : 1) || 1,
-      rates: {
-        "Head Coach":   idxPHead   !== -1 ? Number(r[idxPHead]   || 0) : 0,
-        "Senior Coach": idxPSenior !== -1 ? Number(r[idxPSenior] || 0) : 0,
-        "Junior Coach": idxPJunior !== -1 ? Number(r[idxPJunior] || 0) : 0
-      }
-    };
-  });
+    // Mappa prodotti completa (serve per IND)
+    const prodMap = {};
+    getBodyValues(products).forEach(r => {
+        const pid = String(r[idxPId] || "");
+        if (!pid) return;
+        prodMap[pid] = {
+            productId: pid,
+            productName: idxPName !== -1 ? r[idxPName] : pid,
+            duration: Number(idxPDur !== -1 ? r[idxPDur] : 60) || 60,
+            participants: Number(idxPPart !== -1 ? r[idxPPart] : 1) || 1,
+            rates: {
+                "Head Coach": idxPHead !== -1 ? Number(r[idxPHead] || 0) : 0,
+                "Senior Coach": idxPSenior !== -1 ? Number(r[idxPSenior] || 0) : 0,
+                "Junior Coach": idxPJunior !== -1 ? Number(r[idxPJunior] || 0) : 0
+            }
+        };
+    });
 
-  const contractsRows = getBodyValues(contracts)
-    .filter(r => String(r[idxCStudent]) === String(studentId) && (idxCStatus === -1 || String(r[idxCStatus]) === "Active"));
+    const contractsRows = getBodyValues(contracts)
+        .filter(r => String(r[idxCStudent]) === String(studentId) && (idxCStatus === -1 || String(r[idxCStatus]) === "Active"));
 
-  const out = contractsRows.map(r => {
-    const pid = String(r[idxCProd] || "");
-    const unlimited = (Hc.indexOf("Unlimited") !== -1 && String(r[Hc.indexOf("Unlimited")]).toUpperCase() === "Y");
+    const out = contractsRows.map(r => {
+        const pid = String(r[idxCProd] || "");
+        const unlimited = (Hc.indexOf("Unlimited") !== -1 && String(r[Hc.indexOf("Unlimited")]).toUpperCase() === "Y");
 
-    return {
-      contractId: r[idxCId],
-      productId: pid,
-      leftCalls: unlimited ? null : (idxCLeft !== -1 ? Number(r[idxCLeft] || 0) : null),
-      product: prodMap[pid] || { productId: pid },
-      unlimited: unlimited
-    };
+        return {
+            contractId: r[idxCId],
+            productId: pid,
+            leftCalls: unlimited ? null : (idxCLeft !== -1 ? Number(r[idxCLeft] || 0) : null),
+            product: prodMap[pid] || { productId: pid },
+            unlimited: unlimited
+        };
 
-  });
+    });
 
-  return { success: true, contracts: out };
+    return { success: true, contracts: out };
 }
 
 // ------------------- GROUP PRODUCTS & STUDENTS -------------------
 // Restituisce prodotti di gruppo (participants >= 2) CON dettagli utili (duration, rates) + attivi in almeno un contratto
 function getGroupProducts(ss) {
-  const products  = ss.getSheetByName("Products");
-  const contracts = ss.getSheetByName("Contracts");
-  if (!products || !contracts) return { success: false, error: "Foglio Products o Contracts non trovato" };
+    const products = ss.getSheetByName("Products");
+    const contracts = ss.getSheetByName("Contracts");
+    if (!products || !contracts) return { success: false, error: "Foglio Products o Contracts non trovato" };
 
-  const Hp = getHeaders(products);
-  const Hc = getHeaders(contracts);
-  const prodRows = getBodyValues(products);
-  const contRows = getBodyValues(contracts);
+    const Hp = getHeaders(products);
+    const Hc = getHeaders(contracts);
+    const prodRows = getBodyValues(products);
+    const contRows = getBodyValues(contracts);
 
-  const idxPId     = Hp.indexOf("Product ID");
-  const idxPName   = Hp.indexOf("Product Name");
-  const idxPDur    = Hp.indexOf("Duration");
-  const idxPPart   = Hp.indexOf("Participants");
-  const idxPHead   = Hp.indexOf("Head Coach");
-  const idxPSenior = Hp.indexOf("Senior Coach");
-  const idxPJunior = Hp.indexOf("Junior Coach");
+    const idxPId = Hp.indexOf("Product ID");
+    const idxPName = Hp.indexOf("Product Name");
+    const idxPDur = Hp.indexOf("Duration");
+    const idxPPart = Hp.indexOf("Participants");
+    const idxPHead = Hp.indexOf("Head Coach");
+    const idxPSenior = Hp.indexOf("Senior Coach");
+    const idxPJunior = Hp.indexOf("Junior Coach");
 
-  const idxCProd   = Hc.indexOf("Product ID");
-  const idxCStatus = Hc.indexOf("Status");
+    const idxCProd = Hc.indexOf("Product ID");
+    const idxCStatus = Hc.indexOf("Status");
 
-  const activeProducts = new Set(
-    contRows
-      .filter(r => (idxCStatus === -1) || String(r[idxCStatus]) === "Active")
-      .map(r => String(r[idxCProd] || ""))
-      .filter(Boolean)
-  );
+    const activeProducts = new Set(
+        contRows
+            .filter(r => (idxCStatus === -1) || String(r[idxCStatus]) === "Active")
+            .map(r => String(r[idxCProd] || ""))
+            .filter(Boolean)
+    );
 
-  const out = prodRows
-    .filter(r => {
-      const pid = String(r[idxPId] || "");
-      const participants = Number(idxPPart !== -1 ? r[idxPPart] : 1) || 1;
-      return pid && participants >= 2 && activeProducts.has(pid);
-    })
-    .map(r => ({
-      productId: r[idxPId],
-      productName: (idxPName !== -1 ? r[idxPName] : r[idxPId]),
-      duration: Number(idxPDur !== -1 ? r[idxPDur] : 60) || 60,
-      participants: Number(idxPPart !== -1 ? r[idxPPart] : 1) || 1,
-      rates: {
-        "Head Coach":   idxPHead   !== -1 ? Number(r[idxPHead]   || 0) : 0,
-        "Senior Coach": idxPSenior !== -1 ? Number(r[idxPSenior] || 0) : 0,
-        "Junior Coach": idxPJunior !== -1 ? Number(r[idxPJunior] || 0) : 0
-      }
-    }));
+    const out = prodRows
+        .filter(r => {
+            const pid = String(r[idxPId] || "");
+            const participants = Number(idxPPart !== -1 ? r[idxPPart] : 1) || 1;
+            return pid && participants >= 2 && activeProducts.has(pid);
+        })
+        .map(r => ({
+            productId: r[idxPId],
+            productName: (idxPName !== -1 ? r[idxPName] : r[idxPId]),
+            duration: Number(idxPDur !== -1 ? r[idxPDur] : 60) || 60,
+            participants: Number(idxPPart !== -1 ? r[idxPPart] : 1) || 1,
+            rates: {
+                "Head Coach": idxPHead !== -1 ? Number(r[idxPHead] || 0) : 0,
+                "Senior Coach": idxPSenior !== -1 ? Number(r[idxPSenior] || 0) : 0,
+                "Junior Coach": idxPJunior !== -1 ? Number(r[idxPJunior] || 0) : 0
+            }
+        }));
 
-  return { success: true, products: out };
+    return { success: true, products: out };
 }
 
 function getGroupStudents(productId, ss) {
-  try {
-    if (!productId) return { success: false, error: "Missing productId" };
+    try {
+        if (!productId) return { success: false, error: "Missing productId" };
 
-    const contracts = ss.getSheetByName("Contracts");
-    if (!contracts) return { success: false, error: "Foglio Contracts non trovato" };
+        const contracts = ss.getSheetByName("Contracts");
+        if (!contracts) return { success: false, error: "Foglio Contracts non trovato" };
 
-    const Hc = getHeaders(contracts);
-    const rows = getBodyValues(contracts);
+        const Hc = getHeaders(contracts);
+        const rows = getBodyValues(contracts);
 
-    const idxCStudent = Hc.indexOf("Student ID");
-    const idxCProd    = Hc.indexOf("Product ID");
-    const idxCStatus  = Hc.indexOf("Status");
+        const idxCStudent = Hc.indexOf("Student ID");
+        const idxCProd = Hc.indexOf("Product ID");
+        const idxCStatus = Hc.indexOf("Status");
 
-    const students = rows
-      .filter(r =>
-        String(r[idxCProd] || "").trim().toLowerCase() === String(productId || "").trim().toLowerCase() &&
-        (idxCStatus === -1 || String(r[idxCStatus] || "").trim().toLowerCase() === "active")
-      )
-      .map(r => String(r[idxCStudent]).trim())
-      .filter(Boolean);
+        const students = rows
+            .filter(r =>
+                String(r[idxCProd] || "").trim().toLowerCase() === String(productId || "").trim().toLowerCase() &&
+                (idxCStatus === -1 || String(r[idxCStatus] || "").trim().toLowerCase() === "active")
+            )
+            .map(r => String(r[idxCStudent]).trim())
+            .filter(Boolean);
 
-    return { success: true, students: Array.from(new Set(students)) };
+        return { success: true, students: Array.from(new Set(students)) };
 
-  } catch (err) {
-    return { success: false, error: err.message };
-  }
+    } catch (err) {
+        return { success: false, error: err.message };
+    }
 }
 
 
 // ------------------- STUDENT INFO -------------------
 function getStudentInfo(studentId, ss) {
-  if (!studentId) return { success: false, error: "Missing studentId" };
+    if (!studentId) return { success: false, error: "Missing studentId" };
 
-  const students  = ss.getSheetByName("Students");
-  const tracker   = ss.getSheetByName("Tracker");
-  if (!students) return { success: false, error: "Foglio Students non trovato" };
+    const students = ss.getSheetByName("Students");
+    const tracker = ss.getSheetByName("Tracker");
+    if (!students) return { success: false, error: "Foglio Students non trovato" };
 
-  // --- Info base dallo sheet Students
-  const Hs = getHeaders(students);
-  const idxSid = Hs.indexOf("Student ID");
-  const srows = getBodyValues(students);
-  const srow  = srows.find(r => String(r[idxSid]) === String(studentId));
+    // --- Info base dallo sheet Students
+    const Hs = getHeaders(students);
+    const idxSid = Hs.indexOf("Student ID");
+    const srows = getBodyValues(students);
+    const srow = srows.find(r => String(r[idxSid]) === String(studentId));
 
-  if (!srow) return { success: false, error: "Studente non trovato" };
+    if (!srow) return { success: false, error: "Studente non trovato" };
 
-  const studentInfo = {};
-  Hs.forEach((h, i) => {
-    if (!h) return;
-    let val = srow[i];
-    if (val instanceof Date) {
-      val = Utilities.formatDate(val, Session.getScriptTimeZone() || "Europe/Rome", "yyyy-MM-dd");
+    const studentInfo = {};
+    Hs.forEach((h, i) => {
+        if (!h) return;
+        let val = srow[i];
+        if (val instanceof Date) {
+            val = Utilities.formatDate(val, Session.getScriptTimeZone() || "Europe/Rome", "yyyy-MM-dd");
+        }
+        studentInfo[h] = val || "N/A";
+    });
+
+    // --- Storico chiamate da Tracker
+    const calls = [];
+    if (tracker) {
+        const Ht = getHeaders(tracker);
+        const rows = getBodyValues(tracker);
+
+        // Indici tracker
+        const idxTDate = Ht.indexOf("Date");
+        const idxTStud = Ht.indexOf("Student ID");
+        const idxTContr = Ht.indexOf("Contract ID");
+        const idxTProd = Ht.indexOf("Product ID");
+        const idxTCoach = Ht.indexOf("Coach ID");
+        const idxTUnits = Ht.indexOf("Units");
+        const idxTRate = Ht.indexOf("Coach Rate");
+        const idxTDuration = Ht.indexOf("Duration");
+        const idxTAtt = Ht.indexOf("Attendance");
+        const idxTNotes = Ht.indexOf("Notes");
+
+        // Indici products per mappa ProductName
+        const products = ss.getSheetByName("Products");
+        const prodMap = {};
+        if (products) {
+            const Hp = getHeaders(products);
+            const idxPId = Hp.indexOf("Product ID");
+            const idxPName = Hp.indexOf("Product Name");
+            getBodyValues(products).forEach(r => {
+                const pid = String(r[idxPId] || "");
+                if (pid) prodMap[pid] = idxPName !== -1 ? r[idxPName] : pid;
+            });
+        }
+
+        const tz = Session.getScriptTimeZone() || "Europe/Rome";
+
+        rows
+            .filter(r => String(r[idxTStud]) === String(studentId))
+            .forEach(r => {
+                const d = r[idxTDate] instanceof Date ? r[idxTDate] : null;
+                const iso = d ? Utilities.formatDate(d, tz, "yyyy-MM-dd") : "";
+                const display = d ? Utilities.formatDate(d, tz, "dd/MM/yyyy") : "";
+                const pid = r[idxTProd] || "";
+                calls.push({
+                    dateISO: iso,
+                    date: display,
+                    contractId: r[idxTContr] || "",
+                    productId: pid,
+                    productName: prodMap[pid] || pid,
+                    coachId: r[idxTCoach] || "",
+                    duration: idxTDuration !== -1 ? r[idxTDuration] : "",
+                    attendance: idxTAtt !== -1 ? r[idxTAtt] : "",
+                    notes: idxTNotes !== -1 ? r[idxTNotes] : ""
+                });
+            });
+
+        calls.sort((a, b) => (a.dateISO < b.dateISO ? 1 : -1));
     }
-    studentInfo[h] = val || "N/A";
-  });
-
-  // --- Storico chiamate da Tracker
-  const calls = [];
-  if (tracker) {
-  const Ht = getHeaders(tracker);
-  const rows = getBodyValues(tracker);
-
-  // Indici tracker
-  const idxTDate   = Ht.indexOf("Date");
-  const idxTStud   = Ht.indexOf("Student ID");
-  const idxTContr  = Ht.indexOf("Contract ID");
-  const idxTProd   = Ht.indexOf("Product ID");
-  const idxTCoach  = Ht.indexOf("Coach ID");
-  const idxTUnits  = Ht.indexOf("Units");
-  const idxTRate   = Ht.indexOf("Coach Rate");
-  const idxTDuration = Ht.indexOf("Duration");
-  const idxTAtt    = Ht.indexOf("Attendance");
-  const idxTNotes  = Ht.indexOf("Notes");
-
-  // Indici products per mappa ProductName
-  const products = ss.getSheetByName("Products");
-  const prodMap = {};
-  if (products) {
-    const Hp = getHeaders(products);
-    const idxPId = Hp.indexOf("Product ID");
-    const idxPName = Hp.indexOf("Product Name");
-    getBodyValues(products).forEach(r => {
-      const pid = String(r[idxPId] || "");
-      if (pid) prodMap[pid] = idxPName !== -1 ? r[idxPName] : pid;
-    });
-  }
-
-  const tz = Session.getScriptTimeZone() || "Europe/Rome";
-
-  rows
-    .filter(r => String(r[idxTStud]) === String(studentId))
-    .forEach(r => {
-      const d = r[idxTDate] instanceof Date ? r[idxTDate] : null;
-      const iso = d ? Utilities.formatDate(d, tz, "yyyy-MM-dd") : "";
-      const display = d ? Utilities.formatDate(d, tz, "dd/MM/yyyy") : "";
-      const pid = r[idxTProd] || "";
-      calls.push({
-        dateISO: iso,
-        date: display,
-        contractId: r[idxTContr] || "",
-        productId: pid,
-        productName: prodMap[pid] || pid,
-        coachId: r[idxTCoach] || "",
-        duration: idxTDuration !== -1 ? r[idxTDuration] : "",
-        attendance: idxTAtt !== -1 ? r[idxTAtt] : "",
-        notes: idxTNotes !== -1 ? r[idxTNotes] : ""
-      });
-    });
-
-  calls.sort((a, b) => (a.dateISO < b.dateISO ? 1 : -1));
-  }
 
 
-  studentInfo.calls = calls;
+    studentInfo.calls = calls;
 
-  return { success: true, studentInfo };
+    return { success: true, studentInfo };
 }
 
 // ------------------- LOG CALL -------------------
 function handleCallSubmission(data, ss) {
-  const tracker   = ss.getSheetByName("Tracker");
-  const products  = ss.getSheetByName("Products");
-  const coaches   = ss.getSheetByName("Coaches");
-  const contracts = ss.getSheetByName("Contracts");
-  if (!tracker)  return { success: false, error: "Foglio Tracker non trovato" };
-  if (!products) return { success: false, error: "Foglio Products non trovato" };
-  if (!coaches)  return { success: false, error: "Foglio Coaches non trovato" };
+    const tracker = ss.getSheetByName("Tracker");
+    const products = ss.getSheetByName("Products");
+    const coaches = ss.getSheetByName("Coaches");
+    const contracts = ss.getSheetByName("Contracts");
+    if (!tracker) return { success: false, error: "Foglio Tracker non trovato" };
+    if (!products) return { success: false, error: "Foglio Products non trovato" };
+    if (!coaches) return { success: false, error: "Foglio Coaches non trovato" };
 
-  const Ht  = getHeaders(tracker);
-  const Hp  = getHeaders(products);
-  const Hco = getHeaders(coaches);
+    const Ht = getHeaders(tracker);
+    const Hp = getHeaders(products);
+    const Hco = getHeaders(coaches);
 
-  const allProducts = getBodyValues(products);
-  const allCoaches  = getBodyValues(coaches);
+    const allProducts = getBodyValues(products);
+    const allCoaches = getBodyValues(coaches);
 
-  // ruolo coach
-  const rowCoach = allCoaches.find(r => String(r[Hco.indexOf("Coach ID")]) === String(data.coachId));
-  const role = rowCoach ? String(rowCoach[Hco.indexOf("Role")] || "").trim() : "";
+    // ruolo coach
+    const rowCoach = allCoaches.find(r => String(r[Hco.indexOf("Coach ID")]) === String(data.coachId));
+    const role = rowCoach ? String(rowCoach[Hco.indexOf("Role")] || "").trim() : "";
 
-  // prodotto
-  const prow = allProducts.find(r => String(r[Hp.indexOf("Product ID")]) === String(data.productId));
-  if (!prow) return { success: false, error: "Prodotto non trovato" };
+    // prodotto
+    const prow = allProducts.find(r => String(r[Hp.indexOf("Product ID")]) === String(data.productId));
+    if (!prow) return { success: false, error: "Prodotto non trovato" };
 
-  const idxPDur    = Hp.indexOf("Duration");
-  const idxPHead   = Hp.indexOf("Head Coach");
-  const idxPSenior = Hp.indexOf("Senior Coach");
-  const idxPJunior = Hp.indexOf("Junior Coach");
+    const idxPDur = Hp.indexOf("Duration");
+    const idxPHead = Hp.indexOf("Head Coach");
+    const idxPSenior = Hp.indexOf("Senior Coach");
+    const idxPJunior = Hp.indexOf("Junior Coach");
 
-  // tariffa base per ruolo
-  const roleIdxMap = {
-    "Head Coach":   idxPHead,
-    "Senior Coach": idxPSenior,
-    "Junior Coach": idxPJunior
-  };
-  let baseRate = 0;
-  const roleIdx = roleIdxMap[role];
-  if (roleIdx !== undefined && roleIdx !== -1) {
-    baseRate = Number(prow[roleIdx] || 0);
-  }
-
-  // durata nativa e override
-  const nativeMinutes = Number(prow[idxPDur] || 60);
-  const minutes = Number(data.callDuration || nativeMinutes);
-
-  // units = override / durata nativa
-  const units = nativeMinutes ? (minutes / nativeMinutes) : 1;
-
-  // attendees
-  let attendees = 1;
-  if (Array.isArray(data.studentIds) && data.studentIds.length) attendees = data.studentIds.length;
-
-  // Coach rate effettivo (pro capite, proporzionato)
-  const perStudentBase = attendees > 0 ? (baseRate / attendees) : baseRate;
-  const coachRatePerStudent = Number((perStudentBase * units).toFixed(2));
-
-  // Prod cost (totale gruppo basato su Head Coach × units)
-  const headCoachRate = Number(prow[idxPHead] || 0);
-  const totalProdCost = Number((headCoachRate * units).toFixed(2));
-
-  // Divide automaticamente se gruppo
-  const prodCostPerStudent = attendees > 1
-    ? Number((totalProdCost / attendees).toFixed(2))
-    : totalProdCost;
-
-
-  // student list
-  const studentList = (data.studentIds && data.studentIds.length) ? data.studentIds : [data.studentId];
-  const rowsToAppend = [];
-
-  studentList.forEach(sid => {
-    const row = new Array(Ht.length).fill("");
-
-    const dateOnly = Utilities.formatDate(
-      data.callDate ? new Date(data.callDate) : new Date(),
-      Session.getScriptTimeZone() || "Europe/Rome",
-      "yyyy-MM-dd"
-    );
-    put(Ht, row, "Date", dateOnly);
-    put(Ht, row, "Student ID", sid || "");
-
-    // Contract ID lookup se mancante
-    let contractIdValue = data.contractId || "";
-    if (!contractIdValue && data.productId && sid) {
-      try {
-        const contractsSheet = ss.getSheetByName("Contracts");
-        if (contractsSheet) {
-          const Hc = getHeaders(contractsSheet);
-          const allContracts = getBodyValues(contractsSheet);
-          const idxSid = Hc.indexOf("Student ID");
-          const idxPid = Hc.indexOf("Product ID");
-          const idxCid = Hc.indexOf("Contract ID");
-          if (idxSid !== -1 && idxPid !== -1 && idxCid !== -1) {
-            const match = allContracts.find(r =>
-              String(r[idxSid]) === String(sid) &&
-              String(r[idxPid]) === String(data.productId)
-            );
-            if (match) contractIdValue = match[idxCid];
-          }
-        }
-      } catch (err) {
-        console.error("Errore recupero Contract ID:", err);
-      }
+    // tariffa base per ruolo
+    const roleIdxMap = {
+        "Head Coach": idxPHead,
+        "Senior Coach": idxPSenior,
+        "Junior Coach": idxPJunior
+    };
+    let baseRate = 0;
+    const roleIdx = roleIdxMap[role];
+    if (roleIdx !== undefined && roleIdx !== -1) {
+        baseRate = Number(prow[roleIdx] || 0);
     }
 
-    put(Ht, row, "Contract ID", contractIdValue);
+    // durata nativa e override
+    const nativeMinutes = Number(prow[idxPDur] || 60);
+    const minutes = Number(data.callDuration || nativeMinutes);
 
-    // Duration → IND = override, GROUP = nativa
-    const durationForTracker = (attendees > 1) ? nativeMinutes : minutes;
-    put(Ht, row, "Duration", durationForTracker);
+    // units = override / durata nativa
+    const units = nativeMinutes ? (minutes / nativeMinutes) : 1;
 
-    // Scrittura valori principali
-    put(Ht, row, "Units", units);
-    put(Ht, row, "Coach Rate", coachRatePerStudent);
-    put(Ht, row, "Prod cost", prodCostPerStudent);
-    put(Ht, row, "Attendance", data.attendance || "YES");
-    put(Ht, row, "Product ID", data.productId || "");
-    put(Ht, row, "Coach ID", data.coachId || "");
-    put(Ht, row, "Notes", data.notes || "");
+    // attendees
+    let attendees = 1;
+    if (Array.isArray(data.studentIds) && data.studentIds.length) attendees = data.studentIds.length;
 
-    rowsToAppend.push(row);
-  });
+    // Coach rate effettivo (pro capite, proporzionato)
+    const perStudentBase = attendees > 0 ? (baseRate / attendees) : baseRate;
+    const coachRatePerStudent = Number((perStudentBase * units).toFixed(2));
 
-  rowsToAppend.forEach(r => tracker.appendRow(r));
+    // Prod cost (totale gruppo basato su Head Coach × units)
+    const headCoachRate = Number(prow[idxPHead] || 0);
+    const totalProdCost = Number((headCoachRate * units).toFixed(2));
 
-  return { success: true, message: "Chiamata registrata!" };
+    // Divide automaticamente se gruppo
+    const prodCostPerStudent = attendees > 1
+        ? Number((totalProdCost / attendees).toFixed(2))
+        : totalProdCost;
+
+
+    // student list
+    const studentList = (data.studentIds && data.studentIds.length) ? data.studentIds : [data.studentId];
+    const rowsToAppend = [];
+
+    studentList.forEach(sid => {
+        const row = new Array(Ht.length).fill("");
+
+        const dateOnly = Utilities.formatDate(
+            data.callDate ? new Date(data.callDate) : new Date(),
+            Session.getScriptTimeZone() || "Europe/Rome",
+            "yyyy-MM-dd"
+        );
+        put(Ht, row, "Date", dateOnly);
+        put(Ht, row, "Student ID", sid || "");
+
+        // Contract ID lookup se mancante
+        let contractIdValue = data.contractId || "";
+        if (!contractIdValue && data.productId && sid) {
+            try {
+                const contractsSheet = ss.getSheetByName("Contracts");
+                if (contractsSheet) {
+                    const Hc = getHeaders(contractsSheet);
+                    const allContracts = getBodyValues(contractsSheet);
+                    const idxSid = Hc.indexOf("Student ID");
+                    const idxPid = Hc.indexOf("Product ID");
+                    const idxCid = Hc.indexOf("Contract ID");
+                    if (idxSid !== -1 && idxPid !== -1 && idxCid !== -1) {
+                        const match = allContracts.find(r =>
+                            String(r[idxSid]) === String(sid) &&
+                            String(r[idxPid]) === String(data.productId)
+                        );
+                        if (match) contractIdValue = match[idxCid];
+                    }
+                }
+            } catch (err) {
+                console.error("Errore recupero Contract ID:", err);
+            }
+        }
+
+        put(Ht, row, "Contract ID", contractIdValue);
+
+        // Duration → IND = override, GROUP = nativa
+        const durationForTracker = (attendees > 1) ? nativeMinutes : minutes;
+        put(Ht, row, "Duration", durationForTracker);
+
+        // Scrittura valori principali
+        put(Ht, row, "Units", units);
+        put(Ht, row, "Coach Rate", coachRatePerStudent);
+        put(Ht, row, "Prod cost", prodCostPerStudent);
+        put(Ht, row, "Attendance", data.attendance || "YES");
+        put(Ht, row, "Product ID", data.productId || "");
+        put(Ht, row, "Coach ID", data.coachId || "");
+        put(Ht, row, "Notes", data.notes || "");
+
+        rowsToAppend.push(row);
+    });
+
+    rowsToAppend.forEach(r => tracker.appendRow(r));
+
+    return { success: true, message: "Chiamata registrata!" };
 }
 
 // ------------------- EARNINGS & HISTORY -------------------
 function getMonthlyEarnings(coachId, ss) {
-  const sheet = ss.getSheetByName("Tracker");
-  if (!sheet) return 0;
+    const sheet = ss.getSheetByName("Tracker");
+    if (!sheet) return 0;
 
-  const H = getHeaders(sheet);
-  const rows = getBodyValues(sheet);
+    const H = getHeaders(sheet);
+    const rows = getBodyValues(sheet);
 
-  const idxCoach = H.indexOf("Coach ID");
-  const idxDate  = H.indexOf("Date");
-  const idxRate  = H.indexOf("Coach Rate");
+    const idxCoach = H.indexOf("Coach ID");
+    const idxDate = H.indexOf("Date");
+    const idxRate = H.indexOf("Coach Rate");
 
-  const today = new Date();
-  const m = today.getMonth();
-  const y = today.getFullYear();
+    const today = new Date();
+    const m = today.getMonth();
+    const y = today.getFullYear();
 
-  let total = 0;
-  rows.forEach(r => {
-    const cid = String(r[idxCoach] || "").trim();
-    const d   = r[idxDate] instanceof Date ? r[idxDate] : null;
-    const rate = Number(r[idxRate] || 0);
+    let total = 0;
+    rows.forEach(r => {
+        const cid = String(r[idxCoach] || "").trim();
+        const d = r[idxDate] instanceof Date ? r[idxDate] : null;
+        const rate = Number(r[idxRate] || 0);
 
-    if (cid === String(coachId) && d && d.getMonth() === m && d.getFullYear() === y) {
-      total += rate;   // somma direttamente il Coach Rate
-    }
-  });
+        if (cid === String(coachId) && d && d.getMonth() === m && d.getFullYear() === y) {
+            total += rate;   // somma direttamente il Coach Rate
+        }
+    });
 
-  return Number(total.toFixed(2));
+    return Number(total.toFixed(2));
 }
 
 function getCallHistory(coachId, ss) {
-  const sheet = ss.getSheetByName("Tracker");
-  if (!sheet) return [];
+    const sheet = ss.getSheetByName("Tracker");
+    if (!sheet) return [];
 
-  const H = getHeaders(sheet);
-  const rows = getBodyValues(sheet);
+    const H = getHeaders(sheet);
+    const rows = getBodyValues(sheet);
 
-  const idxCoach   = H.indexOf("Coach ID");
-  const idxStudent = H.indexOf("Student ID");
-  const idxContract= H.indexOf("Contract ID");
-  const idxDate    = H.indexOf("Date");
-  const idxRate    = H.indexOf("Coach Rate");
-  const idxProduct = H.indexOf("Product ID");
+    const idxCoach = H.indexOf("Coach ID");
+    const idxStudent = H.indexOf("Student ID");
+    const idxContract = H.indexOf("Contract ID");
+    const idxDate = H.indexOf("Date");
+    const idxRate = H.indexOf("Coach Rate");
+    const idxProduct = H.indexOf("Product ID");
 
-  const tz = Session.getScriptTimeZone() || 'Europe/Rome';
+    const tz = Session.getScriptTimeZone() || 'Europe/Rome';
 
-  const out = rows
-    .filter(r => String(r[idxCoach] || "").trim() === String(coachId).trim())
-    .map(r => {
-      const d = r[idxDate] instanceof Date ? r[idxDate] : null;
-      const iso = d ? Utilities.formatDate(d, tz, "yyyy-MM-dd") : '';
-      const display = d ? Utilities.formatDate(d, tz, "MM/dd/yyyy") : '';
-      const earnings = Number(r[idxRate] || 0);
+    const out = rows
+        .filter(r => String(r[idxCoach] || "").trim() === String(coachId).trim())
+        .map(r => {
+            const d = r[idxDate] instanceof Date ? r[idxDate] : null;
+            const iso = d ? Utilities.formatDate(d, tz, "yyyy-MM-dd") : '';
+            const display = d ? Utilities.formatDate(d, tz, "MM/dd/yyyy") : '';
+            const earnings = Number(r[idxRate] || 0);
 
-      return {
-        dateISO: iso,
-        date: display,
-        studentId: r[idxStudent],
-        contractId: r[idxContract],
-        productId: r[idxProduct],
-        earnings: Number(earnings.toFixed(2))
-      };
-    })
-    .filter(x => x.dateISO)
-    .sort((a, b) => (a.dateISO < b.dateISO ? 1 : -1));
+            return {
+                dateISO: iso,
+                date: display,
+                studentId: r[idxStudent],
+                contractId: r[idxContract],
+                productId: r[idxProduct],
+                earnings: Number(earnings.toFixed(2))
+            };
+        })
+        .filter(x => x.dateISO)
+        .sort((a, b) => (a.dateISO < b.dateISO ? 1 : -1));
 
-  return out;
+    return out;
 }
 
 // ------------------- REPORT CARDS / BOOKINGS -------------------
 function getCoachDashboardInfo(coachId, ss) {
-  const sheet = ss.getSheetByName("Coaches");
-  if (!sheet) return { paymentFolderUrl: "" };
-  const H = getHeaders(sheet);
-  const rows = getBodyValues(sheet);
-  const idxId = H.indexOf("Coach ID");
-  const idxFolder = H.indexOf("Payment Folder");
-  const row = rows.find(r => String(r[idxId]) === String(coachId));
-  return { paymentFolderUrl: row && idxFolder !== -1 ? row[idxFolder] : "" };
+    const sheet = ss.getSheetByName("Coaches");
+    if (!sheet) return { paymentFolderUrl: "" };
+    const H = getHeaders(sheet);
+    const rows = getBodyValues(sheet);
+    const idxId = H.indexOf("Coach ID");
+    const idxFolder = H.indexOf("Payment Folder");
+    const row = rows.find(r => String(r[idxId]) === String(coachId));
+    return { paymentFolderUrl: row && idxFolder !== -1 ? row[idxFolder] : "" };
 }
 
 function getReportCardTasks(coachId, ss) {
-  const contractsSheet = ss.getSheetByName("Contracts");
-  const trackerSheet   = ss.getSheetByName("Tracker");
-  const studentsSheet  = ss.getSheetByName("Students");
-  const rcSheet        = ss.getSheetByName("Report Cards");
-  
-  if (!contractsSheet || !trackerSheet || !studentsSheet) {
-    return { success: true, tasks: [], noShows: [] };
-  }
+    const contractsSheet = ss.getSheetByName("Contracts");
+    const trackerSheet = ss.getSheetByName("Tracker");
+    const studentsSheet = ss.getSheetByName("Students");
+    const rcSheet = ss.getSheetByName("Report Cards");
 
-  const Hc  = getHeaders(contractsSheet);
-  const Ht  = getHeaders(trackerSheet);
-  const Hs  = getHeaders(studentsSheet);
-  const Hrc = rcSheet ? getHeaders(rcSheet) : [];
-
-  const contracts = getBodyValues(contractsSheet);
-  const tracker   = getBodyValues(trackerSheet);
-  const students  = getBodyValues(studentsSheet);
-  const rcData    = rcSheet ? getBodyValues(rcSheet) : [];
-
-  // index Contracts
-  const idxContrId   = Hc.indexOf("Contract ID");
-  const idxStudId    = Hc.indexOf("Student ID");
-  const idxCadency   = Hc.indexOf("Report Card Cadency");
-  const idxStartDate = Hc.indexOf("Report Card Start Date");
-  const idxEmails    = Hc.indexOf("Report Card Email Recipient(s)");
-
-  // index Tracker
-  const idxTDate   = Ht.indexOf("Date");
-  const idxTStud   = Ht.indexOf("Student ID");
-  const idxTCoach  = Ht.indexOf("Coach ID");
-
-  // index Students
-  const idxSId     = Hs.indexOf("Student ID");
-  const idxSName   = Hs.indexOf("Name");
-  const idxSSurn   = Hs.indexOf("Surname");
-
-  // index Report Cards
-  const idxRcStud   = Hrc.indexOf("Student ID");
-  const idxRcContr  = Hrc.indexOf("Contract ID");
-  const idxRcReport = Hrc.indexOf("Report");
-  const idxRcDate   = Hrc.indexOf("Date");
-
-  function isNoShowSubmitted(sid, cid, month, year) {
-    return rcData.some(r => {
-      const rep = String(r[idxRcReport] || "").trim();
-      const d   = r[idxRcDate] instanceof Date ? r[idxRcDate] : null;
-      return String(r[idxRcStud]) === String(sid) &&
-            String(r[idxRcContr]) === String(cid) &&
-            rep === "No-show" &&
-            d && d.getMonth() === month && d.getFullYear() === year;
-    });
-  }
-
-  function isDraftedThisMonth(sid, cid, year, month) {
-    return rcData.some(r => {
-      const rep = String(r[idxRcReport] || "").trim();
-      const d   = r[idxRcDate] instanceof Date ? r[idxRcDate] : new Date(r[idxRcDate]);
-      if (!d || isNaN(d)) return false;
-      return (
-        String(r[idxRcStud]) === String(sid) &&
-        String(r[idxRcContr]) === String(cid) &&
-        rep && rep !== "No-show" &&
-        d.getFullYear() === year && d.getMonth() === month
-      );
-    });
-  }
-
-  const tz = Session.getScriptTimeZone() || "Europe/Rome";
-  const today = new Date();
-  const prevMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-
-  const out = [];
-  const noShows = [];
-  const seenStudents = new Set();
-
-  // ruolo coach
-  const coachesSheet = ss.getSheetByName("Coaches");
-  const Hco = getHeaders(coachesSheet);
-  const rowsCoaches = getBodyValues(coachesSheet);
-  const idxCId = Hco.indexOf("Coach ID");
-  const idxRole = Hco.indexOf("Role");
-  const rowCoach = rowsCoaches.find(r => String(r[idxCId]) === String(coachId));
-  const role = rowCoach ? String(rowCoach[idxRole] || "").trim() : "";
-
-  contracts.forEach(c => {
-    const studentId  = c[idxStudId];
-    const contractId = c[idxContrId];
-    const cadency    = Number(c[idxCadency] || 0);
-    const startDate  = c[idxStartDate] instanceof Date ? c[idxStartDate] : null;
-    const recipients = c[idxEmails] || "";
-
-    if (!studentId || !contractId || !cadency || !startDate) return;
-    if (seenStudents.has(String(studentId))) return;
-
-    const monthsDiff = (today.getFullYear() - startDate.getFullYear()) * 12 +
-                       (today.getMonth() - startDate.getMonth());
-    if (monthsDiff < 0) return;
-    if (monthsDiff % cadency !== 0) return;
-
-    const srow    = students.find(s => String(s[idxSId]).trim() === String(studentId));
-    const name    = srow ? srow[idxSName] : "";
-    const surname = srow ? srow[idxSSurn] : "";
-
-    // --- mese corrente ---
-    const calls = tracker.filter(t => {
-      const sid = String(t[idxTStud]).trim();
-      const cid = String(t[idxTCoach]).trim();
-      const d   = t[idxTDate] instanceof Date ? t[idxTDate] : null;
-      return sid === String(studentId) &&
-             cid === String(coachId) &&
-             d && d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
-    });
-
-    const callsAll = tracker.filter(t => {
-      const sid = String(t[idxTStud]).trim();
-      const d   = t[idxTDate] instanceof Date ? t[idxTDate] : null;
-      return sid === String(studentId) &&
-             d && d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
-    });
-
-    if (calls.length > 0) {
-      out.push({
-        studentId,
-        contractId,
-        name,
-        surname,
-        cadencyMonths: cadency,
-        recipients,
-        calls: calls.length,
-        alreadyDrafted: isDraftedThisMonth(studentId, contractId)
-      });
-    } else if (callsAll.length === 0 && role === "Head Coach") {
-      noShows.push({
-        studentId,
-        contractId,
-        name,
-        surname,
-        cadencyMonths: cadency,
-        recipients,
-        alreadySubmitted: isNoShowSubmitted(studentId, contractId),
-        period: "current"
-      });
+    if (!contractsSheet || !trackerSheet || !studentsSheet) {
+        return { success: true, tasks: [], noShows: [] };
     }
 
-    // --- mese precedente (solo Head Coach, solo no-shows non submitted) ---
-    if (role === "Head Coach") {
-      const callsPrev = tracker.filter(t => {
-        const sid = String(t[idxTStud]).trim();
-        const d   = t[idxTDate] instanceof Date ? t[idxTDate] : null;
-        return sid === String(studentId) &&
-               d && d.getMonth() === prevMonth.getMonth() && d.getFullYear() === prevMonth.getFullYear();
-      });
+    const Hc = getHeaders(contractsSheet);
+    const Ht = getHeaders(trackerSheet);
+    const Hs = getHeaders(studentsSheet);
+    const Hrc = rcSheet ? getHeaders(rcSheet) : [];
 
-      if (callsPrev.length === 0 && !isNoShowSubmitted(studentId, contractId, prevMonth.getMonth(), prevMonth.getFullYear())) {
-        noShows.push({
-          studentId,
-          contractId,
-          name,
-          surname,
-          cadencyMonths: cadency,
-          recipients,
-          alreadySubmitted: false,
-          period: "previous"
+    const contracts = getBodyValues(contractsSheet);
+    const tracker = getBodyValues(trackerSheet);
+    const students = getBodyValues(studentsSheet);
+    const rcData = rcSheet ? getBodyValues(rcSheet) : [];
+
+    // index Contracts
+    const idxContrId = Hc.indexOf("Contract ID");
+    const idxStudId = Hc.indexOf("Student ID");
+    const idxCadency = Hc.indexOf("Report Card Cadency");
+    const idxStartDate = Hc.indexOf("Report Card Start Date");
+    const idxEmails = Hc.indexOf("Report Card Email Recipient(s)");
+
+    // index Tracker
+    const idxTDate = Ht.indexOf("Date");
+    const idxTStud = Ht.indexOf("Student ID");
+    const idxTCoach = Ht.indexOf("Coach ID");
+
+    // index Students
+    const idxSId = Hs.indexOf("Student ID");
+    const idxSName = Hs.indexOf("Name");
+    const idxSSurn = Hs.indexOf("Surname");
+
+    // index Report Cards
+    const idxRcStud = Hrc.indexOf("Student ID");
+    const idxRcContr = Hrc.indexOf("Contract ID");
+    const idxRcReport = Hrc.indexOf("Report");
+    const idxRcDate = Hrc.indexOf("Date");
+
+    function isNoShowSubmitted(sid, cid, month, year) {
+        return rcData.some(r => {
+            const rep = String(r[idxRcReport] || "").trim();
+            const d = r[idxRcDate] instanceof Date ? r[idxRcDate] : null;
+            return String(r[idxRcStud]) === String(sid) &&
+                String(r[idxRcContr]) === String(cid) &&
+                rep === "No-show" &&
+                d && d.getMonth() === month && d.getFullYear() === year;
         });
-      }
-
     }
 
-    seenStudents.add(String(studentId));
-  });
+    function isDraftedThisMonth(sid, cid, year, month) {
+        return rcData.some(r => {
+            const rep = String(r[idxRcReport] || "").trim();
+            const d = r[idxRcDate] instanceof Date ? r[idxRcDate] : new Date(r[idxRcDate]);
+            if (!d || isNaN(d)) return false;
+            return (
+                String(r[idxRcStud]) === String(sid) &&
+                String(r[idxRcContr]) === String(cid) &&
+                rep && rep !== "No-show" &&
+                d.getFullYear() === year && d.getMonth() === month
+            );
+        });
+    }
 
-  return { success: true, tasks: out, noShows };
+    const tz = Session.getScriptTimeZone() || "Europe/Rome";
+    const today = new Date();
+    const prevMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+
+    const out = [];
+    const noShows = [];
+    const seenStudents = new Set();
+
+    // ruolo coach
+    const coachesSheet = ss.getSheetByName("Coaches");
+    const Hco = getHeaders(coachesSheet);
+    const rowsCoaches = getBodyValues(coachesSheet);
+    const idxCId = Hco.indexOf("Coach ID");
+    const idxRole = Hco.indexOf("Role");
+    const rowCoach = rowsCoaches.find(r => String(r[idxCId]) === String(coachId));
+    const role = rowCoach ? String(rowCoach[idxRole] || "").trim() : "";
+
+    contracts.forEach(c => {
+        const studentId = c[idxStudId];
+        const contractId = c[idxContrId];
+        const cadency = Number(c[idxCadency] || 0);
+        const startDate = c[idxStartDate] instanceof Date ? c[idxStartDate] : null;
+        const recipients = c[idxEmails] || "";
+
+        if (!studentId || !contractId || !cadency || !startDate) return;
+        if (seenStudents.has(String(studentId))) return;
+
+        const monthsDiff = (today.getFullYear() - startDate.getFullYear()) * 12 +
+            (today.getMonth() - startDate.getMonth());
+        if (monthsDiff < 0) return;
+        if (monthsDiff % cadency !== 0) return;
+
+        const srow = students.find(s => String(s[idxSId]).trim() === String(studentId));
+        const name = srow ? srow[idxSName] : "";
+        const surname = srow ? srow[idxSSurn] : "";
+
+        // --- mese corrente ---
+        const calls = tracker.filter(t => {
+            const sid = String(t[idxTStud]).trim();
+            const cid = String(t[idxTCoach]).trim();
+            const d = t[idxTDate] instanceof Date ? t[idxTDate] : null;
+            return sid === String(studentId) &&
+                cid === String(coachId) &&
+                d && d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
+        });
+
+        const callsAll = tracker.filter(t => {
+            const sid = String(t[idxTStud]).trim();
+            const d = t[idxTDate] instanceof Date ? t[idxTDate] : null;
+            return sid === String(studentId) &&
+                d && d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
+        });
+
+        if (calls.length > 0) {
+            out.push({
+                studentId,
+                contractId,
+                name,
+                surname,
+                cadencyMonths: cadency,
+                recipients,
+                calls: calls.length,
+                alreadyDrafted: isDraftedThisMonth(studentId, contractId)
+            });
+        } else if (callsAll.length === 0 && role === "Head Coach") {
+            noShows.push({
+                studentId,
+                contractId,
+                name,
+                surname,
+                cadencyMonths: cadency,
+                recipients,
+                alreadySubmitted: isNoShowSubmitted(studentId, contractId),
+                period: "current"
+            });
+        }
+
+        // --- mese precedente (solo Head Coach, solo no-shows non submitted) ---
+        if (role === "Head Coach") {
+            const callsPrev = tracker.filter(t => {
+                const sid = String(t[idxTStud]).trim();
+                const d = t[idxTDate] instanceof Date ? t[idxTDate] : null;
+                return sid === String(studentId) &&
+                    d && d.getMonth() === prevMonth.getMonth() && d.getFullYear() === prevMonth.getFullYear();
+            });
+
+            if (callsPrev.length === 0 && !isNoShowSubmitted(studentId, contractId, prevMonth.getMonth(), prevMonth.getFullYear())) {
+                noShows.push({
+                    studentId,
+                    contractId,
+                    name,
+                    surname,
+                    cadencyMonths: cadency,
+                    recipients,
+                    alreadySubmitted: false,
+                    period: "previous"
+                });
+            }
+
+        }
+
+        seenStudents.add(String(studentId));
+    });
+
+    return { success: true, tasks: out, noShows };
 }
 
 function getStudentCallsForMonth(studentId, coachId, ss) {
-  const tracker = ss.getSheetByName("Tracker");
-  if (!tracker) return { success: true, calls: [] };
+    const tracker = ss.getSheetByName("Tracker");
+    if (!tracker) return { success: true, calls: [] };
 
-  const Ht = getHeaders(tracker);
-  const rows = getBodyValues(tracker);
+    const Ht = getHeaders(tracker);
+    const rows = getBodyValues(tracker);
 
-  const idxTDate  = Ht.indexOf("Date");
-  const idxTStud  = Ht.indexOf("Student ID");
-  const idxTCoach = Ht.indexOf("Coach ID");
-  const idxTAtt   = Ht.indexOf("Attendance");
+    const idxTDate = Ht.indexOf("Date");
+    const idxTStud = Ht.indexOf("Student ID");
+    const idxTCoach = Ht.indexOf("Coach ID");
+    const idxTAtt = Ht.indexOf("Attendance");
 
-  const tz = Session.getScriptTimeZone() || "Europe/Rome";
-  const today = new Date();
+    const tz = Session.getScriptTimeZone() || "Europe/Rome";
+    const today = new Date();
 
-  // solo mese e anno correnti
-  const calls = rows
-    .filter(r => {
-      const sid = String(r[idxTStud]).trim();
-      const cid = String(r[idxTCoach]).trim();
-      const d = r[idxTDate] instanceof Date ? r[idxTDate] : null;
-      return sid === String(studentId) &&
-             cid === String(coachId) &&
-             d && d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
-    })
-    .map(r => {
-      const d = r[idxTDate] instanceof Date ? r[idxTDate] : null;
-      return {
-        date: d ? Utilities.formatDate(d, tz, "yyyy-MM-dd") : "",
-        attendance: idxTAtt !== -1 ? (r[idxTAtt] || "") : ""
-      };
-    });
+    // solo mese e anno correnti
+    const calls = rows
+        .filter(r => {
+            const sid = String(r[idxTStud]).trim();
+            const cid = String(r[idxTCoach]).trim();
+            const d = r[idxTDate] instanceof Date ? r[idxTDate] : null;
+            return sid === String(studentId) &&
+                cid === String(coachId) &&
+                d && d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
+        })
+        .map(r => {
+            const d = r[idxTDate] instanceof Date ? r[idxTDate] : null;
+            return {
+                date: d ? Utilities.formatDate(d, tz, "yyyy-MM-dd") : "",
+                attendance: idxTAtt !== -1 ? (r[idxTAtt] || "") : ""
+            };
+        });
 
-  return { success: true, calls };
+    return { success: true, calls };
 }
 
 function getReportCardDrafts(coachId, ss) {
-  const rcSheet = ss.getSheetByName("Report Cards");
-  const studentsSheet = ss.getSheetByName("Students");
-  if (!rcSheet) return { success: true, drafts: [] };
+    const rcSheet = ss.getSheetByName("Report Cards");
+    const studentsSheet = ss.getSheetByName("Students");
+    if (!rcSheet) return { success: true, drafts: [] };
 
-  const H = getHeaders(rcSheet);
-  const rows = getBodyValues(rcSheet);
+    const H = getHeaders(rcSheet);
+    const rows = getBodyValues(rcSheet);
 
-  const Hs = studentsSheet ? getHeaders(studentsSheet) : [];
-  const students = studentsSheet ? getBodyValues(studentsSheet) : [];
+    const Hs = studentsSheet ? getHeaders(studentsSheet) : [];
+    const students = studentsSheet ? getBodyValues(studentsSheet) : [];
 
-  const idxRcStud   = H.indexOf("Student ID");
-  const idxRcContr  = H.indexOf("Contract ID");
-  const idxRcCoach  = H.indexOf("Coach ID");
-  const idxRcAtt    = H.indexOf("Attendance");
-  const idxRcReport = H.indexOf("Report");
-  const idxRcDate   = H.indexOf("Date");
-  const idxRcSent   = H.indexOf("Sent");
+    const idxRcStud = H.indexOf("Student ID");
+    const idxRcContr = H.indexOf("Contract ID");
+    const idxRcCoach = H.indexOf("Coach ID");
+    const idxRcAtt = H.indexOf("Attendance");
+    const idxRcReport = H.indexOf("Report");
+    const idxRcDate = H.indexOf("Date");
+    const idxRcSent = H.indexOf("Sent");
 
-  const idxSId   = Hs.indexOf("Student ID");
-  const idxSName = Hs.indexOf("Name");
-  const idxSSurn = Hs.indexOf("Surname");
+    const idxSId = Hs.indexOf("Student ID");
+    const idxSName = Hs.indexOf("Name");
+    const idxSSurn = Hs.indexOf("Surname");
 
-  // mappa per nome/cognome
-  const sMap = {};
-  students.forEach(r => {
-    const sid = String(r[idxSId] || "").trim();
-    if (sid) sMap[sid] = {
-      name: (idxSName !== -1 ? r[idxSName] : ""),
-      surname: (idxSSurn !== -1 ? r[idxSSurn] : "")
-    };
-  });
-
-  const isHeadCoach = String(coachId).toUpperCase() === "JJ";
-
-  const drafts = rows
-    // se non head coach, filtra solo le proprie
-    .filter(r => {
-      if (isHeadCoach) return true;
-      return (idxRcCoach === -1) ? true : String(r[idxRcCoach]) === String(coachId);
-    })
-    // report non vuoto né “No-show”
-    .filter(r => {
-      const report = String(idxRcReport !== -1 ? (r[idxRcReport] || "") : "").trim();
-      return report && report !== "No-show";
-    })
-    // escludi quelle già inviate (Sent = YES)
-    .filter(r => {
-      return !(idxRcSent !== -1 && String(r[idxRcSent] || "").trim().toUpperCase() === "YES");
-    })
-    // mappa oggetti per frontend
-    .map(r => {
-      const sid = r[idxRcStud];
-      const sInfo = sMap[sid] || {};
-      return {
-        studentId: sid,
-        contractId: idxRcContr !== -1 ? r[idxRcContr] : "",
-        name: sInfo.name,
-        surname: sInfo.surname,
-        dateISO: (idxRcDate !== -1 ? r[idxRcDate] : ""),
-        attendance: (idxRcAtt !== -1 ? r[idxRcAtt] : ""),
-        report: (idxRcReport !== -1 ? r[idxRcReport] : ""),
-        sent: (idxRcSent !== -1 ? String(r[idxRcSent] || "").trim().toUpperCase() === "YES" : false)
-      };
+    // mappa per nome/cognome
+    const sMap = {};
+    students.forEach(r => {
+        const sid = String(r[idxSId] || "").trim();
+        if (sid) sMap[sid] = {
+            name: (idxSName !== -1 ? r[idxSName] : ""),
+            surname: (idxSSurn !== -1 ? r[idxSSurn] : "")
+        };
     });
-  return { success: true, drafts };
+
+    const isHeadCoach = String(coachId).toUpperCase() === "JJ";
+
+    const drafts = rows
+        // se non head coach, filtra solo le proprie
+        .filter(r => {
+            if (isHeadCoach) return true;
+            return (idxRcCoach === -1) ? true : String(r[idxRcCoach]) === String(coachId);
+        })
+        // report non vuoto né “No-show”
+        .filter(r => {
+            const report = String(idxRcReport !== -1 ? (r[idxRcReport] || "") : "").trim();
+            return report && report !== "No-show";
+        })
+        // escludi quelle già inviate (Sent = YES)
+        .filter(r => {
+            return !(idxRcSent !== -1 && String(r[idxRcSent] || "").trim().toUpperCase() === "YES");
+        })
+        // mappa oggetti per frontend
+        .map(r => {
+            const sid = r[idxRcStud];
+            const sInfo = sMap[sid] || {};
+            return {
+                studentId: sid,
+                contractId: idxRcContr !== -1 ? r[idxRcContr] : "",
+                name: sInfo.name,
+                surname: sInfo.surname,
+                dateISO: (idxRcDate !== -1 ? r[idxRcDate] : ""),
+                attendance: (idxRcAtt !== -1 ? r[idxRcAtt] : ""),
+                report: (idxRcReport !== -1 ? r[idxRcReport] : ""),
+                sent: (idxRcSent !== -1 ? String(r[idxRcSent] || "").trim().toUpperCase() === "YES" : false)
+            };
+        });
+    return { success: true, drafts };
 }
 
 function getReportCardHistory(coachId, ss) {
-  const rcSheet = ss.getSheetByName("Report Cards");
-  const studentsSheet = ss.getSheetByName("Students");
-  if (!rcSheet) return { success: true, history: [] };
+    const rcSheet = ss.getSheetByName("Report Cards");
+    const studentsSheet = ss.getSheetByName("Students");
+    if (!rcSheet) return { success: true, history: [] };
 
-  const H = getHeaders(rcSheet);
-  const rows = getBodyValues(rcSheet);
+    const H = getHeaders(rcSheet);
+    const rows = getBodyValues(rcSheet);
 
-  const Hs = studentsSheet ? getHeaders(studentsSheet) : [];
-  const students = studentsSheet ? getBodyValues(studentsSheet) : [];
+    const Hs = studentsSheet ? getHeaders(studentsSheet) : [];
+    const students = studentsSheet ? getBodyValues(studentsSheet) : [];
 
-  const idxRcStud   = H.indexOf("Student ID");
-  const idxRcContr  = H.indexOf("Contract ID");
-  const idxRcCoach  = H.indexOf("Coach ID");
-  const idxRcAtt    = H.indexOf("Attendance");
-  const idxRcReport = H.indexOf("Report");
-  const idxRcDate   = H.indexOf("Date");
-  const idxRcSent   = H.indexOf("Sent");
+    const idxRcStud = H.indexOf("Student ID");
+    const idxRcContr = H.indexOf("Contract ID");
+    const idxRcCoach = H.indexOf("Coach ID");
+    const idxRcAtt = H.indexOf("Attendance");
+    const idxRcReport = H.indexOf("Report");
+    const idxRcDate = H.indexOf("Date");
+    const idxRcSent = H.indexOf("Sent");
 
-  const idxSId   = Hs.indexOf("Student ID");
-  const idxSName = Hs.indexOf("Name");
-  const idxSSurn = Hs.indexOf("Surname");
+    const idxSId = Hs.indexOf("Student ID");
+    const idxSName = Hs.indexOf("Name");
+    const idxSSurn = Hs.indexOf("Surname");
 
-  const sMap = {};
-  students.forEach(r => {
-    const sid = String(r[idxSId] || "").trim();
-    if (sid) sMap[sid] = {
-      name: (idxSName !== -1 ? r[idxSName] : ""),
-      surname: (idxSSurn !== -1 ? r[idxSSurn] : "")
-    };
-  });
+    const sMap = {};
+    students.forEach(r => {
+        const sid = String(r[idxSId] || "").trim();
+        if (sid) sMap[sid] = {
+            name: (idxSName !== -1 ? r[idxSName] : ""),
+            surname: (idxSSurn !== -1 ? r[idxSSurn] : "")
+        };
+    });
 
-  const isHeadCoach = String(coachId).toUpperCase() === "JJ";
+    const isHeadCoach = String(coachId).toUpperCase() === "JJ";
 
-  const history = rows
-    .filter(r => {
-      if (isHeadCoach) return true;
-      return (idxRcCoach === -1) ? true : String(r[idxRcCoach]) === String(coachId);
-    })
-    .map(r => {
-      const sid = r[idxRcStud];
-      const sInfo = sMap[sid] || {};
-      return {
-        studentId: sid,
-        contractId: idxRcContr !== -1 ? r[idxRcContr] : "",
-        name: sInfo.name,
-        surname: sInfo.surname,
-        dateISO: (idxRcDate !== -1 ? r[idxRcDate] : ""),
-        attendance: (idxRcAtt !== -1 ? r[idxRcAtt] : ""),
-        report: (idxRcReport !== -1 ? r[idxRcReport] : ""),
-        sent: (idxRcSent !== -1 ? String(r[idxRcSent] || "").trim().toUpperCase() === "YES" : false)
-      };
-    })
-    .sort((a, b) => String(b.dateISO).localeCompare(String(a.dateISO)));
+    const history = rows
+        .filter(r => {
+            if (isHeadCoach) return true;
+            return (idxRcCoach === -1) ? true : String(r[idxRcCoach]) === String(coachId);
+        })
+        .map(r => {
+            const sid = r[idxRcStud];
+            const sInfo = sMap[sid] || {};
+            return {
+                studentId: sid,
+                contractId: idxRcContr !== -1 ? r[idxRcContr] : "",
+                name: sInfo.name,
+                surname: sInfo.surname,
+                dateISO: (idxRcDate !== -1 ? r[idxRcDate] : ""),
+                attendance: (idxRcAtt !== -1 ? r[idxRcAtt] : ""),
+                report: (idxRcReport !== -1 ? r[idxRcReport] : ""),
+                sent: (idxRcSent !== -1 ? String(r[idxRcSent] || "").trim().toUpperCase() === "YES" : false)
+            };
+        })
+        .sort((a, b) => String(b.dateISO).localeCompare(String(a.dateISO)));
 
-  return { success: true, history };
+    return { success: true, history };
 }
 
 function submitReportCard(studentId, contractId, coachId, attendance, report, ss) {
-  const rcSheet = ss.getSheetByName("Report Cards");
-  if (!rcSheet) return { success: false, error: "Sheet Report Cards not found" };
+    const rcSheet = ss.getSheetByName("Report Cards");
+    if (!rcSheet) return { success: false, error: "Sheet Report Cards not found" };
 
-  const H = getHeaders(rcSheet);
-  const data = getBodyValues(rcSheet);
+    const H = getHeaders(rcSheet);
+    const data = getBodyValues(rcSheet);
 
-  const idxStud   = H.indexOf("Student ID");
-  const idxContr  = H.indexOf("Contract ID");
-  const idxCoach  = H.indexOf("Coach ID");
-  const idxAtt    = H.indexOf("Attendance");
-  const idxReport = H.indexOf("Report");
-  const idxDate   = H.indexOf("Date");
-  const idxSent   = H.indexOf("Sent");
+    const idxStud = H.indexOf("Student ID");
+    const idxContr = H.indexOf("Contract ID");
+    const idxCoach = H.indexOf("Coach ID");
+    const idxAtt = H.indexOf("Attendance");
+    const idxReport = H.indexOf("Report");
+    const idxDate = H.indexOf("Date");
+    const idxSent = H.indexOf("Sent");
 
-  const tz = Session.getScriptTimeZone() || "Europe/Rome";
-  const now = new Date();
-  const todayStr   = Utilities.formatDate(now, tz, "yyyy-MM-dd");
-  const thisYear   = now.getFullYear();
-  const thisMonth  = now.getMonth();
-  const thisPeriod = `${thisYear}-${String(thisMonth + 1).padStart(2, "0")}`; // "YYYY-MM"
+    const tz = Session.getScriptTimeZone() || "Europe/Rome";
+    const now = new Date();
+    const todayStr = Utilities.formatDate(now, tz, "yyyy-MM-dd");
+    const thisYear = now.getFullYear();
+    const thisMonth = now.getMonth();
+    const thisPeriod = `${thisYear}-${String(thisMonth + 1).padStart(2, "0")}`; // "YYYY-MM"
 
-  // helper robusto
-  function sameYearMonth(cell, year, month, periodStr) {
-    if (cell instanceof Date) {
-      return cell.getFullYear() === year && cell.getMonth() === month;
+    // helper robusto
+    function sameYearMonth(cell, year, month, periodStr) {
+        if (cell instanceof Date) {
+            return cell.getFullYear() === year && cell.getMonth() === month;
+        }
+        const str = String(cell || "").trim();
+        if (/^\d{4}-\d{2}/.test(str)) {
+            return str.startsWith(periodStr);
+        }
+        const parsed = new Date(str);
+        return !isNaN(parsed) &&
+            parsed.getFullYear() === year &&
+            parsed.getMonth() === month;
     }
-    const str = String(cell || "").trim();
-    if (/^\d{4}-\d{2}/.test(str)) {
-      return str.startsWith(periodStr);
+
+    // cerca riga esistente SOLO nello stesso mese
+    let rowIndex = data.findIndex(r =>
+        String(r[idxStud]) === String(studentId) &&
+        String(r[idxContr]) === String(contractId) &&
+        String(r[idxCoach]) === String(coachId) &&
+        sameYearMonth(r[idxDate], thisYear, thisMonth, thisPeriod)
+    );
+
+    if (rowIndex === -1) {
+        // ➕ nuova riga
+        const newRow = new Array(H.length).fill("");
+        put(H, newRow, "Student ID", studentId);
+        put(H, newRow, "Contract ID", contractId);
+        put(H, newRow, "Coach ID", coachId);
+        put(H, newRow, "Attendance", attendance);
+        put(H, newRow, "Report", report);
+        put(H, newRow, "Date", todayStr);
+        put(H, newRow, "Sent", "NO");
+        rcSheet.appendRow(newRow);
+    } else {
+        // ✏️ aggiorna solo la riga del mese corrente
+        const targetRow = rowIndex + 2; // header + offset
+        if (idxAtt !== -1) rcSheet.getRange(targetRow, idxAtt + 1).setValue(attendance);
+        if (idxReport !== -1) rcSheet.getRange(targetRow, idxReport + 1).setValue(report);
+        if (idxDate !== -1) rcSheet.getRange(targetRow, idxDate + 1).setValue(todayStr);
     }
-    const parsed = new Date(str);
-    return !isNaN(parsed) &&
-           parsed.getFullYear() === year &&
-           parsed.getMonth() === month;
-  }
 
-  // cerca riga esistente SOLO nello stesso mese
-  let rowIndex = data.findIndex(r =>
-    String(r[idxStud])  === String(studentId) &&
-    String(r[idxContr]) === String(contractId) &&
-    String(r[idxCoach]) === String(coachId) &&
-    sameYearMonth(r[idxDate], thisYear, thisMonth, thisPeriod)
-  );
-
-  if (rowIndex === -1) {
-    // ➕ nuova riga
-    const newRow = new Array(H.length).fill("");
-    put(H, newRow, "Student ID", studentId);
-    put(H, newRow, "Contract ID", contractId);
-    put(H, newRow, "Coach ID", coachId);
-    put(H, newRow, "Attendance", attendance);
-    put(H, newRow, "Report", report);
-    put(H, newRow, "Date", todayStr);
-    put(H, newRow, "Sent", "NO");
-    rcSheet.appendRow(newRow);
-  } else {
-    // ✏️ aggiorna solo la riga del mese corrente
-    const targetRow = rowIndex + 2; // header + offset
-    if (idxAtt    !== -1) rcSheet.getRange(targetRow, idxAtt + 1).setValue(attendance);
-    if (idxReport !== -1) rcSheet.getRange(targetRow, idxReport + 1).setValue(report);
-    if (idxDate   !== -1) rcSheet.getRange(targetRow, idxDate + 1).setValue(todayStr);
-  }
-
-  return { success: true };
+    return { success: true };
 }
 
 function generateReportCardText_(payload) {
-  var apiKey = PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');
-  if (!apiKey) {
-    return { success: false, error: 'Missing GEMINI_API_KEY in Script Properties' };
-  }
+    var apiKey = PropertiesService.getScriptProperties().getProperty('GEMINI_API_KEY');
+    if (!apiKey) {
+        return { success: false, error: 'Missing GEMINI_API_KEY in Script Properties' };
+    }
 
-  var mode        = payload.mode || 'suggest';       // 'suggest' | 'refine'
-  var studentId   = payload.studentId || '';
-  var studentName = payload.studentName || 'Student';
-  var attendance  = payload.attendance || '';
-  var coachId     = payload.coachId || '';
-  var currentText = payload.currentText || '';
+    var mode = payload.mode || 'suggest';       // 'suggest' | 'refine'
+    var studentId = payload.studentId || '';
+    var studentName = payload.studentName || 'Student';
+    var attendance = payload.attendance || '';
+    var coachId = payload.coachId || '';
+    var currentText = payload.currentText || '';
 
-  // Prompt di sistema (sempre in inglese, chiaro e corto)
-  var systemPrompt = `
+    // Prompt di sistema (sempre in inglese, chiaro e corto)
+    var systemPrompt = `
   You are an assistant that helps refine report card notes written by a coach for student ${studentName}.
   Coach notes: "${currentText}"
 
@@ -1047,375 +1047,375 @@ function generateReportCardText_(payload) {
   - Output ONLY the final refined text, no explanations.
   `;
 
-  // Prompt utente (diverso se è refine o suggest)
-  var userPrompt =
-    'Student name: ' + studentName + '\n' +
-    (attendance ? ('Attendance: ' + attendance + '\n') : '') +
-    (mode === 'refine'
-      ? ('Current draft (refine/improve it):\n' + currentText + '\n')
-      : 'No draft provided; generate a fresh note based on general progress.\n') +
-    'Constraints:\n' +
-    '- 2–3 short paragraphs, max 6 sentences total\n' +
-    '- Include at least one concrete area to reinforce next time\n' +
-    '- No bullet points\n' +
-    '- Output in English only';
+    // Prompt utente (diverso se è refine o suggest)
+    var userPrompt =
+        'Student name: ' + studentName + '\n' +
+        (attendance ? ('Attendance: ' + attendance + '\n') : '') +
+        (mode === 'refine'
+            ? ('Current draft (refine/improve it):\n' + currentText + '\n')
+            : 'No draft provided; generate a fresh note based on general progress.\n') +
+        'Constraints:\n' +
+        '- 2–3 short paragraphs, max 6 sentences total\n' +
+        '- Include at least one concrete area to reinforce next time\n' +
+        '- No bullet points\n' +
+        '- Output in English only';
 
-  var url = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=' + encodeURIComponent(apiKey);
-  var body = {
-    contents: [
-      { role: 'user', parts: [ { text: systemPrompt + '\n\n' + userPrompt } ] }
-    ]
-  };
+    var url = 'https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=' + encodeURIComponent(apiKey);
+    var body = {
+        contents: [
+            { role: 'user', parts: [{ text: systemPrompt + '\n\n' + userPrompt }] }
+        ]
+    };
 
-  var res = UrlFetchApp.fetch(url, {
-    method: 'post',
-    contentType: 'application/json',
-    payload: JSON.stringify(body),
-    muteHttpExceptions: true
-  });
+    var res = UrlFetchApp.fetch(url, {
+        method: 'post',
+        contentType: 'application/json',
+        payload: JSON.stringify(body),
+        muteHttpExceptions: true
+    });
 
-  var code = res.getResponseCode();
-  if (code < 200 || code >= 300) {
-    return { success: false, error: 'Gemini HTTP ' + code + ': ' + res.getContentText() };
-  }
+    var code = res.getResponseCode();
+    if (code < 200 || code >= 300) {
+        return { success: false, error: 'Gemini HTTP ' + code + ': ' + res.getContentText() };
+    }
 
-  var json = JSON.parse(res.getContentText());
-  var text = '';
-  try {
-    text = (json.candidates && json.candidates[0].content.parts[0].text) || '';
-  } catch (_) {}
+    var json = JSON.parse(res.getContentText());
+    var text = '';
+    try {
+        text = (json.candidates && json.candidates[0].content.parts[0].text) || '';
+    } catch (_) { }
 
-  if (!text) return { success: false, error: 'Empty response from Gemini' };
-  return { success: true, suggestion: text.trim() };
+    if (!text) return { success: false, error: 'Empty response from Gemini' };
+    return { success: true, suggestion: text.trim() };
 }
 
 function submitNoShowReport(studentId, contractId, coachId, ss) {
-  const rcSheet = ss.getSheetByName("Report Cards");
-  if (!rcSheet) return { success: false, error: "Sheet Report Cards not found" };
+    const rcSheet = ss.getSheetByName("Report Cards");
+    if (!rcSheet) return { success: false, error: "Sheet Report Cards not found" };
 
-  const H = getHeaders(rcSheet);
-  const data = getBodyValues(rcSheet);
+    const H = getHeaders(rcSheet);
+    const data = getBodyValues(rcSheet);
 
-  const idxStud   = H.indexOf("Student ID");
-  const idxContr  = H.indexOf("Contract ID");
-  const idxCoach  = H.indexOf("Coach ID");
-  const idxAtt    = H.indexOf("Attendance");
-  const idxReport = H.indexOf("Report");
-  const idxDate   = H.indexOf("Date");
+    const idxStud = H.indexOf("Student ID");
+    const idxContr = H.indexOf("Contract ID");
+    const idxCoach = H.indexOf("Coach ID");
+    const idxAtt = H.indexOf("Attendance");
+    const idxReport = H.indexOf("Report");
+    const idxDate = H.indexOf("Date");
 
-  const tz = Session.getScriptTimeZone() || "Europe/Rome";
-  const now = new Date();
-  const todayStr = Utilities.formatDate(now, tz, "yyyy-MM-dd");
-  const todayYear = now.getFullYear();
-  const todayMonth = now.getMonth();
+    const tz = Session.getScriptTimeZone() || "Europe/Rome";
+    const now = new Date();
+    const todayStr = Utilities.formatDate(now, tz, "yyyy-MM-dd");
+    const todayYear = now.getFullYear();
+    const todayMonth = now.getMonth();
 
-  // cerca se esiste già una riga nello stesso mese
-  let rowIndex = data.findIndex(r => {
-    let d = r[idxDate];
-    if (!(d instanceof Date)) {
-      d = new Date(d);
-      if (isNaN(d)) return false;
+    // cerca se esiste già una riga nello stesso mese
+    let rowIndex = data.findIndex(r => {
+        let d = r[idxDate];
+        if (!(d instanceof Date)) {
+            d = new Date(d);
+            if (isNaN(d)) return false;
+        }
+        const sameMonth = d.getFullYear() === todayYear && d.getMonth() === todayMonth;
+        return (
+            String(r[idxStud]) === String(studentId) &&
+            String(r[idxContr]) === String(contractId) &&
+            String(r[idxCoach]) === String(coachId) &&
+            sameMonth
+        );
+    });
+
+    let status = "new";
+
+    if (rowIndex === -1) {
+        // ➕ nuova riga (mese nuovo o primo inserimento)
+        const newRow = new Array(H.length).fill("");
+        put(H, newRow, "Student ID", studentId);
+        put(H, newRow, "Contract ID", contractId);
+        put(H, newRow, "Coach ID", coachId);
+        put(H, newRow, "Attendance", "NO");
+        put(H, newRow, "Report", "No-show");
+        put(H, newRow, "Date", todayStr);
+        rcSheet.appendRow(newRow);
+        status = "inserted";
+    } else {
+        // ✏️ aggiorna riga esistente nello stesso mese
+        const targetRow = rowIndex + 2;
+        if (idxAtt !== -1) rcSheet.getRange(targetRow, idxAtt + 1).setValue("NO");
+        if (idxReport !== -1) rcSheet.getRange(targetRow, idxReport + 1).setValue("No-show");
+        if (idxDate !== -1) rcSheet.getRange(targetRow, idxDate + 1).setValue(todayStr);
+        status = "updated";
     }
-    const sameMonth = d.getFullYear() === todayYear && d.getMonth() === todayMonth;
-    return (
-      String(r[idxStud]) === String(studentId) &&
-      String(r[idxContr]) === String(contractId) &&
-      String(r[idxCoach]) === String(coachId) &&
-      sameMonth
-    );
-  });
 
-  let status = "new";
-
-  if (rowIndex === -1) {
-    // ➕ nuova riga (mese nuovo o primo inserimento)
-    const newRow = new Array(H.length).fill("");
-    put(H, newRow, "Student ID", studentId);
-    put(H, newRow, "Contract ID", contractId);
-    put(H, newRow, "Coach ID", coachId);
-    put(H, newRow, "Attendance", "NO");
-    put(H, newRow, "Report", "No-show");
-    put(H, newRow, "Date", todayStr);
-    rcSheet.appendRow(newRow);
-    status = "inserted";
-  } else {
-    // ✏️ aggiorna riga esistente nello stesso mese
-    const targetRow = rowIndex + 2;
-    if (idxAtt !== -1) rcSheet.getRange(targetRow, idxAtt + 1).setValue("NO");
-    if (idxReport !== -1) rcSheet.getRange(targetRow, idxReport + 1).setValue("No-show");
-    if (idxDate !== -1) rcSheet.getRange(targetRow, idxDate + 1).setValue(todayStr);
-    status = "updated";
-  }
-
-  return { success: true, status };
+    return { success: true, status };
 }
 
 function handleReportCardSubmission(data, ss) {
-  const { studentId, contractId, coachId, attendance, report } = data;
-  return submitReportCard(studentId, contractId, coachId, attendance, report, ss);
+    const { studentId, contractId, coachId, attendance, report } = data;
+    return submitReportCard(studentId, contractId, coachId, attendance, report, ss);
 }
 
 function handleNoShowSubmission(data, ss) {
-  const { studentId, contractId, coachId } = data;
-  return submitNoShowReport(studentId, contractId, coachId, ss);
+    const { studentId, contractId, coachId } = data;
+    return submitNoShowReport(studentId, contractId, coachId, ss);
 }
 
 function sendReportCard(studentId, contractId, coachId, ss) {
-  const rcSheet = ss.getSheetByName("Report Cards");
-  if (!rcSheet) return { success: false, error: "Sheet Report Cards not found" };
+    const rcSheet = ss.getSheetByName("Report Cards");
+    if (!rcSheet) return { success: false, error: "Sheet Report Cards not found" };
 
-  const H = getHeaders(rcSheet);
-  const data = getBodyValues(rcSheet);
+    const H = getHeaders(rcSheet);
+    const data = getBodyValues(rcSheet);
 
-  const idxStud   = H.indexOf("Student ID");
-  const idxContr  = H.indexOf("Contract ID");
-  const idxCoach  = H.indexOf("Coach ID");
-  const idxDate   = H.indexOf("Date");
-  const idxSent   = H.indexOf("Sent");
+    const idxStud = H.indexOf("Student ID");
+    const idxContr = H.indexOf("Contract ID");
+    const idxCoach = H.indexOf("Coach ID");
+    const idxDate = H.indexOf("Date");
+    const idxSent = H.indexOf("Sent");
 
-  const tz = Session.getScriptTimeZone() || "Europe/Rome";
-  const now = new Date();
-  const thisYear   = now.getFullYear();
-  const thisMonth  = now.getMonth();
-  const thisPeriod = `${thisYear}-${String(thisMonth + 1).padStart(2, "0")}`;
+    const tz = Session.getScriptTimeZone() || "Europe/Rome";
+    const now = new Date();
+    const thisYear = now.getFullYear();
+    const thisMonth = now.getMonth();
+    const thisPeriod = `${thisYear}-${String(thisMonth + 1).padStart(2, "0")}`;
 
-  function sameYearMonth(cell, year, month, periodStr) {
-    if (cell instanceof Date) {
-      return cell.getFullYear() === year && cell.getMonth() === month;
+    function sameYearMonth(cell, year, month, periodStr) {
+        if (cell instanceof Date) {
+            return cell.getFullYear() === year && cell.getMonth() === month;
+        }
+        const str = String(cell || "").trim();
+        if (/^\d{4}-\d{2}/.test(str)) {
+            return str.startsWith(periodStr);
+        }
+        const parsed = new Date(str);
+        return !isNaN(parsed) &&
+            parsed.getFullYear() === year &&
+            parsed.getMonth() === month;
     }
-    const str = String(cell || "").trim();
-    if (/^\d{4}-\d{2}/.test(str)) {
-      return str.startsWith(periodStr);
+
+    let rowIndex = data.findIndex(r =>
+        String(r[idxStud]) === String(studentId) &&
+        String(r[idxContr]) === String(contractId) &&
+        String(r[idxCoach]) === String(coachId) &&
+        sameYearMonth(r[idxDate], thisYear, thisMonth, thisPeriod)
+    );
+
+    if (rowIndex === -1) {
+        return { success: false, error: "Report card non trovata per questo mese" };
     }
-    const parsed = new Date(str);
-    return !isNaN(parsed) &&
-           parsed.getFullYear() === year &&
-           parsed.getMonth() === month;
-  }
 
-  let rowIndex = data.findIndex(r =>
-    String(r[idxStud])  === String(studentId) &&
-    String(r[idxContr]) === String(contractId) &&
-    String(r[idxCoach]) === String(coachId) &&
-    sameYearMonth(r[idxDate], thisYear, thisMonth, thisPeriod)
-  );
+    const targetRow = rowIndex + 2; // header + offset
+    if (idxSent !== -1) rcSheet.getRange(targetRow, idxSent + 1).setValue("YES");
 
-  if (rowIndex === -1) {
-    return { success: false, error: "Report card non trovata per questo mese" };
-  }
-
-  const targetRow = rowIndex + 2; // header + offset
-  if (idxSent !== -1) rcSheet.getRange(targetRow, idxSent + 1).setValue("YES");
-
-  return { success: true, message: "Report card marked as sent" };
+    return { success: true, message: "Report card marked as sent" };
 }
 
 function handleSendAllReportCards(data, ss) {
-  const rcSheet        = ss.getSheetByName("Report Cards");
-  const contractsSheet = ss.getSheetByName("Contracts");
-  const studentsSheet  = ss.getSheetByName("Students");
-  const clientsSheet   = ss.getSheetByName("Clients");
-  if (!rcSheet || !contractsSheet) return { success: false, error: "Missing sheets (Report Cards / Contracts)" };
+    const rcSheet = ss.getSheetByName("Report Cards");
+    const contractsSheet = ss.getSheetByName("Contracts");
+    const studentsSheet = ss.getSheetByName("Students");
+    const clientsSheet = ss.getSheetByName("Clients");
+    if (!rcSheet || !contractsSheet) return { success: false, error: "Missing sheets (Report Cards / Contracts)" };
 
-  const now = new Date();
-  const year  = (data && typeof data.year  === "number") ? data.year  : now.getFullYear();
-  const month = (data && typeof data.month === "number") ? data.month : now.getMonth();
-  const periodStr = `${year}-${String(month + 1).padStart(2, "0")}`;
+    const now = new Date();
+    const year = (data && typeof data.year === "number") ? data.year : now.getFullYear();
+    const month = (data && typeof data.month === "number") ? data.month : now.getMonth();
+    const periodStr = `${year}-${String(month + 1).padStart(2, "0")}`;
 
-  const HR  = getHeaders(rcSheet);
-  const RCR = getBodyValues(rcSheet);
-  const HC  = getHeaders(contractsSheet);
-  const CTR = getBodyValues(contractsSheet);
+    const HR = getHeaders(rcSheet);
+    const RCR = getBodyValues(rcSheet);
+    const HC = getHeaders(contractsSheet);
+    const CTR = getBodyValues(contractsSheet);
 
-  const HS  = studentsSheet ? getHeaders(studentsSheet) : [];
-  const STR = studentsSheet ? getBodyValues(studentsSheet) : [];
+    const HS = studentsSheet ? getHeaders(studentsSheet) : [];
+    const STR = studentsSheet ? getBodyValues(studentsSheet) : [];
 
-  // ---- indici
-  const iRC_Date   = HR.indexOf("Date");
-  const iRC_Stud   = HR.indexOf("Student ID");
-  const iRC_Contr  = HR.indexOf("Contract ID");
-  const iRC_Coach  = HR.indexOf("Coach ID");
-  const iRC_Att    = HR.indexOf("Attendance");
-  const iRC_Report = HR.indexOf("Report");
-  const iRC_Sent   = HR.indexOf("Sent");
+    // ---- indici
+    const iRC_Date = HR.indexOf("Date");
+    const iRC_Stud = HR.indexOf("Student ID");
+    const iRC_Contr = HR.indexOf("Contract ID");
+    const iRC_Coach = HR.indexOf("Coach ID");
+    const iRC_Att = HR.indexOf("Attendance");
+    const iRC_Report = HR.indexOf("Report");
+    const iRC_Sent = HR.indexOf("Sent");
 
-  const iCT_ContrId   = HC.indexOf("Contract ID");
-  const iCT_ClientId  = HC.indexOf("Client ID");
-  const iCT_Recipients = ["Report Card Email Recipient(s)", "Report Card Recipient", "Report Recipient", "Recipients"]
-    .map(lbl => HC.indexOf(lbl))
-    .find(ix => ix !== -1);
+    const iCT_ContrId = HC.indexOf("Contract ID");
+    const iCT_ClientId = HC.indexOf("Client ID");
+    const iCT_Recipients = ["Report Card Email Recipient(s)", "Report Card Recipient", "Report Recipient", "Recipients"]
+        .map(lbl => HC.indexOf(lbl))
+        .find(ix => ix !== -1);
 
-  const iST_Id    = HS.indexOf("Student ID");
-  const iST_Name  = HS.indexOf("Name");
-  const iST_Surn  = HS.indexOf("Surname");
+    const iST_Id = HS.indexOf("Student ID");
+    const iST_Name = HS.indexOf("Name");
+    const iST_Surn = HS.indexOf("Surname");
 
-  // ---- mappa Clients
-  let clientNameMap = {};
-  if (clientsSheet) {
-    const HCli  = getHeaders(clientsSheet);
-    const CLI   = getBodyValues(clientsSheet);
-    const iCli_Id   = HCli.indexOf("Client ID");
-    const iCli_Name = HCli.indexOf("Company Name");
-    if (iCli_Id !== -1 && iCli_Name !== -1) {
-      CLI.forEach(r => {
-        const cid = String(r[iCli_Id] || "").trim();
-        const nm  = String(r[iCli_Name] || "").trim();
-        if (cid) clientNameMap[cid.toUpperCase()] = nm || cid;
-      });
+    // ---- mappa Clients
+    let clientNameMap = {};
+    if (clientsSheet) {
+        const HCli = getHeaders(clientsSheet);
+        const CLI = getBodyValues(clientsSheet);
+        const iCli_Id = HCli.indexOf("Client ID");
+        const iCli_Name = HCli.indexOf("Company Name");
+        if (iCli_Id !== -1 && iCli_Name !== -1) {
+            CLI.forEach(r => {
+                const cid = String(r[iCli_Id] || "").trim();
+                const nm = String(r[iCli_Name] || "").trim();
+                if (cid) clientNameMap[cid.toUpperCase()] = nm || cid;
+            });
+        }
     }
-  }
 
-  // ---- map Contratto -> clientId e recipients
-  const contrToClient = {};
-  const contrToRecipients = {};
-  CTR.forEach(r => {
-    const contrId  = String(r[iCT_ContrId] || "").trim();
-    if (!contrId) return;
-    const clientId = String(r[iCT_ClientId] || "").trim();
-    if (clientId) contrToClient[contrId] = clientId;
-    if (iCT_Recipients !== undefined && iCT_Recipients !== -1) {
-      const rcpts = String(r[iCT_Recipients] || "").trim();
-      if (rcpts) contrToRecipients[contrId] = rcpts;
-    }
-  });
-
-  // ---- map Studente
-  const studentMap = {};
-  STR.forEach(r => {
-    const sid = String(r[iST_Id] || "").trim();
-    if (!sid) return;
-    studentMap[sid] = {
-      name:    iST_Name !== -1 ? (r[iST_Name]  || "") : "",
-      surname: iST_Surn !== -1 ? (r[iST_Surn]  || "") : ""
-    };
-  });
-
-  // ---- filtro periodo
-  function sameYearMonth(cell) {
-    if (cell instanceof Date) return cell.getFullYear() === year && cell.getMonth() === month;
-    const s = String(cell || "").trim();
-    if (/^\d{4}-\d{2}/.test(s)) return s.startsWith(periodStr);
-    const d = new Date(s);
-    return !isNaN(d) && d.getFullYear() === year && d.getMonth() === month;
-  }
-
-  const readyRows = RCR
-    .map((row, i) => ({ row, i }))
-    .filter(({ row }) => {
-      const sent   = (iRC_Sent   !== -1) ? String(row[iRC_Sent]   || "").toUpperCase() : "";
-      const report = (iRC_Report !== -1) ? String(row[iRC_Report] || "").trim() : "";
-      return (
-        iRC_Date !== -1 && sameYearMonth(row[iRC_Date]) &&
-        String(row[iRC_Stud] || "").trim() &&
-        String(row[iRC_Contr] || "").trim() &&
-        report &&
-        sent !== "YES"
-      );
+    // ---- map Contratto -> clientId e recipients
+    const contrToClient = {};
+    const contrToRecipients = {};
+    CTR.forEach(r => {
+        const contrId = String(r[iCT_ContrId] || "").trim();
+        if (!contrId) return;
+        const clientId = String(r[iCT_ClientId] || "").trim();
+        if (clientId) contrToClient[contrId] = clientId;
+        if (iCT_Recipients !== undefined && iCT_Recipients !== -1) {
+            const rcpts = String(r[iCT_Recipients] || "").trim();
+            if (rcpts) contrToRecipients[contrId] = rcpts;
+        }
     });
 
-  if (!readyRows.length) {
-    return { success: true, message: `No report cards to send for ${periodStr}.` };
-  }
+    // ---- map Studente
+    const studentMap = {};
+    STR.forEach(r => {
+        const sid = String(r[iST_Id] || "").trim();
+        if (!sid) return;
+        studentMap[sid] = {
+            name: iST_Name !== -1 ? (r[iST_Name] || "") : "",
+            surname: iST_Surn !== -1 ? (r[iST_Surn] || "") : ""
+        };
+    });
 
-  // ---- raggruppa per clientId
-  const groups = {};
-  readyRows.forEach(({ row, i }) => {
-    const contrId  = String(row[iRC_Contr] || "").trim();
-    const clientId = String(contrToClient[contrId] || "").trim();
-    if (!clientId) return;
-    const key = clientId.toUpperCase();
-    if (!groups[key]) groups[key] = [];
-    groups[key].push({ row, targetRow: i + 2 });
-  });
-
-  const signatureHtml = (function(){
-    try { return HtmlService.createTemplateFromFile('signature').evaluate().getContent(); }
-    catch(e){ return ""; }
-  })();
-
-  let sentEmails = 0, markedRows = 0, details = [];
-
-  for (const clientId of Object.keys(groups)) {
-    const rows = groups[clientId];
-    const firstContr = String(rows[0].row[iRC_Contr] || "").trim();
-    const recipientsStr = String(contrToRecipients[firstContr] || "").trim();
-    let toEmail = "", ccEmail = "";
-    if (recipientsStr) {
-      const emails = recipientsStr.split(',').map(s=>s.trim()).filter(Boolean);
-      toEmail = emails[0] || "";
-      ccEmail = emails[1] || "";
+    // ---- filtro periodo
+    function sameYearMonth(cell) {
+        if (cell instanceof Date) return cell.getFullYear() === year && cell.getMonth() === month;
+        const s = String(cell || "").trim();
+        if (/^\d{4}-\d{2}/.test(s)) return s.startsWith(periodStr);
+        const d = new Date(s);
+        return !isNaN(d) && d.getFullYear() === year && d.getMonth() === month;
     }
-    if (!toEmail) continue;
 
-    const companyName = clientNameMap[clientId] || clientId;
+    const readyRows = RCR
+        .map((row, i) => ({ row, i }))
+        .filter(({ row }) => {
+            const sent = (iRC_Sent !== -1) ? String(row[iRC_Sent] || "").toUpperCase() : "";
+            const report = (iRC_Report !== -1) ? String(row[iRC_Report] || "").trim() : "";
+            return (
+                iRC_Date !== -1 && sameYearMonth(row[iRC_Date]) &&
+                String(row[iRC_Stud] || "").trim() &&
+                String(row[iRC_Contr] || "").trim() &&
+                report &&
+                sent !== "YES"
+            );
+        });
 
-    const items = rows.map(({row}) => {
-      const sid = String(row[iRC_Stud] || "");
-      const nm = studentMap[sid]?.name || "";
-      const sn = studentMap[sid]?.surname || "";
-      return {
-        studentId: sid,
-        name: nm,
-        surname: sn,
-        fullName: `${nm} ${sn}`.trim(),
-        attendance: iRC_Att !== -1 ? (row[iRC_Att] || "") : "",
-        coach: iRC_Coach !== -1 ? (row[iRC_Coach] || "") : "",
-        report: iRC_Report !== -1 ? String(row[iRC_Report] || "") : ""
-      };
-    }).sort((a,b) => (a.surname||"").localeCompare(b.surname||""));
+    if (!readyRows.length) {
+        return { success: true, message: `No report cards to send for ${periodStr}.` };
+    }
 
-    const logoHtml = HtmlService.createHtmlOutputFromFile('logoBase64').getContent();
-    const html = renderReportPdfHtml({ companyName, periodStr, items, logoHtml });
-    const pdfName = safeFilename(`${companyName}_Report_Cards_${periodStr}.pdf`);
-    const pdfBlob = Utilities.newBlob(html, 'text/html').getAs('application/pdf').setName(pdfName);
+    // ---- raggruppa per clientId
+    const groups = {};
+    readyRows.forEach(({ row, i }) => {
+        const contrId = String(row[iRC_Contr] || "").trim();
+        const clientId = String(contrToClient[contrId] || "").trim();
+        if (!clientId) return;
+        const key = clientId.toUpperCase();
+        if (!groups[key]) groups[key] = [];
+        groups[key].push({ row, targetRow: i + 2 });
+    });
 
-    const folder = getOrCreateClientReportFolder(clientId);
-    const file = folder.createFile(pdfBlob);
+    const signatureHtml = (function () {
+        try { return HtmlService.createTemplateFromFile('signature').evaluate().getContent(); }
+        catch (e) { return ""; }
+    })();
 
-    const subject = `Smartalk — Report Cards ${periodStr} — ${companyName}`;
-    const bodyIntro = `
+    let sentEmails = 0, markedRows = 0, details = [];
+
+    for (const clientId of Object.keys(groups)) {
+        const rows = groups[clientId];
+        const firstContr = String(rows[0].row[iRC_Contr] || "").trim();
+        const recipientsStr = String(contrToRecipients[firstContr] || "").trim();
+        let toEmail = "", ccEmail = "";
+        if (recipientsStr) {
+            const emails = recipientsStr.split(',').map(s => s.trim()).filter(Boolean);
+            toEmail = emails[0] || "";
+            ccEmail = emails[1] || "";
+        }
+        if (!toEmail) continue;
+
+        const companyName = clientNameMap[clientId] || clientId;
+
+        const items = rows.map(({ row }) => {
+            const sid = String(row[iRC_Stud] || "");
+            const nm = studentMap[sid]?.name || "";
+            const sn = studentMap[sid]?.surname || "";
+            return {
+                studentId: sid,
+                name: nm,
+                surname: sn,
+                fullName: `${nm} ${sn}`.trim(),
+                attendance: iRC_Att !== -1 ? (row[iRC_Att] || "") : "",
+                coach: iRC_Coach !== -1 ? (row[iRC_Coach] || "") : "",
+                report: iRC_Report !== -1 ? String(row[iRC_Report] || "") : ""
+            };
+        }).sort((a, b) => (a.surname || "").localeCompare(b.surname || ""));
+
+        const logoHtml = HtmlService.createHtmlOutputFromFile('logoBase64').getContent();
+        const html = renderReportPdfHtml({ companyName, periodStr, items, logoHtml });
+        const pdfName = safeFilename(`${companyName}_Report_Cards_${periodStr}.pdf`);
+        const pdfBlob = Utilities.newBlob(html, 'text/html').getAs('application/pdf').setName(pdfName);
+
+        const folder = getOrCreateClientReportFolder(clientId);
+        const file = folder.createFile(pdfBlob);
+
+        const subject = `Smartalk — Report Cards ${periodStr} — ${companyName}`;
+        const bodyIntro = `
       Dear ${companyName},<br><br>
       Please find attached the report cards for <strong>${periodStr}</strong>.<br>
       Let us know if anything needs revising.<br><br>
       ${signatureHtml}
     `;
 
-    GmailApp.sendEmail(toEmail, subject, "", {
-      name: "Smartalk",
-      htmlBody: bodyIntro,
-      cc: ccEmail,
-      attachments: [pdfBlob]
-    });
+        GmailApp.sendEmail(toEmail, subject, "", {
+            name: "Smartalk",
+            htmlBody: bodyIntro,
+            cc: ccEmail,
+            attachments: [pdfBlob]
+        });
 
-    sentEmails++;
-    if (iRC_Sent !== -1) {
-      rows.forEach(({targetRow}) => {
-        rcSheet.getRange(targetRow, iRC_Sent + 1).setValue("YES");
-        markedRows++;
-      });
+        sentEmails++;
+        if (iRC_Sent !== -1) {
+            rows.forEach(({ targetRow }) => {
+                rcSheet.getRange(targetRow, iRC_Sent + 1).setValue("YES");
+                markedRows++;
+            });
+        }
+
+        details.push({ clientId, companyName, to: toEmail, cc: ccEmail, pdfUrl: file.getUrl() });
     }
 
-    details.push({ clientId, companyName, to: toEmail, cc: ccEmail, pdfUrl: file.getUrl() });
-  }
-
-  return {
-    success: true,
-    message: `OK: ${sentEmails} email(s) sent; ${markedRows} row(s) marked as Sent for ${periodStr}.`,
-    details
-  };
+    return {
+        success: true,
+        message: `OK: ${sentEmails} email(s) sent; ${markedRows} row(s) marked as Sent for ${periodStr}.`,
+        details
+    };
 }
 
 function renderReportPdfHtml({ companyName, periodStr, items, logoHtml }) {
-  try {
-    const t = HtmlService.createTemplateFromFile('reportCardPdf');
-    t.companyName = companyName;
-    t.periodStr   = periodStr;
-    t.items       = items;
-    t.logoHtml    = logoHtml;
-    return t.evaluate().getContent();
-  } catch (e) {
-    // fallback minimale se il template non si trova o dà errore
-    const cards = items.map(it => `
+    try {
+        const t = HtmlService.createTemplateFromFile('reportCardPdf');
+        t.companyName = companyName;
+        t.periodStr = periodStr;
+        t.items = items;
+        t.logoHtml = logoHtml;
+        return t.evaluate().getContent();
+    } catch (e) {
+        // fallback minimale se il template non si trova o dà errore
+        const cards = items.map(it => `
       <div style="background:#fff;border:1px solid #ddd;border-radius:8px;padding:10px;margin:8px 0;page-break-inside:avoid;">
         <h3 style="margin:0 0 6px;color:#2563eb;font-size:14px;">${it.fullName}</h3>
         <p style="margin:0;font-size:11px;color:#555;">
@@ -1427,7 +1427,7 @@ function renderReportPdfHtml({ companyName, periodStr, items, logoHtml }) {
       </div>
     `).join("");
 
-    return `
+        return `
     <!DOCTYPE html>
     <html>
     <head>
@@ -1447,547 +1447,547 @@ function renderReportPdfHtml({ companyName, periodStr, items, logoHtml }) {
       </div>
     </body>
     </html>`;
-  }
+    }
 }
 
 function getOrCreateClientReportFolder(clientId) {
-  // Preferisco un nome “stabile”: "<CLIENTID>_Report Cards"
-  const base = `${clientId}_Report Cards`;
-  let it = DriveApp.getFoldersByName(base);
-  if (it.hasNext()) return it.next();
+    // Preferisco un nome “stabile”: "<CLIENTID>_Report Cards"
+    const base = `${clientId}_Report Cards`;
+    let it = DriveApp.getFoldersByName(base);
+    if (it.hasNext()) return it.next();
 
-  // In alternativa: "Report Cards/<CLIENTID>"
-  let parent;
-  const pr = DriveApp.getFoldersByName("Report Cards");
-  parent = pr.hasNext() ? pr.next() : DriveApp.createFolder("Report Cards");
-  let sub = parent.getFoldersByName(String(clientId));
-  if (sub.hasNext()) return sub.next();
-  return parent.createFolder(String(clientId));
+    // In alternativa: "Report Cards/<CLIENTID>"
+    let parent;
+    const pr = DriveApp.getFoldersByName("Report Cards");
+    parent = pr.hasNext() ? pr.next() : DriveApp.createFolder("Report Cards");
+    let sub = parent.getFoldersByName(String(clientId));
+    if (sub.hasNext()) return sub.next();
+    return parent.createFolder(String(clientId));
 }
 
 function safeFilename(name) {
-  return String(name || "").replace(/[\\/:*?"<>|]+/g, "_").slice(0, 180);
+    return String(name || "").replace(/[\\/:*?"<>|]+/g, "_").slice(0, 180);
 }
 
 function getCoachBookings(coachId, ss) {
-  return { success: true, bookings: [] };
+    return { success: true, bookings: [] };
 }
 
 // ------------------- DEBRIEF -------------------
 
 function handleDebriefSubmission(data, ss) {
-  const sheet = ss.getSheetByName("Debriefs");
-  if (!sheet) return { success: false, error: "Foglio Debriefs non trovato" };
-
-  const H = getHeaders(sheet);
-  const row = new Array(H.length).fill("");
-
-  // Metti valori nelle colonne
-  put(H, row, "Date", data.date || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm"));
-  put(H, row, "Coach ID", data.coachId || "");
-  put(H, row, "Student ID", data.studentId || "");
-  put(H, row, "Goals", data.goals || "");
-  put(H, row, "Topics", data.topics || "");
-  put(H, row, "Grammar", data.grammar || "");
-  put(H, row, "Vocabulary", data.vocabulary || "");
-  put(H, row, "Pronunciation", data.pronunciation || "");
-  put(H, row, "Other", data.other || "");
-  put(H, row, "Homework", data.homework || "");
-  put(H, row, "Draft", data.draft ? "YES" : "NO");
-  put(H, row, "Sent", data.draft ? "NO" : "YES");
-  put(H, row, "Sent Date", "");
-
-  sheet.appendRow(row);
-  return { success: true };
-}
-
-function getDebriefDrafts(data, ss) {
-  Logger.log("🟦 getDebriefDrafts avviata con coachId=" + data.coachId + " studentId=" + data.studentId);
-  const sheet = ss.getSheetByName("Debriefs");
-  if (!sheet) return { success: false, error: "Foglio Debriefs non trovato" };
-
-  const H = getHeaders(sheet);
-  const rows = getBodyValues(sheet);
-
-  const idxCoach  = H.indexOf("Coach ID");
-  const idxStud   = H.indexOf("Student ID");
-  const idxDraft  = H.indexOf("Draft");
-  const idxDate   = H.indexOf("Date");
-
-  const drafts = rows
-    .map((r, i) => ({ r, i }))
-    .filter(obj =>
-      String(obj.r[idxCoach]) === String(data.coachId) &&
-      (!data.studentId || String(obj.r[idxStud]) === String(data.studentId)) &&
-      String(obj.r[idxDraft] || "").toUpperCase() === "YES"
-    )
-    .map(obj => ({
-      rowNumber: obj.i + 2, // +1 header +1 base 0
-      dateISO: (obj.r[idxDate] instanceof Date)
-      ? Utilities.formatDate(obj.r[idxDate], Session.getScriptTimeZone() || "Europe/Rome", "yyyy-MM-dd")
-      : String(obj.r[idxDate] || ""),
-      studentId: obj.r[idxStud] || "",
-      goals: obj.r[H.indexOf("Goals")] || "",
-      topics: obj.r[H.indexOf("Topics")] || "",
-      grammar: obj.r[H.indexOf("Grammar")] || "",
-      vocabulary: obj.r[H.indexOf("Vocabulary")] || "",
-      pronunciation: obj.r[H.indexOf("Pronunciation")] || "",
-      homework: obj.r[H.indexOf("Homework")] || "",
-      other: obj.r[H.indexOf("Other")] || ""
-    }));
-
-  return { success: true, drafts };
-}
-
-function getDebriefByRow(data, ss) {
-  try {
     const sheet = ss.getSheetByName("Debriefs");
     if (!sheet) return { success: false, error: "Foglio Debriefs non trovato" };
 
-    const row = Number(data.rowNumber);
-    if (!row || row < 2) return { success: false, error: "Invalid row number" };
+    const H = getHeaders(sheet);
+    const row = new Array(H.length).fill("");
 
-    const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
-    const values = sheet.getRange(row, 1, 1, sheet.getLastColumn()).getValues()[0];
+    // Metti valori nelle colonne
+    put(H, row, "Date", data.date || Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm"));
+    put(H, row, "Coach ID", data.coachId || "");
+    put(H, row, "Student ID", data.studentId || "");
+    put(H, row, "Goals", data.goals || "");
+    put(H, row, "Topics", data.topics || "");
+    put(H, row, "Grammar", data.grammar || "");
+    put(H, row, "Vocabulary", data.vocabulary || "");
+    put(H, row, "Pronunciation", data.pronunciation || "");
+    put(H, row, "Other", data.other || "");
+    put(H, row, "Homework", data.homework || "");
+    put(H, row, "Draft", data.draft ? "YES" : "NO");
+    put(H, row, "Sent", data.draft ? "NO" : "YES");
+    put(H, row, "Sent Date", "");
 
-    const draft = {};
-    
-    headers.forEach((h, i) => {
-      // ✅ Normalizza la chiave: rimuovi spazi e converti in camelCase (o all-lowercase)
-      // Usiamo una normalizzazione semplice per farla coincidere con la tua mappa JS.
-      let key = String(h).toLowerCase().replace(/\s/g, ''); 
-      
-      // Correzione esplicita per Student ID e Date:
-      if (key === "studentid") key = "studentId";
-      if (key === "date") key = "date"; // Manteniamo "date"
+    sheet.appendRow(row);
+    return { success: true };
+}
 
-      // Formatta la data se necessario
-      let value = values[i];
-      if (key === "date" && value instanceof Date) {
-        const tz = Session.getScriptTimeZone() || "Europe/Rome";
-        value = Utilities.formatDate(value, tz, "yyyy-MM-dd");
-      }
-      
-      draft[key] = value;
-    });
+function getDebriefDrafts(data, ss) {
+    Logger.log("🟦 getDebriefDrafts avviata con coachId=" + data.coachId + " studentId=" + data.studentId);
+    const sheet = ss.getSheetByName("Debriefs");
+    if (!sheet) return { success: false, error: "Foglio Debriefs non trovato" };
 
-    return { success: true, draft };
-  } catch (err) {
-    return { success: false, error: "getDebriefByRow error: " + err.message };
-  }
+    const H = getHeaders(sheet);
+    const rows = getBodyValues(sheet);
+
+    const idxCoach = H.indexOf("Coach ID");
+    const idxStud = H.indexOf("Student ID");
+    const idxDraft = H.indexOf("Draft");
+    const idxDate = H.indexOf("Date");
+
+    const drafts = rows
+        .map((r, i) => ({ r, i }))
+        .filter(obj =>
+            String(obj.r[idxCoach]) === String(data.coachId) &&
+            (!data.studentId || String(obj.r[idxStud]) === String(data.studentId)) &&
+            String(obj.r[idxDraft] || "").toUpperCase() === "YES"
+        )
+        .map(obj => ({
+            rowNumber: obj.i + 2, // +1 header +1 base 0
+            dateISO: (obj.r[idxDate] instanceof Date)
+                ? Utilities.formatDate(obj.r[idxDate], Session.getScriptTimeZone() || "Europe/Rome", "yyyy-MM-dd")
+                : String(obj.r[idxDate] || ""),
+            studentId: obj.r[idxStud] || "",
+            goals: obj.r[H.indexOf("Goals")] || "",
+            topics: obj.r[H.indexOf("Topics")] || "",
+            grammar: obj.r[H.indexOf("Grammar")] || "",
+            vocabulary: obj.r[H.indexOf("Vocabulary")] || "",
+            pronunciation: obj.r[H.indexOf("Pronunciation")] || "",
+            homework: obj.r[H.indexOf("Homework")] || "",
+            other: obj.r[H.indexOf("Other")] || ""
+        }));
+
+    return { success: true, drafts };
+}
+
+function getDebriefByRow(data, ss) {
+    try {
+        const sheet = ss.getSheetByName("Debriefs");
+        if (!sheet) return { success: false, error: "Foglio Debriefs non trovato" };
+
+        const row = Number(data.rowNumber);
+        if (!row || row < 2) return { success: false, error: "Invalid row number" };
+
+        const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+        const values = sheet.getRange(row, 1, 1, sheet.getLastColumn()).getValues()[0];
+
+        const draft = {};
+
+        headers.forEach((h, i) => {
+            // ✅ Normalizza la chiave: rimuovi spazi e converti in camelCase (o all-lowercase)
+            // Usiamo una normalizzazione semplice per farla coincidere con la tua mappa JS.
+            let key = String(h).toLowerCase().replace(/\s/g, '');
+
+            // Correzione esplicita per Student ID e Date:
+            if (key === "studentid") key = "studentId";
+            if (key === "date") key = "date"; // Manteniamo "date"
+
+            // Formatta la data se necessario
+            let value = values[i];
+            if (key === "date" && value instanceof Date) {
+                const tz = Session.getScriptTimeZone() || "Europe/Rome";
+                value = Utilities.formatDate(value, tz, "yyyy-MM-dd");
+            }
+
+            draft[key] = value;
+        });
+
+        return { success: true, draft };
+    } catch (err) {
+        return { success: false, error: "getDebriefByRow error: " + err.message };
+    }
 }
 
 function getLessonPlanContent(params, ss) {
-  const studentId = params.studentId;
-  if (!studentId) return { success: false, error: "Missing studentId" };
+    const studentId = params.studentId;
+    if (!studentId) return { success: false, error: "Missing studentId" };
 
-  const sheet = ss.getSheetByName("Students");
-  if (!sheet) return { success: false, error: "Foglio Students non trovato" };
-  
-  const H = getHeaders(sheet);
-  const rows = getBodyValues(sheet);
-  
-  const idxSid = H.indexOf("Student ID");
-  // ✅ Assumo che la colonna con il contenuto si chiami "Lesson Plan Content"
-  const idxContent = H.indexOf("Lesson Plan Content"); 
+    const sheet = ss.getSheetByName("Students");
+    if (!sheet) return { success: false, error: "Foglio Students non trovato" };
 
-  if (idxContent === -1) {
-    // Se non trova la colonna, fallisce in modo pulito
-    return { success: false, error: "Colonna 'Lesson Plan Content' non trovata nel foglio Students" };
-  }
-  
-  const row = rows.find(r => String(r[idxSid]) === String(studentId));
+    const H = getHeaders(sheet);
+    const rows = getBodyValues(sheet);
 
-  if (!row) return { success: false, error: "Studente non trovato" };
+    const idxSid = H.indexOf("Student ID");
+    // ✅ Assumo che la colonna con il contenuto si chiami "Lesson Plan Content"
+    const idxContent = H.indexOf("Lesson Plan Content");
 
-  // Recupera il contenuto e lo pulisce (se non c'è, torna una stringa vuota)
-  const content = String(row[idxContent] || "").trim();
+    if (idxContent === -1) {
+        // Se non trova la colonna, fallisce in modo pulito
+        return { success: false, error: "Colonna 'Lesson Plan Content' non trovata nel foglio Students" };
+    }
 
-  return { 
-    success: true, 
-    content: content 
-  };
+    const row = rows.find(r => String(r[idxSid]) === String(studentId));
+
+    if (!row) return { success: false, error: "Studente non trovato" };
+
+    // Recupera il contenuto e lo pulisce (se non c'è, torna una stringa vuota)
+    const content = String(row[idxContent] || "").trim();
+
+    return {
+        success: true,
+        content: content
+    };
 }
 
 function saveLessonPlanContent(data, ss) {
-  const studentId = data.studentId;
-  const content = data.content; // Questo è il testo Markdown dalla textarea
+    const studentId = data.studentId;
+    const content = data.content; // Questo è il testo Markdown dalla textarea
 
-  if (!studentId) return { success: false, error: "Missing studentId" };
+    if (!studentId) return { success: false, error: "Missing studentId" };
 
-  const sheet = ss.getSheetByName("Students");
-  if (!sheet) return { success: false, error: "Foglio Students non trovato" };
+    const sheet = ss.getSheetByName("Students");
+    if (!sheet) return { success: false, error: "Foglio Students non trovato" };
 
-  const H = getHeaders(sheet);
-  const rows = getBodyValues(sheet);
+    const H = getHeaders(sheet);
+    const rows = getBodyValues(sheet);
 
-  const idxSid = H.indexOf("Student ID");
-  const idxContent = H.indexOf("Lesson Plan Content");
+    const idxSid = H.indexOf("Student ID");
+    const idxContent = H.indexOf("Lesson Plan Content");
 
-  if (idxContent === -1) {
-    return { success: false, error: "Colonna 'Lesson Plan Content' non trovata. Impossibile salvare." };
-  }
+    if (idxContent === -1) {
+        return { success: false, error: "Colonna 'Lesson Plan Content' non trovata. Impossibile salvare." };
+    }
 
-  // Trova l'indice della riga nel bodyValues
-  const rowIndex = rows.findIndex(r => String(r[idxSid]) === String(studentId));
+    // Trova l'indice della riga nel bodyValues
+    const rowIndex = rows.findIndex(r => String(r[idxSid]) === String(studentId));
 
-  if (rowIndex === -1) {
-    return { success: false, error: "Studente non trovato per l'ID: " + studentId };
-  }
+    if (rowIndex === -1) {
+        return { success: false, error: "Studente non trovato per l'ID: " + studentId };
+    }
 
-  // Calcola il numero di riga effettivo nel foglio (+2: +1 header, +1 base 0)
-  const targetRow = rowIndex + 2;
-  
-  // Salva il nuovo contenuto nella cella [riga, colonna]
-  // La colonna è idxContent + 1 (perché .getRange usa indice base 1)
-  sheet.getRange(targetRow, idxContent + 1).setValue(content || "");
+    // Calcola il numero di riga effettivo nel foglio (+2: +1 header, +1 base 0)
+    const targetRow = rowIndex + 2;
 
-  return { success: true, message: "Lesson Plan salvato correttamente." };
+    // Salva il nuovo contenuto nella cella [riga, colonna]
+    // La colonna è idxContent + 1 (perché .getRange usa indice base 1)
+    sheet.getRange(targetRow, idxContent + 1).setValue(content || "");
+
+    return { success: true, message: "Lesson Plan salvato correttamente." };
 }
 
 function handleSendDebrief(data, ss) {
-  const sheet = ss.getSheetByName("Debriefs");
-  if (!sheet) return { success: false, error: "Foglio Debriefs non trovato" };
+    const sheet = ss.getSheetByName("Debriefs");
+    if (!sheet) return { success: false, error: "Foglio Debriefs non trovato" };
 
-  const H = getHeaders(sheet);
-  const rows = getBodyValues(sheet);
+    const H = getHeaders(sheet);
+    const rows = getBodyValues(sheet);
 
-  if (!rows.length) return { success: false, error: "Nessun debrief trovato" };
+    if (!rows.length) return { success: false, error: "Nessun debrief trovato" };
 
-      // se rowNumber passato → usa quella riga
+    // se rowNumber passato → usa quella riga
     if (data.rowNumber) {
-      const rowIndex = Number(data.rowNumber) - 2; // -1 header, -1 base 0
-      if (rowIndex >= 0 && rowIndex < rows.length) {
-        const r = rows[rowIndex];
-        return sendDebriefRow(sheet, H, r, rowIndex, data, ss);
-      }
+        const rowIndex = Number(data.rowNumber) - 2; // -1 header, -1 base 0
+        if (rowIndex >= 0 && rowIndex < rows.length) {
+            const r = rows[rowIndex];
+            return sendDebriefRow(sheet, H, r, rowIndex, data, ss);
+        }
     }
 
-  // usa sempre l’ultima riga (anche se Draft)
-  const rowIndex = rows.length - 1;
-  const r = rows[rowIndex];
+    // usa sempre l’ultima riga (anche se Draft)
+    const rowIndex = rows.length - 1;
+    const r = rows[rowIndex];
 
-  // --- Template HTML della mail ---
-  const template = HtmlService.createTemplateFromFile("debriefEmail");
-  template.data = {
-    goals:          r[H.indexOf("Goals")] || "",
-    topics:         r[H.indexOf("Topics")] || "",
-    grammar:        r[H.indexOf("Grammar")] || "",
-    vocabulary:     r[H.indexOf("Vocabulary")] || "",
-    pronunciation:  r[H.indexOf("Pronunciation")] || "",
-    other:          r[H.indexOf("Other")] || "",
-    homework:       r[H.indexOf("Homework")] || ""
-  };
+    // --- Template HTML della mail ---
+    const template = HtmlService.createTemplateFromFile("debriefEmail");
+    template.data = {
+        goals: r[H.indexOf("Goals")] || "",
+        topics: r[H.indexOf("Topics")] || "",
+        grammar: r[H.indexOf("Grammar")] || "",
+        vocabulary: r[H.indexOf("Vocabulary")] || "",
+        pronunciation: r[H.indexOf("Pronunciation")] || "",
+        other: r[H.indexOf("Other")] || "",
+        homework: r[H.indexOf("Homework")] || ""
+    };
 
-  const htmlBody = template.evaluate().getContent();
+    const htmlBody = template.evaluate().getContent();
 
-  // --- invio mail ---
-  const studentEmail = getStudentEmailById(data.studentId, ss);
-  if (!studentEmail) return { success: false, error: "Email studente non trovata" };
+    // --- invio mail ---
+    const studentEmail = getStudentEmailById(data.studentId, ss);
+    if (!studentEmail) return { success: false, error: "Email studente non trovata" };
 
-  GmailApp.sendEmail(studentEmail, "Your Coaching Debrief", "View in HTML.", { htmlBody });
+    GmailApp.sendEmail(studentEmail, "Your Coaching Debrief", "View in HTML.", { htmlBody });
 
-  // --- aggiorna la riga: segna stato finale ---
-  const targetRow = rowIndex + 2; // +1 header +1 base 0
-  const idxSent   = H.indexOf("Sent");
-  const idxSentDt = H.indexOf("Sent Date");
-  const idxDraft  = H.indexOf("Draft");
+    // --- aggiorna la riga: segna stato finale ---
+    const targetRow = rowIndex + 2; // +1 header +1 base 0
+    const idxSent = H.indexOf("Sent");
+    const idxSentDt = H.indexOf("Sent Date");
+    const idxDraft = H.indexOf("Draft");
 
-  if (idxDraft !== -1)  sheet.getRange(targetRow, idxDraft + 1).setValue("NO");
-  if (idxSent !== -1)   sheet.getRange(targetRow, idxSent + 1).setValue("YES");
-  if (idxSentDt !== -1)
-  sheet.getRange(targetRow, idxSentDt + 1)
-       .setValue(Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm"));
+    if (idxDraft !== -1) sheet.getRange(targetRow, idxDraft + 1).setValue("NO");
+    if (idxSent !== -1) sheet.getRange(targetRow, idxSent + 1).setValue("YES");
+    if (idxSentDt !== -1)
+        sheet.getRange(targetRow, idxSentDt + 1)
+            .setValue(Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm"));
 
-  return { success: true, message: "Debrief inviato a " + studentEmail };
+    return { success: true, message: "Debrief inviato a " + studentEmail };
 }
 
 function sendDebriefRow(sheet, H, r, rowIndex, data, ss) {
-  const template = HtmlService.createTemplateFromFile("debriefEmail");
-  template.data = {
-    goals:          r[H.indexOf("Goals")] || "",
-    topics:         r[H.indexOf("Topics")] || "",
-    grammar:        r[H.indexOf("Grammar")] || "",
-    vocabulary:     r[H.indexOf("Vocabulary")] || "",
-    pronunciation:  r[H.indexOf("Pronunciation")] || "",
-    other:          r[H.indexOf("Other")] || "",
-    homework:       r[H.indexOf("Homework")] || ""
-  };
-  const htmlBody = template.evaluate().getContent();
+    const template = HtmlService.createTemplateFromFile("debriefEmail");
+    template.data = {
+        goals: r[H.indexOf("Goals")] || "",
+        topics: r[H.indexOf("Topics")] || "",
+        grammar: r[H.indexOf("Grammar")] || "",
+        vocabulary: r[H.indexOf("Vocabulary")] || "",
+        pronunciation: r[H.indexOf("Pronunciation")] || "",
+        other: r[H.indexOf("Other")] || "",
+        homework: r[H.indexOf("Homework")] || ""
+    };
+    const htmlBody = template.evaluate().getContent();
 
-  const studentEmail = getStudentEmailById(data.studentId, ss);
-  if (!studentEmail) return { success: false, error: "Email studente non trovata" };
-  GmailApp.sendEmail(studentEmail, "Your Coaching Debrief", "View in HTML.", { htmlBody });
+    const studentEmail = getStudentEmailById(data.studentId, ss);
+    if (!studentEmail) return { success: false, error: "Email studente non trovata" };
+    GmailApp.sendEmail(studentEmail, "Your Coaching Debrief", "View in HTML.", { htmlBody });
 
-  const targetRow = rowIndex + 2;
-  const idxSent   = H.indexOf("Sent");
-  const idxSentDt = H.indexOf("Sent Date");
-  const idxDraft  = H.indexOf("Draft");
-  if (idxDraft !== -1)  sheet.getRange(targetRow, idxDraft + 1).setValue("NO");
-  if (idxSent !== -1)   sheet.getRange(targetRow, idxSent + 1).setValue("YES");
-  if (idxSentDt !== -1)
-  sheet.getRange(targetRow, idxSentDt + 1)
-       .setValue(Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm"));
+    const targetRow = rowIndex + 2;
+    const idxSent = H.indexOf("Sent");
+    const idxSentDt = H.indexOf("Sent Date");
+    const idxDraft = H.indexOf("Draft");
+    if (idxDraft !== -1) sheet.getRange(targetRow, idxDraft + 1).setValue("NO");
+    if (idxSent !== -1) sheet.getRange(targetRow, idxSent + 1).setValue("YES");
+    if (idxSentDt !== -1)
+        sheet.getRange(targetRow, idxSentDt + 1)
+            .setValue(Utilities.formatDate(new Date(), Session.getScriptTimeZone(), "yyyy-MM-dd HH:mm"));
 
-  return { success: true, message: "Debrief inviato a " + studentEmail };
+    return { success: true, message: "Debrief inviato a " + studentEmail };
 }
 
 function generateDebriefText(payload) {
-  try {
-    const apiKey = PropertiesService.getScriptProperties().getProperty("GEMINI_API_KEY");
-    if (!apiKey) return { success: false, error: "Missing GEMINI_API_KEY" };
+    try {
+        const apiKey = PropertiesService.getScriptProperties().getProperty("GEMINI_API_KEY");
+        if (!apiKey) return { success: false, error: "Missing GEMINI_API_KEY" };
 
-    const studentName = payload.studentName || "the student";
-    const fieldType   = (payload.fieldType || "").toLowerCase();
-    const currentText = (payload.currentText || "").trim();
+        const studentName = payload.studentName || "the student";
+        const fieldType = (payload.fieldType || "").toLowerCase();
+        const currentText = (payload.currentText || "").trim();
 
-    let systemPrompt = "";
-    let userPrompt = "";
+        let systemPrompt = "";
+        let userPrompt = "";
 
-    switch (fieldType) {
+        switch (fieldType) {
 
-      case "goals":
-        systemPrompt = `
+            case "goals":
+                systemPrompt = `
     You are an English coach summarizing student goals.
     Your task: write 2 goals achieved today and 1 micro-goal for next session.
     Keep tone positive and concise (max 3 sentences).`;
-            userPrompt = currentText
-              ? `Improve this goals section for ${studentName}, keeping the same ideas but making it clearer and more natural:\n${currentText}`
-              : `Write 2 goals achieved today and 1 small next step for ${studentName}.`;
-            break;
+                userPrompt = currentText
+                    ? `Improve this goals section for ${studentName}, keeping the same ideas but making it clearer and more natural:\n${currentText}`
+                    : `Write 2 goals achieved today and 1 small next step for ${studentName}.`;
+                break;
 
-          case "topics":
-            systemPrompt = `
+            case "topics":
+                systemPrompt = `
     You are an English coach summarizing the main lesson topics.
     Your task: keep the sentence concise and grouped by theme (max 2–3 topics).`;
-            userPrompt = currentText
-              ? `Polish and clarify this list of topics for ${studentName}:\n${currentText}`
-              : `Suggest 2–3 realistic discussion topics for a business English session with ${studentName}.`;
-            break;
+                userPrompt = currentText
+                    ? `Polish and clarify this list of topics for ${studentName}:\n${currentText}`
+                    : `Suggest 2–3 realistic discussion topics for a business English session with ${studentName}.`;
+                break;
 
-          case "grammar":
-            systemPrompt = `
+            case "grammar":
+                systemPrompt = `
     You are an English coach correcting grammar notes.
     If the student provided text, detect possible mistakes and briefly explain the rule.
     If empty, invent one realistic grammar reminder.
     Keep tone supportive, max 4 sentences.`;
-            userPrompt = currentText
-              ? `Review and refine this grammar note for ${studentName}, keeping meaning but improving clarity and correctness. Explain briefly the grammar point if needed:\n${currentText}`
-              : `Write one short grammar feedback note for ${studentName} (e.g. article usage, tense consistency) and explain the rule in simple terms.`;
-            break;
+                userPrompt = currentText
+                    ? `Review and refine this grammar note for ${studentName}, keeping meaning but improving clarity and correctness. Explain briefly the grammar point if needed:\n${currentText}`
+                    : `Write one short grammar feedback note for ${studentName} (e.g. article usage, tense consistency) and explain the rule in simple terms.`;
+                break;
 
-          case "vocabulary":
-            systemPrompt = `
+            case "vocabulary":
+                systemPrompt = `
     You are an English coach translating vocabulary lists into Italian.
     If text is provided, translate ONLY those words or short phrases in the same order.
     If empty, create 6–10 general business English words with Italian translations.
     Output format: one per line, "ENGLISH – ITALIAN".`;
-            userPrompt = currentText
-              ? `Translate these English words or phrases into Italian, same order. Do not add anything:\n${currentText}`
-              : `Generate a short (6–10 items) bilingual vocabulary list (EN–IT) of common business English words.`;
-            break;
+                userPrompt = currentText
+                    ? `Translate these English words or phrases into Italian, same order. Do not add anything:\n${currentText}`
+                    : `Generate a short (6–10 items) bilingual vocabulary list (EN–IT) of common business English words.`;
+                break;
 
-          case "pronunciation":
-            systemPrompt = `
+            case "pronunciation":
+                systemPrompt = `
     You are a pronunciation coach.
     If text is provided, correct and enrich it with phonetic symbols (IPA) and maybe one minimal pair.
     If empty, write two short generic pronunciation examples (common Italian speaker issues).
     Keep it technical, short, and friendly.`;
-            userPrompt = currentText
-              ? `Refine this pronunciation note by adding IPA transcriptions and improving clarity:\n${currentText}`
-              : `Write two short pronunciation reminders (e.g. /θ/ vs /t/, long vs short vowels) with examples.`;
-            break;
+                userPrompt = currentText
+                    ? `Refine this pronunciation note by adding IPA transcriptions and improving clarity:\n${currentText}`
+                    : `Write two short pronunciation reminders (e.g. /θ/ vs /t/, long vs short vowels) with examples.`;
+                break;
 
-          case "homework":
-            systemPrompt = `
+            case "homework":
+                systemPrompt = `
     You are an English coach assigning short homework.
     Keep it realistic (10–15 minutes) and tied to today's possible topics.`;
-            userPrompt = currentText
-              ? `Refine and clarify this homework task for ${studentName}:\n${currentText}`
-              : `Suggest a 10–15 minute homework task for ${studentName} related to speaking or listening.`;
-            break;
+                userPrompt = currentText
+                    ? `Refine and clarify this homework task for ${studentName}:\n${currentText}`
+                    : `Suggest a 10–15 minute homework task for ${studentName} related to speaking or listening.`;
+                break;
 
-          case "other":
-            systemPrompt = `
+            case "other":
+                systemPrompt = `
     You are an English coach summarizing observations or extra notes.
     Keep it short and professional.`;
-            userPrompt = currentText
-              ? `Refine these notes for clarity:\n${currentText}`
-              : `Write one short note with any additional observation (1–2 sentences).`;
-            break;
+                userPrompt = currentText
+                    ? `Refine these notes for clarity:\n${currentText}`
+                    : `Write one short note with any additional observation (1–2 sentences).`;
+                break;
 
-          default:
-            systemPrompt = `
+            default:
+                systemPrompt = `
     You are an English coach refining short debrief notes for a lesson with ${studentName}.
     Keep tone supportive, clear, and natural.`;
-            userPrompt = currentText
-              ? `Refine this text for correctness and clarity:\n${currentText}`
-              : `Write a short debrief note summarizing what ${studentName} practiced today.`;
-            break;
+                userPrompt = currentText
+                    ? `Refine this text for correctness and clarity:\n${currentText}`
+                    : `Write a short debrief note summarizing what ${studentName} practiced today.`;
+                break;
         }
 
-    // ------------------ CHIAMATA GEMINI ------------------
-    const url = `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
-    const body = {
-      contents: [
-        {
-          role: "user",
-          parts: [{ text: systemPrompt + "\n\n" + userPrompt }]
-        }
-      ]
-    };
+        // ------------------ CHIAMATA GEMINI ------------------
+        const url = `https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`;
+        const body = {
+            contents: [
+                {
+                    role: "user",
+                    parts: [{ text: systemPrompt + "\n\n" + userPrompt }]
+                }
+            ]
+        };
 
-    const res = UrlFetchApp.fetch(url, {
-      method: "post",
-      contentType: "application/json",
-      muteHttpExceptions: true,
-      payload: JSON.stringify(body)
-    });
-    Logger.log("Gemini raw response:");
-    Logger.log(res.getContentText());
+        const res = UrlFetchApp.fetch(url, {
+            method: "post",
+            contentType: "application/json",
+            muteHttpExceptions: true,
+            payload: JSON.stringify(body)
+        });
+        Logger.log("Gemini raw response:");
+        Logger.log(res.getContentText());
 
 
-    const json = JSON.parse(res.getContentText());
-    Logger.log(JSON.stringify(json, null, 2));
+        const json = JSON.parse(res.getContentText());
+        Logger.log(JSON.stringify(json, null, 2));
 
-    const candidate = json?.candidates?.[0];
-    const text =
-      candidate?.content?.parts?.[0]?.text?.trim() ||
-      candidate?.output_text?.trim() ||
-      "";
+        const candidate = json?.candidates?.[0];
+        const text =
+            candidate?.content?.parts?.[0]?.text?.trim() ||
+            candidate?.output_text?.trim() ||
+            "";
 
-    if (!text) return { success: false, error: "Empty AI response" };
-    return { success: true, suggestion: text };
+        if (!text) return { success: false, error: "Empty AI response" };
+        return { success: true, suggestion: text };
 
-  } catch (err) {
-    return { success: false, error: "generateDebriefText_ error: " + err.message };
-  }
+    } catch (err) {
+        return { success: false, error: "generateDebriefText_ error: " + err.message };
+    }
 }
 
 function getStudentEmailById(studentId, ss) {
-  const students = ss.getSheetByName("Students");
-  if (!students) return null;
-  const H = getHeaders(students);
-  const rows = getBodyValues(students);
-  const idxId = H.indexOf("Student ID");
-  const idxEmail = H.indexOf("Email");
-  const row = rows.find(r => String(r[idxId]) === String(studentId));
-  return row ? row[idxEmail] : null;
+    const students = ss.getSheetByName("Students");
+    if (!students) return null;
+    const H = getHeaders(students);
+    const rows = getBodyValues(students);
+    const idxId = H.indexOf("Student ID");
+    const idxEmail = H.indexOf("Email");
+    const row = rows.find(r => String(r[idxId]) === String(studentId));
+    return row ? row[idxEmail] : null;
 }
 
 // ------------------- FLASHCARDS -------------------
 
 function getFlashcards(studentId, ss) {
-  if (!studentId) return { success: false, error: "Missing studentId" };
-  const sheet = ss.getSheetByName("Flashcards");
-  if (!sheet) return { success: false, error: "Foglio Flashcards non trovato" };
+    if (!studentId) return { success: false, error: "Missing studentId" };
+    const sheet = ss.getSheetByName("Flashcards");
+    if (!sheet) return { success: false, error: "Foglio Flashcards non trovato" };
 
-  const H = getHeaders(sheet);
-  const rows = getBodyValues(sheet)
-  .filter(r => String(r[H.indexOf("EN")] || "").trim() || String(r[H.indexOf("IT")] || "").trim());
-  const idxSID   = H.indexOf("Student ID");
-  const maxCards = 100; // limite sicurezza
-  const idxEN    = H.indexOf("EN");
-  const idxIT    = H.indexOf("IT");
-  const idxStatus= H.indexOf("Status");
-  const idxSeen  = H.indexOf("Last Seen");
-  const idxAtt   = H.indexOf("Attempts");
-  const idxCor   = H.indexOf("Correct");
+    const H = getHeaders(sheet);
+    const rows = getBodyValues(sheet)
+        .filter(r => String(r[H.indexOf("EN")] || "").trim() || String(r[H.indexOf("IT")] || "").trim());
+    const idxSID = H.indexOf("Student ID");
+    const maxCards = 100; // limite sicurezza
+    const idxEN = H.indexOf("EN");
+    const idxIT = H.indexOf("IT");
+    const idxStatus = H.indexOf("Status");
+    const idxSeen = H.indexOf("Last Seen");
+    const idxAtt = H.indexOf("Attempts");
+    const idxCor = H.indexOf("Correct");
 
-  const cards = rows
-  .filter(r => String(r[idxSID] || "").trim() === studentId)
-  .filter(r => (r[idxEN] && r[idxIT])) // scarta vuote
-  .slice(0, maxCards)
-  .map(r => ({
-    en: r[idxEN],
-    it: r[idxIT],
-    status: r[idxStatus] || "",
-    lastSeenISO: r[idxSeen] ? new Date(r[idxSeen]).toISOString().slice(0,10) : "",
-    attempts: Number(r[idxAtt] || 0),
-    correct: Number(r[idxCor] || 0)
-  }));
+    const cards = rows
+        .filter(r => String(r[idxSID] || "").trim() === studentId)
+        .filter(r => (r[idxEN] && r[idxIT])) // scarta vuote
+        .slice(0, maxCards)
+        .map(r => ({
+            en: r[idxEN],
+            it: r[idxIT],
+            status: r[idxStatus] || "",
+            lastSeenISO: r[idxSeen] ? new Date(r[idxSeen]).toISOString().slice(0, 10) : "",
+            attempts: Number(r[idxAtt] || 0),
+            correct: Number(r[idxCor] || 0)
+        }));
 
-  // Ordina: prima le unknown, poi le altre
-  cards.sort((a,b) => {
-    if (a.status !== b.status) return a.status === "unknown" ? -1 : 1;
-    return (a.lastSeenISO || "").localeCompare(b.lastSeenISO || "");
-  });
+    // Ordina: prima le unknown, poi le altre
+    cards.sort((a, b) => {
+        if (a.status !== b.status) return a.status === "unknown" ? -1 : 1;
+        return (a.lastSeenISO || "").localeCompare(b.lastSeenISO || "");
+    });
 
-  return { success: true, cards };
+    return { success: true, cards };
 }
 
 function updateFlashcardStatus(data, ss) {
-  const { studentId, cards } = data;
-  if (!studentId) return { success: false, error: "Missing studentId" };
-  if (!Array.isArray(cards) || !cards.length) {
-    return { success: false, error: "No cards to update" };
-  }
-
-  const sheet = ss.getSheetByName("Flashcards");
-  if (!sheet) return { success: false, error: "Foglio Flashcards non trovato" };
-
-  const H = getHeaders(sheet);
-  const rows = getBodyValues(sheet);
-
-  const idxSID   = H.indexOf("Student ID");
-  const idxEN    = H.indexOf("EN");
-  const idxStatus= H.indexOf("Status");
-  const idxSeen  = H.indexOf("Last Seen");
-  const idxAtt   = H.indexOf("Attempts");
-  const idxCor   = H.indexOf("Correct");
-
-  const tz = Session.getScriptTimeZone() || "Europe/Rome";
-  const todayStr = Utilities.formatDate(new Date(), tz, "yyyy-MM-dd");
-
-  let updated = 0;
-  cards.forEach(c => {
-    const enTerm = (c.en || "").trim();
-    const newStatus = (c.status || "").trim();
-    if (!enTerm || !newStatus) return;
-
-    const rowIndex = rows.findIndex(r =>
-      String(r[idxSID] || "").trim() === String(studentId) &&
-      String(r[idxEN] || "").trim() === enTerm
-    );
-
-    if (rowIndex === -1) return;
-
-    const targetRow = rowIndex + 2; // offset header
-    // aggiorna Status
-    if (idxStatus !== -1) sheet.getRange(targetRow, idxStatus + 1).setValue(newStatus);
-    // aggiorna Last Seen
-    if (idxSeen !== -1) sheet.getRange(targetRow, idxSeen + 1).setValue(todayStr);
-    // Attempts +1
-    if (idxAtt !== -1) {
-      const prev = Number(rows[rowIndex][idxAtt] || 0);
-      sheet.getRange(targetRow, idxAtt + 1).setValue(prev + 1);
+    const { studentId, cards } = data;
+    if (!studentId) return { success: false, error: "Missing studentId" };
+    if (!Array.isArray(cards) || !cards.length) {
+        return { success: false, error: "No cards to update" };
     }
-    // Correct +1 solo se status=known
-    if (newStatus.toLowerCase() === "known" && idxCor !== -1) {
-      const prevC = Number(rows[rowIndex][idxCor] || 0);
-      sheet.getRange(targetRow, idxCor + 1).setValue(prevC + 1);
-    }
-    updated++;
-  });
 
-  return { success: true, updated };
+    const sheet = ss.getSheetByName("Flashcards");
+    if (!sheet) return { success: false, error: "Foglio Flashcards non trovato" };
+
+    const H = getHeaders(sheet);
+    const rows = getBodyValues(sheet);
+
+    const idxSID = H.indexOf("Student ID");
+    const idxEN = H.indexOf("EN");
+    const idxStatus = H.indexOf("Status");
+    const idxSeen = H.indexOf("Last Seen");
+    const idxAtt = H.indexOf("Attempts");
+    const idxCor = H.indexOf("Correct");
+
+    const tz = Session.getScriptTimeZone() || "Europe/Rome";
+    const todayStr = Utilities.formatDate(new Date(), tz, "yyyy-MM-dd");
+
+    let updated = 0;
+    cards.forEach(c => {
+        const enTerm = (c.en || "").trim();
+        const newStatus = (c.status || "").trim();
+        if (!enTerm || !newStatus) return;
+
+        const rowIndex = rows.findIndex(r =>
+            String(r[idxSID] || "").trim() === String(studentId) &&
+            String(r[idxEN] || "").trim() === enTerm
+        );
+
+        if (rowIndex === -1) return;
+
+        const targetRow = rowIndex + 2; // offset header
+        // aggiorna Status
+        if (idxStatus !== -1) sheet.getRange(targetRow, idxStatus + 1).setValue(newStatus);
+        // aggiorna Last Seen
+        if (idxSeen !== -1) sheet.getRange(targetRow, idxSeen + 1).setValue(todayStr);
+        // Attempts +1
+        if (idxAtt !== -1) {
+            const prev = Number(rows[rowIndex][idxAtt] || 0);
+            sheet.getRange(targetRow, idxAtt + 1).setValue(prev + 1);
+        }
+        // Correct +1 solo se status=known
+        if (newStatus.toLowerCase() === "known" && idxCor !== -1) {
+            const prevC = Number(rows[rowIndex][idxCor] || 0);
+            sheet.getRange(targetRow, idxCor + 1).setValue(prevC + 1);
+        }
+        updated++;
+    });
+
+    return { success: true, updated };
 }
 
 // ------------------- HELPERS -------------------
 
 function put(headers, row, name, val) {
-  const idx = headers.indexOf(name);
-  if (idx !== -1) row[idx] = val;
+    const idx = headers.indexOf(name);
+    if (idx !== -1) row[idx] = val;
 }
 function getHeaders(sheet) {
-  return sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    return sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
 }
 function getBodyValues(sheet) {
-  const lastRow = sheet.getLastRow();
-  const lastCol = sheet.getLastColumn();
-  if (lastRow < 2 || lastCol < 1) return [];
-  return sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
+    const lastRow = sheet.getLastRow();
+    const lastCol = sheet.getLastColumn();
+    if (lastRow < 2 || lastCol < 1) return [];
+    return sheet.getRange(2, 1, lastRow - 1, lastCol).getValues();
 }
 function jsonResponse(obj) {
-  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
+    return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }

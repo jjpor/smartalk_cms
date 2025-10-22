@@ -4,6 +4,19 @@ from smartalk.core.settings import settings
 
 logger = logging.getLogger("startup")
 
+                                        ########### TIPI DI DATO ##############
+                                                    # S: String
+                                                    # N: Number
+                                                    # B: binario
+                                                    # BOOL: Boolean
+                                                    # NULL: null
+                                                    # M: Map
+                                                    # L: list
+                                                    # SS: set string
+                                                    # NS: set numerico
+                                                    # BS: set binario
+                                        #######################################
+
 # -------------------------------------------------
 # FUNZIONE HELPER
 # -------------------------------------------------
@@ -74,7 +87,10 @@ async def _create_contracts_table(db, table_name) -> None:
             {
                 "IndexName": "student-id-index",
                 "KeySchema": [{"AttributeName": "student_id", "KeyType": "HASH"}],
-                "Projection": {"ProjectionType": "KEYS_ONLY"},
+                "Projection": {
+                    "ProjectionType": "INCLUDE",
+                    "NonKeyAttributes": ["status", "left_calls", "used_calls", "max_end_date", "product_id"],
+                },
             },
             {
                 "IndexName": "client-id-index",
@@ -85,6 +101,14 @@ async def _create_contracts_table(db, table_name) -> None:
                 "IndexName": "status-index",
                 "KeySchema": [{"AttributeName": "status", "KeyType": "HASH"}],
                 "Projection": {"ProjectionType": "KEYS_ONLY"},
+            },
+            {
+                "IndexName": "report-card-cadency-report-card-start-date-index",
+                "KeySchema": [
+                    {"AttributeName": "report_card_cadency", "KeyType": "HASH"},
+                    {"AttributeName": "report_card_start_date", "KeyType": "RANGE"}
+                ],
+                "Projection": {"ProjectionType": "ALL"},
             },
         ],
     )
@@ -139,7 +163,10 @@ async def _create_tracker_table(db, table_name) -> None:
                     {"AttributeName": "student_id", "KeyType": "HASH"},
                     {"AttributeName": "date", "KeyType": "RANGE"},
                 ],
-                "Projection": {"ProjectionType": "KEYS_ONLY"},
+                "Projection": {
+                    "ProjectionType": "INCLUDE",
+                    "NonKeyAttributes": ["date", "product_id", "coach_id", "duration", "attendance", "notes"],
+                },
             },
             {
                 "IndexName": "coach-id-date-index",
@@ -147,46 +174,78 @@ async def _create_tracker_table(db, table_name) -> None:
                     {"AttributeName": "coach_id", "KeyType": "HASH"},
                     {"AttributeName": "date", "KeyType": "RANGE"},
                 ],
-                "Projection": {"ProjectionType": "INCLUDE"},
+                "Projection": {
+                    "ProjectionType": "INCLUDE",
+                    "NonKeyAttributes": ["date", "student_id", "product_id", "coach_rate"],
+                },
             },
         ],
     )
 
-async def _create_report_cards_table(db, table_name) -> None:
+async def _create_report_card_generators_table(db, table_name) -> None:
     """Tabella Report Cards (pagelle).
-        report_id = coach_id#contract_id#date
-
-        contract_id serve solo per recuperare l'email referente 
+            report_card_generator_id=student_id#client_id#invoice_id#report_card_email_recipients#report_card_cadency
+                (es: ABC.XYZ#COMPANY_NAME#123/2025XYZ#tizio1@domain1.com,tizio2@domain2.com#1)
     """
     await db.create_table(
         TableName=table_name,
         BillingMode="PAY_PER_REQUEST",
         KeySchema=[
-            {"AttributeName": "student_id", "KeyType": "HASH"},
-            {"AttributeName": "report_id", "KeyType": "RANGE"},
+            {"AttributeName": "report_card_generator_id", "KeyType": "HASH"}
+        ],
+        AttributeDefinitions=[
+            {"AttributeName": "report_card_generator_id", "AttributeType": "S"},
+            {"AttributeName": "start_month", "AttributeType": "S"},
+            {"AttributeName": "current_start_month", "AttributeType": "S"},
+            {"AttributeName": "next_start_month", "AttributeType": "S"},
+            {"AttributeName": "student_id", "AttributeType": "S"},
+            {"AttributeName": "client_id", "AttributeType": "S"},
+            {"AttributeName": "invoice_id", "AttributeType": "S"},
+            {"AttributeName": "report_card_email_recipients", "AttributeType": "S"},
+            {"AttributeName": "report_card_cadency", "AttributeType": "N"},
+
+        ],
+    )
+
+async def _create_report_cards_table(db, table_name) -> None:
+    """Tabella Report Cards (pagelle).
+            report_id=coach_id#report_card_generator_id
+            raport_range=start_month#end_month (es.: 2025-10#2025-11)
+
+            (student_id per il momento è implicito in report_card_generator_id)
+            (quando esiste solo il no show report card, allora coach_id è l'id del coach con role "Head Coach")
+    """
+    await db.create_table(
+        TableName=table_name,
+        BillingMode="PAY_PER_REQUEST",
+        KeySchema=[
+            {"AttributeName": "report_id", "KeyType": "HASH"},
+            {"AttributeName": "report_range", "KeyType": "RANGE"},
         ],
         AttributeDefinitions=[
             {"AttributeName": "report_id", "AttributeType": "S"},
-            {"AttributeName": "date", "AttributeType": "S"},
-            {"AttributeName": "student_id", "AttributeType": "S"},
-            {"AttributeName": "coach_id", "AttributeType": "S"},
+            {"AttributeName": "report_range", "AttributeType": "S"},
+            {"AttributeName": "start_month", "AttributeType": "S"},
+            {"AttributeName": "end_month", "AttributeType": "S"},
+            {"AttributeName": "report_card_generator_id", "AttributeType": "S"},
+            {"AttributeName": "status", "AttributeType": "S"},
         ],
         GlobalSecondaryIndexes=[
             {
-                "IndexName": "student-id-date-index",
+                "IndexName": "status-report-range-index",
                 "KeySchema": [
-                    {"AttributeName": "student_id", "KeyType": "HASH"},
-                    {"AttributeName": "date", "KeyType": "RANGE"},
+                    {"AttributeName": "status", "KeyType": "HASH"},
+                    {"AttributeName": "report_range", "KeyType": "RANGE"},
                 ],
                 "Projection": {"ProjectionType": "KEYS_ONLY"},
             },
             {
-                "IndexName": "coach-id-date-index",
+                "IndexName": "coach-id-status-index",
                 "KeySchema": [
                     {"AttributeName": "coach_id", "KeyType": "HASH"},
-                    {"AttributeName": "date", "KeyType": "RANGE"},
+                    {"AttributeName": "status", "KeyType": "RANGE"}
                 ],
-                "Projection": {"ProjectionType": "KEYS_ONLY"},
+                "Projection": {"ProjectionType": "ALL"}
             },
         ],
     )

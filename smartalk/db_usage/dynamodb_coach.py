@@ -1,14 +1,13 @@
 # smartalk/db_usage/dynamodb_coach.py
 
 import logging
-from datetime import datetime, timezone
+from datetime import datetime, timezone, date
 from decimal import Decimal
+from dateutil import relativedelta
 from typing import Any, Dict, List, Optional
 
-from aioboto3.session import ResourceCreatorContext
 from boto3.dynamodb.conditions import Attr, Key
 from botocore.exceptions import ClientError
-from pydantic import BaseModel, EmailStr, Field
 
 from smartalk.core.settings import settings
 
@@ -51,15 +50,15 @@ def generate_debrief_text_ai(payload: Dict[str, Any]) -> Dict[str, Any]:
 # ====================================================================
 
 # Funzioni per Tabella USERS
-async def get_active_students(coach_id: str, db: ResourceCreatorContext) -> List[str]:
-    """Recupera gli ID degli studenti attivi assegnati a un coach (USERS Table)."""
+async def get_active_students(coach_id: str, db: dict) -> List[str]:
+    """Recupera gli ID degli studenti attivi (USERS Table)."""
     try:
         # HASH: user_type (index: user-type-index)
         table = await db.Table(settings.USERS_TABLE)
         response = await table.query(
             IndexName='user-type-index', 
             KeyConditionExpression=Key('user_type').eq('student'),
-            FilterExpression=Attr('coach_id').eq(coach_id) & Attr('status').eq('active'),
+            FilterExpression=Attr('status').eq('active'),
             ProjectionExpression="#id",
             ExpressionAttributeNames={"#id": "id"}
         )
@@ -159,15 +158,14 @@ async def log_call_to_db(db, data: Dict[str, Any]) -> Dict[str, Any]:
 
 async def get_monthly_earnings(coach_id: str, db: dict) -> float:
     """Calcola il guadagno (TRACKER Table, coach-id-date-index)."""
-    today = datetime.now(timezone.utc)
-    start_of_month_prefix = today.strftime('%Y-%m-%d')
+    today = get_today_string()
     
     try:
         # GSI: coach-id-date-index (HASH: coach_id, RANGE: date)
         table = await db.Table(settings.TRACKER_TABLE)
         response = await table.query(
             IndexName='coach-id-date-index', 
-            KeyConditionExpression=Key('coach_id').eq(coach_id) & Key('date').begins_with(start_of_month_prefix[:7]),
+            KeyConditionExpression=Key('coach_id').eq(coach_id) & Key('date').begins_with(today[:7]),
             ProjectionExpression="coach_rate"
         )
         total_earnings = sum(item.get('coach_rate', Decimal(0)) for item in response.get('Items', []))
@@ -180,90 +178,145 @@ async def get_calls_by_coach(db, coach_id: str) -> List[Dict[str, Any]]:
     """Recupera tutte le chiamate (TRACKER Table, coach-id-date-index)."""
     try:
         tracker_table = await db.Table(settings.TRACKER_TABLE)
-        response = tracker_table.query(
+        lessons = await tracker_table.query(
             IndexName='coach-id-date-index', 
             KeyConditionExpression=Key('coach_id').eq(coach_id),
-            ScanIndexForward=False 
+            ScanIndexForward=False,
+            ProjectionExpression=", ".join(["date", "student_id", "product_id", "coach_rate"])
         )
         products_table = await db.Table(settings.PRODUCTS_TABLE)
-        history = [{
-            "date": item.get('date'),
-            "studentId": item.get('student_id'),
-            "productName": await products_table.get_item(Key={"product_id": item.get('product_id')})["Item"]["product_name"],
-            "earnings": float(item.get('coach_rate', 0))
-        } for item in response.get('Items', [])]
+        history = []
+        for item in lessons.get('Items', []):
+            product_response = await products_table.get_item(Key={"product_id": item.get('product_id')})
+            history.append({
+                "date": item.get('date'),
+                "studentId": item.get('student_id'),
+                "productName": product_response["Item"]["product_name"],
+                "earnings": float(item.get('coach_rate', 0))
+            })
         
         return history
     except ClientError as e:
-        logger.error(f"DynamoDB Error in get_call_history (TRACKER table): {e}")
+        logger.error(f"DynamoDB Error in get_calls_by_coach (TRACKER table): {e}")
         return []
 
 async def get_calls_by_student(student_id: str, db: dict) -> List[Dict[str, Any]]:
     """Recupera tutte le chiamate (TRACKER Table, student-id-date-index)."""
     try:
-        tracker_table = db.Table(settings.TRACKER_TABLE)
-        response = tracker_table.query(
+        tracker_table = await db.Table(settings.TRACKER_TABLE)
+        lessons = await tracker_table.query(
             IndexName='student-id-date-index', 
             KeyConditionExpression=Key('student_id').eq(student_id),
-            ScanIndexForward=False 
+            ScanIndexForward=False,
+            ProjectionExpression=", ".join(["date", "product_id", "coach_id", "duration", "attendance", "notes"])
         )
 
         products_table = await db.Table(settings.PRODUCTS_TABLE)
-        history = [{
-            "date": item.get('date'),
-            "productName": await products_table.get_item(Key={"product_id": item.get('product_id')})["Item"]["product_name"],
-            "coachId": item.get('coach_id'),
-            "duration": item.get('duration'),
-            "attendance": item.get('attendance'),
-            "notes": item.get('notes'),
-        } for item in response.get('Items', [])]
+
+        history = []
+        for item in lessons.get('Items', []):
+            product_response = await products_table.get_item(Key={"product_id": item.get('product_id')})
+            history.append({
+                "date": item.get('date'),
+                "productName": product_response["Item"]["product_name"],
+                "coachId": item.get('coach_id'),
+                "duration": item.get('duration'),
+                "attendance": item.get('attendance'),
+                "notes": item.get('notes'),
+            })
         
         return history
     except ClientError as e:
-        logger.error(f"DynamoDB Error in get_call_history (TRACKER table): {e}")
+        logger.error(f"DynamoDB Error in get_calls_by_student (TRACKER table): {e}")
         return []
 
 async def get_student_contracts(student_id: str, db: dict) -> List[Dict[str, Any]]:
-    contracts_table = db.Table(settings.CONTRACTS_TABLE)
-    response = contracts_table.query(
+    contracts_table = await db.Table(settings.CONTRACTS_TABLE)
+    contracts_response = await contracts_table.query(
         IndexName='student-id-index', 
         KeyConditionExpression=Key('student_id').eq(student_id),
-        ScanIndexForward=False 
+        ScanIndexForward=False,
+        ProjectionExpression=", ".join(["status", "left_calls", "used_calls", "max_end_date", "product_id"])
     )
-
-    """
-                      const total = c.product?.totalCalls || (c.leftCalls && c.leftCalls > 0 ? c.leftCalls : 0);
-                  const used = (c.product?.totalCalls && c.leftCalls !== undefined)
-                    ? Math.max(0, c.product.totalCalls - c.leftCalls)
-                    : (c.leftCalls === 0 ? "All" : "-");
-                  const expiration = c.maxEndDate || c.endDate || "-";
-                  const status = c.leftCalls === 0 ? "Ended" : "Active";
-                  return `
-                    <tr class="${c.leftCalls === 0 ? 'text-gray-400' : ''}">
-                      <td class="py-2 px-4">${c.product?.productName || c.productId}</td>
-                      <td class="py-2 px-4 text-center">${c.product?.duration || '-'}</td>
-                      <td class="py-2 px-4 text-center">${used}</td>
-                      <td class="py-2 px-4 text-center">${c.leftCalls ?? '∞'}</td>
-                      <td class="py-2 px-4 text-center">${expiration}</td>
-                      <td class="py-2 px-4 text-center">${status}</td>
-    """
     products_table = await db.Table(settings.PRODUCTS_TABLE)
-    return [{
-        "date": item.get('date'),
-        "product": await products_table.get_item(Key={"product_id": item.get('product_id')})["Item"], # ????? c.product?.totalCalls
-        "coachId": item.get('coach_id'),
-        "duration": item.get('duration'),
-        "attendance": item.get('attendance'),
-        "notes": item.get('notes'),
-    } for item in response.get('Items', [])]
-        
+
+    contracts = []
+    for item in contracts_response.get('Items', []):
+        product_response = await products_table.get_item(Key={"product_id": item.get('product_id')})
+        contracts.append({
+            "product": {
+                "productName": product_response["Item"]["product_name"],
+                "duration": product_response["Item"]["duration"],
+            },
+            "status": item.get('status'),
+            "left_calls": item.get('left_calls'),
+            "used_calls": item.get('used_calls'),
+            "max_end_date": item.get('max_end_date'),
+        })
+
+    return contracts
+
+def get_today_date():
+    return datetime.now(timezone.utc).date()
+    
+def get_today_string(today: date = None):
+    if today is None:
+        return datetime.now(timezone.utc).date().isoformat()
+    else:
+        return today.isoformat()
+
+def month_divisors(today_string: str) -> list[int]:
+    month_number = int(today_string.split("-")[1])
+    return [i for i in range(1, 7) if month_number % i == 0]
+
+def next_month_prefix(today_date: date) -> str:
+    next_month = today_date + relativedelta(months=1)
+    return next_month.isoformat()[:7]
 
 # Funzioni per Tabella REPORT_CARDS
-async def get_report_card_tasks_db(db, coach_id: str) -> Dict[str, List[Dict[str, Any]]]:
-    """Trova i task di Report Card in sospeso (Simulato)."""
-    # Simulazione: Dati necessari per il frontend
-    tasks = [{"studentId": "S001", "contractId": "C001", "name": "Mario", "surname": "Rossi", "calls": 4, "alreadyDrafted": False}]
-    no_shows = [{"studentId": "S002", "contractId": "C002", "name": "Luca", "surname": "Verdi", "alreadySubmitted": False, "period": "current"}]
+async def get_report_card_tasks_db(coach: dict, db: dict) -> Dict[str, List[Dict[str, Any]]]:
+    """Trova i task di Report Card in sospeso."""
+    tasks = []
+    no_shows = []
+    seen_students = []
+    today_date = get_today_date()
+    today_string = get_today_string(today_date)
+    users_table = await db.Table(settings.USERS_TABLE)
+    contracts_table = await db.Table(settings.CONTRACTS_TABLE)
+    tracker_table = await db.Table(settings.TRACKER_TABLE)
+    report_cards_table = await db.Table(settings.REPORT_CARDS_TABLE)
+
+    # contracts[report_card_start_date <= month(today) and ]
+    cadencies = month_divisors(today_string)
+    next_month = next_month_prefix(today_date)
+    contracts = []
+    for cadency in cadencies:
+        contracts_by_cadency = await contracts_table.query(
+            IndexName='report-card-cadency-report-card-start-date-index',
+            KeyConditionExpression=(
+                Key('report_card_cadency').eq(cadency) &
+                Key('report_card_start_date').lt(next_month)
+            ),
+        )
+        contracts += contracts_by_cadency.get('Items', [])
+
+    # 
+
+    for contract in contracts:
+        student_id = contract["student_id"]
+        if student_id in seen_students:
+            continue
+        student_response = await users_table.get_item(Key={"id": student_id})
+        student = student_response['Item']
+        calls_response = await tracker_table.query(
+            KeyConditionExpression=Key('session_id').begins_with(f"{coach['id']}#{student_id}#")
+        )
+        calls = calls_response.get('Items', [])
+        seen_students.append(student_id)
+
+
+    #tasks = [{"studentId": "S001", "contractId": "C001", "name": "Mario", "surname": "Rossi", "calls": 4, "alreadyDrafted": False}]
+    #no_shows = [{"studentId": "S002", "contractId": "C002", "name": "Luca", "surname": "Verdi", "alreadySubmitted": False, "period": "current"}]
     return {"tasks": tasks, "noShows": no_shows}
 
 
@@ -272,7 +325,7 @@ async def handle_report_card_submission(db, data: Dict[str, Any]) -> Dict[str, A
     coach_id = data.get("coachId")
     contract_id = data.get("contractId")
     student_id = data.get("studentId")
-    current_date_iso = datetime.now(timezone.utc).isoformat()
+    current_date_iso = get_today_string()
 
     # PK: student_id, SK: report_id (coach_id#contract_id#date)
     report_id = f"{coach_id}#{contract_id}#{current_date_iso}"
@@ -300,7 +353,7 @@ async def handle_debrief_submission_db(db, data: Dict[str, Any]) -> Dict[str, An
     """Salva una bozza di Debrief (DEBRIEFS Table)."""
     student_id = data.get("studentId")
     coach_id = data.get("coachId")
-    current_date_iso = datetime.now(timezone.utc).isoformat()
+    current_date_iso = datetime.now(timezone.utc).date().isoformat()
     
     # PK: student_id, SK: date (ISO_TIMESTAMP)
     try:
