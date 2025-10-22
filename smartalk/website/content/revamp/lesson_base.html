@@ -1,0 +1,51 @@
+{#
+TEMPLATE BASE PER TUTTE LE LEZIONI
+Questo file definisce la struttura principale della pagina.
+Ogni lezione specifica estenderà questo template e riempirà i blocchi.
+#}
+{% extends "base.html" %}
+
+{# Definiamo i blocchi per il titolo specifico della lezione #}
+{% block title %}{{ lesson_title | default('Smartalk Lesson') }}{% endblock %}
+
+{% block extra_styles %}
+{{ super() }}
+{# Link al nostro nuovo CSS standardizzato #}
+<link rel="stylesheet" href="/static/content/revamp/style.css">
+{% endblock %}
+
+
+{% block content %}
+<div class="container mx-auto p-4 md:p-8 max-w-4xl pt-24">
+
+    {# Header della lezione, popolato da variabili Jinja #}
+    <header class="text-center mb-12">
+        <h1 class="text-3xl md:text-4xl font-bold text-slate-900">{{ lesson_title }}</h1>
+        <p class="text-lg text-slate-600 mt-2">{{ lesson_subtitle }}</p>
+    </header>
+
+    {# Navigazione interna, generata dinamicamente #}
+    {% if nav_links %}
+    <nav class="mb-8 sticky top-20 bg-white/80 backdrop-blur-sm z-10 py-2">
+        <ul class="flex justify-center flex-wrap gap-x-3 gap-y-2">
+            {% for nav in nav_links %}
+            <li><a href="#{{ nav.id }}" class="section-nav-link py-2 px-3 text-sm md:text-base">{{ nav.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </nav>
+    {% endif %}
+
+    <main class="space-y-12">
+        {# Qui verrà inserito il contenuto specifico della lezione #}
+        {% block lesson_content %}{% endblock %}
+    </main>
+
+</div>
+{% endblock content %}
+
+
+{% block extra_scripts %}
+{{ super() }}
+{# Includiamo il nostro nuovo motore JavaScript universale #}
+<script src="/static/content/revamp/engine.js"></script>
+{% endblock extra_scripts %}

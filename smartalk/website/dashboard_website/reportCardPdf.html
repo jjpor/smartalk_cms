@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Report di Performance – <?= companyName ?></title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      font-size: 14px;
+      background: #fff;
+      margin: 30px;
+      color: #333;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+    .header img {
+      max-width: 220px;
+      height: auto;
+      margin-bottom: 10px;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0;
+    }
+    .subtitle {
+      font-size: 13px;
+      color: #666;
+      margin-top: 4px;
+    }
+    .grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .card {
+      flex: 1 1 calc(50% - 16px); /* due colonne */
+      border: 1px solid #ddd;
+      border-top: 5px solid #2563eb;
+      border-radius: 8px;
+      padding: 15px;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,.1);
+      page-break-inside: avoid;
+    }
+    .card.red { border-top-color: #dc2626; }
+    .card.gray { border-top-color: #6b7280; }
+    .card.light { border-top-color: #9ca3af; }
+    .student {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    .meta {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+    .report {
+      font-size: 13px;
+      line-height: 1.4;
+      white-space: pre-line;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <!-- cloudinary test (failed)
+          <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756747292/smartalk_banner_ke1kkq.svg" 
+              alt="Smartalk Logo">
+     -->
+    <?!= logoHtml ?>
+    <h1 class="title">Report di Performance – <?= companyName ?></h1>
+    <div class="subtitle">Periodo: <?= periodStr ?></div>
+  </div>
+
+  <div class="grid">
+    <? for (var i=0; i<items.length; i++) {
+         var it = items[i];
+         var cls = "card";
+         if (it.report.toLowerCase() === "adequate") cls += " red";
+         if (it.report.toLowerCase() === "good") cls += " gray";
+         if (it.report.toLowerCase() === "null") cls += " light";
+    ?>
+      <div class="<?= cls ?>">
+        <div class="student"><?= it.fullName ?></div>
+        <div class="meta">Coach: <?= it.coach ?> | Attendance: <?= it.attendance ?></div>
+        <div class="report"><?= it.report ?></div>
+      </div>
+    <? } ?>
+  </div>
+
+</body>
+</html>

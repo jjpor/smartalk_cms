@@ -1,0 +1,355 @@
+function onOpen() {
+  SpreadsheetApp.getUi()
+    .createMenu('CMS') // titolo del menu
+    .addItem('Onboarding Student', 'cms_onboardStudents')
+    .addItem('Onboarding Coach', 'cms_onboardCoaches')
+    .addToUi();
+}
+
+function getAllCoachEmails(ss) {
+  const coachesSheet = ss.getSheetByName('Coaches');
+  const data = coachesSheet.getDataRange().getValues();
+  const headers = data[0];
+  const idxEmail = headers.indexOf('Email');
+  if (idxEmail === -1) return "";
+
+  const emails = [];
+  for (let i = 1; i < data.length; i++) {
+    const email = String(data[i][idxEmail] || "").trim();
+    if (email) emails.push(email);
+  }
+  return emails.join(",");
+}
+
+function cms_onboardStudents() {
+  const ss = SpreadsheetApp.openById("1WZ-ybCFwrI7-NPd6TxDS7dux1NUhvaXNe3zXIJ3fRFQ"); // DATA2REVENGE
+  const studentsSheet = ss.getSheetByName('Students');
+  const invoicesSheet = ss.getSheetByName('Invoices');
+  const contractsSheet = ss.getSheetByName('Contracts');
+
+  const BASE_FOLDER_ID = '1GS6I-HjFAjLWfpo7CBqy7k2gZFTjuPu2'; // cartella base studenti
+  const rootFolder = DriveApp.getFolderById(BASE_FOLDER_ID);
+
+  const data = studentsSheet.getDataRange().getValues();
+  const h = data[0];
+
+  // mappa colonne Students (DATA2REVENGE)
+  const IDX = {
+    NAME:        h.indexOf('Name'),
+    SURNAME:     h.indexOf('Surname'),
+    STUDENT_ID:  h.indexOf('Student ID'),
+    PASSWORD:    h.indexOf('Password'),
+    EMAIL:       h.indexOf('Email'),
+    DRIVE:       h.indexOf('Drive'),
+    HOMEWORK:    h.indexOf('Homework'),
+    LESSON:      h.indexOf('Lesson Plan'),
+    ONBOARDED:   h.indexOf('Onboarded (dashboard)'),
+    STATUS:      h.indexOf('Status')
+  };
+
+  // mappa Client ID da Contracts
+  const contracts = contractsSheet.getDataRange().getValues();
+  const ch = contracts[0];
+  const CIDX = {
+    CLIENT_ID:  ch.indexOf('Client ID'),
+    STUDENT_ID: ch.indexOf('Student ID')
+  };
+  const studentToClient = {};
+  for (let i = 1; i < contracts.length; i++) {
+    const row = contracts[i];
+    const sid = String(row[CIDX.STUDENT_ID] || '').trim();
+    const cid = String(row[CIDX.CLIENT_ID] || '').trim();
+    if (sid && cid && !studentToClient[sid]) {
+      studentToClient[sid] = cid;
+    }
+  }
+
+  const existingPasswords = cms_getExistingPasswords(data, IDX.PASSWORD);
+  const signature = HtmlService.createHtmlOutputFromFile("signature").getContent();
+
+  let onboardedCount = 0;
+  let skippedCount = 0;
+
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
+    const studentId = row[IDX.STUDENT_ID];
+    if (!studentId) continue;
+
+    const onboarded = row[IDX.ONBOARDED];
+    const status    = row[IDX.STATUS];
+    const email     = row[IDX.EMAIL];
+    const name      = row[IDX.NAME];
+    const surname   = row[IDX.SURNAME];
+    let password    = row[IDX.PASSWORD];
+    let driveUrl    = row[IDX.DRIVE];
+    let hwUrl       = row[IDX.HOMEWORK];
+    let lpUrl       = row[IDX.LESSON];
+
+    Logger.log(`Processing ${studentId} (${name} ${surname})`);
+
+    // se già tutto pronto → skip
+    if (driveUrl && hwUrl && lpUrl && onboarded === 'YES') {
+      skippedCount++;
+      Logger.log(` -> Already onboarded, skipping`);
+      continue;
+    }
+
+    // password
+    if (!password) {
+      password = cms_generatePassword(existingPasswords);
+      studentsSheet.getRange(i + 1, IDX.PASSWORD + 1).setValue(password);
+    }
+
+    // cartella
+    let studentFolder;
+    if (!driveUrl) {
+      studentFolder = rootFolder.createFolder(studentId);
+      studentFolder.setSharing(DriveApp.Access.DOMAIN, DriveApp.Permission.EDIT); // coach/admin
+      driveUrl = studentFolder.getUrl();
+      studentsSheet.getRange(i + 1, IDX.DRIVE + 1).setValue(driveUrl);
+      Logger.log(` -> Created Drive folder`);
+    } else {
+      studentFolder = DriveApp.getFolderById(cms_getIdFromUrl(driveUrl));
+    }
+
+    // homework
+    let hwFile;
+    if (!hwUrl) {
+      const hwDoc = DocumentApp.create(`${studentId} Homework`);
+      hwFile = DriveApp.getFileById(hwDoc.getId());
+      hwFile.moveTo(studentFolder);
+      hwUrl = hwFile.getUrl();
+      studentsSheet.getRange(i + 1, IDX.HOMEWORK + 1).setValue(hwUrl);
+      Logger.log(` -> Created Homework`);
+    } else {
+      hwFile = DriveApp.getFileById(cms_getIdFromUrl(hwUrl));
+    }
+
+    // condivisione con lo studente
+    if (email) {
+      try {
+        // folder solo viewer
+        if (studentFolder) {
+          studentFolder.addViewer(email);
+          Logger.log(` -> Shared Drive folder (Viewer) with ${email}`);
+        }
+        // homework editor
+        if (hwFile) {
+          hwFile.addEditor(email);
+          Logger.log(` -> Shared Homework (Editor) with ${email}`);
+        }
+      } catch (err) {
+        Logger.log(` !! Error sharing with ${email}: ${err.message}`);
+      }
+    }
+
+    // lesson plan
+    if (!lpUrl) {
+      const lpDoc = DocumentApp.create(`${studentId} Lesson Plan`);
+      const lpFile = DriveApp.getFileById(lpDoc.getId());
+      lpFile.moveTo(rootFolder);
+      lpUrl = lpFile.getUrl();
+      studentsSheet.getRange(i + 1, IDX.LESSON + 1).setValue(lpUrl);
+      Logger.log(` -> Created Lesson Plan`);
+      try { lpFile.setSharing(DriveApp.Access.DOMAIN, DriveApp.Permission.EDIT); } catch(e){}
+    }
+
+    // email
+    if (status === 'Active' && email && onboarded !== 'YES') {
+ const subject = "Welcome! Onboarding + Dashboard";
+
+const htmlBody = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome to Smartalk</title>
+</head>
+<body style="margin:0; padding:20px; font-family: 'Segoe UI', sans-serif; background:#f9f9f9; color:#21242F;">
+  <table align="center" cellpadding="0" cellspacing="0" border="0" 
+         style="max-width:600px; width:100%; background:#ffffff; border-radius:16px; 
+                overflow:hidden; box-shadow:0 4px 20px rgba(0,0,0,0.08);">
+    <tr>
+      <td style="padding:30px; text-align:center;">
+        <h1 style="margin:0; font-size:22px; color:#DC143C;">Welcome to Smartalk &#127881;</h1>
+        <p style="margin:15px 0 0; font-size:16px;">Hi ${name},</p>
+        <p style="margin:10px 0 0; font-size:15px;">
+          Thank you for purchasing a <strong>Smartalk coaching package</strong>!  
+          We’ve already completed your onboarding and your personal Smartalk Dashboard is now ready.
+        </p>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="padding:20px; background:#fef2f2; text-align:left;">
+        <p style="margin:0; font-size:15px;">
+          &#9889; <strong>First things first:</strong> from your Dashboard you can immediately <br>
+          book your first call with JJ, Elaina or Trina.
+        </p>
+        <ul style="margin:15px 0 0 20px; padding:0; font-size:14px; line-height:1.5;">
+          <li>&#128197; Check your calendar options</li>
+          <li>&#128230; Track your package and lessons</li>
+          <li>&#128196; Review homework and materials</li>
+        </ul>
+        <div style="text-align:center; margin:20px 0 0;">
+          <a href="https://www.smartalk.online/dashboard" 
+             style="background:#DC143C; color:#fff; text-decoration:none; 
+                    padding:12px 28px; border-radius:30px; font-weight:600; 
+                    font-size:15px; display:inline-block;">
+             Access Your Dashboard
+          </a>
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="padding:25px; text-align:center;">
+        <p style="margin:0; font-size:14px; color:#555;">
+          &#128196; Please review and sign our 
+          <a href="https://www.smartalk.online/policy" 
+             style="color:#DC143C; font-weight:600; text-decoration:none;">Policy</a>.  
+          You’ll also find it in your Dashboard.
+        </p>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="padding:25px; background:#f4f4f4; text-align:center;">
+        <h3 style="margin:0 0 10px; font-size:16px; color:#21242F;">&#128274; Your login credentials:</h3>
+        <p style="margin:5px 0; font-size:15px;">Username: <strong>${studentId}</strong></p>
+        <p style="margin:5px 0; font-size:15px;">Password: <strong>${password}</strong></p>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="padding:25px; text-align:left;">
+        <h3 style="margin:0 0 10px; font-size:16px;">&#128202; Inside your Dashboard you’ll find:</h3>
+        <ul style="margin:0 0 0 20px; padding:0; font-size:14px; line-height:1.6;">
+          <li>A link to your Homework file (if available)</li>
+          <li>A shortcut to your Google Drive folder</li>
+          <li>A direct link to your Quizlet set</li>
+          <li>A preview of your latest Coaching Debrief</li>
+          <li>A tracker showing completed vs. remaining calls</li>
+        </ul>
+      </td>
+    </tr>
+
+    <tr>
+      <td style="padding:25px; text-align:center;">
+        <p>If you have any trouble logging in, feel free to reach out.</p>
+        <p>Looking forward to working together!</p>
+        <p style="margin:5px 0 0; font-weight:600;">Talk soon,<br>Smartalk Team</p>
+      </td>
+    </tr>
+  </table>
+  <div style="margin-top:20px;">
+    ${signature}
+  </div>
+</body>
+</html>
+`;
+      // recupera le email dei coach dal foglio
+const ccEmails = getAllCoachEmails(ss);
+
+GmailApp.sendEmail(email, subject, "", {
+  htmlBody: htmlBody,
+  name: "Smartalk",
+  from: "info@smartalk.online",
+  cc: ccEmails // <<< qui la magia
+});
+Logger.log(` -> Sent onboarding email (cc: ${ccEmails})`);
+
+      studentsSheet.getRange(i + 1, IDX.ONBOARDED + 1).setValue('YES');
+
+      // invoice
+      const clientId = studentToClient[studentId] || "";
+      if (clientId) {
+        cms_addInvoice(invoicesSheet, clientId, name, surname);
+        Logger.log(` -> Invoice created`);
+      }
+    }
+
+    onboardedCount++;
+  }
+
+  Logger.log(`Completed: ${onboardedCount} onboarded, ${skippedCount} skipped`);
+  SpreadsheetApp.getUi().alert(`Onboard Students completed.\n${onboardedCount} onboarded, ${skippedCount} skipped.`);
+}
+
+
+function cms_onboardCoaches() {
+  const ss = SpreadsheetApp.openById("1WZ-ybCFwrI7-NPd6TxDS7dux1NUhvaXNe3zXIJ3fRFQ"); // DATA2REVENGE
+  const coachesSheet = ss.getSheetByName('Coaches');
+  const coachesData  = coachesSheet.getDataRange().getValues();
+  const h = coachesData[0];
+
+  const IDX = {
+    COACH_ID:       h.indexOf('Coach ID'),
+    EMAIL:          h.indexOf('Email'),
+    PASSWORD:       h.indexOf('Password'),
+    PAYMENT_FOLDER: h.indexOf('Payment Folder')
+  };
+
+  const ROOT_PAYMENT_ID = '1b62dJXa3YQZ3fLWwg0uus9O17jxF_Yfg'; // cartella base
+  const rootPaymentFolder = DriveApp.getFolderById(ROOT_PAYMENT_ID);
+
+  const AGREEMENT_TEMPLATE_ID = '1rScPhlU6KSdaxBwTPikj9YHQIgtKniNifbgOUiGlrb0';
+  const existingPasswords = cms_getExistingPasswords(coachesData, IDX.PASSWORD);
+
+  for (let i = 1; i < coachesData.length; i++) {
+    const row = coachesData[i];
+    const coachId = row[IDX.COACH_ID];
+    if (!coachId) continue;
+
+    // password
+    if (!row[IDX.PASSWORD]) {
+      const pwd = cms_generatePassword(existingPasswords);
+      coachesSheet.getRange(i + 1, IDX.PASSWORD + 1).setValue(pwd);
+    }
+
+    // cartella pagamento
+    let folderUrl = row[IDX.PAYMENT_FOLDER];
+    let folder;
+    if (!folderUrl) {
+      folder = rootPaymentFolder.createFolder(`${coachId}_PAYMENT`);
+      folder.setSharing(DriveApp.Access.DOMAIN, DriveApp.Permission.EDIT);
+      folderUrl = folder.getUrl();
+      coachesSheet.getRange(i + 1, IDX.PAYMENT_FOLDER + 1).setValue(folderUrl);
+    } else {
+      folder = DriveApp.getFolderById(cms_getIdFromUrl(folderUrl));
+    }
+
+    // copia Agreement se non esiste
+    const wantedName = `${coachId}_Collaboration Agreement Smartalk`;
+    const existing = folder.getFilesByName(wantedName);
+    if (!existing.hasNext()) {
+      const tpl = DriveApp.getFileById(AGREEMENT_TEMPLATE_ID);
+      const copy = tpl.makeCopy(wantedName, folder);
+      copy.setSharing(DriveApp.Access.DOMAIN, DriveApp.Permission.EDIT);
+    }
+  }
+
+  SpreadsheetApp.getUi().alert('Onboard Coaches: completed.');
+}
+// ------------------ HELPERS ------------------
+function cms_getExistingPasswords(rows, PASSWORD_IDX) {
+  const set = new Set();
+  for (let i = 1; i < rows.length; i++) {
+    const v = rows[i][PASSWORD_IDX];
+    if (v) set.add(String(v));
+  }
+  return set;
+}
+
+function cms_generatePassword(existingSet) {
+  let p;
+  do { p = String(Math.floor(1000 + Math.random() * 9000)); } while (existingSet.has(p));
+  existingSet.add(p);
+  return p;
+}
+
+function cms_getIdFromUrl(url) {
+  const m = url && url.match(/[-\w]{25,}/);
+  return m ? m[0] : null;
+}
+

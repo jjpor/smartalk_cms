@@ -1,0 +1,416 @@
+/* ====================================================================
+ * SMARTALK LESSON ENGINE - STYLE.CSS (v1.0)
+ * CSS unificato per tutti i template delle lezioni.
+ * ==================================================================== */
+
+/* --- 1. Reset e Stili di Base --- */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #F8F8F8;
+    color: #333;
+    line-height: 1.6;
+}
+
+/* --- 2. Layout di Pagina (Header e Navigazione) --- */
+.section-header {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-top: 3rem;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid #ccc;
+    padding-bottom: 0.5rem;
+    font-weight: bold;
+}
+
+.section-nav-link {
+    transition: color 0.3s, border-color 0.3s;
+}
+
+.section-nav-link.active {
+    border-bottom: 2px solid #00C4D5;
+    color: #00C4D5;
+    font-weight: 700;
+}
+
+/* --- 3. Componente: Lesson Card (Accordion) --- */
+/* Sostituisce .modal-card, .guide-card, ecc. */
+.lesson-card {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+    /* Aggiungiamo bordi colorati opzionali */
+    border: 1px solid #E5E7EB;
+}
+
+.lesson-card.border-blue {
+    border-color: #38BDF8;
+}
+
+.lesson-card.border-indigo {
+    border-color: #6366F1;
+}
+
+.lesson-card.border-green {
+    border-color: #34D399;
+}
+
+.lesson-card.border-yellow {
+    border-color: #F59E0B;
+}
+
+.lesson-card-header h3,
+.card-header h3 {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.card-header {
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out;
+    margin-top: 0;
+}
+
+.card-content.show {
+    max-height: 2000px;
+    /* Valore alto per permettere l'espansione */
+    margin-top: 1rem;
+}
+
+.arrow-icon {
+    transition: transform 0.5s ease;
+    font-size: 1.5rem;
+    color: #999;
+}
+
+.card-content.show+.card-header .arrow-icon,
+.card-content.show~.card-header .arrow-icon {
+    transform: rotate(180deg);
+}
+
+/* --- 4. Componente: Bottoni --- */
+/* Sostituisce .action-button, .check-button, .reveal-button */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    margin-top: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s, transform 0.1s;
+    display: inline-block;
+    text-align: center;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+}
+
+.btn:active {
+    transform: translateY(1px);
+}
+
+.btn-primary {
+    background-color: #00C4D5;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #009BAA;
+}
+
+.btn-secondary {
+    background-color: #3B82F6;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #2563EB;
+}
+
+/* Bottone per quiz di selezione */
+.btn-select {
+    padding: 0.4rem 1rem;
+    margin: 0.25rem;
+    border-radius: 0.5rem;
+    border: 1px solid #00C4D5;
+    background-color: transparent;
+    cursor: pointer;
+    transition: background-color 0.1s;
+}
+
+.btn-select:hover {
+    background-color: #E0F7FA;
+}
+
+.btn-select.selected {
+    background-color: #00C4D5;
+    color: white;
+    font-weight: 700;
+}
+
+
+/* --- 5. Componente: Info Box / Callout --- */
+/* Sostituisce .example-block, .idiom-card, .exercise-box, .vocab, .reading-text */
+.info-box {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin: 1rem 0;
+    border-left-width: 4px;
+}
+
+.info-box ul {
+    list-style-position: inside;
+}
+
+.info-box-blue {
+    background-color: #F0F9FF;
+    /* sky-50 */
+    border-color: #38BDF8;
+    /* sky-500 */
+}
+
+.info-box-green {
+    background-color: #ECFDF5;
+    /* green-50 */
+    border-color: #34D399;
+    /* green-400 */
+}
+
+.info-box-yellow {
+    background-color: #FEF3C7;
+    /* yellow-100 */
+    border-color: #F59E0B;
+    /* yellow-500 */
+}
+
+.info-box-gray {
+    background-color: #f3f4f6;
+    /* gray-100 */
+    border-color: #6B7280;
+    /* gray-500 */
+}
+
+/* --- 6. Componenti: Quiz e Esercizi --- */
+
+/* Wrapper generico per un esercizio interattivo */
+.interactive-wrapper {
+    padding: 1.5rem;
+    background-color: #F0F9FF;
+    /* Light blue background */
+    border-radius: 0.75rem;
+    border: 2px solid #38BDF8;
+    /* Sky blue border */
+    margin-top: 1rem;
+}
+
+/* Input di testo unificato per quiz */
+.quiz-input-text {
+    /* Sostituisce .input-fill-blank, .fill-in-input, .writing-input */
+    text-align: center;
+    border: none;
+    border-bottom: 2px solid #00C4D5;
+    background: transparent;
+    font-weight: 600;
+    color: #1F2937;
+    padding: 2px 5px;
+    margin: 0 5px;
+    transition: border-color 0.3s;
+    min-width: 100px;
+}
+
+.quiz-input-text:focus {
+    outline: none;
+    border-bottom: 2px solid #00A3B5;
+}
+
+/* Stili per input corretti/errati (usati da engine.js) */
+.quiz-input-text.correct {
+    border-color: #10B981;
+    background-color: #ECFDF5;
+}
+
+.quiz-input-text.incorrect {
+    border-color: #EF4444;
+    background-color: #FEF2F2;
+}
+
+
+/* Stili per quiz a scelta multipla */
+.quiz-question-item {
+    /* Sostituisce .question-item, .feedback-quiz-item */
+    padding: 1rem 0;
+    border-bottom: 1px dashed #E5E7EB;
+}
+
+.quiz-question-item:last-child {
+    border-bottom: none;
+}
+
+.quiz-question-item .options label {
+    display: block;
+    margin-top: 0.5rem;
+    cursor: pointer;
+}
+
+/* Feedback e Punteggio */
+.quiz-feedback {
+    /* Sostituisce .feedback */
+    font-weight: 700;
+    margin-top: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.quiz-summary {
+    font-weight: bold;
+    margin-top: 1rem;
+    font-size: 1.1rem;
+}
+
+/* Classi standard di feedback */
+.correct {
+    color: #10B981;
+}
+
+/* Green */
+.incorrect {
+    color: #EF4444;
+}
+
+/* Red */
+
+
+/* --- 7. Componente: Esercizio "Match" --- */
+.match-item {
+    padding: 10px 15px;
+    margin: 5px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+    text-align: center;
+    border: 2px solid transparent;
+}
+
+/* Gruppo A (es. parole) */
+.match-group-a .match-item {
+    background-color: #99F6E4;
+    /* teal-200 */
+    color: #083344;
+    /* teal-950 */
+    font-weight: 600;
+}
+
+/* Gruppo B (es. definizioni) */
+.match-group-b .match-item {
+    background-color: #FECACA;
+    /* red-200 */
+    color: #7F1D1D;
+    /* red-950 */
+    font-weight: 600;
+}
+
+.match-item.selected {
+    /* Stato 'selezionato' */
+    border-color: #00C4D5;
+    box-shadow: 0 0 10px rgba(0, 196, 213, 0.5);
+    transform: scale(1.02);
+}
+
+.match-item.matched {
+    /* Stato 'abbinato correttamente' */
+    opacity: 0.5;
+    cursor: default;
+    background-color: #D1D5DB;
+    color: #4B5563;
+}
+
+.match-item.error {
+    /* Stato 'errore temporaneo' */
+    border-color: #EF4444;
+    transform: scale(1.02);
+}
+
+/* --- 8. Componente: Generatore "Random" --- */
+.random-display {
+    /* Sostituisce .question-display, #quote-display */
+    min-height: 80px;
+    padding: 1rem;
+    border: 1px dashed #00C4D5;
+    border-radius: 0.5rem;
+    background-color: #E0F7FA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #083344;
+}
+
+/* --- 9. Componente: Tabella Standard --- */
+/* Sostituisce .table-prepositions, .comparison-table, ecc. */
+.table-wrapper {
+    overflow-x: auto;
+    margin-top: 1rem;
+}
+
+.lesson-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.lesson-table th,
+.lesson-table td {
+    padding: 0.75rem;
+    border: 1px solid #e5e7eb;
+    /* gray-200 */
+    vertical-align: top;
+}
+
+.lesson-table th {
+    background-color: #f3f4f6;
+    /* gray-100 */
+    font-weight: 600;
+}
+
+.lesson-table td ul {
+    padding-left: 1.5rem;
+    margin: 0;
+}
+
+/* --- 10. Utilities --- */
+.loading-spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-top: 4px solid #00C4D5;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    animation: spin 1s linear infinite;
+    display: none;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.hidden {
+    display: none;
+}

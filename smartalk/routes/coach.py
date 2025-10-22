@@ -14,25 +14,27 @@ router = APIRouter(tags=["Coach Dashboard"], prefix="/api/coach")
 # Uso della Dependency Injection per ottenere la connessione resiliente
 DBDependency = Depends(get_dynamodb_connection)
 
+
 # ====================================================================
 # VALIDAZIONE TIPO UTENTE (Dependency)
 # ====================================================================
 async def validate_coach_access(user: Dict[str, Any] = Depends(get_current_user)) -> Dict[str, Any]:
     """Verifica che l'utente loggato sia di tipo 'coach' e restituisce l'oggetto utente completo."""
-    if user.get('user_type') != 'coach':
+    if user.get("user_type") != "coach":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Accesso riservato ai coach")
     return user
 
+
 # ====================================================================
-# GET ENDPOINTS 
+# GET ENDPOINTS
 # ====================================================================
+
 
 @router.get("/getStudents")
 async def get_students_endpoint(coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency) -> JSONResponse:
     """Replica doGet(action='getStudents')."""
     
-    coach_id = coach.get("id") 
-    students_data = await dynamodb_coach.get_active_students(coach_id, DBDependency)
+    students_data = await dynamodb_coach.get_active_students(DBDependency)
     
     return create_token_response({"students": students_data}, coach)
 
@@ -45,6 +47,7 @@ async def get_earnings_endpoint(coach: Dict[str, Any] = Depends(validate_coach_a
     earnings = dynamodb_coach.get_monthly_earnings(coach_id, DBDependency)
     
     return create_token_response({"earnings": earnings}, coach)
+
 
 @router.get("/getCallHistory")
 async def get_call_history_endpoint(coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency) -> JSONResponse:
@@ -62,15 +65,16 @@ async def get_student_info_endpoint(
     coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
 ) -> JSONResponse:
     """Replica doGet(action='getStudentInfo')."""
-    
+
     params = dict(request.query_params)
     student_info = await dynamodb_coach.get_student_info(params.get("studentId"), DBDependency)
     if not student_info:
         raise HTTPException(status_code=404, detail="Student not found")
-    
+
     calls = dynamodb_coach.get_calls_by_student(params.get("studentId"), DBDependency)
     student_info["calls"] = calls
     return create_token_response({"studentInfo": student_info}, coach)
+
 
 @router.get("/getStudentContracts")
 async def get_student_contracts_endpoint(
@@ -78,11 +82,12 @@ async def get_student_contracts_endpoint(
     coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
 ) -> JSONResponse:
     """Replica doGet(action='getStudentContracts')."""
-    
+
     params = dict(request.query_params)
     student_contracts = await dynamodb_coach.get_student_contracts(params.get("studentId"), DBDependency)
 
     return create_token_response({"contracts": student_contracts}, coach)
+
 
 @router.get("/getReportCardTasks")
 async def get_report_card_tasks_endpoint(

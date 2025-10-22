@@ -50,7 +50,7 @@ def generate_debrief_text_ai(payload: Dict[str, Any]) -> Dict[str, Any]:
 # ====================================================================
 
 # Funzioni per Tabella USERS
-async def get_active_students(coach_id: str, db: dict) -> List[str]:
+async def get_active_students(db: dict) -> List[str]:
     """Recupera gli ID degli studenti attivi (USERS Table)."""
     try:
         # HASH: user_type (index: user-type-index)
