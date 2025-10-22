@@ -1,0 +1,54 @@
+{% extends "lesson_base.html" %}
+{% from "_macros.html" import info_card, random_item_generator %}
+
+{% set lesson_title = '150 Questions: The Art of Getting to Know You' %}
+{% set lesson_subtitle = 'Tools for building deeper connections and better team communication.' %}
+{% set nav_links = [
+{'id': 'overview', 'title': 'Overview'},
+{'id': 'random-picker', 'title': 'Random Picker'},
+{'id': 'full-list', 'title': 'Full List'}
+] %}
+{% set all_questions = [
+"Who is your hero?",
+"If you could live anywhere, where would it be?",
+"What is your biggest fear?",
+"What motivates you to work hard?",
+"What is your favorite thing about your career?",
+"What is your proudest accomplishment?",
+"What is your favorite book to read?",
+"Where do you see yourself in five years?",
+"How many pairs of shoes do you own?",
+"If you were a superhero, what powers would you have?"
+] %}
+
+
+{% block lesson_content %}
+
+{% call info_card('overview', 'Why Ask Better Questions?', border_color='indigo') %}
+<div class="info-box info-box-blue">
+    <p>This module provides questions to facilitate better social and professional communication, helping teams build
+        empathy, break the ice, and improve cohesion.</p>
+</div>
+{% endcall %}
+
+
+{% call info_card('random-picker', 'Interactive Tool: Random Question Picker', border_color='blue') %}
+{{ random_item_generator(
+exercise_id='q-generator',
+button_text='Get Random Question',
+source_list_id='question-source-list',
+items=all_questions
+)}}
+{% endcall %}
+
+
+{% call info_card('full-list', 'Full Question Reference List', initial_state='hide') %}
+<p>Here are some of the questions available:</p>
+<ul class="list-decimal list-inside mt-4 columns-1 md:columns-2">
+    {% for q in all_questions %}
+    <li>{{ q }}</li>
+    {% endfor %}
+</ul>
+{% endcall %}
+
+{% endblock %}

@@ -1,0 +1,100 @@
+{#
+MACRO JINJA2 PER ESERCIZI STANDARD
+Questo file contiene i "componenti" riutilizzabili per gli esercizi.
+Le lezioni importeranno queste macro per costruire i loro contenuti interattivi.
+#}
+
+{# --- MACRO 1: Collapsible Info Card --- #}
+{% macro info_card(id, title, border_color=None, initial_state='show') %}
+<section id="{{ id }}" class="pt-16 -mt-16">
+    <div class="lesson-card {% if border_color %}border-{{ border_color }}{% endif %}">
+        <div class="card-header">
+            <h3>{{ title }}</h3>
+            <span class="arrow-icon">▾</span>
+        </div>
+        <div class="card-content {{ initial_state }}">
+            {{ caller() }} {# Il contenuto HTML verrà inserito qui #}
+        </div>
+    </div>
+</section>
+{% endmacro %}
+
+
+{# --- MACRO 2: Fill-in-the-Gap Exercise --- #}
+{% macro fill_in_the_gap_exercise(exercise_id, sentences) %}
+<div class="interactive-wrapper" data-exercise-container id="{{ exercise_id }}">
+    <div class="space-y-4">
+        {% for sentence in sentences %}
+        <p>
+            {{ sentence.prefix | safe }}
+            <input type="text" class="quiz-input-text" data-answer="{{ sentence.answer }}">
+            {{ sentence.suffix | safe }}
+            <span class="quiz-feedback"></span>
+        </p>
+        {% endfor %}
+    </div>
+    <button class="btn btn-primary" data-quiz-button data-quiz-type="fill-in">Verifica</button>
+    <div class="quiz-summary"></div>
+</div>
+{% endmacro %}
+
+
+{# --- MACRO 3: Multiple Choice Exercise --- #}
+{% macro multiple_choice_exercise(exercise_id, questions) %}
+<div class="interactive-wrapper" data-exercise-container id="{{ exercise_id }}">
+    {% for q in questions %}
+    <div class="quiz-question-item" data-answer="{{ q.correct_value }}">
+        <p class="font-semibold">{{ loop.index }}. {{ q.text }}</p>
+        <div class="options">
+            {% for opt in q.options %}
+            <label>
+                <input type="radio" name="{{ exercise_id }}-q{{ loop.parent.loop.index }}" value="{{ opt.value }}">
+                {{ opt.text }}
+            </label>
+            {% endfor %}
+        </div>
+        <div class="quiz-feedback"></div>
+    </div>
+    {% endfor %}
+    <button class="btn btn-primary" data-quiz-button data-quiz-type="multiple-choice">Verifica</button>
+    <div class="quiz-summary"></div>
+</div>
+{% endmacro %}
+
+
+{# --- MACRO 4: Match the Items Exercise --- #}
+{% macro match_exercise(exercise_id, group_a_items, group_b_items) %}
+<div class="interactive-wrapper" data-match-container id="{{ exercise_id }}">
+    <div class="quiz-feedback match-feedback text-center mb-4">Seleziona un elemento da ogni colonna per abbinarli.
+    </div>
+    <div class="flex flex-col md:flex-row justify-around gap-4">
+        <div class="match-group-a flex flex-col gap-2">
+            {% for item in group_a_items | shuffle %}
+            <div class="match-item" data-match-id="{{ item.id }}">{{ item.text }}</div>
+            {% endfor %}
+        </div>
+        <div class="match-group-b flex flex-col gap-2">
+            {% for item in group_b_items | shuffle %}
+            <div class="match-item" data-match-id="{{ item.id }}">{{ item.text }}</div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endmacro %}
+
+
+{# --- MACRO 5: Random Item Generator --- #}
+{% macro random_item_generator(exercise_id, button_text, source_list_id, items) %}
+<div class="interactive-wrapper" data-random-container id="{{ exercise_id }}">
+    <div class="random-display">Clicca il bottone per iniziare.</div>
+    <button class="btn btn-primary" data-random-button data-source-list="#{{ source_list_id }}">{{ button_text
+        }}</button>
+
+    {# La lista sorgente è nascosta #}
+    <ul id="{{ source_list_id }}" class="hidden">
+        {% for item in items %}
+        <li>{{ item }}</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endmacro %}

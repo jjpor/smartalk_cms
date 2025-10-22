@@ -1,7 +1,8 @@
 import logging
+from pathlib import Path
 
 from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import FileResponse, HTMLResponse
 from fastapi.templating import Jinja2Templates
 from starlette.staticfiles import StaticFiles
 
@@ -23,7 +24,7 @@ pages = {
 # --- MONTAGGIO FILE STATICI ---
 # Questo serve tutti i file (CSS, JS, immagini) direttamente dalla cartella 'website'
 # Qualsiasi richiesta a /static/... verrà cercata in smartalk/website/...
-router.mount("/static", StaticFiles(directory="smartalk/website"), name="website")
+router.mount("/static", StaticFiles(directory="smartalk/website"), name="static")
 
 # --- MONTAGGIO FILE DINAMICI ---
 # templates dinamici sotto la cartella smartalk/website
@@ -49,6 +50,7 @@ async def get_no_handled_path(request: Request):
     )
 
 
+'''
 @router.get("/{lang}/{page_name}", response_class=HTMLResponse)
 async def get_website_page(request: Request, lang: str, page_name: str):
     """
@@ -73,3 +75,21 @@ async def get_website_page(request: Request, lang: str, page_name: str):
 @router.get("/", response_class=HTMLResponse)
 async def get_homepage_redirect(request: Request):
     return await get_website_page(request, "it", "home")
+
+'''
+
+
+@router.get("/favicon.ico")
+async def favicon():
+    favicon_path = Path(__file__).parent.parent / "website" / "favicon.ico"
+    return FileResponse(favicon_path)
+
+
+@router.get("/{lesson_page_name}", response_class=HTMLResponse)
+async def get_lesson_page(request: Request, lesson_page_name: str):
+    # template engine
+    return templates.TemplateResponse(
+        request=request,
+        name=f"/content/revamp/lessons/{lesson_page_name}.html",
+        context={"lang": "en", "page_name": lesson_page_name},
+    )
