@@ -3,19 +3,39 @@
  * Contiene gli stili di base e personalizzati del sito.
  */
 
-body {
-    /* Dosis è il font principale del corpo */
-    font-family: 'Dosis', sans-serif;
-    font-size: 17px; 
+/* ===== Base body layout ===== */
+html, body {
+    height: 100%;
 }
 
-/* Classe per i titoli/elementi che richiedono Montserrat (es. nomi dei coach) */
+body {
+    font-family: 'Dosis', sans-serif;
+    font-size: 17px;
+    min-height: 100vh;        /* occupa almeno tutta la finestra */
+    display: flex;            /* layout verticale */
+    flex-direction: column;   /* header, main, footer in colonna */
+}
+
+/* ===== Struttura del contenuto ===== */
+main {
+    flex: 1 0 auto;           /* si espande per riempire lo spazio */
+}
+
+/* ===== Footer ===== */
+footer {
+    margin-top: auto;         /* spinge il footer in basso */
+    width: 100%;
+    background: #fff;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* ===== Font specifici ===== */
 .font-montserrat {
     font-family: 'Montserrat', sans-serif;
 }
 
-/* Base Nav Link Style from Original Header */
+/* ===== Link di navigazione ===== */
 .nav-link {
     transition: color 0.3s;
-    font-weight: 600; /* Manteniamo il peso del font coerente con il file originale */
+    font-weight: 600;
 }

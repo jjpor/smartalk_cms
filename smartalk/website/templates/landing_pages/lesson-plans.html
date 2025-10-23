@@ -1,85 +1,237 @@
+{#
+    TEMPLATE PER LA PAGINA "CONTENT GUIDES" (INDEX)
+    
+    Convertito da un file HTML statico, mantenendo la sua struttura
+    ma rendendo i contenuti dinamici tramite variabili e macro Jinja.
+#}
+
+
+{# --- 1. Definizione Variabili --- #}
+{% set page_title = 'Smartalk Content Guides' %}
+{% set page_subtitle = 'Explore our full library of interactive learning guides.' %}
+
+{# Dati per la navigazione. 'active: True' imposta il primo link come attivo. #}
+{% set section_nav_links = [
+    {'id': 'business-english', 'title': 'Business English', 'active': True},
+    {'id': 'general-english', 'title': 'General English'},
+    {'id': 'grammar', 'title': 'Grammar'},
+    {'id': 'speaking', 'title': 'Speaking'},
+    {'id': 'pronunciation', 'title': 'Pronunciation'},
+    {'id': 'guides', 'title': 'Guides'}
+] %}
+
+{# Dati per tutte le sezioni e le guide.
+   Aggiungere nuove sezioni o guide qui le aggiungerà automaticamente alla pagina. 
+   ATTENZIONE: Assicurati che ci sia una virgola (,) dopo ogni blocco di sezione (es. dopo 'business-english': {...},) 
+#}
+{% set guide_sections = {
+    'business-english': {
+        'title': 'Business English',
+        'guides': [
+            {'url_slug': 'accountability', 'title': 'Accountability', 'desc': 'Understand what accountability means and how to build it in the workplace.'},
+            {'url_slug': 'actionable-feedback', 'title': 'Actionable Feedback', 'desc': 'A toolkit for giving and receiving constructive feedback.'},
+            {'url_slug': 'business-trends-innovation', 'title': 'Business Trends & Innovation', 'desc': 'Stay current on the latest business trends and innovations.'},
+            {'url_slug': 'company-culture', 'title': 'Company Culture', 'desc': "Discover what makes up a company's culture and how to navigate it."},
+            {'url_slug': 'conflict-resolution', 'title': 'Conflict Resolution', 'desc': 'Learn techniques for resolving conflicts in the workplace.'},
+            {'url_slug': 'cross-cultural-communication', 'title': 'Cross-Cultural Communication', 'desc': 'Navigate communication effectively across different cultures.'},
+            {'url_slug': 'delegating', 'title': 'Delegating', 'desc': 'Learn how to effectively delegate tasks to your team.'},
+            {'url_slug': 'describe-your-job', 'title': 'Describe Your Job', 'desc': 'A guide to clearly and confidently talking about your work.'},
+            {'url_slug': 'employee-engagement-retention', 'title': 'Employee Engagement & Retention', 'desc': 'Learn strategies to keep your team motivated and reduce turnover.'},
+            {'url_slug': 'feedback', 'title': 'Feedback', 'desc': 'Techniques for giving and receiving effective professional feedback.'},
+            {'url_slug': 'leadership', 'title': 'Leadership', 'desc': 'Develop and refine your leadership skills.'},
+            {'url_slug': 'leading-downwards', 'title': 'Leading Downwards', 'desc': 'Learn how to effectively manage and motivate your team members.'},
+            {'url_slug': 'lets-debate', 'title': "Let's Debate", 'desc': 'Learn to present arguments and counterpoints effectively.'},
+            {'url_slug': 'mattering-at-work', 'title': 'Mattering at Work', 'desc': 'Explore the importance of feeling valued and impactful in your job.'},
+            {'url_slug': 'negotiation', 'title': 'Negotiation', 'desc': 'Learn powerful negotiation techniques to get what you want.'},
+            {'url_slug': 'professionalism', 'title': 'Professionalism', 'desc': 'Master the skills and etiquette of a professional environment.'},
+            {'url_slug': 'retail', 'title': 'Retail', 'desc': 'Vocabulary and scenarios for the retail industry.'},
+            {'url_slug': 'risk', 'title': 'Risk', 'desc': 'Analyze and discuss business risks and mitigation strategies.'},
+            {'url_slug': 'salary-negotiation', 'title': 'Salary Negotiation', 'desc': 'Learn to conduct a successful salary negotiation with confidence.'},
+            {'url_slug': 'strategic-communication', 'title': 'Strategic Communication', 'desc': 'Develop clear and effective communication strategies in business.'},
+            {'url_slug': 'swot', 'title': 'SWOT Analysis', 'desc': 'Learn to conduct a SWOT Analysis for a project or business.'},
+            {'url_slug': 'teamwork-and-collaboration', 'title': 'Teamwork and Collaboration', 'desc': 'Build stronger, more effective teams through better collaboration.'},
+            {'url_slug': 'tough-conversations', 'title': 'Tough Conversations', 'desc': 'Learn how to handle difficult conversations with confidence.'},
+            {'url_slug': 'work-life-balance', 'title': 'Work-Life Balance', 'desc': 'Explore strategies to achieve a healthy balance between work and personal life.'}
+        ]
+    },
+    'general-english': {
+        'title': 'General English',
+        'guides': [
+            {'url_slug': 'airport-travel', 'title': 'Airport Travel', 'desc': 'Learn useful phrases and vocabulary for traveling through an airport.'},
+            {'url_slug': 'conspiracy-theories', 'title': 'Conspiracy Theories', 'desc': 'Discussing unproven theories and related vocabulary.'},
+            {'url_slug': 'good-news-bad-news', 'title': 'Good News & Bad News', 'desc': 'Learn how to share both positive and negative updates.'},
+            {'url_slug': 'lying-manipulation', 'title': 'Lying & Manipulation', 'desc': 'Discussing the ethics and language of deception.'},
+            {'url_slug': 'metric-imperial-system', 'title': 'Metric vs. Imperial System', 'desc': 'Comparing measurement systems in different contexts.'},
+            {'url_slug': 'motivation', 'title': 'Motivation', 'desc': 'Explore different types of motivation and how to maintain it.'},
+            {'url_slug': 'places-to-stay', 'title': 'Places to Stay', 'desc': 'Learn useful vocabulary and phrases for finding accommodation.'},
+            {'url_slug': 'reading-numbers', 'title': 'Reading Numbers', 'desc': 'A practical guide to saying numbers, decimals, and fractions.'},
+            {'url_slug': 'restaurants-eating-out', 'title': 'Restaurants & Eating Out', 'desc': 'Learn phrases and vocabulary for a great dining experience.'},
+            {'url_slug': 'would-you-rather', 'title': 'Would You Rather', 'desc': 'Fun, hypothetical questions for fluency practice.'}
+        ]
+    },
+    'grammar': {
+        'title': 'Grammar',
+        'guides': [
+            {'url_slug': 'a-lot-of-much-many-very', 'title': 'A lot of, Much, Many, Very', 'desc': 'Clarify the correct usage of these common quantifiers.'},
+            {'url_slug': 'comparatives-and-superlatives', 'title': 'Comparatives and Superlatives', 'desc': 'Master the use of comparatives and superlatives in English.'},
+            {'url_slug': 'conditionals', 'title': 'Conditionals', 'desc': 'Master the different types of conditional sentences in English.'},
+            {'url_slug': 'get', 'title': 'Get', 'desc': 'Understand the many uses of the versatile verb "get".'},
+            {'url_slug': 'gerunds-vs-infinitives', 'title': 'Gerunds vs. Infinitives', 'desc': 'Understand when to use a gerund and when to use an infinitive.'},
+            {'url_slug': 'intensifiers-collocations', 'title': 'Intensifiers and Collocations', 'desc': 'Improve your fluency by learning common intensifiers and word pairings.'},
+            {'url_slug': 'make-vs-do', 'title': 'Make vs. Do', 'desc': 'Learn the key differences between "make" and "do".'},
+            {'url_slug': 'modals', 'title': 'Modals', 'desc': 'Learn to use modal verbs like can, could, will, and would.'},
+            {'url_slug': 'prepositions-of-time-and-place', 'title': 'Prepositions of Time and Place', 'desc': 'A guide to using prepositions correctly for time and location.'},
+            {'url_slug': 'present-perfect', 'title': 'Present Perfect', 'desc': 'Understand the structure and different uses of the Present Perfect tense.'},
+            {'url_slug': 'still-yet-already', 'title': 'Still, Yet, Already', 'desc': 'Master the usage of these three common time adverbs.'},
+            {'url_slug': 'to-for', 'title': 'To vs. For', 'desc': 'Understand when to use "to" and when to use "for".'},
+            {'url_slug': 'writing-emails', 'title': 'Writing Emails', 'desc': 'Master the art of writing professional and impactful emails.'}
+        ]
+    },
+    'speaking': {
+        'title': 'Speaking',
+        'guides': [
+            {'url_slug': '150-questions', 'title': '150 Questions', 'desc': 'A large bank of questions to boost fluency and conversation practice.'},
+            {'url_slug': 'embellishing-sentences', 'title': 'Embellishing Sentences', 'desc': 'Techniques for making your language more expressive and fluent.'},
+            {'url_slug': 'intro-goals-first-impressions', 'title': 'Intro, Goals & First Impressions', 'desc': 'Master your personal introduction and make a strong first impression.'},
+            {'url_slug': 'paraphrasing-and-defining', 'title': 'Paraphrasing', 'desc': 'Learn techniques to rephrase and summarize information clearly.'}
+        ]
+    },
+    'pronunciation': {
+        'title': 'Pronunciation',
+        'guides': [
+            {'url_slug': 'commonly-mispronounced-words', 'title': 'Commonly Mispronounced Words', 'desc': 'Discover and correct the most common pronunciation mistakes.'},
+            {'url_slug': 'minimal-pairs', 'title': 'Minimal Pairs', 'desc': 'Practice distinguishing between similar-sounding words to improve your pronunciation.'},
+            {'url_slug': 'mr-gregory', 'title': 'Mr. Gregory', 'desc': 'A dedicated guide for mastering pronunciation skills.'},
+            {'url_slug': 'tongue-twisters', 'title': 'Tongue Twisters', 'desc': 'Fun and effective exercises for improving clarity and fluency.'}
+        ]
+    },
+    'guides': {
+        'title': 'Guides',
+        'guides': [
+            {'url_slug': 'english-with-tv', 'title': 'English with TV', 'desc': 'Tips and tricks for learning English using shows and movies.'},
+            {'url_slug': 'toefl-exam', 'title': 'TOEFL Exam', 'desc': 'Prepare for the structure and tasks of the TOEFL test.'}
+        ]
+    }
+} %}
+
+
+{# --- 2. Estensione Template Base --- #}
 {% extends "abstract_templates/base.html" %}
 
+
+{# --- 3. Importazione Macro --- #}
+{# 
+   Importiamo le macro. Assicurati di aggiungere le seguenti definizioni 
+   al tuo file 'abstract_templates/_macros.html' 
+#}
+{% from "abstract_templates/_macros.html" import render_guide_section, guide_card_link %}
+
+{# 
+{% macro render_guide_section(section_id, section_data) %}
+    <section id="{{ section_id }}" class="mb-12">
+        <h2 class="section-header">{{ section_data.title }}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for guide in section_data.guides %}
+                {{ guide_card_link(guide) }}
+            {% endfor %}
+        </div>
+    </section>
+{% endmacro %}
+#}
+
+{# 
+{% macro guide_card_link(guide) %}
+    <a href="/auth/lesson_plans/{{ guide.url_slug }}" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center">
+        <h3 class="font-bold text-xl text-slate-800 mb-2">{{ guide.title }}</h3>
+        <p class="text-slate-600 text-sm">{{ guide.desc }}</p>
+    </a>
+{% endmacro %}
+#}
+
+
+{# --- 4. Riempimento Blocchi --- #}
+
 {% block head_links %}
-    <link rel="stylesheet" href="{{ url_for('static', path='css/lesson_plans.css') }}?v={{ random() }}">
+    {# Il tuo 'base.html' dovrebbe già caricare Tailwind.
+       Questo carica solo gli stili *specifici* per questa pagina (come .guide-card, .section-header, etc.)
+       che abbiamo unificato nel file CSS. #}
+    <link rel="stylesheet" href="{{ url_for('static', path='css/lesson_plan.css') }}?v={{ random() }}">
 {% endblock %}
 
-{% block content %}
 
-    <div class="container mx-auto p-4 md:p-8 max-w-4xl pt-24">
+{% block content %}
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl">
         <header class="text-center mb-12">
-            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">Smartalk Content Guides</h1>
-            <p class="text-lg text-slate-600 mt-2">Explore our full library of interactive learning guides.</p>
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">{{ page_title }}</h1>
+            <p class="text-lg text-slate-600 mt-2">{{ page_subtitle }}</p>
         </header>
 
-        <nav class="mb-8 sticky top-20 bg-white/80 backdrop-blur-sm z-10 py-2">
+        <nav class="mb-8">
             <ul class="flex justify-center flex-wrap gap-x-4 gap-y-2">
-                <li><a href="#business-english" class="section-nav-link py-2 px-3 md:px-4 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg active">Business English</a></li>
-                <li><a href="#general-english" class="section-nav-link py-2 px-3 md:px-4 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">General English</a></li>
-                <li><a href="#grammar" class="section-nav-link py-2 px-3 md:px-4 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Grammar</a></li>
-                <li><a href="#speaking" class="section-nav-link py-2 px-3 md:px-4 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Speaking</a></li>
-                <li><a href="#pronunciation" class="section-nav-link py-2 px-3 md:px-4 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Pronunciation</a></li>
-                <li><a href="#guides" class="section-nav-link py-2 px-3 md:px-4 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg">Guides</a></li>
+                {# Ciclo sui link di navigazione definiti nelle variabili #}
+                {% for link in section_nav_links %}
+                    <li><a href="#{{ link.id }}" class="section-nav-link py-2 px-3 md:px-4 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg {% if link.active %}active{% endif %}">{{ link.title }}</a></li>
+                {% endfor %}
             </ul>
         </nav>
 
         <main>
-            <section id="business-english" class="mb-12 pt-16 -mt-16">
-                <h2 class="section-header">Business English</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <a href="/auth/lesson_plans/accountability" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Accountability</h3><p class="text-slate-600 text-sm">Understand what accountability means and how to build it in the workplace.</p></a>
-                    <a href="/auth/lesson_plans/actionable-feedback" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Actionable Feedback</h3><p class="text-slate-600 text-sm">A toolkit for giving and receiving constructive feedback.</p></a>
-                    <a href="/auth/lesson_plans/business-trends-innovation" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Business Trends & Innovation</h3><p class="text-slate-600 text-sm">Stay current on the latest business trends and innovations.</p></a>
-                    <a href="/auth/lesson_plans/company-culture" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Company Culture</h3><p class="text-slate-600 text-sm">Discover what makes up a company's culture and how to navigate it.</p></a>
-                    <a href="/auth/lesson_plans/conflict-resolution" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Conflict Resolution</h3><p class="text-slate-600 text-sm">Learn techniques for resolving conflicts in the workplace.</p></a>
-                    <a href="/auth/lesson_plans/cross-cultural-communication" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Cross-Cultural Communication</h3><p class="text-slate-600 text-sm">Navigate communication effectively across different cultures.</p></a>
-                    <a href="/auth/lesson_plans/delegating" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Delegating</h3><p class="text-slate-600 text-sm">Learn how to effectively delegate tasks to your team.</p></a>
-                    <a href="/auth/lesson_plans/describe-your-job" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Describe Your Job</h3><p class="text-slate-600 text-sm">A guide to clearly and confidently talking about your work.</p></a>
-                    <a href="/auth/lesson_plans/employee-engagement-retention" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Employee Engagement & Retention</h3><p class="text-slate-600 text-sm">Learn strategies to keep your team motivated and reduce turnover.</p></a>
-                    <a href="/auth/lesson_plans/feedback" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Feedback</h3><p class="text-slate-600 text-sm">Techniques for giving and receiving effective professional feedback.</p></a>
-                    <a href="/auth/lesson_plans/leadership" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Leadership</h3><p class="text-slate-600 text-sm">Develop and refine your leadership skills.</p></a>
-                    <a href="/auth/lesson_plans/leading-downwards" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Leading Downwards</h3><p class="text-slate-600 text-sm">Learn how to effectively manage and motivate your team members.</p></a>
-                    <a href="/auth/lesson_plans/lets-debate" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Let's Debate</h3><p class="text-slate-600 text-sm">Learn to present arguments and counterpoints effectively.</p></a>
-                    <a href="/auth/lesson_plans/mattering-at-work" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Mattering at Work</h3><p class="text-slate-600 text-sm">Explore the importance of feeling valued and impactful in your job.</p></a>
-                    <a href="/auth/lesson_plans/negotiation" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Negotiation</h3><p class="text-slate-600 text-sm">Learn powerful negotiation techniques to get what you want.</p></a>
-                    <a href="/auth/lesson_plans/professionalism" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Professionalism</h3><p class="text-slate-600 text-sm">Master the skills and etiquette of a professional environment.</p></a>
-                    <a href="/auth/lesson_plans/retail" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Retail</h3><p class="text-slate-600 text-sm">Vocabulary and scenarios for the retail industry.</p></a>
-                    <a href="/auth/lesson_plans/risk" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Risk</h3><p class="text-slate-600 text-sm">Analyze and discuss business risks and mitigation strategies.</p></a>
-                    <a href="/auth/lesson_plans/salary-negotiation" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Salary Negotiation</h3><p class="text-slate-600 text-sm">Learn to conduct a successful salary negotiation with confidence.</p></a>
-                    <a href="/auth/lesson_plans/strategic-communication" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Strategic Communication</h3><p class="text-slate-600 text-sm">Develop clear and effective communication strategies in business.</p></a>
-                    <a href="/auth/lesson_plans/swot" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">SWOT Analysis</h3><p class="text-slate-600 text-sm">Learn to conduct a SWOT Analysis for a project or business.</p></a>
-                    <a href="/auth/lesson_plans/teamwork-and-collaboration" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Teamwork and Collaboration</h3><p class="text-slate-600 text-sm">Build stronger, more effective teams through better collaboration.</p></a>
-                    <a href="/auth/lesson_plans/tough-conversations" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Tough Conversations</h3><p class="text-slate-600 text-sm">Learn how to handle difficult conversations with confidence.</p></a>
-                    <a href="/auth/lesson_plans/work-life-balance" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Work-Life Balance</h3><p class="text-slate-600 text-sm">Explore strategies to achieve a healthy balance between work and personal life.</p></a>
-                </div>
-            </section>
+            {# Ciclo sulle sezioni definite nelle variabili #}
+            {% for section_id, section_data in guide_sections.items() %}
+                
+                {# Utilizzo della macro per renderizzare l'intera sezione #}
+                {{ render_guide_section(section_id, section_data) }}
+                
+                {# Aggiunge una linea di separazione, tranne che per l'ultima sezione #}
+                {% if not loop.last %}
+                    <hr class="my-12 border-gray-200">
+                {% endif %}
             
-            <hr class="my-12 border-gray-200">
-
-            <section id="general-english" class="mb-12 pt-16 -mt-16">
-                <h2 class="section-header">General English</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <a href="/auth/lesson_plans/airport-travel" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Airport Travel</h3><p class="text-slate-600 text-sm">Learn useful phrases and vocabulary for traveling through an airport.</p></a>
-                    <a href="/auth/lesson_plans/conspiracy-theories" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Conspiracy Theories</h3><p class="text-slate-600 text-sm">Discussing unproven theories and related vocabulary.</p></a>
-                    <a href="/auth/lesson_plans/good-news-bad-news" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Good News & Bad News</h3><p class="text-slate-600 text-sm">Learn how to share both positive and negative updates.</p></a>
-                    <a href="/auth/lesson_plans/lying-manipulation" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Lying & Manipulation</h3><p class="text-slate-600 text-sm">Discussing the ethics and language of deception.</p></a>
-                    <a href="/auth/lesson_plans/metric-imperial-system" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Metric vs. Imperial System</h3><p class="text-slate-600 text-sm">Comparing measurement systems in different contexts.</p></a>
-                    <a href="/auth/lesson_plans/motivation" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Motivation</h3><p class="text-slate-600 text-sm">Explore different types of motivation and how to maintain it.</p></a>
-                    <a href="/auth/lesson_plans/places-to-stay" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Places to Stay</h3><p class="text-slate-600 text-sm">Learn useful vocabulary and phrases for finding accommodation.</p></a>
-                    <a href="/auth/lesson_plans/reading-numbers" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Reading Numbers</h3><p class="text-slate-600 text-sm">A practical guide to saying numbers, decimals, and fractions.</p></a>
-                    <a href="/auth/lesson_plans/restaurants-eating-out" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Restaurants & Eating Out</h3><p class="text-slate-600 text-sm">Learn phrases and vocabulary for a great dining experience.</p></a>
-                    <a href="/auth/lesson_plans/would-you-rather" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center"><h3 class="font-bold text-xl text-slate-800 mb-2">Would You Rather</h3><p class="text-slate-600 text-sm">Fun, hypothetical questions for fluency practice.</p></a>
-                </div>
-            </section>
-
-            </main>
+            {% endfor %}
+        </main>
     </div>
-
 {% endblock %}
+
 
 {% block extra_scripts %}
     {{ super() }} 
-    <script src="{{ url_for('static', path='js/lesson_plans.js') }}?v={{ random() }}"></script>
-{% endblock %}
+    
+    {# Script per lo 'smooth scroll' e la gestione della classe 'active' 
+       preso direttamente dal tuo file HTML statico. #}
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('.section-nav-link');
 
-</html>
+            navLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault(); // Impedisce il comportamento predefinito del link
+
+                    // Rimuovi la classe 'active' da tutti i link
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // Aggiungi la classe 'active' al link cliccato
+                    e.target.classList.add('active');
+
+                    // Trova la sezione corrispondente all'hash del link
+                    const targetId = e.target.getAttribute('href');
+                    const targetSection = document.querySelector(targetId);
+
+                    if (targetSection) {
+                        // Calcola la posizione della sezione
+                        const sectionTop = targetSection.getBoundingClientRect().top + window.pageYOffset;
+                        
+                        // Scorri fino alla sezione in modo fluido, con un piccolo offset dall'alto
+                        // (es. 80px) per non finire esattamente all'inizio.
+                        // Modifica '80' se hai un header sticky. Se non lo hai, puoi usare '0'.
+                        const offset = 80; 
+                        
+                        window.scrollTo({
+                            top: sectionTop - offset,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+{% endblock %}

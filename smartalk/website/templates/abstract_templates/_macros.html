@@ -1,3 +1,27 @@
+{# ==================================================================== #}
+{# --- MACRO AGGIUNTE PER LA PAGINA INDICE (lesson-plans) --- #}
+{# ==================================================================== #}
+
+{% macro render_guide_section(section_id, section_data) %}
+    <section id="{{ section_id }}" class="mb-12">
+        <h2 class="section-header">{{ section_data.title }}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for guide in section_data.guides %}
+                {{ guide_card_link(guide) }}
+            {% endfor %}
+        </div>
+    </section>
+{% endmacro %}
+
+
+{% macro guide_card_link(guide) %}
+    {# Questo URL corrisponde a quello nei log degli errori: /auth/lesson-plans/SLUG #}
+    <a href="/auth/lesson_plans/{{ guide.url_slug }}" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center">
+        <h3 class="font-bold text-xl text-slate-800 mb-2">{{ guide.title }}</h3>
+        <p class="text-slate-600 text-sm">{{ guide.desc }}</p>
+    </a>
+{% endmacro %}
+
 {#
                     MACRO JINJA2 PER ESERCIZI STANDARD
     Questo file contiene i "componenti" riutilizzabili per gli esercizi.

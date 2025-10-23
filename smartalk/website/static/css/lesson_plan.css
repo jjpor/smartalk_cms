@@ -1,6 +1,5 @@
 /* ====================================================================
- * SMARTALK LESSON ENGINE - STYLE.CSS (v1.0)
- * CSS unificato per tutti i template delle lezioni.
+ * SMARTALK LESSON ENGINE - STILE UNIFICATO E OTTIMIZZATO (v1.1)
  * ==================================================================== */
 
 /* --- 1. Reset e Stili di Base --- */
@@ -33,14 +32,12 @@ body {
 }
 
 /* --- 3. Componente: Lesson Card (Accordion) --- */
-/* Sostituisce .modal-card, .guide-card, ecc. */
 .lesson-card {
     background-color: #ffffff;
     padding: 1.5rem;
     border-radius: 0.75rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     margin-bottom: 1.5rem;
-    /* Aggiungiamo bordi colorati opzionali */
     border: 1px solid #E5E7EB;
 }
 
@@ -82,7 +79,6 @@ body {
 
 .card-content.show {
     max-height: 2000px;
-    /* Valore alto per permettere l'espansione */
     margin-top: 1rem;
 }
 
@@ -98,7 +94,6 @@ body {
 }
 
 /* --- 4. Componente: Bottoni --- */
-/* Sostituisce .action-button, .check-button, .reveal-button */
 .btn {
     padding: 0.75rem 1.5rem;
     border-radius: 0.5rem;
@@ -137,7 +132,6 @@ body {
     background-color: #2563EB;
 }
 
-/* Bottone per quiz di selezione */
 .btn-select {
     padding: 0.4rem 1rem;
     margin: 0.25rem;
@@ -158,9 +152,7 @@ body {
     font-weight: 700;
 }
 
-
 /* --- 5. Componente: Info Box / Callout --- */
-/* Sostituisce .example-block, .idiom-card, .exercise-box, .vocab, .reading-text */
 .info-box {
     padding: 1rem;
     border-radius: 0.5rem;
@@ -174,48 +166,35 @@ body {
 
 .info-box-blue {
     background-color: #F0F9FF;
-    /* sky-50 */
     border-color: #38BDF8;
-    /* sky-500 */
 }
 
 .info-box-green {
     background-color: #ECFDF5;
-    /* green-50 */
     border-color: #34D399;
-    /* green-400 */
 }
 
 .info-box-yellow {
     background-color: #FEF3C7;
-    /* yellow-100 */
     border-color: #F59E0B;
-    /* yellow-500 */
 }
 
 .info-box-gray {
     background-color: #f3f4f6;
-    /* gray-100 */
     border-color: #6B7280;
-    /* gray-500 */
 }
 
 /* --- 6. Componenti: Quiz e Esercizi --- */
 
-/* Wrapper generico per un esercizio interattivo */
 .interactive-wrapper {
     padding: 1.5rem;
     background-color: #F0F9FF;
-    /* Light blue background */
     border-radius: 0.75rem;
     border: 2px solid #38BDF8;
-    /* Sky blue border */
     margin-top: 1rem;
 }
 
-/* Input di testo unificato per quiz */
 .quiz-input-text {
-    /* Sostituisce .input-fill-blank, .fill-in-input, .writing-input */
     text-align: center;
     border: none;
     border-bottom: 2px solid #00C4D5;
@@ -233,7 +212,6 @@ body {
     border-bottom: 2px solid #00A3B5;
 }
 
-/* Stili per input corretti/errati (usati da lesson_plan.js) */
 .quiz-input-text.correct {
     border-color: #10B981;
     background-color: #ECFDF5;
@@ -244,10 +222,7 @@ body {
     background-color: #FEF2F2;
 }
 
-
-/* Stili per quiz a scelta multipla */
 .quiz-question-item {
-    /* Sostituisce .question-item, .feedback-quiz-item */
     padding: 1rem 0;
     border-bottom: 1px dashed #E5E7EB;
 }
@@ -262,9 +237,7 @@ body {
     cursor: pointer;
 }
 
-/* Feedback e Punteggio */
 .quiz-feedback {
-    /* Sostituisce .feedback */
     font-weight: 700;
     margin-top: 0.5rem;
     font-size: 0.875rem;
@@ -281,13 +254,9 @@ body {
     color: #10B981;
 }
 
-/* Green */
 .incorrect {
     color: #EF4444;
 }
-
-/* Red */
-
 
 /* --- 7. Componente: Esercizio "Match" --- */
 .match-item {
@@ -301,33 +270,25 @@ body {
     border: 2px solid transparent;
 }
 
-/* Gruppo A (es. parole) */
 .match-group-a .match-item {
     background-color: #99F6E4;
-    /* teal-200 */
     color: #083344;
-    /* teal-950 */
     font-weight: 600;
 }
 
-/* Gruppo B (es. definizioni) */
 .match-group-b .match-item {
     background-color: #FECACA;
-    /* red-200 */
     color: #7F1D1D;
-    /* red-950 */
     font-weight: 600;
 }
 
 .match-item.selected {
-    /* Stato 'selezionato' */
     border-color: #00C4D5;
     box-shadow: 0 0 10px rgba(0, 196, 213, 0.5);
     transform: scale(1.02);
 }
 
 .match-item.matched {
-    /* Stato 'abbinato correttamente' */
     opacity: 0.5;
     cursor: default;
     background-color: #D1D5DB;
@@ -335,14 +296,12 @@ body {
 }
 
 .match-item.error {
-    /* Stato 'errore temporaneo' */
     border-color: #EF4444;
     transform: scale(1.02);
 }
 
 /* --- 8. Componente: Generatore "Random" --- */
 .random-display {
-    /* Sostituisce .question-display, #quote-display */
     min-height: 80px;
     padding: 1rem;
     border: 1px dashed #00C4D5;
@@ -358,7 +317,6 @@ body {
 }
 
 /* --- 9. Componente: Tabella Standard --- */
-/* Sostituisce .table-prepositions, .comparison-table, ecc. */
 .table-wrapper {
     overflow-x: auto;
     margin-top: 1rem;
@@ -374,13 +332,11 @@ body {
 .lesson-table td {
     padding: 0.75rem;
     border: 1px solid #e5e7eb;
-    /* gray-200 */
     vertical-align: top;
 }
 
 .lesson-table th {
     background-color: #f3f4f6;
-    /* gray-100 */
     font-weight: 600;
 }
 
@@ -412,5 +368,320 @@ body {
 }
 
 .hidden {
+    display: none;
+}
+
+
+/* ====================================================================
+ * 11. STILI EXTRA E SPECIFICI (da lesson_plans.css)
+ * Componenti non sostituiti dalla refactorizzazione.
+ * ==================================================================== */
+
+/* Componente: Guide Card (Link di navigazione) */
+.guide-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+}
+.guide-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* Componente: Exercise Step */
+.exercise-step {
+    padding: 1rem;
+    border-left: 4px solid #14B8A6; /* teal-500 */
+    background-color: #F0FDFA; /* teal-50 */
+    border-top-right-radius: 0.5rem;
+    border-bottom-right-radius: 0.5rem;
+}
+
+/* Componente: Voice Button */
+.voice-btn {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+.voice-btn:hover .fa-volume-up, .voice-btn:focus .fa-volume-up {
+    color: #5A67D8;
+}
+
+/* Componenti: Scenario */
+.scenario-item {
+    margin-bottom: 1rem;
+    padding-left: 1rem;
+    border-left: 2px solid #E2E8F0; /* gray-200 */
+}
+.scenario-questions {
+    margin-top: 0.5rem;
+    padding-left: 1rem;
+}
+.scenario-text {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+/* Componenti: Liste Personalizzate */
+.list-terms strong {
+    color: #038db8;
+}
+.list-terms ul li {
+    margin-left: 2rem;
+    list-style-type: disc;
+}
+.key-points-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin-top: 1rem;
+}
+.key-points-list li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+.key-points-list li:before {
+    content: "•";
+    color: #3B82F6; /* blue-500 */
+    font-weight: bold;
+    display: inline-block;
+    width: 1rem;
+    position: absolute;
+    left: 0;
+}
+.pattern-list li {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+.example-list li {
+    font-style: italic;
+    margin-bottom: 0.5rem;
+}
+.list-unstyled {
+    list-style-type: none;
+    padding-left: 0;
+}
+.question-list {
+    list-style-type: none;
+    padding-left: 0;
+    columns: 1;
+    column-gap: 2rem;
+}
+.question-list li {
+    margin-bottom: 0.5rem;
+    padding-left: 1.5rem;
+    text-indent: -1.5rem;
+}
+@media (min-width: 640px) {
+    .question-list {
+        columns: 2;
+    }
+}
+.instruction-list li {
+    margin-bottom: 1rem;
+}
+.trait-list li {
+    margin-bottom: 0.25rem;
+}
+.modal-example-list {
+    list-style-type: disc;
+    margin-left: 1.5rem;
+    padding-left: 0;
+}
+.decalogue-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed #E5E7EB;
+}
+.decalogue-list li:last-child {
+    border-bottom: none;
+}
+.decalogue-list span {
+    font-weight: 600;
+    color: #1F2937;
+}
+
+/* Componenti: Blocchi di Contenuto Specifici */
+.fill-in-the-blank {
+    background-color: #f3f4f6; /* gray-100 */
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-top: 1rem;
+}
+.fill-in-the-blank ol li {
+    margin-bottom: 1rem;
+    list-style-type: decimal;
+    margin-left: 1.5rem;
+}
+.highlight-text {
+    background-color: #e0f2fe; /* sky-100 */
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-weight: 600;
+}
+.category-title {
+    color: #4338CA;
+    font-weight: 600;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+}
+.step-title {
+    color: #1D4ED8;
+    font-weight: 700;
+    margin-top: 1rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+.sample-block {
+    background-color: #f7f7f7;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-top: 0.5rem;
+    border: 1px solid #ddd;
+}
+.sample-block p, .sample-block li {
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+.modal-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1E3A8A;
+    margin-top: 1rem;
+}
+.modal-description {
+    margin-bottom: 0.5rem;
+    font-style: italic;
+    color: #6B7280;
+}
+.script-section {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: #F9FAFB;
+}
+.script-line {
+    padding-left: 1rem;
+    border-left: 3px solid #00C4D5;
+    margin-bottom: 0.5rem;
+}
+.script-line p {
+    font-style: italic;
+}
+#scriptOutput {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px dashed #00A3B5;
+    background-color: white;
+    white-space: pre-wrap;
+    border-radius: 0.5rem;
+    font-family: monospace;
+    display: none;
+}
+
+/* Componenti: Esercizi Specifici (non coperti da .interactive-wrapper) */
+.quiz-container, .vocab-container {
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    background-color: #f7f7f7;
+    border: 1px solid #E5E7EB;
+}
+.vocab-term {
+    padding: 0.75rem 0;
+    border-bottom: 1px dashed #DDD;
+}
+.vocab-term:last-child {
+    border-bottom: none;
+}
+.vocab-definition {
+    display: none;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background-color: #E0F2F1;
+    border-radius: 0.375rem;
+    font-style: italic;
+    border-left: 4px solid #00C4D5;
+}
+.converter-section {
+    display: grid;
+    gap: 1.5rem;
+    grid-template-columns: 1fr;
+}
+@media (min-width: 768px) {
+    .converter-section {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+.input-group label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.25rem;
+}
+.input-group input, .input-group select, .input-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #D1D5DB;
+    border-radius: 0.5rem;
+    transition: border-color 0.3s;
+}
+.input-group textarea {
+    min-height: 80px;
+}
+.input-group input:focus, .input-group select:focus, .input-group textarea:focus {
+    outline: none;
+    border-color: #00C4D5;
+    box-shadow: 0 0 0 1px #00C4D5;
+}
+.conversion-result {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #E0F2F1;
+    border-left: 4px solid #00C4D5;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+.matching-area {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.writing-item {
+    padding: 1rem 0;
+    border-bottom: 1px dashed #E5E7EB;
+}
+.writing-item:last-child {
+    border-bottom: none;
+}
+.fill-in-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+.verb-hint {
+    color: #6B7280;
+    font-style: italic;
+    margin-left: 0.5rem;
+    font-size: 0.875rem;
+}
+.discussion-category {
+    cursor: pointer;
+    padding: 1rem;
+    background-color: #E0F7FA;
+    border-radius: 0.5rem;
+    margin-bottom: 0.75rem;
+    transition: background-color 0.2s;
+}
+.discussion-category:hover {
+    background-color: #B2EBF2;
+}
+.discussion-questions {
+    padding: 0.75rem;
+    border-left: 3px solid #00C4D5;
+    margin-left: 1rem;
+    background-color: #F5FEFF;
     display: none;
 }
