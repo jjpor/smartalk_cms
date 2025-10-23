@@ -92,9 +92,11 @@ async def get_current_user(request: Request, DBDependency: Any = DBDependency):
 
     return user
 
+
 # ====================================================================
 # UTILITY PER IL REFRESH E RISPOSTA
 # ====================================================================
+
 
 def create_token_response(data: Any, user_data: Dict[str, Any]) -> JSONResponse:
     """
@@ -110,12 +112,10 @@ def create_token_response(data: Any, user_data: Dict[str, Any]) -> JSONResponse:
 
     # Emettiamo un nuovo token utilizzando la firma esatta di create_jwt_token
     new_token = create_jwt_token(user_id, email, user_type)
-    
-    response = JSONResponse(
-        content={"success": True, **data},
-        headers={"X-New-Auth-Token": new_token}
-    )
+
+    response = JSONResponse(content={"success": True, **data}, headers={"X-New-Auth-Token": new_token})
     return response
+
 
 # -------------------------------------------------
 # AUTH ENDPOINTS
@@ -142,6 +142,7 @@ async def signup(req: AuthRequest, DBDependency: Any = DBDependency):
         name=user["name"],
     )
 '''
+
 
 @router.post("/login", response_model=TokenResponse)
 async def login(req: AuthRequest, DBDependency: Any = DBDependency):
@@ -187,18 +188,14 @@ async def login_with_google(req: GoogleLoginRequest, DBDependency: Any = DBDepen
     user = await get_user_by_email(email, DBDependency)
     if not user:
         # Crea un user con una nuova password
-        #password = f"{uuid.uuid4().hex[:8]}"
-        #user = await create_user_if_not_exists(email, name, password, DBDependency)
+        # password = f"{uuid.uuid4().hex[:8]}"
+        # user = await create_user_if_not_exists(email, name, password, DBDependency)
         # TODO: invia email per fargli conoscere la sua password se vuole accedere in modo tradizionale
         raise HTTPException(status_code=401, detail="Invalid Login")
 
     token = create_jwt_token(user["id"], email, user["user_type"])
 
-    return TokenResponse(
-        access_token=token,
-        email=email,
-        name=user.get("name", name),
-    )
+    return TokenResponse(access_token=token, email=email, name=user.get("name", name), role=user.get("role"))
 
 
 # -------------------------------------------------

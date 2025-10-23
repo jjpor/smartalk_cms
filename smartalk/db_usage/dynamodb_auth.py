@@ -2,10 +2,13 @@ import datetime
 import logging
 import uuid
 from typing import Any, Dict, Optional
+
 from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
+from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource
 from passlib.context import CryptContext
 
+from smartalk.core.dynamodb import get_table
 from smartalk.core.settings import settings
 
 logger = logging.getLogger("Auth")
@@ -60,7 +63,7 @@ async def get_user_by_email(email: str, db) -> Optional[Dict[str, Any]]:
     """
     Recupera un utente tramite il GSI email-index (KEYS_ONLY).
     """
-    table = await db.Table(settings.USERS_TABLE)
+    table = await get_table(db, settings.USERS_TABLE)
     norm = normalize_email(email)
 
     resp = await table.query(
@@ -75,20 +78,20 @@ async def get_user_by_email(email: str, db) -> Optional[Dict[str, Any]]:
 
     user_id = items[0]["id"]
     full = await table.get_item(Key={"id": user_id})
-    return full.get("Item")
+    return full["Item"]
 
 
-async def get_user_by_id(user_id: str, db: dict) -> Optional[Dict[str, Any]]:
-    table = await db.Table(settings.USERS_TABLE)
+async def get_user_by_id(user_id: str, db: DynamoDBServiceResource) -> Optional[Dict[str, Any]]:
+    table = await get_table(db, settings.USERS_TABLE)
     full = await table.get_item(Key={"id": user_id})
-    return full.get("Item")
+    return full["Item"]
 
 
-async def update_user(user_id: str, updates: Dict[str, Any], db: dict) -> Dict[str, Any]:
+async def update_user(user_id: str, updates: Dict[str, Any], db: DynamoDBServiceResource) -> Dict[str, Any]:
     """
     Aggiorna campi specifici dell'utente (merge).
     """
-    table = await db.Table(settings.USERS_TABLE)
+    table = await get_table(db, settings.USERS_TABLE)
 
     update_expr = []
     expr_vals = {}
@@ -108,10 +111,12 @@ async def update_user(user_id: str, updates: Dict[str, Any], db: dict) -> Dict[s
     return resp["Attributes"]
 
 
-async def create_user_if_not_exists(email: str, name: str, password: str, db: dict) -> Dict[str, Any]:
+async def create_user_if_not_exists(
+    email: str, name: str, password: str, db: DynamoDBServiceResource
+) -> Dict[str, Any]:
     # La probabilità di avere un uuid già usato è bassissima
     # Avere 10 volte consecutive un uuid già usato è praticamente impossibile
-    table = await db.Table(settings.USERS_TABLE)
+    table = await get_table(db, settings.USERS_TABLE)
     norm_email = normalize_email(email)
 
     # Check password non vuota

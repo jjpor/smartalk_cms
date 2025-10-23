@@ -15,6 +15,7 @@ class settings(BaseSettings):
     INVOICES_TABLE: str
     TRACKER_TABLE: str
     REPORT_CARDS_TABLE: str
+    REPORT_CARD_GENERATORS_TABLE: str
     DEBRIEFS_TABLE: str
 
     # JWT
