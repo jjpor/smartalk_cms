@@ -9,6 +9,8 @@ logger = logging.getLogger("Website")
 
 router = APIRouter(tags=["Website"])
 
+sections = ["lesson-plans", "homework"]
+
 ##################### IMPORTANTISSIMO #####################
 
 # PER CHATGPT: Usare logiche di templating strutturate come da documentazione:
@@ -92,7 +94,7 @@ async def get_dashboard(request: Request):
     try:
         return templates.TemplateResponse(
             request=request,
-            name="dashboard.html",
+            name="site/dashboard.html",
             # Passa lo stato al template per la logica di lingua e link
             context={"lang": "en", "page_name": "dashboard"},
         )
@@ -106,16 +108,17 @@ async def get_dashboard(request: Request):
 @router.get("/auth/{section_landing_page}", response_class=HTMLResponse)
 async def get_section_landing_page(request: Request, section_landing_page: str):
     """
-    Serve la pagina di presentazione di una sezione  (es. /auth/lesson_plans, /auth/homework).
+    Serve la pagina di presentazione di una sezione  (es. /auth/lesson-plans, /auth/homework).
     """
     logger.info('get_section_landing_page')
     try:
 
         # TODO: capire se deve essere presente un utente loggato di un certo tipo: ad esempio 
-        ############# section = lesson_plans    ->      user_type = coach
-        ############# section = homework        ->      user_type = student
+        ############# section = lesson-plans    ->      user_type = coach
+        ############# section = homework        ->      user_type = coach or student
         
         assert "/" not in section_landing_page, "indirizzo non valido"
+        assert section_landing_page in sections, "indirizzo non valido"
         return templates.TemplateResponse(
             request=request,
             name=f"landing_pages/{section_landing_page}.html",
@@ -131,20 +134,21 @@ async def get_section_landing_page(request: Request, section_landing_page: str):
 @router.get("/auth/{section}/{item}", response_class=HTMLResponse)
 async def get_section_page(request: Request, section: str, item: str):
     """
-    Serve le pagine delle sezioni (es. /auth/lesson_plans/150-questions, /auth/homework/esempio).
+    Serve le pagine delle sezioni (es. /auth/lesson-plans/150-questions, /auth/homework/esempio).
     """
     logger.info('get_section_page')
     try:
 
         # TODO: capire se deve essere presente un utente loggato di un certo tipo: ad esempio 
-        ############# section = lesson_plans    ->      user_type = coach
-        ############# section = homework        ->      user_type = student
+        ############# section = lesson-plans    ->      user_type = coach
+        ############# section = homework        ->      user_type = coach or student
         
         assert "/" not in section, "indirizzo non valido"
         assert "/" not in item, "indirizzo non valido"
+        assert section in sections, "indirizzo non valido"
         return templates.TemplateResponse(
             request=request,
-            name=f"/{section}/{item}.html",
+            name=f"{section}/{item}.html",
             context={"lang": "en", "page_name": {section} - {item}},
         )
     except Exception as e:
