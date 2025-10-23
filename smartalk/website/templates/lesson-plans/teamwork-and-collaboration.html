@@ -1,0 +1,260 @@
+{# --- 1. Definizioni Variabili --- #}
+{% set lesson_title = 'Teamwork and Collaboration' %}
+{% set lesson_subtitle = 'A guide to effective collaboration and team dynamics.' %}
+{% set nav_links = [
+    {'id': 'defining-teamwork', 'title': 'Defining Teamwork'},
+    {'id': 'vocabulary', 'title': 'Vocabulary'},
+    {'id': 'team-roles', 'title': 'Team Roles'},
+    {'id': 'wrap-up', 'title': 'Wrap-Up'}
+] %}
+
+{# Optional: Data for interactive random questions #}
+{% set defining_questions = [
+    "How would you define teamwork in your own words?",
+    "How is teamwork different from collaboration? Can you give an example?",
+    "What are the biggest benefits of teamwork in the workplace?",
+    "Have you seen good examples of teamwork between departments like accounting, design, or tech? What happened?",
+    "Think of a time when you experienced successful teamwork. What made it successful?",
+    "Think of a time when teamwork didn’t go well. What went wrong?"
+] %}
+{% set effective_questions = [
+    "What characteristics make a team effective (clear goals, roles, communication)?",
+    "Can you describe a personal experience where you were part of an effective team?",
+    "Which element (goals, roles, communication) do you think is the most important for teamwork? Why?"
+] %}
+{% set communication_questions = [
+    "Why are active listening, clear messaging, and open dialogue important for teamwork?",
+    "What role does non-verbal communication (body language, facial expressions, tone) play in teamwork?",
+    "How can trust and respect be built in a team? Can you share strategies that worked for you?"
+] %}
+{% set roles_questions = [
+    "Which of these roles do you naturally play in a team?",
+    "Which role do you think is the most valuable in business? Why?",
+    "Have you ever worked with a strong “Challenger” or “Skeptic”? How did it affect the outcome?",
+    "Do you think a “Joker” helps or distracts in professional teamwork?",
+    "Can one person play multiple roles depending on the situation?",
+    "Which role do you find most challenging to work with? Why?",
+    "Do teams need a balance of these roles to succeed, or can one dominate?"
+] %}
+{% set wrap_up_questions = [
+    "What is one thing you’ve learned about yourself and teamwork from this discussion?",
+    "Which teamwork skill do you want to improve the most?",
+    "How can you apply today’s lesson to your current job?",
+    "If you could change one thing about how your current team works together, what would it be?",
+    "Do you prefer working in a team or working alone? Why?"
+] %}
+
+
+{# --- 2. Estensione Template --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+
+{# --- 3. Importazione Macro --- #}
+{# Importiamo anche random_item_generator per l'esercizio opzionale #}
+{% from "abstract_templates/_macros.html" import info_card, random_item_generator %}
+
+
+{# --- 4. Contenuto Lezione --- #}
+{% block lesson_content %}
+
+    {# Sezione 1: Defining Teamwork #}
+    {% call info_card('defining-teamwork', 'Discussion Points & Conversation Topics') %}
+        <p class="text-slate-700 mb-6">Let's start by exploring our understanding of teamwork and collaboration.</p>
+        <div class="space-y-4">
+            <div class="lesson-card"> {# Usiamo la classe master .lesson-card #}
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Defining Teamwork and Collaboration</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span> {# Usiamo la freccia standard #}
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-outside mt-4 text-slate-600 space-y-2 ml-4">
+                        <li>How would you define teamwork in your own words?</li>
+                        <li>How is teamwork different from collaboration? Can you give an example?</li>
+                        <li>What are the biggest benefits of teamwork in the workplace?</li>
+                        <li>Have you seen good examples of teamwork between departments like accounting, design, or tech? What happened?</li>
+                    </ul>
+                    <h4 class="font-semibold text-slate-800 mt-4">Activity:</h4>
+                    <ul class="list-disc list-outside mt-2 text-slate-600 space-y-2 ml-4">
+                        <li>Think of a time when you experienced successful teamwork. What made it successful?</li>
+                        <li>Think of a time when teamwork didn’t go well. What went wrong?</li>
+                    </ul>
+
+                    <hr class="my-6 border-gray-200">
+                    <h4 class="font-semibold text-slate-800 mb-4 text-center">Practice Discussing</h4>
+                    {{ random_item_generator(
+                        exercise_id='defining-q-generator',
+                        button_text='Get Discussion Question',
+                        source_list_id='defining-q-list',
+                        items=defining_questions
+                    )}}
+
+                </div>
+            </div>
+            <div class="lesson-card mt-4">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Effective Teams</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-outside mt-4 text-slate-600 space-y-2 ml-4">
+                        <li>What characteristics make a team effective (clear goals, roles, communication)?</li>
+                        <li>Can you describe a personal experience where you were part of an effective team?</li>
+                        <li>Which element (goals, roles, communication) do you think is the most important for teamwork? Why?</li>
+                    </ul>
+                    <h4 class="font-semibold text-slate-800 mt-4">Activity:</h4>
+                    <ul class="list-disc list-outside mt-2 text-slate-600 space-y-2 ml-4">
+                        <li>Brainstorm as a group: List elements that make a team effective.</li>
+                        <li>Discuss how these elements could be applied to your current team.</li>
+                    </ul>
+                     {# SUGGERIMENTO INTERATTIVO #}
+                    {# Decommenta il blocco seguente per aggiungere un generatore di domande casuali qui #}
+                    {#
+                    <hr class="my-6 border-gray-200">
+                    <h4 class="font-semibold text-slate-800 mb-4 text-center">Practice Discussing</h4>
+                    {{ random_item_generator(
+                        exercise_id='effective-q-generator',
+                        button_text='Get Discussion Question',
+                        source_list_id='effective-q-list',
+                        items=effective_questions
+                    )}}
+                    #}
+                    {# FINE SUGGERIMENTO #}
+                </div>
+            </div>
+            <div class="lesson-card mt-4">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Communication in Teams</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-outside mt-4 text-slate-600 space-y-2 ml-4">
+                        <li>Why are active listening, clear messaging, and open dialogue important for teamwork?</li>
+                        <li>What role does non-verbal communication (body language, facial expressions, tone) play in teamwork?</li>
+                        <li>How can trust and respect be built in a team? Can you share strategies that worked for you?</li>
+                    </ul>
+                     {# SUGGERIMENTO INTERATTIVO #}
+                    {# Decommenta il blocco seguente per aggiungere un generatore di domande casuali qui #}
+                    {#
+                    <hr class="my-6 border-gray-200">
+                    <h4 class="font-semibold text-slate-800 mb-4 text-center">Practice Discussing</h4>
+                    {{ random_item_generator(
+                        exercise_id='comm-q-generator',
+                        button_text='Get Discussion Question',
+                        source_list_id='comm-q-list',
+                        items=communication_questions
+                    )}}
+                    #}
+                    {# FINE SUGGERIMENTO #}
+                </div>
+            </div>
+        </div>
+    {% endcall %}
+
+
+    {# Sezione 2: Vocabulary #}
+    {% call info_card('vocabulary', 'Vocabulary Introduction') %}
+        <p class="text-slate-700 mb-6">Review these key terms and their definitions related to teamwork.</p>
+        <div class="lesson-card">
+            <div class="card-header flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Key Terms</h3>
+                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+            </div>
+            <div class="card-content">
+                <ul class="list-disc list-outside mt-4 text-slate-600 space-y-2 ml-4">
+                    <li><strong>Teamwork:</strong> The combined action of a group, especially when effective and efficient.</li>
+                    <li><strong>Collaboration:</strong> The action of working with someone to produce or create something.</li>
+                    <li><strong>Synergy:</strong> The interaction of two or more agents to produce a combined effect greater than the sum of their separate effects.</li>
+                    <li><strong>Consensus:</strong> General agreement among a group.</li>
+                    <li><strong>Conflict Resolution:</strong> A way to find a peaceful solution to a disagreement.</li>
+                    <li><strong>Cohesion:</strong> The action or fact of forming a united whole.</li>
+                    <li><strong>Delegation:</strong> The assignment of responsibility or authority to another person.</li>
+                    <li><strong>Empathy:</strong> The ability to understand and share the feelings of another.</li>
+                </ul>
+            </div>
+        </div>
+    {% endcall %}
+
+
+    {# Sezione 3: Team Roles #}
+    {% call info_card('team-roles', 'Team Roles') %}
+        <p class="text-slate-700 mb-6">Teams are made up of more than just job titles. People often take on informal roles that contribute to the group's dynamic.</p>
+        <div class="lesson-card">
+            <div class="card-header flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Informal Roles in Teams</h3>
+                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+            </div>
+            <div class="card-content">
+                <ul class="list-disc list-outside mt-4 text-slate-600 space-y-2 ml-4">
+                    <li><strong>The Peacemaker</strong> – Calms tension and smooths over conflict to keep harmony in the group.</li>
+                    <li><strong>The Skeptic</strong> – Questions ideas, points out risks, and makes the group think more critically.</li>
+                    <li><strong>The Energizer</strong> – Motivates the group, brings enthusiasm, and keeps energy levels high.</li>
+                    <li><strong>The Quiet Worker</strong> – Stays in the background, avoids attention, but gets tasks done reliably.</li>
+                    <li><strong>The Leader (Unofficial)</strong> – Takes charge informally, influences direction, and organizes others without an official title.</li>
+                    <li><strong>The Bridge-Builder</strong> – Connects people across departments or groups, making sure communication flows.</li>
+                    <li><strong>The Detail Keeper</strong> – Notices small mistakes, tracks details, and follows up on loose ends.</li>
+                    <li><strong>The Joker</strong> – Lightens the mood with humor, helps reduce stress, and makes teamwork more enjoyable.</li>
+                    <li><strong>The Challenger</strong> – Pushes the team to aim higher, challenge limits, and think beyond the obvious.</li>
+                </ul>
+                <h4 class="font-semibold text-slate-800 mt-4">Conversation Topics:</h4>
+                <ul class="list-disc list-outside mt-2 text-slate-600 space-y-2 ml-4">
+                    <li>Which of these roles do you naturally play in a team?</li>
+                    <li>Which role do you think is the most valuable in business? Why?</li>
+                    <li>Have you ever worked with a strong “Challenger” or “Skeptic”? How did it affect the outcome?</li>
+                    <li>Do you think a “Joker” helps or distracts in professional teamwork?</li>
+                    <li>Can one person play multiple roles depending on the situation?</li>
+                    <li>Which role do you find most challenging to work with? Why?</li>
+                    <li>Do teams need a balance of these roles to succeed, or can one dominate?</li>
+                </ul>
+                 {# SUGGERIMENTO INTERATTIVO #}
+                {# Decommenta il blocco seguente per aggiungere un generatore di domande casuali qui #}
+                {#
+                <hr class="my-6 border-gray-200">
+                <h4 class="font-semibold text-slate-800 mb-4 text-center">Practice Discussing</h4>
+                {{ random_item_generator(
+                    exercise_id='roles-q-generator',
+                    button_text='Get Discussion Question',
+                    source_list_id='roles-q-list',
+                    items=roles_questions
+                )}}
+                #}
+                {# FINE SUGGERIMENTO #}
+            </div>
+        </div>
+    {% endcall %}
+
+
+    {# Sezione 4: Wrap-Up #}
+    {% call info_card('wrap-up', 'Wrap-Up Discussion Questions') %}
+        <p class="text-slate-700 mb-6">Let's reflect on what we've learned.</p>
+        <div class="lesson-card">
+            <div class="card-header flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Final Questions</h3>
+                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+            </div>
+            <div class="card-content">
+                <ul class="list-disc list-outside mt-4 text-slate-600 space-y-2 ml-4">
+                    <li>What is one thing you’ve learned about yourself and teamwork from this discussion?</li>
+                    <li>Which teamwork skill do you want to improve the most?</li>
+                    <li>How can you apply today’s lesson to your current job?</li>
+                    <li>If you could change one thing about how your current team works together, what would it be?</li>
+                    <li>Do you prefer working in a team or working alone? Why?</li>
+                </ul>
+                 {# SUGGERIMENTO INTERATTIVO #}
+                {# Decommenta il blocco seguente per aggiungere un generatore di domande casuali qui #}
+                {#
+                <hr class="my-6 border-gray-200">
+                <h4 class="font-semibold text-slate-800 mb-4 text-center">Practice Discussing</h4>
+                {{ random_item_generator(
+                    exercise_id='wrapup-q-generator',
+                    button_text='Get Discussion Question',
+                    source_list_id='wrapup-q-list',
+                    items=wrap_up_questions
+                )}}
+                #}
+                {# FINE SUGGERIMENTO #}
+            </div>
+        </div>
+    {% endcall %}
+
+{% endblock %}
+
+{# Non serve il blocco extra_scripts, a meno che non si aggiungano gli esercizi interattivi #}

@@ -1,333 +1,326 @@
 /**
- * Smartalk Lesson Engine v1.0
- * Un file JavaScript unificato per gestire tutti i moduli interattivi delle lezioni.
- * Questo script gestisce:
- * 1. Accordion (Tendine a comparsa)
- * 2. Navigazione interna con Smooth Scroll
- * 3. Quiz: Fill in the Gaps (con data-answer)
- * 4. Quiz: Multiple Choice (con data-answer)
- * 5. Esercizio: Match the Items (con data-match-id)
- * 6. Esercizio: Random Item Generator (da una lista HTML)
+ * ===================================================================
+ * SMARTALK LESSON ENGINE v2.0
+ * * This is the unified JavaScript file for the entire site.
+ * It contains all generic modules for interactivity.
+ * * Modules only activate if they find the corresponding HTML
+ * elements on the page (e.g., '.card-header', '[data-quiz-button]').
+ * ===================================================================
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Initialize core UI modules (present on most pages)
+    // This covers priority 1 (lesson-plans.html page)
+    initBaseUI();
 
-    // --- 1. SETUP UI DI BASE (Tendine e Navigazione) ---
-    setupCollapsibleCards();
-    setupPageNavigation();
-
-    // --- 2. SETUP ESERCIZI INTERATTIVI ---
-    setupInteractiveExercises();
-
+    // Initialize interactive modules (present only in lessons)
+    // This covers priority 2 (generalization)
+    initInteractiveModules();
 });
 
+// ===================================
+// BASE UI MODULE (NAVIGATION & ACCORDION)
+// ===================================
+
+function initBaseUI() {
+    initAccordions();
+    initPageNavigation();
+}
+
 /**
- * 1a. Logica Accordion (Tendine a comparsa)
- * Cerca tutti i '.card-header' e li rende cliccabili
- * per mostrare/nascondere il '.card-content' successivo.
- * Gestisce anche la rotazione di un '.arrow-icon' (se presente).
- * (Unione della logica di content.js e lesson_base.html)
+ * 1. MODULE: Accordion
+ * Finds all '.card-header' elements and makes them clickable
+ * to show/hide the following '.card-content'.
+ * (Unified logic from both legacy files)
  */
-function setupCollapsibleCards() {
+function initAccordions() {
     const cardHeaders = document.querySelectorAll('.card-header');
     cardHeaders.forEach(header => {
         header.addEventListener('click', () => {
             const content = header.nextElementSibling;
             if (content && content.classList.contains('card-content')) {
-                // Attiva/disattiva la classe 'show'
                 content.classList.toggle('show');
-
-                // Cerca un'icona e la ruota
-                const arrowIcon = header.querySelector('.arrow-icon');
-                if (arrowIcon) {
-                    arrowIcon.style.transform = content.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0deg)';
+                
+                // Also handle the arrow rotation (logic from File 31)
+                const arrow = header.querySelector('.arrow-icon');
+                if (arrow) {
+                    arrow.style.transform = content.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0deg)';
                 }
+            } else {
+                console.warn("No .card-content found after this header:", header);
             }
         });
+        
+        // Set initial state (logic from File 31)
+        const content = header.nextElementSibling;
+        if (content && content.classList.contains('card-content') && content.classList.contains('show')) {
+            const arrow = header.querySelector('.arrow-icon');
+            if (arrow) arrow.style.transform = 'rotate(180deg)';
+        }
     });
 }
 
 /**
- * 1b. Logica Navigazione Interna (Smooth Scroll)
- * Cerca tutti i '.section-nav-link' e attiva lo smooth scroll
- * verso l'ancora (es. href="#sezione-1").
- * (Da lesson_base.html)
+ * 2. MODULE: Page Navigation (Smooth Scroll & Active Highlight)
+ * Handles smooth scrolling for '.section-nav-link' links
+ * and highlights the active link based on scroll (logic from File 32).
  */
-function setupPageNavigation() {
+function initPageNavigation() {
     const navLinks = document.querySelectorAll('.section-nav-link');
+    const sections = document.querySelectorAll('main section[id]');
+
+    if (navLinks.length === 0) return; // Nothing to do
+
+    // 2a. Click Handling (Smooth Scroll)
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const targetId = e.currentTarget.getAttribute('href');
             const targetSection = document.querySelector(targetId);
+
             if (targetSection) {
-                targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Compute correct position considering fixed header (64px)
+                // and sticky navigation (which sticks at 64px)
+                const offset = 64; 
+                const bodyRect = document.body.getBoundingClientRect().top;
+                const elementRect = targetSection.getBoundingClientRect().top;
+                const elementPosition = elementRect - bodyRect;
+                const offsetPosition = elementPosition - offset;
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+
+                // Immediately update 'active' class on click
+                navLinks.forEach(l => l.classList.remove('active'));
+                e.currentTarget.classList.add('active');
             }
         });
     });
+
+    // 2b. Scroll Handling (Active Highlight)
+    if (sections.length > 0) {
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    navLinks.forEach(link => {
+                        const isActive = link.getAttribute('href') === `#${entry.target.id}`;
+                        link.classList.toggle('active', isActive);
+                    });
+                }
+            });
+        }, {
+            rootMargin: '-80px 0px -40% 0px', // Triggers when the section is near the top of the screen
+            threshold: 0
+        });
+
+        sections.forEach(section => observer.observe(section));
+    }
 }
 
-/**
- * 2. Inizializzatore per tutti gli esercizi
- * Cerca i vari tipi di esercizi nella pagina e collega i bottoni
- * alle funzioni corrette.
- */
-function setupInteractiveExercises() {
 
-    // Collega tutti i bottoni "Verifica" dei quiz
+// ===================================
+// EXERCISE MODULES (QUIZ, MATCH, RANDOM)
+// ===================================
+
+function initInteractiveModules() {
+    // Find all quiz buttons and initialize them
     const quizButtons = document.querySelectorAll('[data-quiz-button]');
     quizButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const exerciseContainer = button.closest('[data-exercise-container]');
-            const quizType = button.dataset.quizType; // "fill-in" o "multiple-choice"
+        const quizType = button.dataset.quizType;
+        if (quizType === 'fill-in') {
+            initFillInQuiz(button);
+        } else if (quizType === 'multiple-choice') {
+            initMultipleChoiceQuiz(button);
+        }
+    });
 
-            if (quizType === 'fill-in') {
-                checkFillInGaps(exerciseContainer);
-            } else if (quizType === 'multiple-choice') {
-                checkMultipleChoiceQuiz(exerciseContainer);
+    // Find all 'match' containers and initialize them
+    const matchContainers = document.querySelectorAll('[data-match-container]');
+    matchContainers.forEach(initMatchingExercise);
+
+    // Find all 'random' buttons and initialize them
+    const randomButtons = document.querySelectorAll('[data-random-button]');
+    randomButtons.forEach(initRandomGenerator);
+}
+
+
+/**
+ * 3. MODULE: Fill-in-the-Gaps Quiz
+ * @param {HTMLElement} quizButton - The button that triggered the init.
+ */
+function initFillInQuiz(quizButton) {
+    const container = quizButton.closest('[data-exercise-container]');
+    if (!container) return;
+
+    const inputs = container.querySelectorAll('.quiz-input-text');
+    const summaryEl = container.querySelector('.quiz-summary');
+
+    quizButton.addEventListener('click', () => {
+        let correctCount = 0;
+        inputs.forEach(input => {
+            const answer = input.dataset.answer.trim();
+            const feedbackEl = input.nextElementSibling && input.nextElementSibling.matches('.quiz-feedback')
+                ? input.nextElementSibling
+                : null;
+
+            if (input.value.trim().toLowerCase() === answer.toLowerCase()) {
+                input.classList.remove('incorrect');
+                input.classList.add('correct');
+                if (feedbackEl) feedbackEl.textContent = '✓';
+                correctCount++;
+            } else {
+                input.classList.remove('correct');
+                input.classList.add('incorrect');
+                if (feedbackEl) feedbackEl.textContent = `✗ (Answer: ${answer})`;
             }
         });
-    });
 
-    // Inizializza tutti i giochi "Match"
-    const matchGames = document.querySelectorAll('[data-match-container]');
-    matchGames.forEach(game => initializeMatchingGame(game));
-
-    // Inizializza tutti i generatori "Random"
-    const randomButtons = document.querySelectorAll('[data-random-button]');
-    randomButtons.forEach(button => initializeRandomGenerator(button));
-}
-
-
-// --- FUNZIONI DEGLI ESERCIZI ---
-
-/**
- * Helper per normalizzare le risposte
- */
-function normalizeAnswer(str) {
-    return str.toLowerCase().trim().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ');
-}
-
-/**
- * 3. TIPO ESERCIZIO: Fill in the Gaps
- * Controlla tutti gli input in un blocco.
- * HTML richiesto:
- * <div data-exercise-container>
- * <input type="text" data-answer="risposta corretta">
- * <span class="feedback"></span>
- * ...
- * <button data-quiz-button data-quiz-type="fill-in">Verifica</button>
- * <div class="quiz-summary"></div>
- * </div>
- */
-function checkFillInGaps(exerciseContainer) {
-    const inputs = exerciseContainer.querySelectorAll('input[data-answer]');
-    let score = 0;
-
-    inputs.forEach(input => {
-        const correctAnswer = normalizeAnswer(input.dataset.answer);
-        const userAnswer = normalizeAnswer(input.value);
-        const feedbackEl = input.nextElementSibling; // Cerca un '.feedback'
-
-        input.classList.remove('correct', 'incorrect');
-        if (feedbackEl) feedbackEl.textContent = '';
-
-        if (userAnswer === correctAnswer) {
-            input.classList.add('correct');
-            if (feedbackEl) feedbackEl.textContent = '✔️';
-            score++;
-        } else {
-            input.classList.add('incorrect');
-            if (feedbackEl) feedbackEl.textContent = `❌ (Corretta: ${input.dataset.answer})`;
+        if (summaryEl) {
+            summaryEl.textContent = `Score: ${correctCount} / ${inputs.length}`;
         }
     });
-
-    const summaryEl = exerciseContainer.querySelector('.quiz-summary');
-    if (summaryEl) {
-        summaryEl.textContent = `Punteggio: ${score} / ${inputs.length}`;
-    }
 }
 
 /**
- * 4. TIPO ESERCIZIO: Multiple Choice
- * Controlla tutti i gruppi di radio button.
- * HTML richiesto:
- * <div data-exercise-container>
- * <div class="question-item" data-answer="valore_corretto">
- * <input type="radio" name="q1" value="valore_1">
- * <input type="radio" name="q1" value="valore_corretto">
- * <span class="feedback"></span>
- * </div>
- * ...
- * <button data-quiz-button data-quiz-type="multiple-choice">Verifica</button>
- * <div class="quiz-summary"></div>
- * </div>
+ * 4. MODULE: Multiple Choice Quiz
+ * @param {HTMLElement} quizButton - The button that triggered the init.
  */
-function checkMultipleChoiceQuiz(exerciseContainer) {
-    const questions = exerciseContainer.querySelectorAll('.question-item[data-answer]');
-    let score = 0;
+function initMultipleChoiceQuiz(quizButton) {
+    const container = quizButton.closest('[data-exercise-container]');
+    if (!container) return;
+    
+    const questions = container.querySelectorAll('.quiz-question-item');
+    const summaryEl = container.querySelector('.quiz-summary');
 
-    questions.forEach(q => {
-        const correctAnswer = q.dataset.answer;
-        const feedbackEl = q.querySelector('.feedback');
-        const selectedRadio = q.querySelector('input[type="radio"]:checked');
+    quizButton.addEventListener('click', () => {
+        let correctCount = 0;
+        questions.forEach(question => {
+            const correctAnswer = question.dataset.answer;
+            const selectedInput = question.querySelector('input:checked');
+            const feedbackEl = question.querySelector('.quiz-feedback');
 
-        if (feedbackEl) feedbackEl.textContent = '';
-
-        if (selectedRadio) {
-            if (selectedRadio.value === correctAnswer) {
-                if (feedbackEl) feedbackEl.textContent = '✔️ Corretto!';
-                feedbackEl.classList.add('correct');
-                feedbackEl.classList.remove('incorrect');
-                score++;
+            if (selectedInput) {
+                if (selectedInput.value === correctAnswer) {
+                    feedbackEl.textContent = 'Correct!';
+                    feedbackEl.className = 'quiz-feedback correct';
+                    correctCount++;
+                } else {
+                    feedbackEl.textContent = `Wrong. The correct answer was "${correctAnswer}".`;
+                    feedbackEl.className = 'quiz-feedback incorrect';
+                }
             } else {
-                if (feedbackEl) feedbackEl.textContent = `❌ Errato.`;
-                feedbackEl.classList.add('incorrect');
-                feedbackEl.classList.remove('correct');
+                feedbackEl.textContent = 'Please select an answer.';
+                feedbackEl.className = 'quiz-feedback incorrect';
             }
-        } else {
-            if (feedbackEl) feedbackEl.textContent = '⚠️ Seleziona una risposta.';
-            feedbackEl.classList.add('incorrect');
-            feedbackEl.classList.remove('correct');
+        });
+
+        if (summaryEl) {
+            summaryEl.textContent = `Score: ${correctCount} / ${questions.length}`;
         }
     });
-
-    const summaryEl = exerciseContainer.querySelector('.quiz-summary');
-    if (summaryEl) {
-        summaryEl.textContent = `Punteggio: ${score} / ${questions.length}`;
-    }
 }
 
 /**
- * 5. TIPO ESERCIZIO: Match the Items
- * Permette di abbinare due elementi (es. parola e definizione).
- * HTML richiesto:
- * <div data-match-container>
- * <div class="match-feedback"></div>
- * <div class="match-group-a">
- * <div class="match-item" data-match-id="1">Parola A</div>
- * <div class="match-item" data-match-id="2">Parola B</div>
- * </div>
- * <div class="match-group-b">
- * <div class="match-item" data-match-id="2">Definizione B</div>
- * <div class="match-item" data-match-id="1">Definizione A</div>
- * </div>
- * </div>
+ * 5. MODULE: Matching Exercise
+ * @param {HTMLElement} container - The [data-match-container] element.
  */
-function initializeMatchingGame(matchContainer) {
+function initMatchingExercise(container) {
     let selectedA = null;
     let selectedB = null;
-    const feedbackEl = matchContainer.querySelector('.match-feedback');
-    const groupA = matchContainer.querySelector('.match-group-a');
-    const groupB = matchContainer.querySelector('.match-group-b');
-    const totalMatches = groupA.querySelectorAll('.match-item').length;
-    let correctMatches = 0;
+    const groupA = container.querySelector('.match-group-a');
+    const groupB = container.querySelector('.match-group-b');
+    const feedbackEl = container.querySelector('.match-feedback');
+    const totalMatches = groupA.children.length;
+    let matchesMade = 0;
 
-    const clearSelections = () => {
-        if (selectedA) selectedA.classList.remove('selected');
-        if (selectedB) selectedB.classList.remove('selected');
+    const resetSelections = () => {
+        selectedA?.classList.remove('selected', 'error');
+        selectedB?.classList.remove('selected', 'error');
         selectedA = null;
         selectedB = null;
     };
 
-    const checkMatch = () => {
-        if (!selectedA || !selectedB) return;
+    groupA.addEventListener('click', e => {
+        const item = e.target.closest('.match-item');
+        if (!item || item.classList.contains('matched')) return;
+        
+        groupA.querySelectorAll('.match-item').forEach(i => i.classList.remove('selected'));
+        item.classList.add('selected');
+        selectedA = item;
+        checkMatch();
+    });
+
+    groupB.addEventListener('click', e => {
+        const item = e.target.closest('.match-item');
+        if (!item || item.classList.contains('matched')) return;
+
+        groupB.querySelectorAll('.match-item').forEach(i => i.classList.remove('selected'));
+        item.classList.add('selected');
+        selectedB = item;
+        checkMatch();
+    });
+
+    function checkMatch() {
+        if (!selectedA || !selectedB) return; // Wait for both selections
 
         if (selectedA.dataset.matchId === selectedB.dataset.matchId) {
+            // Correct
             selectedA.classList.add('matched');
             selectedB.classList.add('matched');
             selectedA.classList.remove('selected');
             selectedB.classList.remove('selected');
-            if (feedbackEl) feedbackEl.textContent = 'Corretto!';
-            correctMatches++;
+            selectedA = null;
+            selectedB = null;
+            matchesMade++;
+            if (feedbackEl) feedbackEl.textContent = "Correct!";
+            
+            if (matchesMade === totalMatches) {
+                if (feedbackEl) feedbackEl.textContent = "Great job, you're done!";
+            }
         } else {
-            if (feedbackEl) feedbackEl.textContent = 'Errato, riprova.';
+            // Wrong
             selectedA.classList.add('error');
             selectedB.classList.add('error');
-            setTimeout(() => {
-                selectedA.classList.remove('error');
-                selectedB.classList.remove('error');
-                clearSelections();
-            }, 800);
+            if (feedbackEl) feedbackEl.textContent = "Wrong, try again.";
         }
-
-        if (correctMatches === totalMatches) {
-            if (feedbackEl) feedbackEl.textContent = 'Ottimo! Esercizio completato!';
-        }
-
-        // Pulisci per il prossimo tentativo (se non è stato un errore)
-        if (selectedA && !selectedA.classList.contains('error')) {
-            clearSelections();
-        }
-    };
-
-    groupA.querySelectorAll('.match-item').forEach(item => {
-        item.addEventListener('click', () => {
-            if (item.classList.contains('matched')) return;
-            if (selectedA) selectedA.classList.remove('selected');
-            item.classList.add('selected');
-            selectedA = item;
-            checkMatch();
-        });
-    });
-
-    groupB.querySelectorAll('.match-item').forEach(item => {
-        item.addEventListener('click', () => {
-            if (item.classList.contains('matched')) return;
-            if (selectedB) selectedB.classList.remove('selected');
-            item.classList.add('selected');
-            selectedB = item;
-            checkMatch();
-        });
-    });
+        
+        setTimeout(resetSelections, 500); // Reset after a short delay
+    }
 }
 
 /**
- * 6. TIPO ESERCIZIO: Random Item Generator
- * Mostra un elemento a caso da una lista nascosta.
- * HTML richiesto:
- * <div data-random-container>
- * <div id="display-area" class="random-display">...</div>
- * <button data-random-button data-source-list="#lista-domande">Genera Domanda</button>
- *
- * <ul id="lista-domande" style="display: none;">
- * <li>Domanda 1</li>
- * <li>Domanda 2</li>
- * </ul>
- * </div>
+ * 6. MODULE: Random Generator
+ * @param {HTMLElement} randomButton - The [data-random-button] element.
  */
-function initializeRandomGenerator(randomButton) {
+function initRandomGenerator(randomButton) {
     const sourceListSelector = randomButton.dataset.sourceList;
     const sourceList = document.querySelector(sourceListSelector);
-
-    // Trova l'area di display (deve essere dentro lo stesso container)
     const container = randomButton.closest('[data-random-container]');
     const displayArea = container.querySelector('.random-display');
 
     if (!sourceList || !displayArea) {
-        console.error("Generatore Random: mancano 'sourceList' o 'displayArea'.");
+        console.error("Random Generator: missing 'sourceList' or 'displayArea'.");
         return;
     }
 
-    const items = Array.from(sourceList.children); // <li> o <div>
+    const items = Array.from(sourceList.children);
+    let lastIndex = -1; // Avoid immediate repeats
 
     randomButton.addEventListener('click', () => {
         if (items.length === 0) {
-            displayArea.textContent = 'Nessun elemento da mostrare.';
+            displayArea.innerHTML = 'No items to display.';
             return;
         }
-        const randomIndex = Math.floor(Math.random() * items.length);
-        // Usiamo innerHTML per copiare anche eventuali stili/strutture
+
+        let randomIndex = Math.floor(Math.random() * items.length);
+        // Simple logic to avoid immediate repetition when there is more than 1 item
+        if (items.length > 1 && randomIndex === lastIndex) {
+            randomIndex = (randomIndex + 1) % items.length;
+        }
+        lastIndex = randomIndex;
+        
         displayArea.innerHTML = items[randomIndex].innerHTML;
     });
 }
-
-// ===================================
-//  ALTRI MODULI (es. AI, TTS, ecc.)
-// ===================================
-//
-// Qui potremmo aggiungere le funzioni AI (come 'generateSalaryScript')
-// o il Text-to-Speech, ma le lasciamo fuori per ora
-// per concentrarci sui TIPI DI ESERCIZIO come richiesto.
-//
-// ===================================

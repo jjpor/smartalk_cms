@@ -1,7 +1,31 @@
+{# ==================================================================== #}
+{# --- MACROS ADDED FOR THE INDEX PAGE (lesson-plans) --- #}
+{# ==================================================================== #}
+
+{% macro render_guide_section(section_id, section_data) %}
+    <section id="{{ section_id }}" class="mb-12">
+        <h2 class="section-header">{{ section_data.title }}</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for guide in section_data.guides %}
+                {{ guide_card_link(guide) }}
+            {% endfor %}
+        </div>
+    </section>
+{% endmacro %}
+
+
+{% macro guide_card_link(guide) %}
+    {# This URL matches the one found in the error logs: /auth/lesson-plans/SLUG #}
+    <a href="/auth/lesson-plans/{{ guide.url_slug }}" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center">
+        <h3 class="font-bold text-xl text-slate-800 mb-2">{{ guide.title }}</h3>
+        <p class="text-slate-600 text-sm">{{ guide.desc }}</p>
+    </a>
+{% endmacro %}
+
 {#
-                    MACRO JINJA2 PER ESERCIZI STANDARD
-    Questo file contiene i "componenti" riutilizzabili per gli esercizi.
-    Le lezioni importeranno queste macro per costruire i loro contenuti interattivi.
+                    JINJA2 MACROS FOR STANDARD EXERCISES
+    This file contains reusable "components" for exercises.
+    Lessons will import these macros to build their interactive content.
 #}
 
 {# --- MACRO 1: Collapsible Info Card --- #}
@@ -13,7 +37,7 @@
                 <span class="arrow-icon">▾</span>
             </div>
             <div class="card-content {{ initial_state }}">
-                {{ caller() }} {# Il contenuto HTML verrà inserito qui #}
+                {{ caller() }} {# The HTML content will be inserted here #}
             </div>
         </div>
     </section>
@@ -33,7 +57,7 @@
                 </p>
             {% endfor %}
         </div>
-        <button class="btn btn-primary" data-quiz-button data-quiz-type="fill-in">Verifica</button>
+        <button class="btn btn-primary" data-quiz-button data-quiz-type="fill-in">Check</button>
         <div class="quiz-summary"></div>
     </div>
 {% endmacro %}
@@ -56,7 +80,7 @@
                 <div class="quiz-feedback"></div>
             </div>
         {% endfor %}
-        <button class="btn btn-primary" data-quiz-button data-quiz-type="multiple-choice">Verifica</button>
+        <button class="btn btn-primary" data-quiz-button data-quiz-type="multiple-choice">Check</button>
         <div class="quiz-summary"></div>
     </div>
 {% endmacro %}
@@ -65,7 +89,8 @@
 {# --- MACRO 4: Match the Items Exercise --- #}
 {% macro match_exercise(exercise_id, group_a_items, group_b_items) %}
     <div class="interactive-wrapper" data-match-container id="{{ exercise_id }}">
-        <div class="quiz-feedback match-feedback text-center mb-4">Seleziona un elemento da ogni colonna per abbinarli.
+        <div class="quiz-feedback match-feedback text-center mb-4">
+            Select one item from each column to match them.
         </div>
         <div class="flex flex-col md:flex-row justify-around gap-4">
             <div class="match-group-a flex flex-col gap-2">
@@ -86,14 +111,15 @@
 {# --- MACRO 5: Random Item Generator --- #}
 {% macro random_item_generator(exercise_id, button_text, source_list_id, items) %}
     <div class="interactive-wrapper" data-random-container id="{{ exercise_id }}">
-        <div class="random-display">Clicca il bottone per iniziare.</div>
-        <button class="btn btn-primary" data-random-button data-source-list="#{{ source_list_id }}">{{ button_text
-            }}</button>
+        <div class="random-display">Click the button</div>
+        <button class="btn btn-primary" data-random-button data-source-list="#{{ source_list_id }}">
+            {{ button_text }}
+        </button>
 
-        {# La lista sorgente è nascosta #}
+        {# The source list is hidden #}
         <ul id="{{ source_list_id }}" class="hidden">
             {% for item in items %}
-            <li>{{ item }}</li>
+                <li>{{ item }}</li>
             {% endfor %}
         </ul>
     </div>

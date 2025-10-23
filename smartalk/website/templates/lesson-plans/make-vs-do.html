@@ -1,0 +1,168 @@
+{# --- 1. Definizioni Variabili --- #}
+{% set lesson_title = 'Make vs. Do' %}
+{% set lesson_subtitle = 'A guide to using these two common verbs correctly.' %}
+{% set nav_links = [
+    {'id': 'introduction', 'title': 'Introduction'},
+    {'id': 'make', 'title': 'Make'},
+    {'id': 'do', 'title': 'Do'},
+    {'id': 'practice', 'title': 'Practice'},
+    {'id': 'discussion', 'title': 'Discussion'}
+] %}
+
+{# Data for the interactive fill-in-the-gap exercise #}
+{% set practice_sentences = [
+    {'prefix': 'She always', 'answer': 'makes', 'suffix': 'a cup of coffee before work.'},
+    {'prefix': 'Please', 'answer': 'do', 'suffix': 'your homework before dinner.'},
+    {'prefix': 'He', 'answer': 'made', 'suffix': 'a very important decision last week.'},
+    {'prefix': 'They need to', 'answer': 'do', 'suffix': 'business with international partners.'},
+    {'prefix': 'Don’t', 'answer': 'make', 'suffix': 'noise during the presentation.'},
+    {'prefix': 'We', 'answer': 'did', 'suffix': 'our best to finish the project on time.'},
+    {'prefix': 'Can you', 'answer': 'do', 'suffix': 'me a favor and send this email?'},
+    {'prefix': 'The company wants to', 'answer': 'make', 'suffix': 'a new plan for employee engagement.'},
+    {'prefix': 'I didn’t', 'answer': 'do', 'suffix': 'the laundry yesterday.'},
+    {'prefix': 'This news will', 'answer': 'make', 'suffix': 'you very happy.'}
+] %}
+
+
+{# --- 2. Estensione Template --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+
+{# --- 3. Importazione Macro --- #}
+{# Importiamo anche fill_in_the_gap_exercise #}
+{% from "abstract_templates/_macros.html" import info_card, fill_in_the_gap_exercise %}
+
+
+{# --- 4. Contenuto Lezione --- #}
+{% block lesson_content %}
+
+    {# Sezione 1: Introduction (Solo testo) #}
+    <section id="introduction">
+        <h2 class="section-header">Introduction & Explanation</h2>
+        <p class="text-slate-700 mb-6">The verbs <strong>make</strong> and <strong>do</strong> can be tricky for English learners. While both describe an action, they are used in different contexts. Understanding the subtle differences will help you sound more natural and precise. We'll break down the key rules for each one.</p>
+    </section>
+
+
+    {# Sezione 2: Make #}
+    {% call info_card('make', "We use 'MAKE' when we talk about...") %}
+        <div class="lesson-card"> {# Usiamo .lesson-card invece di bg-white... #}
+            <div class="card-header flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Key Uses of 'MAKE'</h3>
+                {# L'icona è solo decorativa qui perché il contenuto è sempre visibile #}
+                <span class="text-2xl text-slate-500 arrow-icon static"></span>
+            </div>
+            {# Usiamo show per mostrare sempre il contenuto #}
+            <div class="card-content show" style="margin-top: 1rem;">
+                 {# Usiamo la classe .list-terms dal CSS master #}
+                <ul class="list-disc list-outside mt-4 text-slate-600 space-y-2 ml-4 list-terms">
+                    <li><strong>Creating or producing something</strong> (product or result):
+                        <ul class="list-none ml-6 mt-1">
+                            <li>Made of gold, Made in Italy, Made by me</li>
+                            <li>She made a cake for the party.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Producing a reaction or effect:</strong>
+                        <ul class="list-none ml-6 mt-1">
+                            <li>This movie makes me happy.</li>
+                            <li>The news made him cry.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Plans and decisions:</strong>
+                        <ul class="list-none ml-6 mt-1">
+                            <li>Make a decision, Make a choice, Make a plan</li>
+                        </ul>
+                    </li>
+                    <li><strong>Food, drink, and meals:</strong>
+                        <ul class="list-none ml-6 mt-1">
+                            <li>Make breakfast, Make dinner, Make coffee</li>
+                        </ul>
+                    </li>
+                    <li><strong>Speaking and sounds:</strong>
+                        <ul class="list-none ml-6 mt-1">
+                            <li>Make a comment, Make a noise, Make a speech</li>
+                        </ul>
+                    </li>
+                </ul>
+                <p class="text-slate-700 mt-4 italic font-bold">Tip to Remember “MAKE”: Think about creating, producing, or causing something new.</p>
+            </div>
+        </div>
+    {% endcall %}
+
+
+    {# Sezione 3: Do #}
+    {% call info_card('do', "We use 'DO' when we talk about...") %}
+        <div class="lesson-card">
+            <div class="card-header flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Key Uses of 'DO'</h3>
+                <span class="text-2xl text-slate-500 arrow-icon static"></span>
+            </div>
+            <div class="card-content show" style="margin-top: 1rem;">
+                <ul class="list-disc list-outside mt-4 text-slate-600 space-y-2 ml-4 list-terms">
+                    <li><strong>Work, jobs, and tasks:</strong>
+                        <ul class="list-none ml-6 mt-1">
+                            <li>Do your homework, Do the housework, Do a good job</li>
+                        </ul>
+                    </li>
+                    <li><strong>General/unspecified activities:</strong>
+                        <ul class="list-none ml-6 mt-1">
+                            <li>Do something, Do nothing, Do everything, Do anything</li>
+                        </ul>
+                    </li>
+                    <li><strong>Replacing verbs when the action is clear from context:</strong>
+                        <ul class="list-none ml-6 mt-1">
+                            <li>Do the dishes, Do the laundry, Do your hair, Do the exam</li>
+                        </ul>
+                    </li>
+                    <li><strong>Important expressions:</strong>
+                        <ul class="list-none ml-6 mt-1">
+                            <li>Do well, Do badly, Do business, Do someone a favor</li>
+                        </ul>
+                    </li>
+                </ul>
+                <p class="text-slate-700 mt-4 italic font-bold">Tip to Remember “DO”: Think about actions, tasks, and responsibilities.</p>
+            </div>
+        </div>
+    {% endcall %}
+
+
+    {# Sezione 4: Practice (Esercizio Interattivo) #}
+    {% call info_card('practice', 'Practice: Fill in the Blanks') %}
+        <p class="text-slate-700 mb-6">Fill in the blanks with the correct word: <strong>make</strong> or <strong>do</strong>.</p>
+
+        {# Usiamo la macro per l'esercizio interattivo #}
+        {{ fill_in_the_gap_exercise(
+            exercise_id='make-do-fill-in',
+            sentences=practice_sentences
+        )}}
+
+    {% endcall %}
+
+
+    {# Sezione 5: Discussion #}
+    {% call info_card('discussion', 'Business Discussion Questions') %}
+        <p class="text-slate-700 mb-6">Apply what you've learned to a business context with these questions. Discussing them can help reinforce your understanding of these verbs in real-world scenarios.</p>
+        <div class="lesson-card">
+            <div class="card-header flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Applying 'Make' and 'Do' to Work</h3>
+                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+            </div>
+            <div class="card-content">
+                <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                    <li>Have you ever had to <strong>make</strong> a tough decision at work? What was it?</li>
+                    <li>Do you usually <strong>make</strong> a plan before starting a big project, or do you just start working?</li>
+                    <li>In your job, what kind of tasks do you usually <strong>do</strong> every day?</li>
+                    <li>Have you ever <strong>done</strong> business with an international client? How was the experience?</li>
+                    <li>What do you think is the most important speech a leader can <strong>make</strong> to inspire employees?</li>
+                    <li>When was the last time you had to <strong>do</strong> a difficult task under pressure?</li>
+                    <li>Do you prefer to <strong>make</strong> your own choices at work or follow a plan given by someone else?</li>
+                    <li>What do you usually <strong>do</strong> when you face a challenge at work?</li>
+                    <li>How can managers <strong>make</strong> employees feel valued?</li>
+                    <li>Have you ever had to <strong>do</strong> someone a favor at work that really helped them?</li>
+                </ul>
+            </div>
+        </div>
+    {% endcall %}
+
+{% endblock %}
+
+{# Non serve il blocco extra_scripts perché l'esercizio interattivo
+   usa la funzionalità già presente in lesson_plan.js #}
