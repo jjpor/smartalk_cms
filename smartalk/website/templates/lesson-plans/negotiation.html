@@ -1,0 +1,200 @@
+{# --- 1. Definizioni Variabili --- #}
+{% set lesson_title = 'A Guide to Negotiation' %}
+{% set lesson_subtitle = 'Mastering the art of effective negotiation for any situation.' %}
+{# Rimosso il link alla sezione AI #}
+{% set nav_links = [
+    {'id': 'intro', 'title': 'Intro'},
+    {'id': 'vocabulary', 'title': 'Vocab'},
+    {'id': 'discussion', 'title': 'Discussion'},
+    {'id': 'tips', 'title': 'Tips'},
+    {'id': 'scenarios', 'title': 'Scenarios'}
+] %}
+
+{# --- 2. Estensione Template --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+
+{# --- 3. Importazione Macro --- #}
+{% from "abstract_templates/_macros.html" import info_card %}
+
+
+{# --- 4. Contenuto Lezione --- #}
+{% block lesson_content %}
+
+    {# Sezione 1: Intro (Non usa info_card perché è solo testo) #}
+    <section id="intro">
+         {# Rimosso il bottone TTS #}
+        <h2 class="section-header">Introduction to Negotiation</h2>
+        <p class="text-slate-700 mb-6">
+            Negotiation is a crucial skill in both personal and professional settings. It involves two or more parties coming together to reach a mutually beneficial agreement. Successful negotiation requires effective communication, active listening, and the ability to understand and articulate one's needs and desires. By clearly expressing your objectives and being open to compromise, you can create a collaborative environment where all parties feel heard and valued. Practicing negotiation can help build confidence, improve relationships, and lead to more favorable outcomes.
+        </p>
+        <p class="text-slate-700">
+            During a negotiation, it's essential to remain calm and composed. Emotions can run high, but staying focused on the goal can help navigate challenging discussions. It's important to gather relevant information beforehand and be prepared to present your case logically and persuasively. Asking open-ended questions and paraphrasing the other party's statements can demonstrate understanding and foster trust. By practicing these techniques, you can enhance your ability to negotiate effectively, ensuring that all parties leave the table feeling satisfied with the agreement.
+        </p>
+    </section>
+
+
+    {# Sezione 2: Vocabulary #}
+    {% call info_card('vocabulary', 'Vocabulary') %}
+         {# Rimosso il bottone TTS #}
+        <p class="text-slate-700 mb-6">Learn key terms, phrasal verbs, and idioms related to negotiation.</p>
+        <div class="space-y-4">
+            <div class="lesson-card"> {# Usiamo la classe master .lesson-card #}
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Key Terms</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span> {# Usiamo la freccia standard #}
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                        <li><strong>Compromise:</strong> an agreement where both sides give up something.</li>
+                        <li><strong>Concession:</strong> something given up during negotiation.</li>
+                        <li><strong>Counteroffer:</strong> a return offer made by someone who rejects an original offer.</li>
+                        <li><strong>Leverage:</strong> power or advantage used to negotiate.</li>
+                        <li><strong>Stakeholder:</strong> someone who has an interest in the outcome of the negotiation.</li>
+                        <li><strong>Win-win situation:</strong> a solution where all parties benefit.</li>
+                        <li><strong>Bottom line:</strong> the final offer or the least acceptable outcome.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Phrasal Verbs & Idioms</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                        <li><strong>Back down:</strong> to withdraw a demand or position in a negotiation.</li>
+                        <li><strong>Hold firm:</strong> to maintain your position without compromise.</li>
+                        <li><strong>Meet halfway:</strong> to compromise.</li>
+                        <li><strong>Play hardball:</strong> to be tough or aggressive in negotiation.</li>
+                        <li><strong>Sweeten the deal:</strong> to offer something extra to make a proposal more attractive.</li>
+                        <li><strong>Drive a hard bargain:</strong> to negotiate in a tough way and demand the best terms.</li>
+                        <li><strong>Cut a deal:</strong> to reach an agreement, often quickly or efficiently.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Financial Terms</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                        <li><strong>Estimate / Quote:</strong> a calculated guess of how much something will cost.</li>
+                        <li><strong>Invoice:</strong> a bill for services or products.</li>
+                        <li><strong>Deposit:</strong> an upfront payment to secure a service.</li>
+                        <li><strong>Payment terms:</strong> conditions on when and how payments are made.</li>
+                        <li><strong>Budget overrun:</strong> when spending exceeds the planned budget.</li>
+                        <li><strong>Profit margin:</strong> the amount by which revenue exceeds costs.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endcall %}
+
+
+    {# Sezione 3: Discussion #}
+    {% call info_card('discussion', 'Discussion') %}
+         {# Rimosso il bottone TTS #}
+        <p class="text-slate-700 mb-6">Questions for a deeper conversation about negotiation skills.</p>
+        <div class="space-y-4">
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">General Discussion Questions</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                        <li>What was the last time you had to negotiate at work? How did it go?</li>
+                        <li>Is it better to start with a high or low offer in a negotiation? Why?</li>
+                        <li>What is more important in a negotiation: the price or the relationship?</li>
+                        <li>Have you ever experienced a negotiation where one party "played hardball"? How did you handle it?</li>
+                        <li>What do you think are the qualities of a successful negotiator?</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Practical Discussion Questions</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                        <li>How do you handle a situation where a vendor refuses to lower their price?</li>
+                        <li>What strategies do you use to make an event or project look high-end while staying within budget?</li>
+                        <li>How do you explain to a client that their expectations don’t match their budget?</li>
+                        <li>What are some cultural differences you’ve noticed in negotiation styles?</li>
+                        <li>Do you think it’s better to aim for a “win-win” agreement or push for the best deal for your company?</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endcall %}
+
+
+    {# Sezione 4: Tips #}
+    {% call info_card('tips', 'Tips & Techniques') %}
+         {# Rimosso il bottone TTS #}
+        <p class="text-slate-700 mb-6">Here are some effective strategies for any negotiation.</p>
+        <div class="space-y-4">
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Core Strategies</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                        <li><strong>Prepare in advance:</strong> Know what you want and the limits you’re willing to accept.</li>
+                        <li><strong>Listen actively:</strong> Understand the other side’s needs and concerns.</li>
+                        <li><strong>Ask questions:</strong> Clarify unclear points and find common ground.</li>
+                        <li><strong>Be flexible:</strong> Be willing to adjust your position if it helps reach a win-win situation.</li>
+                        <li><strong>Stay calm and polite:</strong> Emotions can affect the outcome negatively.</li>
+                        <li><strong>Use silence effectively:</strong> Pauses can put pressure on the other party to fill the gap.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Advanced Techniques</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                        <li><strong>BATNA (Best Alternative to a Negotiated Agreement):</strong> Know your best alternative if the negotiation fails.</li>
+                        <li><strong>Mirroring:</strong> Repeat what the other party says to show understanding and build rapport.</li>
+                        <li><strong>Anchoring:</strong> Start with a strong opening offer to set the negotiation range.</li>
+                        <li><strong>Framing:</strong> Present information in a way that highlights the benefits and minimizes drawbacks.</li>
+                        <li><strong>Summarizing:</strong> Periodically summarize what has been agreed upon to ensure mutual understanding.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endcall %}
+
+
+    {# Sezione 5: Scenarios #}
+    {% call info_card('scenarios', 'Practice Scenarios') %}
+         {# Rimosso il bottone TTS #}
+        <p class="text-slate-700 mb-6">These are common situations that require negotiation skills.</p>
+        <div class="space-y-4">
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Negotiation Scenarios</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                        <li><strong>Salary Negotiation:</strong> You believe your contributions justify a raise. How do you prepare a case and negotiate with your manager to get a fair salary?</li>
+                        <li><strong>Project Scope Negotiation:</strong> Your client wants to add more features to the project without increasing the budget or timeline. How do you explain the impact and negotiate a solution that works for both sides?</li>
+                        <li><strong>Vendor Contract Renewal:</strong> A key supplier has increased their prices by 15% on a contract renewal. Your goal is to negotiate a more favorable price while maintaining a positive relationship.</li>
+                        <li><strong>Workload Redistribution:</strong> One of your team members is overwhelmed with tasks. You need to redistribute their workload, but some colleagues are resistant to taking on more work. How do you negotiate a fair solution?</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endcall %}
+
+    {# La sezione Interactive Scenarios è stata rimossa #}
+
+{% endblock %}
+
+{# Non serve il blocco extra_scripts #}

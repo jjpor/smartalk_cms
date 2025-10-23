@@ -1,0 +1,310 @@
+{# --- 1. Definizioni Variabili --- #}
+{% set lesson_title = 'Guide to SWOT Analysis and SMART Goals' %}
+{% set lesson_subtitle = 'Essential tools for strategic planning and personal and professional development.' %}
+{% set nav_links = [
+    {'id': 'personal-vision', 'title': 'Personal Vision'},
+    {'id': 'swot-analysis', 'title': 'SWOT Analysis'},
+    {'id': 'smart-goals', 'title': 'SMART Goals'},
+    {'id': 'practical-exercises', 'title': 'Practical Exercises'},
+    {'id': 'business-applications', 'title': 'Business Applications'},
+    {'id': 'questions', 'title': 'Questions'}
+] %}
+
+{# --- 2. Estensione Template --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+
+{# --- 3. Importazione Macro --- #}
+{% from "abstract_templates/_macros.html" import info_card %}
+
+
+{# --- 4. Contenuto Lezione --- #}
+{% block lesson_content %}
+
+    {# Sezione 1: Personal Vision #}
+    {% call info_card('personal-vision', 'Personal Vision Statement') %}
+        <p class="text-slate-700 mb-6">Before you can plan your future, you need to define it. A personal vision statement acts as your compass, guiding your decisions and helping you stay focused on what truly matters to you. It's a short, powerful statement about who you want to be and what you want to achieve.</p>
+        
+        {#
+          NOTA:
+          Ho sostituito le classi Tailwind "bg-white p-5 rounded-xl shadow-md"
+          con la tua classe master ".lesson-card" da lesson_plan.css.
+          La struttura interna .card-header e .card-content è già 
+          perfettamente compatibile con il tuo lesson_plan.js master.
+        #}
+        <div class="space-y-4">
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Why a Vision Statement?</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                        <li>It provides a clear sense of purpose.</li>
+                        <li>It helps you make better decisions by aligning them with your core values.</li>
+                        <li>It gives you motivation and direction, especially when faced with challenges.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Creating Your Statement</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <p class="mt-4 text-slate-600">Answer these questions to help formulate your vision statement:</p>
+                    <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+                        <li>What are my core values?</li>
+                        <li>What do I want my legacy to be?</li>
+                        <li>What impact do I want to have on my community, family, and the world?</li>
+                        <li>What does an ideal future look like for me, personally and professionally?</li>
+                    </ul>
+                    <p class="mt-4 text-slate-600">Your statement should be concise, memorable, and inspiring.</p>
+                </div>
+            </div>
+        </div>
+    {% endcall %}
+
+
+    {# Sezione 2: SWOT Analysis #}
+    {% call info_card('swot-analysis', 'SWOT Analysis') %}
+        <p class="text-slate-700 mb-6">A SWOT analysis is a strategic planning tool to identify Strengths, Weaknesses, Opportunities, and Threats related to the competition of an organization or an individual.</p>
+        
+        {# L'immagine e il suo contenitore sono mantenuti come nel file originale #}
+        <div class="bg-white p-5 md:p-6 rounded-2xl shadow-xl mb-8 flex flex-col items-center">
+            <h3 class="text-xl md:text-2xl font-bold text-center mb-4 text-gray-800">Preview</h3>
+            <div class="relative w-full max-w-sm overflow-hidden rounded-xl">
+                <img src="https://lh3.googleusercontent.com/d/1LMdg0bcAAQzT-RNT0-qF-Tdl5YhMCuq_"
+                     alt="Diagram"
+                     class="w-full h-auto object-cover rounded-xl transition-transform duration-300 transform hover:scale-105"
+                     onerror="this.onerror=null;this.src='https://placehold.co/600x400/CCCCCC/333333?text=Immagine+non+disponibile';">
+            </div>
+           </div>
+
+        <div class="space-y-4">
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">What is a SWOT Analysis?</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                        <li><strong>Strengths:</strong> Internal characteristics that provide an advantage over others.</li>
+                        <li><strong>Weaknesses:</strong> Internal characteristics that pose a disadvantage.</li>
+                        <li><strong>Opportunities:</strong> External elements that can be leveraged to your advantage.</li>
+                        <li><strong>Threats:</strong> External elements that could cause problems or harm.</li>
+                    </ul>
+                    <p class="mt-4 text-slate-600">It is used by companies, non-profit organizations, and individuals for strategic planning, problem-solving, and performance improvement.</p>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">How to Leverage SWOT Analysis</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                        <li><strong>Leverage your strengths:</strong> Identify how you can use your skills, resources, or unique advantages to achieve your goals.</li>
+                        <li><strong>Address your weaknesses:</strong> Develop a plan to mitigate or eliminate your disadvantages. You can acquire new skills or seek support.</li>
+                        <li><strong>Seize opportunities:</strong> Identify external factors that can help you grow or improve. Think about how you can position yourself to take advantage of them.</li>
+                        <li><strong>Mitigate threats:</strong> Evaluate external risks and prepare a strategy to reduce their potential impact.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endcall %}
+
+
+    {# Sezione 3: SMART Goals #}
+    {% call info_card('smart-goals', 'SMART Goals') %}
+        <p class="text-slate-700 mb-6">Use the information gathered from your SWOT analysis to define clear and achievable goals that help you reach your milestones.</p>
+        <div class="space-y-4">
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Specific</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <p class="mt-4 text-slate-600"><strong>What are the specific goals you want to achieve based on your SWOT analysis?</strong></p>
+                    <p class="mt-2 text-slate-600"><strong>How do these goals align with your personal and professional aspirations?</strong></p>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Measurable</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <p class="mt-4 text-slate-600"><strong>How will you measure the success of your goals?</strong></p>
+                    <p class="mt-2 text-slate-600"><strong>What metrics or indicators will you use to track your progress?</strong></p>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Achievable</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <p class="mt-4 text-slate-600"><strong>Are your goals realistic and achievable within the given timeframe?</strong></p>
+                    <p class="mt-2 text-slate-600"><strong>What resources or support do you need to accomplish these goals?</strong></p>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Relevant</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <p class="mt-4 text-slate-600"><strong>How do your goals relate to your current role and organizational objectives?</strong></p>
+                    <p class="mt-2 text-slate-600"><strong>Why are these goals important for your career development?</strong></p>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Time-Bound</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <p class="mt-4 text-slate-600"><strong>What is the timeline for achieving your goals?</strong></p>
+                    <p class="mt-2 text-slate-600"><strong>Are there specific milestones or deadlines you need to set?</strong></p>
+                </div>
+            </div>
+        </div>
+    {% endcall %}
+
+
+    {# Sezione 4: Practical Exercises #}
+    {% call info_card('practical-exercises', 'Practical Exercises') %}
+        <p class="text-slate-700 mb-6">These exercises help you move from theory to practice by applying your SWOT analysis to create tangible, actionable plans for your goals.</p>
+        <div class="space-y-4">
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Exercise 1: SWOT to Action Matrix</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <p class="mt-4 text-slate-600"><strong>The Goal:</strong> Create a plan that directly links your SWOT quadrants to your actions.</p>
+                    <p class="mt-2 text-slate-600"><strong>Instructions:</strong></p>
+                    <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+                        <li><strong>Strengths + Opportunities (S-O):</strong> How can you use your strengths to capitalize on your opportunities?</li>
+                        <li><strong>Strengths + Threats (S-T):</strong> How can you use your strengths to overcome threats?</li>
+                        <li><strong>Weaknesses + Opportunities (W-O):</strong> How can you address your weaknesses to take advantage of opportunities?</li>
+                        <li><strong>Weaknesses + Threats (W-T):</strong> How can you minimize your weaknesses and avoid threats?</li>
+                    </ul>
+                    <p class="mt-4 text-slate-600">For each pairing, write down a specific, actionable step. This will serve as a draft for your SMART goals.</p>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Exercise 2: The Goal Sizing Exercise</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <p class="mt-4 text-slate-600"><strong>The Goal:</strong> Break down large, daunting goals into smaller, manageable tasks.</p>
+                    <p class="mt-2 text-slate-600"><strong>Instructions:</strong></p>
+                    <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+                        <li>Start with a big, long-term goal from your SWOT analysis (e.g., "Become a senior manager").</li>
+                        <li>Break it down into medium-term milestones (e.g., "Complete a leadership training course").</li>
+                        <li>Break those milestones down into short-term, weekly tasks (e.g., "Research and enroll in a course this week").</li>
+                        <li>Finally, break the weekly tasks down into daily actions (e.g., "Spend 30 minutes today reviewing course options").</li>
+                    </ul>
+                    <p class="mt-4 text-slate-600">This makes large goals feel less intimidating and provides a clear path forward.</p>
+                </div>
+            </div>
+        </div>
+    {% endcall %}
+    
+
+    {# Sezione 5: Business Applications #}
+    {% call info_card('business-applications', 'Business Applications') %}
+        <p class="text-slate-700 mb-6">While often used for personal development, SWOT and SMART are powerful tools for business strategy. Here's how to apply them in a professional context.</p>
+        <div class="space-y-4">
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Marketing Strategy</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                        <li><strong>SWOT:</strong> Analyze your product's strengths (e.g., unique features) and weaknesses (e.g., high price point) in the market. Identify opportunities (e.g., new social media platforms) and threats (e.g., a new competitor).</li>
+                        <li><strong>SMART:</strong> Set a goal like "Increase website traffic by 15% within the next quarter by launching a new content marketing campaign."</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Project Management</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                        <li><strong>SWOT:</strong> For a new project, assess the team's strengths (e.g., specific expertise) and weaknesses (e.g., limited resources). Identify opportunities (e.g., new technology) and threats (e.g., shifting client requirements).</li>
+                        <li><strong>SMART:</strong> Create a project goal like "Launch the new software feature on time by October 31st with a budget of $50,000 and zero critical bugs."</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Product Development</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                        <li><strong>SWOT:</strong> Analyze your product's competitive position. Strengths could be "high user ratings," weaknesses could be "outdated interface," opportunities could be "new market niche," and threats could be "competitor innovation."</li>
+                        <li><strong>SMART:</strong> A product goal could be "Increase user retention by 5% in the next six months by redesigning the onboarding flow based on user feedback."</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endcall %}
+    
+
+    {# Sezione 6: Questions #}
+    {% call info_card('questions', 'Questions for Reflection') %}
+        <p class="text-slate-700 mb-6">Use these questions to challenge your thinking and ensure your plans are robust. Writing down your answers can help clarify your path forward.</p>
+        <div class="space-y-4">
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Connecting the Dots</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                        <li>Which of your **strengths** are most crucial for achieving your **SMART goals**?</li>
+                        <li>How do your **weaknesses** impact your ability to seize new **opportunities**?</li>
+                        <li>What is the biggest **threat** you face, and what **strength** can you use to combat it?</li>
+                        <li>Do your current **goals** genuinely align with your **personal vision statement**? Why or why not?</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Planning & Obstacles</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                        <li>What are the most likely **obstacles** you'll encounter on your path to your goals?</li>
+                        <li>What is your **plan B** if your initial strategy for a goal doesn't work out?</li>
+                        <li>How will you **track your progress** on a weekly or daily basis?</li>
+                        <li>Who can provide the **support** you need to achieve your goals?</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Personal Growth</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                        <li>What new **skills** do you need to develop to achieve your most ambitious goals?</li>
+                        <li>In what areas do you need to become more **disciplined**?</li>
+                        <li>How will you **celebrate** milestones and maintain motivation?</li>
+                        <li>What does **long-term success** look like to you, beyond just achieving one goal?</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endcall %}
+
+{% endblock %}

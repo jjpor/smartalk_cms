@@ -4,6 +4,8 @@
 
 /* --- 1. Reset e Stili di Base --- */
 body {
+    /* Questa riga è FONDAMENTALE. Corrisponde a site.css per fare spazio all'header */
+    padding-top: 64px; 
     font-family: 'Segoe UI', sans-serif;
     background-color: #F8F8F8;
     color: #333;
@@ -26,9 +28,15 @@ body {
 }
 
 .section-nav-link.active {
-    border-bottom: 2px solid #00C4D5;
-    color: #00C4D5;
+    border-bottom: 2px solid #2563eb;
+    color: #2563eb;
     font-weight: 700;
+}
+
+.lesson-sticky-nav {
+    position: sticky;
+    top: 64px;  /* 5rem, equivalente di 'top-20' */
+    z-index: 10;
 }
 
 /* --- 3. Componente: Lesson Card (Accordion) --- */
@@ -46,7 +54,7 @@ body {
 }
 
 .lesson-card.border-indigo {
-    border-color: #6366F1;
+    border-color: #de41ec;
 }
 
 .lesson-card.border-green {
@@ -370,12 +378,6 @@ body {
 .hidden {
     display: none;
 }
-
-
-/* ====================================================================
- * 11. STILI EXTRA E SPECIFICI (da lesson_plans.css)
- * Componenti non sostituiti dalla refactorizzazione.
- * ==================================================================== */
 
 /* Componente: Guide Card (Link di navigazione) */
 .guide-card {

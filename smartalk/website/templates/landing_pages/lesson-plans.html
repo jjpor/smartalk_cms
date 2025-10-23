@@ -141,7 +141,7 @@
 
 {# 
 {% macro guide_card_link(guide) %}
-    <a href="/auth/lesson_plans/{{ guide.url_slug }}" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center">
+    <a href="/auth/lesson-plans/{{ guide.url_slug }}" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center">
         <h3 class="font-bold text-xl text-slate-800 mb-2">{{ guide.title }}</h3>
         <p class="text-slate-600 text-sm">{{ guide.desc }}</p>
     </a>
@@ -158,7 +158,6 @@
     <link rel="stylesheet" href="{{ url_for('static', path='css/lesson_plan.css') }}?v={{ random() }}">
 {% endblock %}
 
-
 {% block content %}
     <div class="container mx-auto p-4 md:p-8 max-w-4xl">
         <header class="text-center mb-12">
@@ -166,7 +165,7 @@
             <p class="text-lg text-slate-600 mt-2">{{ page_subtitle }}</p>
         </header>
 
-        <nav class="mb-8">
+        <nav class="lesson-sticky-nav mb-8 bg-white/80 backdrop-blur-sm py-2">
             <ul class="flex justify-center flex-wrap gap-x-4 gap-y-2">
                 {# Ciclo sui link di navigazione definiti nelle variabili #}
                 {% for link in section_nav_links %}
@@ -191,7 +190,6 @@
         </main>
     </div>
 {% endblock %}
-
 
 {% block extra_scripts %}
     {{ super() }} 

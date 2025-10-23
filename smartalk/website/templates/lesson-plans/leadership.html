@@ -1,0 +1,274 @@
+{# --- 1. Definizioni Variabili --- #}
+{% set lesson_title = 'A Guide to Leadership Styles and Skills' %}
+{% set lesson_subtitle = 'Exploring different leadership styles and developing your skills.' %}
+{# Rimosso il link alla sezione AI #}
+{% set nav_links = [
+    {'id': 'intro', 'title': 'Intro'},
+    {'id': 'leadership-styles', 'title': 'Styles'},
+    {'id': 'vocabulary', 'title': 'Vocabulary'},
+    {'id': 'discussion', 'title': 'Discussion'},
+    {'id': 'scenarios', 'title': 'Scenarios'}
+] %}
+
+{# --- 2. Estensione Template --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+
+{# --- 3. Importazione Macro --- #}
+{% from "abstract_templates/_macros.html" import info_card %}
+
+
+{# --- 4. Contenuto Lezione --- #}
+{% block lesson_content %}
+
+    {# Sezione 1: Intro #}
+    {% call info_card('intro', 'Exploring Your Leadership Style') %}
+        {# Rimosso il bottone TTS #}
+        <p class="text-slate-700 mb-6">These questions are designed to help you reflect on your leadership style.</p>
+        <div class="space-y-4">
+            <div class="lesson-card"> {# Usiamo la classe master .lesson-card #}
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Your Leadership Style</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span> {# Usiamo la freccia standard #}
+                </div>
+                <div class="card-content">
+                    <ul class="list-decimal list-inside mt-4 text-slate-600 space-y-2">
+                        <li>How would you describe your leadership style?</li>
+                        <li>What leadership qualities do you think are most important in your role?</li>
+                        <li>How do you adapt your leadership style for different team members or situations?</li>
+                        <li>Can you share an example where you had to change your leadership approach to better suit your team?</li>
+                        <li>How do you handle conflicts within your team as a leader?</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Reflecting on Good Leadership</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-decimal list-inside mt-4 text-slate-600 space-y-2">
+                        <li>Who is a leader you admire and why?</li>
+                        <li>Can you describe a situation where a leader you admire had a significant impact on your career?</li>
+                        <li>What leadership traits did they show that you try to emulate in your own leadership?</li>
+                        <li>How did their leadership style influence the culture of the organization?</li>
+                        <li>What have you learned from a great leader that you still apply today?</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Leadership Challenges and Growth</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-decimal list-inside mt-4 text-slate-600 space-y-2">
+                        <li>What is the most challenging aspect of being a leader for you?</li>
+                        <li>How do you measure your effectiveness as a leader?</li>
+                        <li>How do you foster leadership qualities in others within your team?</li>
+                        <li>Can you discuss a time you struggled as a leader and what you learned from that experience?</li>
+                        <li>What steps do you take to continuously improve your leadership skills?</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Leadership in Practice</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-decimal list-inside mt-4 text-slate-600 space-y-2">
+                        <li>How do you balance the need for results with maintaining team morale?</li>
+                        <li>What strategies do you use to motivate and inspire your team?</li>
+                        <li>How do you approach the decision-making process as a leader?</li>
+                        <li>How do you handle failure within your team or department?</li>
+                        <li>What role does communication play in your leadership style, and how do you ensure it is effective?</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endcall %}
+
+
+    {# Sezione 2: Leadership Styles #}
+    {% call info_card('leadership-styles', 'Leadership Styles') %}
+        {# Rimosso il bottone TTS #}
+        <p class="text-slate-700 mb-6">Learn about some of the most common leadership styles.</p>
+        <div class="space-y-4">
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Common Styles</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-decimal list-inside mt-4 text-slate-600 space-y-2">
+                        <li><strong>Autocratic:</strong> The leader makes decisions without consulting team members.</li>
+                        <li><strong>Democratic:</strong> The leader includes team members in the decision-making process.</li>
+                        <li><strong>Laissez-Faire:</strong> The leader provides minimal guidance...</li>
+                        <li><strong>Transformational:</strong> The leader inspires and motivates...</li>
+                        <li><strong>Transactional:</strong> The leader focuses on daily operations...</li>
+                        <li><strong>Servant:</strong> The leader prioritizes the well-being...</li>
+                        <li><strong>Charismatic:</strong> The leader has a magnetic personality...</li>
+                        <li><strong>Coaching:</strong> The leader focuses on developing skills...</li>
+                        <li><strong>Visionary:</strong> The leader has a clear vision...</li>
+                        <li><strong>Situational:</strong> The leader adapts their style...</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Key Styles Summary</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-decimal list-inside mt-4 text-slate-600 space-y-2">
+                        <li><strong>Autocratic Leadership:</strong> ...expects compliance without input...</li>
+                        <li><strong>Democratic (Participative) Leadership:</strong> ...involves team members... fostering collaboration...</li>
+                        <li><strong>Transformational Leadership:</strong> ...inspires and motivates... achieve exceptional outcomes...</li>
+                        <li><strong>Transactional Leadership:</strong> ...emphasizes structure, clear tasks, and rewards/punishments...</li>
+                        <li><strong>Laissez-Faire Leadership:</strong> ...minimal guidance, allowing team members to make decisions...</li>
+                        <li><strong>Servant Leadership:</strong> ...prioritizes the team's needs, focusing on empowering...</li>
+                        <li><strong>Situational Leadership:</strong> ...adapts their style based on maturity, competence, and situation...</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endcall %}
+
+
+    {# Sezione 3: Vocabulary #}
+    {% call info_card('vocabulary', 'Vocabulary') %}
+         {# Rimosso il bottone TTS #}
+        <p class="text-slate-700 mb-6">Essential idioms and phrasal verbs for discussing leadership.</p>
+        <div class="space-y-4">
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Idioms</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                        <li><strong>Lead by example:</strong> To show the way by acting...</li>
+                        <li><strong>Take the reins:</strong> To take control or responsibility.</li>
+                        <li><strong>Call the shots:</strong> To be the person in control...</li>
+                        <li><strong>Set the tone:</strong> To establish a particular mood...</li>
+                        <li><strong>Put one's foot down:</strong> To assert authority...</li>
+                        <li><strong>Rally the troops:</strong> To gather and motivate people...</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Phrasal Verbs</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                        <li><strong>Step up:</strong> To take on a responsibility...</li>
+                        <li><strong>Take charge:</strong> To assume control...</li>
+                        <li><strong>Bring out:</strong> To encourage the best qualities...</li>
+                        <li><strong>Stand out:</strong> To be noticeable...</li>
+                        <li><strong>Pull together:</strong> To work as a group...</li>
+                        <li><strong>Carry out:</strong> To perform a task...</li>
+                        <li><strong>Back up:</strong> To support a decision...</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endcall %}
+
+
+    {# Sezione 4: Discussion #}
+    {% call info_card('discussion', 'Discussion') %}
+         {# Rimosso il bottone TTS #}
+        <p class="text-slate-700 mb-6">Questions for a deeper conversation about leadership.</p>
+        <div class="space-y-4">
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Questions About Leadership</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                        <li>Reflecting on your leadership style, which described style aligns most...? Why?</li>
+                        <li>Can you share an example of adapting your style...?</li>
+                        <li>How do different styles impact team morale...?</li>
+                        {# ... (altre domande sulla leadership) ... #}
+                        <li>How do you ensure your style remains adaptable...?</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Non-Leadership Positions</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                     {# Manteniamo la struttura originale con sottoliste #}
+                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                        <li><strong>Personal Experience & Observation</strong>
+                            <ul class="list-disc list-inside pl-5 mt-2 space-y-2">
+                                <li>What makes someone a good leader...?</li>
+                                <li>Have you ever worked with a truly great leader...?</li>
+                                {# ... #}
+                            </ul>
+                        </li>
+                        <li class="mt-4"><strong>Everyday Leadership</strong>
+                             <ul class="list-disc list-inside pl-5 mt-2 space-y-2">
+                                <li>How can employees show leadership...?</li>
+                                <li>What are some small actions...?</li>
+                                {# ... #}
+                            </ul>
+                        </li>
+                       <li class="mt-4"><strong>Growth & Development</strong>
+                             <ul class="list-disc list-inside pl-5 mt-2 space-y-2">
+                                <li>What leadership skills would you like to develop...?</li>
+                                <li>Do you think good leaders are born or made...?</li>
+                                {# ... #}
+                            </ul>
+                        </li>
+                        <li class="mt-4"><strong>Influence & Team Dynamics</strong>
+                             <ul class="list-disc list-inside pl-5 mt-2 space-y-2">
+                                <li>How can someone positively influence others...?</li>
+                                <li>How can leadership be shared...?</li>
+                                {# ... #}
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endcall %}
+
+
+    {# Sezione 5: Scenarios #}
+    {% call info_card('scenarios', 'Scenarios') %}
+         {# Rimosso il bottone TTS #}
+        <p class="text-slate-700 mb-6">Think about how you would handle these common leadership challenges.</p>
+        <div class="space-y-4">
+            <div class="lesson-card">
+                <div class="card-header flex justify-between items-center">
+                    <h3 class="font-bold text-slate-800">Practice Scenarios</h3>
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+                </div>
+                <div class="card-content">
+                    <ul class="list-decimal list-inside mt-4 text-slate-600 space-y-2">
+                        <li>Two team members are in disagreement... How do you address the conflict?</li>
+                        <li>A team member consistently misses deadlines... How would you help them improve?</li>
+                        <li>Your team lacks cohesion... How would you organize team-building?</li>
+                        <li>Implementing a new technology system... How would you communicate the change?</li>
+                        <li>Challenging project, tight deadlines... How would you engage the team?</li>
+                        <li>Team member desires career growth... How would you provide feedback?</li>
+                        <li>Facing an unexpected crisis... How would you guide them?</li>
+                        <li>Large project, multiple tasks... How would you delegate?</li>
+                        <li>Team member went above and beyond... How would you express appreciation?</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endcall %}
+
+    {# La sezione Interactive Scenarios è stata rimossa #}
+
+{% endblock %}
+
+{# Non serve il blocco extra_scripts #}
