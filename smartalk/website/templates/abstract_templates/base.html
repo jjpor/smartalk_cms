@@ -14,9 +14,9 @@
         {% block head_links %}{% endblock %}
     </head>
     <body class="bg-gray-50 text-gray-800">
-        {% include "site/_header.html" %}
+        {% include "abstract_templates/_header.html" %}
         {% block content %}{% endblock %}
-        {% include "site/_footer.html" %}
+        {% include "abstract_templates/_footer.html" %}
         <script src="{{ url_for('static', path='js/site.js') }}?v={{ random() }}"></script>
         {% block extra_scripts %}
             <script src="{{ url_for('static', path='js/active_nav.js') }}?v={{ random() }}"></script>
