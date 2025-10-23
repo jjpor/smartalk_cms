@@ -1,27 +1,25 @@
 /**
  * ===================================================================
  * SMARTALK LESSON ENGINE v2.0
- * * Questo è il file JavaScript unificato per l'intero sito.
- * Contiene tutti i moduli generici per l'interattività.
- * * I moduli si attivano solo se trovano gli elementi HTML 
- * corrispondenti sulla pagina (es. '.card-header', '[data-quiz-button]').
+ * * This is the unified JavaScript file for the entire site.
+ * It contains all generic modules for interactivity.
+ * * Modules only activate if they find the corresponding HTML
+ * elements on the page (e.g., '.card-header', '[data-quiz-button]').
  * ===================================================================
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-    
-    // Inizializza i moduli UI di base (presenti in quasi tutte le pagine)
-    // Questo copre la priorità 1 (pagina lesson-plans.html)
+    // Initialize core UI modules (present on most pages)
+    // This covers priority 1 (lesson-plans.html page)
     initBaseUI();
 
-    // Inizializza i moduli interattivi (presenti solo nelle lezioni)
-    // Questo copre la priorità 2 (generalizzazione)
+    // Initialize interactive modules (present only in lessons)
+    // This covers priority 2 (generalization)
     initInteractiveModules();
-
 });
 
 // ===================================
-// MODULO UI DI BASE (NAVIGAZIONE E ACCORDION)
+// BASE UI MODULE (NAVIGATION & ACCORDION)
 // ===================================
 
 function initBaseUI() {
@@ -30,10 +28,10 @@ function initBaseUI() {
 }
 
 /**
- * 1. MODULO: Accordion (Tendine)
- * Cerca tutti i '.card-header' e li rende cliccabili
- * per mostrare/nascondere il '.card-content' successivo.
- * (Logica unificata da entrambi i vecchi file)
+ * 1. MODULE: Accordion
+ * Finds all '.card-header' elements and makes them clickable
+ * to show/hide the following '.card-content'.
+ * (Unified logic from both legacy files)
  */
 function initAccordions() {
     const cardHeaders = document.querySelectorAll('.card-header');
@@ -43,17 +41,17 @@ function initAccordions() {
             if (content && content.classList.contains('card-content')) {
                 content.classList.toggle('show');
                 
-                // Gestisce anche la rotazione dell'icona (logica da File 31)
+                // Also handle the arrow rotation (logic from File 31)
                 const arrow = header.querySelector('.arrow-icon');
                 if (arrow) {
                     arrow.style.transform = content.classList.contains('show') ? 'rotate(180deg)' : 'rotate(0deg)';
                 }
             } else {
-                console.warn("Nessun .card-content trovato dopo questo header:", header);
+                console.warn("No .card-content found after this header:", header);
             }
         });
         
-        // Imposta lo stato iniziale (logica da File 31)
+        // Set initial state (logic from File 31)
         const content = header.nextElementSibling;
         if (content && content.classList.contains('card-content') && content.classList.contains('show')) {
             const arrow = header.querySelector('.arrow-icon');
@@ -63,17 +61,17 @@ function initAccordions() {
 }
 
 /**
- * 2. MODULO: Navigazione Pagina (Smooth Scroll & Active Highlight)
- * Gestisce lo smooth scroll per i link '.section-nav-link'
- * E evidenzia il link attivo in base allo scroll (logica da File 32).
+ * 2. MODULE: Page Navigation (Smooth Scroll & Active Highlight)
+ * Handles smooth scrolling for '.section-nav-link' links
+ * and highlights the active link based on scroll (logic from File 32).
  */
 function initPageNavigation() {
     const navLinks = document.querySelectorAll('.section-nav-link');
     const sections = document.querySelectorAll('main section[id]');
 
-    if (navLinks.length === 0) return; // Niente da fare
+    if (navLinks.length === 0) return; // Nothing to do
 
-    // 2a. Gestione Click (Smooth Scroll)
+    // 2a. Click Handling (Smooth Scroll)
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
@@ -81,8 +79,8 @@ function initPageNavigation() {
             const targetSection = document.querySelector(targetId);
 
             if (targetSection) {
-                // Calcola la posizione corretta tenendo conto dell'header fisso (64px)
-                // e della navigazione sticky (che si attacca a 64px)
+                // Compute correct position considering fixed header (64px)
+                // and sticky navigation (which sticks at 64px)
                 const offset = 64; 
                 const bodyRect = document.body.getBoundingClientRect().top;
                 const elementRect = targetSection.getBoundingClientRect().top;
@@ -94,14 +92,14 @@ function initPageNavigation() {
                     behavior: 'smooth'
                 });
 
-                // Aggiorna subito la classe 'active' al click
+                // Immediately update 'active' class on click
                 navLinks.forEach(l => l.classList.remove('active'));
                 e.currentTarget.classList.add('active');
             }
         });
     });
 
-    // 2b. Gestione Scroll (Active Highlight)
+    // 2b. Scroll Handling (Active Highlight)
     if (sections.length > 0) {
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -113,7 +111,7 @@ function initPageNavigation() {
                 }
             });
         }, {
-            rootMargin: '-80px 0px -40% 0px', // Si attiva quando la sezione è nella parte alta dello schermo
+            rootMargin: '-80px 0px -40% 0px', // Triggers when the section is near the top of the screen
             threshold: 0
         });
 
@@ -123,11 +121,11 @@ function initPageNavigation() {
 
 
 // ===================================
-// MODULI ESERCIZI (QUIZ, MATCH, RANDOM)
+// EXERCISE MODULES (QUIZ, MATCH, RANDOM)
 // ===================================
 
 function initInteractiveModules() {
-    // Cerca tutti i bottoni quiz e li inizializza
+    // Find all quiz buttons and initialize them
     const quizButtons = document.querySelectorAll('[data-quiz-button]');
     quizButtons.forEach(button => {
         const quizType = button.dataset.quizType;
@@ -138,19 +136,19 @@ function initInteractiveModules() {
         }
     });
 
-    // Cerca tutti i container 'match' e li inizializza
+    // Find all 'match' containers and initialize them
     const matchContainers = document.querySelectorAll('[data-match-container]');
     matchContainers.forEach(initMatchingExercise);
 
-    // Cerca tutti i bottoni 'random' e li inizializza
+    // Find all 'random' buttons and initialize them
     const randomButtons = document.querySelectorAll('[data-random-button]');
     randomButtons.forEach(initRandomGenerator);
 }
 
 
 /**
- * 3. MODULO: Quiz Fill-in-the-Gaps
- * @param {HTMLElement} quizButton - Il bottone che ha triggerato l'init.
+ * 3. MODULE: Fill-in-the-Gaps Quiz
+ * @param {HTMLElement} quizButton - The button that triggered the init.
  */
 function initFillInQuiz(quizButton) {
     const container = quizButton.closest('[data-exercise-container]');
@@ -163,7 +161,9 @@ function initFillInQuiz(quizButton) {
         let correctCount = 0;
         inputs.forEach(input => {
             const answer = input.dataset.answer.trim();
-            const feedbackEl = input.nextElementSibling.matches('.quiz-feedback') ? input.nextElementSibling : null;
+            const feedbackEl = input.nextElementSibling && input.nextElementSibling.matches('.quiz-feedback')
+                ? input.nextElementSibling
+                : null;
 
             if (input.value.trim().toLowerCase() === answer.toLowerCase()) {
                 input.classList.remove('incorrect');
@@ -173,19 +173,19 @@ function initFillInQuiz(quizButton) {
             } else {
                 input.classList.remove('correct');
                 input.classList.add('incorrect');
-                if (feedbackEl) feedbackEl.textContent = `✗ (Risposta: ${answer})`;
+                if (feedbackEl) feedbackEl.textContent = `✗ (Answer: ${answer})`;
             }
         });
 
         if (summaryEl) {
-            summaryEl.textContent = `Punteggio: ${correctCount} / ${inputs.length}`;
+            summaryEl.textContent = `Score: ${correctCount} / ${inputs.length}`;
         }
     });
 }
 
 /**
- * 4. MODULO: Quiz Multiple Choice
- * @param {HTMLElement} quizButton - Il bottone che ha triggerato l'init.
+ * 4. MODULE: Multiple Choice Quiz
+ * @param {HTMLElement} quizButton - The button that triggered the init.
  */
 function initMultipleChoiceQuiz(quizButton) {
     const container = quizButton.closest('[data-exercise-container]');
@@ -203,28 +203,28 @@ function initMultipleChoiceQuiz(quizButton) {
 
             if (selectedInput) {
                 if (selectedInput.value === correctAnswer) {
-                    feedbackEl.textContent = 'Corretto!';
+                    feedbackEl.textContent = 'Correct!';
                     feedbackEl.className = 'quiz-feedback correct';
                     correctCount++;
                 } else {
-                    feedbackEl.textContent = `Sbagliato. La risposta corretta era "${correctAnswer}".`;
+                    feedbackEl.textContent = `Wrong. The correct answer was "${correctAnswer}".`;
                     feedbackEl.className = 'quiz-feedback incorrect';
                 }
             } else {
-                feedbackEl.textContent = 'Per favore, seleziona una risposta.';
+                feedbackEl.textContent = 'Please select an answer.';
                 feedbackEl.className = 'quiz-feedback incorrect';
             }
         });
 
         if (summaryEl) {
-            summaryEl.textContent = `Punteggio: ${correctCount} / ${questions.length}`;
+            summaryEl.textContent = `Score: ${correctCount} / ${questions.length}`;
         }
     });
 }
 
 /**
- * 5. MODULO: Esercizio Matching
- * @param {HTMLElement} container - Il container [data-match-container].
+ * 5. MODULE: Matching Exercise
+ * @param {HTMLElement} container - The [data-match-container] element.
  */
 function initMatchingExercise(container) {
     let selectedA = null;
@@ -263,10 +263,10 @@ function initMatchingExercise(container) {
     });
 
     function checkMatch() {
-        if (!selectedA || !selectedB) return; // Aspetta entrambe le selezioni
+        if (!selectedA || !selectedB) return; // Wait for both selections
 
         if (selectedA.dataset.matchId === selectedB.dataset.matchId) {
-            // Corretto
+            // Correct
             selectedA.classList.add('matched');
             selectedB.classList.add('matched');
             selectedA.classList.remove('selected');
@@ -274,25 +274,25 @@ function initMatchingExercise(container) {
             selectedA = null;
             selectedB = null;
             matchesMade++;
-            if (feedbackEl) feedbackEl.textContent = "Corretto!";
+            if (feedbackEl) feedbackEl.textContent = "Correct!";
             
             if (matchesMade === totalMatches) {
-                if (feedbackEl) feedbackEl.textContent = "Complimenti, hai finito!";
+                if (feedbackEl) feedbackEl.textContent = "Great job, you're done!";
             }
         } else {
-            // Sbagliato
+            // Wrong
             selectedA.classList.add('error');
             selectedB.classList.add('error');
-            if (feedbackEl) feedbackEl.textContent = "Sbagliato, riprova.";
+            if (feedbackEl) feedbackEl.textContent = "Wrong, try again.";
         }
         
-        setTimeout(resetSelections, 500); // Resetta dopo un breve ritardo
+        setTimeout(resetSelections, 500); // Reset after a short delay
     }
 }
 
 /**
- * 6. MODULO: Generatore Random
- * @param {HTMLElement} randomButton - Il bottone [data-random-button].
+ * 6. MODULE: Random Generator
+ * @param {HTMLElement} randomButton - The [data-random-button] element.
  */
 function initRandomGenerator(randomButton) {
     const sourceListSelector = randomButton.dataset.sourceList;
@@ -301,21 +301,21 @@ function initRandomGenerator(randomButton) {
     const displayArea = container.querySelector('.random-display');
 
     if (!sourceList || !displayArea) {
-        console.error("Generatore Random: mancano 'sourceList' o 'displayArea'.");
+        console.error("Random Generator: missing 'sourceList' or 'displayArea'.");
         return;
     }
 
     const items = Array.from(sourceList.children);
-    let lastIndex = -1; // Per evitare ripetizioni
+    let lastIndex = -1; // Avoid immediate repeats
 
     randomButton.addEventListener('click', () => {
         if (items.length === 0) {
-            displayArea.innerHTML = 'Nessun elemento da mostrare.';
+            displayArea.innerHTML = 'No items to display.';
             return;
         }
 
         let randomIndex = Math.floor(Math.random() * items.length);
-        // Semplice logica per evitare la ripetizione immediata se ci sono più di 1 elemento
+        // Simple logic to avoid immediate repetition when there is more than 1 item
         if (items.length > 1 && randomIndex === lastIndex) {
             randomIndex = (randomIndex + 1) % items.length;
         }
