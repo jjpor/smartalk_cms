@@ -133,6 +133,8 @@ function initInteractiveModules() {
             initFillInQuiz(button);
         } else if (quizType === 'multiple-choice') {
             initMultipleChoiceQuiz(button);
+        } else if (quizType === 'dropdown-fill-in') {
+            initDropdownFillInQuiz(button);
         }
     });
 
@@ -223,7 +225,63 @@ function initMultipleChoiceQuiz(quizButton) {
 }
 
 /**
- * 5. MODULE: Matching Exercise
+ * 5. MODULE: Dropdown Fill-in Quiz
+ * @param {HTMLElement} quizButton - The button that triggered the init.
+ */
+function initDropdownFillInQuiz(quizButton) {
+    const container = quizButton.closest('[data-exercise-container]');
+    if (!container) return;
+
+    const items = container.querySelectorAll('.dropdown-fill-item'); // Seleziona i <p>
+    const summaryEl = container.querySelector('.quiz-summary');
+
+    quizButton.addEventListener('click', () => {
+        let correctCount = 0;
+
+        // Reset feedback prima di controllare
+        items.forEach(item => {
+            const selectElement = item.querySelector('select[data-dropdown-input]');
+            const feedbackEl = item.querySelector('.quiz-feedback');
+            if (selectElement) selectElement.classList.remove('correct', 'incorrect');
+            if (feedbackEl) {
+                 feedbackEl.textContent = '';
+                 feedbackEl.className = 'quiz-feedback ml-2'; // Reset classi
+            }
+        });
+
+        items.forEach(item => {
+            const selectElement = item.querySelector('select[data-dropdown-input]');
+            const correctAnswer = item.dataset.answer.trim();
+            const userAnswer = selectElement.value.trim(); // Non serve toLowerCase se i valori delle option corrispondono esattamente
+            const feedbackEl = item.querySelector('.quiz-feedback');
+
+            if (!userAnswer) { // Nessuna selezione
+                selectElement.classList.add('incorrect');
+                if (feedbackEl) {
+                     feedbackEl.textContent = `❌ Select an option. (Correct: ${correctAnswer})`;
+                     feedbackEl.classList.add('incorrect');
+                }
+            } else if (userAnswer === correctAnswer) {
+                selectElement.classList.add('correct');
+                if (feedbackEl) feedbackEl.textContent = '✅';
+                correctCount++;
+            } else {
+                selectElement.classList.add('incorrect');
+                if (feedbackEl) {
+                    feedbackEl.textContent = `❌ (Correct: ${correctAnswer})`;
+                    feedbackEl.classList.add('incorrect');
+                }
+            }
+        });
+
+        if (summaryEl) {
+            summaryEl.textContent = `Score: ${correctCount} / ${items.length}`;
+        }
+    });
+}
+
+/**
+ * 6. MODULE: Matching Exercise
  * @param {HTMLElement} container - The [data-match-container] element.
  */
 function initMatchingExercise(container) {
@@ -291,7 +349,7 @@ function initMatchingExercise(container) {
 }
 
 /**
- * 6. MODULE: Random Generator
+ * 7. MODULE: Random Generator
  * @param {HTMLElement} randomButton - The [data-random-button] element.
  */
 function initRandomGenerator(randomButton) {

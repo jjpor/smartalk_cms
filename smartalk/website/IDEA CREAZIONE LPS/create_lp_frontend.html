@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create New Lesson Plan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    {# Link to your site's main CSS if needed for header/footer #}
+    <style>
+        /* Optional: Add custom styles here if needed */
+        #section-template { display: none; } /* Hide the template */
+        .section-card { border: 1px solid #e5e7eb; margin-bottom: 1rem; padding: 1rem; border-radius: 0.5rem; background-color: white; }
+        .section-card label { display: block; margin-bottom: 0.25rem; font-weight: 600; }
+        .section-card input, .section-card textarea { width: 100%; border: 1px solid #d1d5db; border-radius: 0.25rem; padding: 0.5rem; }
+        .section-card textarea { min-height: 150px; }
+    </style>
+</head>
+<body class="bg-gray-100 p-8">
+
+    <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
+        <h1 class="text-2xl font-bold text-slate-800 mb-6">Create New Lesson Plan</h1>
+
+        <form id="lesson-form">
+            {# Lesson Title and Subtitle #}
+            <div class="mb-4">
+                <label for="lesson-title" class="block text-sm font-medium text-gray-700 mb-1">Lesson Title</label>
+                <input type="text" id="lesson-title" name="title" required class="w-full border border-gray-300 rounded p-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            <div class="mb-6">
+                <label for="lesson-subtitle" class="block text-sm font-medium text-gray-700 mb-1">Lesson Subtitle</label>
+                <input type="text" id="lesson-subtitle" name="subtitle" required class="w-full border border-gray-300 rounded p-2 focus:ring-blue-500 focus:border-blue-500">
+            </div>
+
+            <hr class="my-6">
+
+            {# Container for Dynamic Sections #}
+            <h2 class="text-xl font-semibold text-slate-700 mb-4">Sections</h2>
+            <div id="sections-container" class="space-y-4">
+                {# Sections will be added here by JS #}
+            </div>
+
+            {# Add Section Button #}
+            <button type="button" id="add-section-btn" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                + Add Section
+            </button>
+
+            <hr class="my-8">
+
+            {# Submit Button #}
+            <div class="text-right">
+                <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Save Lesson Plan
+                </button>
+            </div>
+        </form>
+    </div>
+
+    {# Template for a single section (hidden) #}
+    <div id="section-template" class="section-card">
+        <div class="flex justify-between items-center mb-2">
+             <h3 class="text-lg font-semibold text-slate-600">New Section</h3>
+             <button type="button" class="remove-section-btn text-red-500 hover:text-red-700 font-bold text-xl">&times;</button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+             <div>
+                   <label>Section ID (e.g., 'warmup', 'part1')</label>
+                   <input type="text" name="section_id" placeholder="Unique ID, no spaces" required>
+             </div>
+             <div>
+                   <label>Section Title (e.g., '1. Warm-Up Discussion')</label>
+                   <input type="text" name="section_title" placeholder="Full title shown on page" required>
+             </div>
+        </div>
+        <div>
+             <label>Section Content (HTML)</label>
+             <textarea name="section_content" placeholder="Enter HTML content here. Use Tailwind classes for layout/style." required></textarea>
+        </div>
+    </div>
+
+    <script src="/static/js/lesson_creator.js"></script> {# <-- Your JS file #}
+
+</body>
+</html>

@@ -1,13 +1,29 @@
 <footer>
-  <div class="bg-white/80 backdrop-blur-sm border-t border-slate-200 shadow-[0_-4px_10px_rgba(0,0,0,0.08)] py-3">
-        <div class="flex justify-center space-x-8 text-sm sm:text-base font-semibold text-gray-600">
-            {% if lang == 'it' %}
-                <a href="/site/it/terms" class="hover:text-blue-600 transition-colors duration-300">Termini e Condizioni</a>
-                <a href="/site/it/policy" class="hover:text-blue-600 transition-colors duration-300">Policy</a>
-            {% else %}
-                <a href="/site/en/terms" class="hover:text-blue-600 transition-colors duration-300">Terms and Conditions</a>
-                <a href="/site/en/policy" class="hover:text-blue-600 transition-colors duration-300">Policy</a>
-            {% endif %}
-        </div>
+  <div class="bg-white/80 backdrop-blur-sm border-t border-slate-200 shadow-[0_-4px_10px_rgba(0,0,0,0.08)] py-1">
+    <div class="max-w-4xl mx-auto w-2/3 flex flex-col sm:flex-row justify-between items-center text-sm sm:text-base font-semibold text-gray-600">
+
+      <!-- sinistra: link legali -->
+      <div class="flex space-x-6 mb-2 sm:mb-0">
+        {% if lang == 'it' %}
+          <a href="/site/it/terms" class="hover:text-blue-600 transition-colors duration-300">Termini e Condizioni</a>
+          <a href="/site/it/policy" class="hover:text-blue-600 transition-colors duration-300">Privacy Policy</a>
+        {% else %}
+          <a href="/site/en/terms" class="hover:text-blue-600 transition-colors duration-300">Terms and Conditions</a>
+          <a href="/site/en/policy" class="hover:text-blue-600 transition-colors duration-300">Privacy Policy</a>
+        {% endif %}
+      </div>
+
+      <!-- destra: info Smartalk -->
+      <div class="text-center sm:text-right text-gray-500 font-normal">
+        {% if lang == 'it' %}
+          <p>&copy; 2025 Smartalk — Tutti i diritti riservati.</p>
+          <p class="text-xs">P.IVA 04188100244</p>
+        {% else %}
+          <p>&copy; 2025 Smartalk — All rights reserved.</p>
+          <p class="text-xs">VAT nr. IT04188100244</p>
+        {% endif %}
+      </div>
+
     </div>
+  </div>
 </footer>
