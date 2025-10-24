@@ -1,26 +1,3 @@
-{#
-            TEMPLATE SPECIFICO PER QUESTO TIPO DI LEZIONE
-    
-            1.
-                - definire le variabile da usare nel template superiore 
-                    {% set nome_variabile = 'valore' %}
-
-                - poi chiamare il template superiore che le usa
-                    {% extends "template_superiore" %}
-    
-            2.
-                - importare le macro da usare
-                    {% from "macro_template" import lista_di_macro_usare %}
-
-                - poi usare le macro importate
-                    {% call macro_da_usare_con_argomenti %}
-                        contenuto_html_interno
-                    {% endcall %}
-
-
-#}
-
-
 {% set lesson_title = '150 Questions: The Art of Getting to Know You' %}
 {% set lesson_subtitle = 'Tools for building deeper connections and better team communication.' %}
 {% set nav_links = [
