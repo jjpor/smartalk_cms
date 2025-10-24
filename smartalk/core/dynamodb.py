@@ -5,6 +5,8 @@ from contextlib import asynccontextmanager
 from typing import AsyncGenerator
 
 from aioboto3 import Session as AioSession
+from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource, Table
+from types_aiobotocore_dynamodb.client import DynamoDBClient
 
 from smartalk.core.settings import settings
 
@@ -15,6 +17,14 @@ logger.setLevel(logging.INFO)  # Mantenere INFO per vedere il conteggio
 # Contatore globale che stima il traffico in uscita da AWS (DB -> Server)
 AWS_EGRESS_DB_COUNTER_BYTES = 0
 lock = asyncio.Lock()
+
+
+async def get_table(db: DynamoDBServiceResource, table_name: str) -> Table:
+    return await get_table(db, table_name)
+
+
+def get_client(db: DynamoDBServiceResource) -> DynamoDBClient:
+    return db.meta.client
 
 
 def get_dynamodb_resource_context():
@@ -102,7 +112,7 @@ async def get_dynamodb_connection() -> AsyncGenerator:
     """
     db_context_manager = get_dynamodb_resource_context()
 
-    # CORREZIONE CRUCIALE: Uso di async with per creare la risorsa in modo asincrono
+    # Uso di async with per creare la risorsa in modo asincrono
     async with db_context_manager as db_resource:
         try:
             # Passa la risorsa DynamoDB wrappata alla funzione che la richiede

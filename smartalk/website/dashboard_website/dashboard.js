@@ -60,12 +60,10 @@ async function handleGoogleLogin(response) {
 
         document.getElementById('googleLoginContainer').classList.add('hidden');
 
-        CURRENT_COACH_ID = resp.coachId;
-        CURRENT_COACH_NAME = resp.coachName;
+        CURRENT_COACH_NAME = resp.name;
         CURRENT_COACH_ROLE = resp.role;
         // Persist session
         localStorage.setItem("coachSession", JSON.stringify({
-            id: CURRENT_COACH_ID,
             name: CURRENT_COACH_NAME,
             role: CURRENT_COACH_ROLE
         }));
@@ -158,7 +156,6 @@ const flashcardsContainer = document.getElementById('flashcardsContainer');
 
 
 // Stato
-let CURRENT_COACH_ID = null;
 let CURRENT_COACH_NAME = null;
 let CURRENT_COACH_ROLE = null;
 let CURRENT_ALLOCATIONS_BY_STUDENT = {};
@@ -673,14 +670,10 @@ loginForm.addEventListener('submit', async (e) => {
         const resp = await apiPost('login', { coachId, password });
         if (!resp.success) throw new Error(resp.error || 'Login failed');
 
-        CURRENT_COACH_ID = String(resp.coachId);
-        CURRENT_COACH_NAME = resp.coachName || CURRENT_COACH_ID;
+        CURRENT_COACH_NAME = resp.name;
         CURRENT_COACH_ROLE = resp.role;
-        if (!CURRENT_COACH_ROLE) throw new Error("Ruolo coach non trovato. Contatta l'amministratore.");
-
         // Persist session
         localStorage.setItem("coachSession", JSON.stringify({
-            id: CURRENT_COACH_ID,
             name: CURRENT_COACH_NAME,
             role: CURRENT_COACH_ROLE
         }));
@@ -716,7 +709,7 @@ if (btn && !btn.dataset.bound) {
         showGlobalLoader();
 
         try {
-            const resp = await apiGet('getDebriefDrafts', { coachId: CURRENT_COACH_ID, studentId });
+            const resp = await apiGet('getDebriefDrafts', { studentId });
             if (!resp.success || !resp.drafts?.length) {
                 container.innerHTML = '<p class="text-gray-500 mt-4 border-t pt-3">No drafts found.</p>';
                 return;
@@ -883,7 +876,6 @@ debriefSaveDraftBtn.addEventListener('click', async () => {
     try {
         const payload = {
             action: "saveDebrief",
-            coachId: CURRENT_COACH_ID,
             studentId: debriefStudentSelect.value,
             date: debriefDateInput.value,
             goals: debriefGoals.value,
@@ -914,7 +906,6 @@ debriefSendBtn.addEventListener('click', async () => {
 
     try {
         const resp = await apiPost("sendDebrief", {
-            coachId: CURRENT_COACH_ID,
             studentId: debriefStudentSelect.value,
             rowNumber: window.debriefLoadedRow || null
         });
@@ -1053,10 +1044,8 @@ function escapeBackticks(str) {
 
 // My payment folder
 viewFolderBtn.addEventListener('click', async () => {
-    if (!CURRENT_COACH_ID) return;
-    showGlobalLoader(); // 👈 loader on
     try {
-        const resp = await apiGet('getPaymentFolderUrl', { coachId: CURRENT_COACH_ID });
+        const resp = await apiGet('getPaymentFolderUrl');
         if (resp.success && resp.url) {
             window.open(resp.url, "_blank");
         } else {
@@ -1091,11 +1080,10 @@ document.getElementById('backToDashboardFromStudentsBtn').addEventListener('clic
 // Call History
 let fullHistory = []; // memorizza tutte le calls
 viewCallLogBtn.addEventListener('click', async () => {
-    if (!CURRENT_COACH_ID) return;
     switchSection(callHistorySection);
     callHistoryTableBody.innerHTML = `<tr><td colspan="4">${loaderHTML("Loading call history...")}</td></tr>`;
     try {
-        const resp = await apiGet('getCallHistory', { coachId: CURRENT_COACH_ID });
+        const resp = await apiGet('getCallHistory');
         if (resp.success && resp.history.length) {
             fullHistory = resp.history; // salva tutto
             renderHistoryTable();       // disegna tabella (gestisce già i loop)
@@ -1150,7 +1138,6 @@ function renderHistoryTable() {
 
 // Logout
 logoutBtn.addEventListener('click', () => {
-    CURRENT_COACH_ID = null;
     CURRENT_COACH_NAME = null;
     CURRENT_COACH_ROLE = null;
     CURRENT_ALLOCATIONS_BY_STUDENT = {};
@@ -1159,6 +1146,7 @@ logoutBtn.addEventListener('click', () => {
 
     // Clear persisted session
     localStorage.removeItem("coachSession");
+    setAuthToken(null)
 
     // 👇 Riporta visibile il bottone Google
     document.getElementById('googleLoginContainer')?.classList.remove('hidden');
@@ -1168,8 +1156,8 @@ logoutBtn.addEventListener('click', () => {
 });
 
 async function saveLessonPlanContent(content) {
-    // CURRENT_COACH_ID e LAST_SELECTED_STUDENT sono variabili globali che assumo esistano
-    if (!CURRENT_COACH_ID || !LAST_SELECTED_STUDENT) {
+    // LAST_SELECTED_STUDENT è una variabile globale che assumo esista
+    if (!LAST_SELECTED_STUDENT) {
         showToast("Errore: Dati coach o studente mancanti.", 5000, "bg-red-600");
         return { success: false, error: "Missing data" };
     }
@@ -1340,10 +1328,8 @@ async function handleGeneratePlan() {
 
 // Earnings
 async function fetchMonthlyEarnings() {
-    if (!CURRENT_COACH_ID) return;
-    earningsAmountDisplay.textContent = '...';
     try {
-        const resp = await apiGet('getMonthlyEarnings', { coachId: CURRENT_COACH_ID });
+        const resp = await apiGet('getMonthlyEarnings');
         const value = (resp && resp.success) ? resp.earnings : 0;
         earningsAmountDisplay.textContent = Number(value).toFixed(2);
     } catch (err) {
@@ -1708,7 +1694,6 @@ callTypeRadios.forEach(radio => {
 
 // Apri form: reset senza azzerare subito le select
 logCallBtn.addEventListener('click', async () => {
-    if (!CURRENT_COACH_ID) return;
     switchSection(callSection);
 
     document.getElementById('callForm').reset();
@@ -1744,7 +1729,6 @@ const historyFilterMonth = document.getElementById('historyFilterMonth');
 
 
 document.getElementById('viewReportCardsBtn').addEventListener('click', async () => {
-    if (!CURRENT_COACH_ID) return;
     switchSection(reportCardsSection);
     await loadReportCardsPending();
     await loadReportCardHistory();
@@ -1774,8 +1758,8 @@ async function loadReportCardsPending() {
     try {
         // 🔹 Chiediamo sia tasks che drafts
         const [respTasks, respDrafts] = await Promise.all([
-            apiGet("getReportCardTasks", { coachId: CURRENT_COACH_ID }),
-            apiGet("getReportCardDrafts", { coachId: CURRENT_COACH_ID })
+            apiGet("getReportCardTasks"),
+            apiGet("getReportCardDrafts")
         ]);
 
         if (!respTasks.success) throw new Error(respTasks.error || "Unable to load tasks.");
@@ -1897,7 +1881,7 @@ document.addEventListener('click', async (e) => {
         const studentId = e.target.dataset.student;
         const contractId = e.target.dataset.contract;
         try {
-            const resp = await apiPost('submitNoShow', { studentId, contractId, coachId: CURRENT_COACH_ID });
+            const resp = await apiPost('submitNoShow', { studentId, contractId });
             if (!resp.success) throw new Error(resp.error || "Failed to submit no-show");
 
             // disabilita il bottone subito
@@ -1927,7 +1911,7 @@ document.addEventListener('click', async (e) => {
             const studentId = btn.dataset.student;
             const contractId = btn.dataset.contract;
             try {
-                const resp = await apiPost('submitNoShow', { studentId, contractId, coachId: CURRENT_COACH_ID });
+                const resp = await apiPost('submitNoShow', { studentId, contractId });
                 if (resp.success) {
                     btn.disabled = true;
                     btn.classList.add("bg-gray-400", "cursor-not-allowed");
@@ -1954,7 +1938,6 @@ document.addEventListener('click', (e) => {
     reportCardForm.reset();
     document.getElementById('rcStudentId').value = studentId;
     document.getElementById('rcContractId').value = contractId;
-    document.getElementById('rcCoachId').value = CURRENT_COACH_ID;
     document.getElementById('rcStudentName').value = e.target.dataset.studentName || '';
 
     // prefill se esiste in LAST_DRAFTS (indipendentemente dal bottone)
@@ -1989,7 +1972,6 @@ reportCardForm.addEventListener('submit', async (e) => {
     const payload = {
         studentId: document.getElementById('rcStudentId').value,
         contractId: document.getElementById('rcContractId').value,
-        coachId: CURRENT_COACH_ID,
         attendance: document.getElementById('rcAttendance').value,
         report: document.getElementById('rcReport').value
     };
@@ -2020,7 +2002,6 @@ reportCardForm.addEventListener('submit', async (e) => {
 document.getElementById('callForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     hideMessage(callMessageBox);
-    if (!CURRENT_COACH_ID) { showMessage(callMessageBox, 'Session expired. Please log in again.', false); return; }
 
     const orig = submitBtn.innerHTML;
     submitBtn.innerHTML = '<div class="spinner-container"><div class="spinner-dot"></div><div class="spinner-dot"></div><div class="spinner-dot"></div></div>';
@@ -2034,7 +2015,6 @@ document.getElementById('callForm').addEventListener('submit', async (e) => {
             callDuration: parseFloat(callDurationSelect.value), // minuti (override)
             units: parseFloat(unitsInput.value),                // Units Used (per debug/compat)
             hourlyRate: parseFloat(hourlyRateInput.value) || 0, // Coach Rate (per debug/compat)
-            coachId: CURRENT_COACH_ID,
             coachName: CURRENT_COACH_NAME,
             productId: productIdInput.value || productIdSelect.value || '',
             notes: document.getElementById('notes').value || "",  // 👈 virgola sopra
@@ -2044,7 +2024,7 @@ document.getElementById('callForm').addEventListener('submit', async (e) => {
 
         if (callType === "IND") {
             payload.studentId = studentIdSelect.value;
-            payload.contractId = contractIdInput.value || '';
+            payload.contractId = contractIdInput.value;
         } else if (callType === "GROUP") {
             // raccoglie tutti gli ID selezionati dal gruppo
             const selects = groupStudentsDynamic.querySelectorAll('select');
@@ -2088,7 +2068,7 @@ async function loadReportCardHistory() {
     <tr><td colspan="5" class="text-center p-4">Loading...</td></tr>`;
 
     try {
-        const resp = await apiGet('getReportCardHistory', { coachId: CURRENT_COACH_ID });
+        const resp = await apiGet('getReportCardHistory');
         if (!resp.success) throw new Error(resp.error || 'Unable to load history.');
 
         const rows = resp.history || [];   // 👈 non più drafts
@@ -2189,7 +2169,7 @@ async function loadStudentCallsForMonth(studentId) {
     tbody.innerHTML = `<tr><td colspan="2">${loaderHTML("Loading calls...")}</td></tr>`;
 
     try {
-        const resp = await apiGet('getStudentCallsForMonth', { studentId, coachId: CURRENT_COACH_ID });
+        const resp = await apiGet('getStudentCallsForMonth', { studentId });
         if (!resp.success) throw new Error(resp.error || 'Unable to load calls');
 
         const calls = resp.calls || [];
@@ -2245,7 +2225,6 @@ confirmSendAllBtn?.addEventListener('click', async () => {
     try {
         const now = new Date();
         const resp = await apiPost('sendAllReportCards', {
-            coachId: CURRENT_COACH_ID,
             year: now.getFullYear(),
             month: now.getMonth()
         });
@@ -2297,11 +2276,10 @@ confirmSendAllBtn?.addEventListener('click', async () => {
             const studentId = document.getElementById('rcStudentId').value;
             const studentName = document.getElementById('rcStudentName').value || 'Student';
             const attendance = document.getElementById('rcAttendance').value || '';
-            const coachId = CURRENT_COACH_ID;
 
             const suggestion = await callAI({
                 mode: 'suggest',
-                studentId, studentName, attendance, coachId
+                studentId, studentName, attendance
             });
 
             textarea.value = suggestion || textarea.value;
@@ -2323,7 +2301,6 @@ confirmSendAllBtn?.addEventListener('click', async () => {
         try {
             const studentId = document.getElementById('rcStudentId').value;
             const studentName = document.getElementById('rcStudentName').value || 'Student';
-            const coachId = CURRENT_COACH_ID;
             const currentText = textarea.value;
 
             if (!currentText || !currentText.trim()) {
@@ -2334,7 +2311,7 @@ confirmSendAllBtn?.addEventListener('click', async () => {
 
             const refined = await callAI({
                 mode: 'refine',
-                studentId, studentName, coachId,
+                studentId, studentName,
                 currentText
             });
 
@@ -2352,9 +2329,8 @@ confirmSendAllBtn?.addEventListener('click', async () => {
         const raw = localStorage.getItem("coachSession");
         if (!raw) return;
         const saved = JSON.parse(raw);
-        if (!saved || !saved.id) return;
+        if (!saved) return;
 
-        CURRENT_COACH_ID = saved.id;
         CURRENT_COACH_NAME = saved.name || saved.id;
         CURRENT_COACH_ROLE = saved.role || "";
 
@@ -2372,7 +2348,6 @@ confirmSendAllBtn?.addEventListener('click', async () => {
 })();
 
 viewFlashcardsBtn.addEventListener('click', async () => {
-    if (!CURRENT_COACH_ID) return;
     switchSection(flashcardsSection);
     await loadFlashcards();
 });

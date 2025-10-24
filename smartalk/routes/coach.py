@@ -1,9 +1,10 @@
 # smartalk/routes/coach.py
 
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from fastapi.responses import JSONResponse
+from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource
 
 from smartalk.core.dynamodb import get_dynamodb_connection
 from smartalk.db_usage import dynamodb_coach
@@ -31,38 +32,44 @@ async def validate_coach_access(user: Dict[str, Any] = Depends(get_current_user)
 
 
 @router.get("/getStudents")
-async def get_students_endpoint(coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency) -> JSONResponse:
+async def get_students_endpoint(
+    coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
+) -> JSONResponse:
     """Replica doGet(action='getStudents')."""
-    
+    DBDependency = cast(DynamoDBServiceResource, DBDependency)
+
     students_data = await dynamodb_coach.get_active_students(DBDependency)
-    
+
     return create_token_response({"students": students_data}, coach)
 
 
 @router.get("/getMonthlyEarnings")
-async def get_earnings_endpoint(coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency) -> JSONResponse:
+async def get_earnings_endpoint(
+    coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
+) -> JSONResponse:
     """Replica doGet(action='getMonthlyEarnings')."""
-    
+
     coach_id = coach.get("id")
     earnings = dynamodb_coach.get_monthly_earnings(coach_id, DBDependency)
-    
+
     return create_token_response({"earnings": earnings}, coach)
 
 
 @router.get("/getCallHistory")
-async def get_call_history_endpoint(coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency) -> JSONResponse:
+async def get_call_history_endpoint(
+    coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
+) -> JSONResponse:
     """Replica doGet(action='getCallHistory')."""
-    
+
     coach_id = coach.get("id")
     history = dynamodb_coach.get_calls_by_coach(coach_id, DBDependency)
-    
+
     return create_token_response({"history": history}, coach)
 
 
 @router.get("/getStudentInfo")
 async def get_student_info_endpoint(
-    request: Request,
-    coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
+    request: Request, coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
 ) -> JSONResponse:
     """Replica doGet(action='getStudentInfo')."""
 
@@ -78,8 +85,7 @@ async def get_student_info_endpoint(
 
 @router.get("/getStudentContracts")
 async def get_student_contracts_endpoint(
-    request: Request,
-    coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
+    request: Request, coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
 ) -> JSONResponse:
     """Replica doGet(action='getStudentContracts')."""
 
@@ -91,13 +97,13 @@ async def get_student_contracts_endpoint(
 
 @router.get("/getReportCardTasks")
 async def get_report_card_tasks_endpoint(
-    coach: Dict[str, Any] = Depends(validate_coach_access),
-    DBDependency: Any = DBDependency
+    coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
 ) -> JSONResponse:
     """Replica doGet(action='getReportCardTasks')."""
     tasks = dynamodb_coach.get_report_card_tasks_db(coach, DBDependency)
-    
+
     return create_token_response(tasks, coach)
+
 
 # @router.get("/getFlashcards")
 # async def get_flashcards_endpoint(
@@ -106,9 +112,9 @@ async def get_report_card_tasks_endpoint(
 #     db_flashcards: Any = DBFlashcards # FLASHCARDS TABLE
 # ) -> JSONResponse:
 #     """Replica doGet(action='getFlashcards')."""
-    
+
 #     cards = dynamodb_coach.get_flashcards(db_flashcards, studentId) # Passo db_flashcards
-    
+
 #     return create_token_response({"cards": cards}, coach)
 
 # @router.get("/getLessonPlanContent")
@@ -118,33 +124,29 @@ async def get_report_card_tasks_endpoint(
 #     db_users: Any = DBUsers # USERS TABLE
 # ) -> JSONResponse:
 #     """Replica doGet(action='getLessonPlanContent')."""
-    
+
 #     content = dynamodb_coach.get_lesson_plan_content_db(db_users, studentId) # Passo db_users
 #     if not content:
 #         raise HTTPException(status_code=404, detail="Lesson Plan not found")
 #     return create_token_response({"content": content}, coach)
 
 # # ====================================================================
-# # POST ENDPOINTS 
+# # POST ENDPOINTS
 # # ====================================================================
 
-# @router.post("/logCall")
-# async def log_call_endpoint(
-#     data: Dict[str, Any],
-#     coach: Dict[str, Any] = Depends(validate_coach_access),
-#     db_tracker: Any = DBTracker # TRACKER TABLE
-# ) -> JSONResponse:
-#     """Replica doPost(action='logCall')."""
-    
-#     data["coachId"] = coach.get("id") 
-#     data["role"] = coach.get("role", "Senior Coach")
 
-#     result = dynamodb_coach.log_call_to_db(db_tracker, data) # Passo db_tracker
-    
-#     if not result.get("success"):
-#         raise HTTPException(status_code=400, detail=result.get("error"))
-    
-#     return create_token_response({"message": result.get("message", "Chiamata registrata!")}, coach)
+@router.post("/logCall")
+async def log_call_endpoint(
+    data: Dict[str, Any], coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
+) -> JSONResponse:
+    """Replica doPost(action='logCall')."""
+
+    result = dynamodb_coach.log_call_to_db(data, coach, DBDependency)
+
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail=result.get("error"))
+
+    return create_token_response({"message": result.get("message", "Chiamata registrata!")}, coach)
 
 
 # @router.post("/saveDebrief")
@@ -154,14 +156,14 @@ async def get_report_card_tasks_endpoint(
 #     db_debriefs: Any = DBDebriefs # DEBRIEFS TABLE
 # ) -> JSONResponse:
 #     """Replica doPost(action='saveDebrief')."""
-    
-#     data["coachId"] = coach.get("id") 
-    
+
+#     data["coachId"] = coach.get("id")
+
 #     result = dynamodb_coach.handle_debrief_submission_db(db_debriefs, data) # Passo db_debriefs
-    
+
 #     if not result.get("success"):
 #         raise HTTPException(status_code=400, detail=result.get("error"))
-        
+
 #     return create_token_response(result, coach)
 
 
@@ -172,14 +174,14 @@ async def get_report_card_tasks_endpoint(
 #     db_reports: Any = DBReportCards # REPORT_CARDS TABLE
 # ) -> JSONResponse:
 #     """Replica doPost(action='submitReportCard')."""
-    
+
 #     data["coachId"] = coach.get("id")
-    
+
 #     result = dynamodb_coach.handle_report_card_submission(db_reports, data) # Passo db_reports
-    
+
 #     if not result.get("success"):
 #         raise HTTPException(status_code=400, detail=result.get("error"))
-        
+
 #     return create_token_response(result, coach)
 
 
@@ -190,12 +192,12 @@ async def get_report_card_tasks_endpoint(
 #     db_flashcards: Any = DBFlashcards # FLASHCARDS TABLE
 # ) -> JSONResponse:
 #     """Replica doPost(action='updateFlashcardStatus')."""
-    
+
 #     result = dynamodb_coach.update_flashcard_status(db_flashcards, data) # Passo db_flashcards
-    
+
 #     if not result.get("success"):
 #         raise HTTPException(status_code=400, detail=result.get("error"))
-        
+
 #     return create_token_response(result, coach)
 
 # @router.post("/saveLessonPlanContent")
@@ -205,10 +207,10 @@ async def get_report_card_tasks_endpoint(
 #     db_users: Any = DBUsers # USERS TABLE
 # ) -> JSONResponse:
 #     """Replica doPost(action='saveLessonPlanContent')."""
-    
+
 #     result = dynamodb_coach.save_lesson_plan_content_db(db_users, data.get('studentId'), data.get('content')) # Passo db_users
-    
+
 #     if not result.get("success"):
 #         raise HTTPException(status_code=400, detail=result.get("error"))
-        
+
 #     return create_token_response(result, coach)

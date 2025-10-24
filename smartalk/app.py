@@ -97,7 +97,7 @@ async def migration():
 async def test_gsi(student_id):
     db_context_manager = get_dynamodb_resource_context()
     async with db_context_manager as db:
-        contract_table = await db.Table(settings.CONTRACTS_TABLE)
+        contract_table = await get_table(db, settings.CONTRACTS_TABLE)
         response = await contract_table.query(
             IndexName="student-id-index",
             KeyConditionExpression="student_id = :student_id",
@@ -136,7 +136,7 @@ async def see_table_data(table_short_name: str):
         table_name = TABLE_MAP[table_short_name]
 
         try:
-            table = await db.Table(table_name)
+            table = await get_table(db, table_name)
             # L'operazione 'scan' legge tutti gli item in una tabella.
             # ATTENZIONE: può essere costosa su tabelle molto grandi in produzione.
             response = await table.scan()
@@ -169,7 +169,7 @@ async def reset_database():
         for table_name in TABLE_MAP.values():
             try:
                 logger.info(f"Cancellazione tabella: {table_name}...")
-                table = await db.Table(table_name)
+                table = await get_table(db, table_name)
                 await table.delete()
                 # Attende che la tabella sia effettivamente cancellata
                 waiter = db.meta.client.get_waiter("table_not_exists")

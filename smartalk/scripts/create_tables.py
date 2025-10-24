@@ -4,22 +4,23 @@ from smartalk.core.settings import settings
 
 logger = logging.getLogger("startup")
 
-                                        ########### TIPI DI DATO ##############
-                                                    # S: String
-                                                    # N: Number
-                                                    # B: binario
-                                                    # BOOL: Boolean
-                                                    # NULL: null
-                                                    # M: Map
-                                                    # L: list
-                                                    # SS: set string
-                                                    # NS: set numerico
-                                                    # BS: set binario
-                                        #######################################
+########### TIPI DI DATO ##############
+# S: String
+# N: Number
+# B: binario
+# BOOL: Boolean
+# NULL: null
+# M: Map
+# L: list
+# SS: set string
+# NS: set numerico
+# BS: set binario
+#######################################
 
 # -------------------------------------------------
 # FUNZIONE HELPER
 # -------------------------------------------------
+
 
 async def create_if_not_exist(db, table_names, table_name, create_function):
     """Controlla se una tabella esiste e, in caso contrario, la crea."""
@@ -31,9 +32,11 @@ async def create_if_not_exist(db, table_names, table_name, create_function):
     else:
         logger.info(f"{table_name} already exists")
 
+
 # -------------------------------------------------
 # DEFINIZIONE DELLE TABELLE
 # -------------------------------------------------
+
 
 async def _create_users_table(db, table_name) -> None:
     """Tabella Utenti Unificata (Students, Coaches, Clients)."""
@@ -56,9 +59,10 @@ async def _create_users_table(db, table_name) -> None:
                 "IndexName": "user-type-index",
                 "KeySchema": [{"AttributeName": "user_type", "KeyType": "HASH"}],
                 "Projection": {"ProjectionType": "KEYS_ONLY"},
-            }
+            },
         ],
     )
+
 
 async def _create_products_table(db, table_name) -> None:
     """Tabella Prodotti/Servizi."""
@@ -66,10 +70,9 @@ async def _create_products_table(db, table_name) -> None:
         TableName=table_name,
         BillingMode="PAY_PER_REQUEST",
         KeySchema=[{"AttributeName": "product_id", "KeyType": "HASH"}],
-        AttributeDefinitions=[
-            {"AttributeName": "product_id", "AttributeType": "S"}
-        ],
+        AttributeDefinitions=[{"AttributeName": "product_id", "AttributeType": "S"}],
     )
+
 
 async def _create_contracts_table(db, table_name) -> None:
     """Tabella Contratti."""
@@ -106,21 +109,20 @@ async def _create_contracts_table(db, table_name) -> None:
                 "IndexName": "report-card-cadency-report-card-start-date-index",
                 "KeySchema": [
                     {"AttributeName": "report_card_cadency", "KeyType": "HASH"},
-                    {"AttributeName": "report_card_start_date", "KeyType": "RANGE"}
+                    {"AttributeName": "report_card_start_date", "KeyType": "RANGE"},
                 ],
                 "Projection": {"ProjectionType": "ALL"},
             },
         ],
     )
 
+
 async def _create_invoices_table(db, table_name) -> None:
     """Tabella Fatture."""
     await db.create_table(
         TableName=table_name,
         BillingMode="PAY_PER_REQUEST",
-        KeySchema=[
-            {"AttributeName": "invoice_id", "KeyType": "HASH"}
-        ],
+        KeySchema=[{"AttributeName": "invoice_id", "KeyType": "HASH"}],
         AttributeDefinitions=[
             {"AttributeName": "invoice_id", "AttributeType": "S"},
             {"AttributeName": "client_id", "AttributeType": "S"},
@@ -133,6 +135,7 @@ async def _create_invoices_table(db, table_name) -> None:
             }
         ],
     )
+
 
 async def _create_tracker_table(db, table_name) -> None:
     """
@@ -182,17 +185,16 @@ async def _create_tracker_table(db, table_name) -> None:
         ],
     )
 
+
 async def _create_report_card_generators_table(db, table_name) -> None:
     """Tabella Report Cards (pagelle).
-            report_card_generator_id=student_id#client_id#invoice_id#report_card_email_recipients#report_card_cadency
-                (es: ABC.XYZ#COMPANY_NAME#123/2025XYZ#tizio1@domain1.com,tizio2@domain2.com#1)
+    report_card_generator_id=student_id#client_id#report_card_email_recipients#report_card_cadency
+        (es: ABC.XYZ#COMPANY_NAME#123/2025XYZ#tizio1@domain1.com,tizio2@domain2.com#1)
     """
     await db.create_table(
         TableName=table_name,
         BillingMode="PAY_PER_REQUEST",
-        KeySchema=[
-            {"AttributeName": "report_card_generator_id", "KeyType": "HASH"}
-        ],
+        KeySchema=[{"AttributeName": "report_card_generator_id", "KeyType": "HASH"}],
         AttributeDefinitions=[
             {"AttributeName": "report_card_generator_id", "AttributeType": "S"},
             {"AttributeName": "start_month", "AttributeType": "S"},
@@ -200,20 +202,19 @@ async def _create_report_card_generators_table(db, table_name) -> None:
             {"AttributeName": "next_start_month", "AttributeType": "S"},
             {"AttributeName": "student_id", "AttributeType": "S"},
             {"AttributeName": "client_id", "AttributeType": "S"},
-            {"AttributeName": "invoice_id", "AttributeType": "S"},
             {"AttributeName": "report_card_email_recipients", "AttributeType": "S"},
             {"AttributeName": "report_card_cadency", "AttributeType": "N"},
-
         ],
     )
 
+
 async def _create_report_cards_table(db, table_name) -> None:
     """Tabella Report Cards (pagelle).
-            report_id=coach_id#report_card_generator_id
-            raport_range=start_month#end_month (es.: 2025-10#2025-11)
+    report_id=coach_id#report_card_generator_id
+    raport_range=start_month#end_month (es.: 2025-10#2025-11)
 
-            (student_id per il momento è implicito in report_card_generator_id)
-            (quando esiste solo il no show report card, allora coach_id è l'id del coach con role "Head Coach")
+    (student_id per il momento è implicito in report_card_generator_id)
+    (quando esiste solo il no show report card, allora coach_id è l'id del coach con role "Head Coach")
     """
     await db.create_table(
         TableName=table_name,
@@ -243,12 +244,13 @@ async def _create_report_cards_table(db, table_name) -> None:
                 "IndexName": "coach-id-status-index",
                 "KeySchema": [
                     {"AttributeName": "coach_id", "KeyType": "HASH"},
-                    {"AttributeName": "status", "KeyType": "RANGE"}
+                    {"AttributeName": "status", "KeyType": "RANGE"},
                 ],
-                "Projection": {"ProjectionType": "ALL"}
+                "Projection": {"ProjectionType": "ALL"},
             },
         ],
     )
+
 
 async def _create_debriefs_table(db, table_name) -> None:
     """Tabella Debriefs (note post-sessione)."""
@@ -276,9 +278,11 @@ async def _create_debriefs_table(db, table_name) -> None:
         ],
     )
 
+
 # -------------------------------------------------
 # FUNZIONE PRINCIPALE
 # -------------------------------------------------
+
 
 async def ensure_tables(db) -> None:
     """Orchestra la creazione di tutte le tabelle necessarie."""
@@ -294,6 +298,7 @@ async def ensure_tables(db) -> None:
             settings.CONTRACTS_TABLE: _create_contracts_table,
             settings.INVOICES_TABLE: _create_invoices_table,
             settings.TRACKER_TABLE: _create_tracker_table,
+            settings.REPORT_CARD_GENERATORS_TABLE: _create_report_card_generators_table,
             settings.REPORT_CARDS_TABLE: _create_report_cards_table,
             settings.DEBRIEFS_TABLE: _create_debriefs_table,
         }
