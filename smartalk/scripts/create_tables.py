@@ -197,13 +197,6 @@ async def _create_report_card_generators_table(db, table_name) -> None:
         KeySchema=[{"AttributeName": "report_card_generator_id", "KeyType": "HASH"}],
         AttributeDefinitions=[
             {"AttributeName": "report_card_generator_id", "AttributeType": "S"},
-            {"AttributeName": "start_month", "AttributeType": "S"},
-            {"AttributeName": "current_start_month", "AttributeType": "S"},
-            {"AttributeName": "next_start_month", "AttributeType": "S"},
-            {"AttributeName": "student_id", "AttributeType": "S"},
-            {"AttributeName": "client_id", "AttributeType": "S"},
-            {"AttributeName": "report_card_email_recipients", "AttributeType": "S"},
-            {"AttributeName": "report_card_cadency", "AttributeType": "N"},
         ],
     )
 
