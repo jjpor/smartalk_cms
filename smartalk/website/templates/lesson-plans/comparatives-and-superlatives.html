@@ -1,7 +1,18 @@
-{# --- 1. Definizioni Variabili --- #}
-{% set lesson_title = 'A Guide to Comparatives & Superlatives' %}
-{% set lesson_subtitle = 'Mastering comparisons to describe differences and similarities.' %}
-{# Rimosso il link alla sezione AI #}
+{#
+    TEMPLATE: smartalk/website/templates/lesson-plans/comparatives-superlatives.html
+    DESCRIZIONE: Convertito da HTML statico.
+    - Sezione API rimossa.
+    - Logica info_card "Genitore-Figlio" applicata.
+    - Tabella convertita a classi CSS master.
+    - Testo corretto e riportato integralmente.
+    - Aggiunto suggerimento per esercizio interattivo 'random_item_generator'.
+#}
+
+{# --- 1. Definizione delle Variabili della Lezione --- #}
+{% set lesson_title = "A Guide to Comparatives & Superlatives" %}
+{% set lesson_subtitle = "Mastering comparisons to describe differences and similarities." %}
+
+{# Lista nav_links, rimosso 'interactive-exercises' #}
 {% set nav_links = [
     {'id': 'introduction', 'title': 'Introduction'},
     {'id': 'rules-forms', 'title': 'Rules & Forms'},
@@ -10,27 +21,41 @@
     {'id': 'exercises', 'title': 'Exercises'}
 ] %}
 
-{# --- 2. Estensione Template --- #}
+{# Dati per il suggerimento di esercizio interattivo (random_item_generator) #}
+{% set discussion_questions = [
+    "Is your current home as comfortable as the one you grew up in?",
+    "Do you find working from home as productive as working from an office?",
+    "Is online shopping as enjoyable as shopping in person for you?",
+    "Is it easier to make friends online or in person?",
+    "Which is better: waking up early or staying up late?",
+    "Do you find reading fiction more enjoyable than non-fiction?",
+    "What's the best movie you've ever seen?",
+    "What's the most interesting book you've read recently?",
+    "What's the biggest challenge you've ever faced?"
+] %}
+
+
+{# --- 2. Estensione del Template Base e Import Macro --- #}
 {% extends "abstract_templates/lesson_base.html" %}
+{# Importiamo entrambe le macro necessarie (info_card + suggerimento) #}
+{% from "abstract_templates/_macros.html" import info_card, random_item_generator %}
 
-{# --- 3. Importazione Macro --- #}
-{% from "abstract_templates/_macros.html" import info_card %}
 
-
-{# --- 4. Contenuto Lezione --- #}
+{# --- 3. Contenuto Specifico della Lezione --- #}
 {% block lesson_content %}
 
     {# Sezione 1: Introduction #}
-    {% call info_card('introduction', 'Introduction') %}
+    {% call info_card('introduction', 'Introduction', initial_state='show') %}
         <p class="text-slate-700 mb-6">Comparatives and superlatives are essential for describing the world around us. They help us compare and contrast objects, people, and ideas. This guide will walk you through the rules, examples, and ways to practice using them in conversation.</p>
         <div class="space-y-4">
-            <div class="lesson-card"> {# Usiamo la classe master .lesson-card #}
+            {# Tendina interna (parte chiusa) #}
+            <div class="lesson-card">
                 <div class="card-header flex justify-between items-center">
                     <h3 class="font-bold text-slate-800">Comparatives vs. Superlatives</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span> {# Usiamo la freccia standard #}
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
                 </div>
                 <div class="card-content">
-                    <p class="mt-4 text-slate-600"><strong>Comparative adjectives</strong> are used to compare differences between two objects...</p>
+                    <p class="mt-4 text-slate-600"><strong>Comparative adjectives</strong> are used to compare differences between two objects. They are used in sentences where two nouns are compared, in this pattern:</p>
                     <p class="mt-2 text-slate-600"><strong>Noun (subject) + verb + comparative adjective + than + noun (object).</strong></p>
                     <p class="mt-4 text-slate-600">Examples:</p>
                     <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
@@ -38,7 +63,7 @@
                         <li>This box is <strong>smaller</strong> than the one I lost.</li>
                         <li>The rock flew <strong>higher</strong> than the roof.</li>
                     </ul>
-                    <p class="mt-4 text-slate-600"><strong>Superlative adjectives</strong> are used to describe an object which is at the upper or lower limit...</p>
+                    <p class="mt-4 text-slate-600"><strong>Superlative adjectives</strong> are used to describe an object which is at the upper or lower limit of a quality. They are used in sentences where a subject is compared to a group of objects.</p>
                     <p class="mt-2 text-slate-600"><strong>Noun (subject) + verb + the + superlative adjective + noun (object).</strong></p>
                     <p class="mt-4 text-slate-600">Examples:</p>
                     <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
@@ -56,6 +81,7 @@
     {% call info_card('rules-forms', 'Rules & Forms') %}
         <p class="text-slate-700 mb-6">Learn how to form comparatives and superlatives correctly, including regular and irregular forms.</p>
         <div class="space-y-4">
+            {# Tendina interna 1 (chiusa) #}
             <div class="lesson-card">
                 <div class="card-header flex justify-between items-center">
                     <h3 class="font-bold text-slate-800">Regular Adjectives</h3>
@@ -67,9 +93,9 @@
                         <li><strong>Two syllables:</strong> Add -er/-est or use "more"/"most". For adjectives ending in "y", change "y" to "i". (e.g., happy -> happier -> happiest)</li>
                         <li><strong>Three or more syllables:</strong> Use "more" for comparative and "most" for superlative. (e.g., important -> more important -> most important)</li>
                     </ul>
-                    {# Manteniamo la tabella HTML originale, usando le classi Tailwind standard #}
-                    <div class="table-wrapper mt-4"> {# Usiamo .table-wrapper dal CSS master #}
-                        <table class="lesson-table"> {# Usiamo .lesson-table dal CSS master #}
+                    {# Tabella convertita con classi CSS master #}
+                    <div class="table-wrapper mt-4">
+                        <table class="lesson-table">
                             <thead>
                                 <tr>
                                     <th>Adjective</th>
@@ -103,6 +129,8 @@
                     </div>
                 </div>
             </div>
+            
+            {# Tendina interna 2 (chiusa) #}
             <div class="lesson-card">
                 <div class="card-header flex justify-between items-center">
                     <h3 class="font-bold text-slate-800">Irregular Forms</h3>
@@ -132,6 +160,7 @@
     {% call info_card('similarities', 'Similarities') %}
         <p class="text-slate-700 mb-6">Beyond differences, we can also use specific forms to describe similarities and equalities.</p>
         <div class="space-y-4">
+            {# Tendina interna (chiusa) #}
             <div class="lesson-card">
                 <div class="card-header flex justify-between items-center">
                     <h3 class="font-bold text-slate-800">Positive & Negative Comparisons</h3>
@@ -139,13 +168,13 @@
                 </div>
                 <div class="card-content">
                     <p class="mt-4 text-slate-600"><strong>Positive Comparison (things are equal):</strong></p>
-                    <p class="mt-2 text-slate-600">Use <strong>"as + adjective/adverb + as"</strong>...</p>
+                    <p class="mt-2 text-slate-600">Use <strong>"as + adjective/adverb + as"</strong> to say two things are the same in a certain way.</p>
                     <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
                         <li>This event is <strong>as important as</strong> the last one.</li>
                         <li>She works <strong>as efficiently as</strong> her colleague.</li>
                     </ul>
                     <p class="mt-4 text-slate-600"><strong>Negative Comparison (things are not equal):</strong></p>
-                    <p class="mt-2 text-slate-600">Use <strong>"not as/so + adjective/adverb + as"</strong>...</p>
+                    <p class="mt-2 text-slate-600">Use <strong>"not as/so + adjective/adverb + as"</strong> to say something is not equal to another thing.</p>
                     <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
                         <li>This conference is <strong>not as expensive as</strong> the last one.</li>
                         <li>The new hotel is <strong>not so luxurious as</strong> the one we stayed in before.</li>
@@ -159,7 +188,9 @@
     {# Sezione 4: Discussion #}
     {% call info_card('discussion', 'Discussion Questions') %}
         <p class="text-slate-700 mb-6">These questions are designed to help you practice using all the forms in conversation.</p>
-        <div class="space-y-4">
+        
+        {# Versione statica (come da HTML originale), per riferimento #}
+        <div class="space-y-4 mt-4">
             <div class="lesson-card">
                 <div class="card-header flex justify-between items-center">
                     <h3 class="font-bold text-slate-800">Using "as... as"</h3>
@@ -193,17 +224,18 @@
                 </div>
                 <div class="card-content">
                     <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-                        <li>What’s <strong>the best</strong> movie you’ve ever seen?</li>
-                        <li>What’s <strong>the most</strong> interesting book you’ve read recently?</li>
-                        <li>What’s <strong>the biggest</strong> challenge you’ve ever faced?</li>
+                        <li>What's <strong>the best</strong> movie you've ever seen?</li>
+                        <li>What's <strong>the most</strong> interesting book you've read recently?</li>
+                        <li>What's <strong>the biggest</strong> challenge you've ever faced?</li>
                     </ul>
                 </div>
             </div>
         </div>
     {% endcall %}
 
-
-    {# Sezione 5: Exercises #}
+    
+    {# Sezione 5: Exercises (Collaborative) #}
+    {# NB: La sezione 'interactive-exercises' con API è stata rimossa. #}
     {% call info_card('exercises', 'Collaborative Exercise: Find Your Perfect Trip') %}
         <p class="text-slate-700 mb-6">This exercise can be done with a partner. One person is a travel agent and the other is a client looking for a vacation. The goal is for the client to ask questions using comparatives and superlatives to find the best trip.</p>
         <div class="space-y-4">
@@ -232,8 +264,4 @@
         </div>
     {% endcall %}
 
-    {# La sezione Interactive Exercises è stata rimossa #}
-
-{% endblock %}
-
-{# Non serve il blocco extra_scripts #}
+{% endblock lesson_content %}

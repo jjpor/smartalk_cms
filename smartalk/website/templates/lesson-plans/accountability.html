@@ -1,0 +1,243 @@
+{# --- 1. Definizione delle Variabili della Lezione --- #}
+{% set lesson_title = "Accountability" %}
+{% set lesson_subtitle = "A guide to taking responsibility and building trust in the workplace." %}
+
+{% set nav_links = [
+    {'id': 'initial-discussion', 'title': 'Initial Discussion'},
+    {'id': 'guided-discussion', 'title': 'Guided Discussion'},
+    {'id': 'vocabulary', 'title': 'Vocabulary'},
+    {'id': 'scenarios', 'title': 'Scenarios'},
+    {'id': 'clear-framework', 'title': 'CLEAR Framework'},
+    {'id': 'case-study', 'title': 'Case Study'}
+] %}
+
+{# Dati per il suggerimento di esercizio interattivo (match_exercise) #}
+{% set phrasal_verbs = [
+    {'id': '1', 'text': 'Own up to'},
+    {'id': '2', 'text': 'Follow through (with)'},
+    {'id': '3', 'text': 'Step up'},
+    {'id': '4', 'text': 'Carry out'},
+    {'id': '5', 'text': 'Face up to'},
+    {'id': '6', 'text': 'Get around to'},
+    {'id': '7', 'text': 'Pass on'},
+    {'id': '8', 'text': 'Hold up'},
+    {'id': '9', 'text': 'Get down to'},
+    {'id': '10', 'text': 'Take on'}
+] %}
+{% set phrasal_verb_defs = [
+    {'id': '1', 'text': 'To admit to something.'},
+    {'id': '2', 'text': 'To complete an action or promise.'},
+    {'id': '3', 'text': 'To take responsibility or initiative.'},
+    {'id': '4', 'text': 'To perform or complete a task.'},
+    {'id': '5', 'text': 'To confront or accept something.'},
+    {'id': '6', 'text': 'To finally do something after delaying it.'},
+    {'id': '7', 'text': 'To give responsibility to someone else.'},
+    {'id': '8', 'text': 'To delay or obstruct something.'},
+    {'id': '9', 'text': 'To start working on something seriously.'},
+    {'id': '10', 'text': 'To accept responsibility or work.'}
+] %}
+
+{% set idioms = [
+    {'id': 'a', 'text': 'Bite the bullet'},
+    {'id': 'b', 'text': 'Come clean'},
+    {'id': 'c', 'text': 'Throw under the bus'},
+    {'id': 'd', 'text': 'Step up to the plate'},
+    {'id': 'e', 'text': 'Cut corners'},
+    {'id': 'f', 'text': 'Drop the ball'},
+    {'id': 'g', 'text': 'In the hot seat'},
+    {'id': 'h', 'text': 'Pull your weight'}
+] %}
+{% set idiom_defs = [
+    {'id': 'a', 'text': 'To face a difficult situation bravely.'},
+    {'id': 'b', 'text': 'To confess or admit something.'},
+    {'id': 'c', 'text': 'To betray or blame someone else.'},
+    {'id': 'd', 'text': 'To take responsibility or action.'},
+    {'id': 'e', 'text': 'To do something the easiest or cheapest way, often at the expense of quality.'},
+    {'id': 'f', 'text': 'To make a mistake or fail to do something.'},
+    {'id': 'g', 'text': 'Being in a position where you are responsible or can be criticized.'},
+    {'id': 'h', 'text': 'To do your fair share of work.'}
+] %}
+
+
+{# --- 2. Estensione del Template Base e Import Macro --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, match_exercise %}
+
+
+{# --- 3. Contenuto Specifico della Lezione --- #}
+{% block lesson_content %}
+
+    {# Sezione 1: Initial Discussion #}
+    {% call info_card('initial-discussion', 'Initial Discussion Questions', initial_state='show') %}
+        <p class="text-slate-700 mb-6">Let's start by exploring our personal understanding of accountability.</p>
+        <div class="lesson-card"> {# Tendina interna - parte chiusa #}
+            <div class="card-header flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Your Perspective on Accountability</h3>
+                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+            </div>
+            <div class="card-content">
+                <ul class="list-disc list-outside mt-4 text-slate-600 space-y-2 ml-4">
+                    <li>What does accountability mean to you in a professional context?</li>
+                    <li>Can you share an example of a time when accountability played a crucial role in a project or task?</li>
+                    <li>What are some consequences of a lack of accountability in a team or organization?</li>
+                    <li>What are some common challenges or barriers to maintaining accountability in a workplace?</li>
+                    <li>How can accountability contribute to professional growth and career development?</li>
+                </ul>
+            </div>
+        </div>
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {# Sezione 2: Guided Discussion #}
+    {% call info_card('guided-discussion', 'Guided Discussion') %}
+        <p class="text-slate-700 mb-6">Let's dive deeper into what accountability means and how it works.</p>
+        <div class="lesson-card"> {# Tendina interna - parte chiusa #}
+            <div class="card-header flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Accountability in Detail</h3>
+                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+            </div>
+            <div class="card-content">
+                <h4 class="font-semibold text-slate-800 mt-4">Understanding Accountability</h4>
+                <ul class="list-disc list-outside mt-2 text-slate-600 space-y-2 ml-4">
+                    <li>What does accountability mean to you in the context of your job?</li>
+                    <li>Why do you think accountability is important when working with clients?</li>
+                </ul>
+                <h4 class="font-semibold text-slate-800 mt-4">Personal Experiences</h4>
+                <ul class="list-disc list-outside mt-2 text-slate-600 space-y-2 ml-4">
+                    <li>Can you share a time when you had to take responsibility for a mistake at work? How did you handle it?</li>
+                    <li>Have you ever worked with a colleague who didn't follow through on their commitments? How did it affect the team and the project?</li>
+                </ul>
+                <h4 class="font-semibold text-slate-800 mt-4">Accountability in Practice</h4>
+                <ul class="list-disc list-outside mt-2 text-slate-600 space-y-2 ml-4">
+                    <li>How do you ensure you stay accountable to your clients and colleagues?</li>
+                    <li>What strategies do you use to keep track of your responsibilities and deadlines?</li>
+                </ul>
+                <h4 class="font-semibold text-slate-800 mt-4">Challenges and Solutions</h4>
+                <ul class="list-disc list-outside mt-2 text-slate-600 space-y-2 ml-4">
+                    <li>What challenges do you face in maintaining accountability in your role?</li>
+                    <li>How do you address situations where someone else's lack of accountability affects your work?</li>
+                    <li>What are some consequences of a lack of accountability in a team or organization?</li>
+                </ul>
+                <h4 class="font-semibold text-slate-800 mt-4">Cultural Perspectives</h4>
+                <ul class="list-disc list-outside mt-2 text-slate-600 space-y-2 ml-4">
+                    <li>How is accountability viewed in your culture compared to English-speaking cultures?</li>
+                    <li>Are there any differences in how accountability is communicated or enforced?</li>
+                </ul>
+            </div>
+        </div>
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {# Sezione 3: Vocabulary #}
+    {% call info_card('vocabulary', 'Vocabulary: Phrasal Verbs & Idioms') %}
+        <p class="text-slate-700 mb-6">Review these common terms used when discussing responsibility and accountability.</p>
+
+        {# === ESERCIZIO INTERATTIVO: MATCH_EXERCISE === #}
+        <h4 class="font-semibold text-slate-800 mt-4 text-center">Phrasal Verbs</h4>
+        {{ match_exercise("vocab-phrasal-verbs", phrasal_verbs, phrasal_verb_defs) }}
+
+        <h4 class="font-semibold text-slate-800 mt-8 text-center">Idioms</h4>
+        {{ match_exercise("vocab-idioms", idioms, idiom_defs) }}
+
+        {# === Versione statica mantenuta di seguito === #}
+        <div class="lesson-card mt-8"> {# Tendina interna - parte chiusa #}
+            <div class="card-header flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Key Terms</h3>
+                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+            </div>
+            <div class="card-content">
+                <h4 class="font-semibold text-slate-800 mt-4">Phrasal Verbs:</h4>
+                <ul class="list-disc list-outside mt-2 text-slate-600 space-y-2 ml-4">
+                    <li><strong>Own up to</strong> - To admit to something.</li>
+                    <li><strong>Follow through (with)</strong> - To complete an action or promise.</li>
+                    <li><strong>Step up</strong> - To take responsibility or initiative.</li>
+                    <li><strong>Carry out</strong> - To perform or complete a task.</li>
+                    <li><strong>Face up to</strong> - To confront or accept something.</li>
+                    <li><strong>Get around to</strong> - To finally do something after delaying it.</li>
+                    <li><strong>Pass on</strong> - To give responsibility to someone else.</li>
+                    <li><strong>Hold up</strong> - To delay or obstruct something.</li>
+                    <li><strong>Get down to</strong> - To start working on something seriously.</li>
+                    <li><strong>Take on</strong> - To accept responsibility or work.</li>
+                </ul>
+                <h4 class="font-semibold text-slate-800 mt-4">Idioms:</h4>
+                <ul class="list-disc list-outside mt-2 text-slate-600 space-y-2 ml-4">
+                    <li><strong>Bite the bullet</strong> - To face a difficult situation bravely.</li>
+                    <li><strong>Come clean</strong> - To confess or admit something.</li>
+                    <li><strong>Throw under the bus</strong> - To betray or blame someone else.</li>
+                    <li><strong>Step up to the plate</strong> - To take responsibility or action.</li>
+                    <li><strong>Cut corners</strong> - To do something the easiest or cheapest way, often at the expense of quality.</li>
+                    <li><strong>Drop the ball</strong> - To make a mistake or fail to do something.</li>
+                    <li><strong>In the hot seat</strong> - Being in a position where you are responsible or can be criticized.</li>
+                    <li><strong>Pull your weight</strong> - To do your fair share of work.</li>
+                </ul>
+            </div>
+        </div>
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {# Sezione 4: Scenarios #}
+    {% call info_card('scenarios', 'Scenarios (Roleplay Practice)') %}
+        <p class="text-slate-700 mb-6">Practice the language you would use to handle these situations:</p>
+        <div class="lesson-card"> {# Tendina interna - parte chiusa #}
+            <div class="card-header flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Real-World Roleplay</h3>
+                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+            </div>
+            <div class="card-content">
+                <ul class="list-disc list-outside mt-4 text-slate-600 space-y-2 ml-4">
+                    <li>A project manager needs to explain a missed deadline to a client and take responsibility.</li>
+                    <li>A team member needs to address a colleague who hadn't completed their part of a project.</li>
+                    <li>An employee needs to apologize for a mistake in an important report and outline steps to prevent it from happening again.</li>
+                </ul>
+            </div>
+        </div>
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {# Sezione 5: CLEAR Framework #}
+    {% call info_card('clear-framework', 'The CLEAR Framework') %}
+        <p class="text-slate-700 mb-6">Use this framework to guide conversations about accountability and problem-solving.</p>
+        <div class="lesson-card"> {# Tendina interna - parte chiusa #}
+            <div class="card-header flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">A Step-by-Step Guide</h3>
+                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+            </div>
+            <div class="card-content">
+                <ul class="list-disc list-outside mt-4 text-slate-600 space-y-2 ml-4">
+                    <li><strong>C - Clarify Expectations:</strong> Define goals, discuss roles, clarify misunderstandings.</li>
+                    <li><strong>L - Look Back on Commitments:</strong> Review commitments, timelines, deliverables; identify areas where expectations were not met.</li>
+                    <li><strong>E - Evaluate Results:</strong> Assess quality, compare outcomes to goals, analyze for improvements.</li>
+                    <li><strong>A - Accept Responsibility:</strong> Take ownership of outcomes (positive or negative); admit shortcomings; take proactive steps.</li>
+                    <li><strong>R - Resolve Any Problems:</strong> Develop an action plan, collaborate on solutions, monitor progress.</li>
+                </ul>
+            </div>
+        </div>
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {# Sezione 6: Case Study Scenario #}
+    {% call info_card('case-study', 'Case Study Scenario') %}
+        <p class="text-slate-700 mb-6">Read the following scenario and discuss how you would handle it.</p>
+        <div class="lesson-card"> {# Tendina interna - parte chiusa #}
+            <div class="card-header flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Giulia's Challenge</h3>
+                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+            </div>
+            <div class="card-content">
+                <p class="text-slate-700 mt-4">Giulia, a new supervisor at a specialized communication agency for the medical sector, is determined to uphold the agency's commitment to safety and quality. She is summoned to her manager's office concerning a <strong>critical error</strong> discovered in documents prepared by one of her team members. The mistake could delay preparations for an upcoming medical conference by several weeks.</p>
+                <h4 class="font-semibold text-slate-800 mt-4">Discussion / Roleplay:</h4>
+                <ul class="list-disc list-outside mt-2 text-slate-600 space-y-2 ml-4">
+                    <li>How should Giulia take responsibility for her team's mistake?</li>
+                    <li>How could she use the CLEAR framework in this situation?</li>
+                    <li>What steps could she take to rebuild trust with her manager and client?</li>
+                </ul>
+            </div>
+        </div>
+    {% endcall %}
+
+{% endblock lesson_content %}

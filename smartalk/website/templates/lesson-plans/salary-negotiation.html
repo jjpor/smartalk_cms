@@ -1,7 +1,17 @@
-{# --- 1. Definizioni Variabili --- #}
-{% set lesson_title = 'Salary Negotiation Guide' %}
-{% set lesson_subtitle = 'Tips and techniques to stop feeling undervalued and unappreciated at work.' %}
-{# Rimosso il link alla sezione AI #}
+{#
+    TEMPLATE: smartalk/website/templates/lesson-plans/salary-negotiation.html
+    DESCRIZIONE: Convertito da HTML statico.
+    - Sezione API rimossa (id="llm-feature").
+    - Logica info_card "Genitore-Figlio" applicata.
+    - Sezione "Tips" mantenuta come grid statico all'interno della card principale.
+    - Aggiunto suggerimento per esercizio interattivo 'random_item_generator'.
+#}
+
+{# --- 1. Definizione delle Variabili della Lezione --- #}
+{% set lesson_title = "Salary Negotiation Guide" %}
+{% set lesson_subtitle = "Tips and techniques to stop feeling undervalued and unappreciated at work." %}
+
+{# Lista nav_links, rimosso 'llm-feature' #}
 {% set nav_links = [
     {'id': 'tips', 'title': 'Tips & Techniques'},
     {'id': 'what-to-say', 'title': 'What to Ask/Say'},
@@ -10,60 +20,68 @@
     {'id': 'for-entrepreneurs', 'title': 'For Entrepreneurs'}
 ] %}
 
-{# --- 2. Estensione Template --- #}
+{# Dati per il suggerimento di esercizio interattivo (random_item_generator) #}
+{% set negotiation_phrases = [
+    "I appreciate the opportunities I've had here and I am excited about the future.",
+    "Reflecting on my contributions, I have accomplished [mention successes] and have taken on additional responsibilities.",
+    "I've done some market research, and the industry standard for someone in my role and with my experience is [mention a specific figure].",
+    "I believe my skills in [mention specific skills] have contributed significantly to the success of the team.",
+    "Considering my achievements and market standards, I would like to discuss the possibility of a salary review."
+] %}
+
+
+{# --- 2. Estensione del Template Base e Import Macro --- #}
 {% extends "abstract_templates/lesson_base.html" %}
-
-{# --- 3. Importazione Macro --- #}
-{% from "abstract_templates/_macros.html" import info_card %}
+{% from "abstract_templates/_macros.html" import info_card, random_item_generator %}
 
 
-{# --- 4. Contenuto Lezione --- #}
+{# --- 3. Contenuto Specifico della Lezione --- #}
 {% block lesson_content %}
 
-    {# Sezione 1: Tips & Techniques (Layout a Griglia, NON usa info_card) #}
-    <section id="tips">
-        {# Usiamo section-header dal CSS master #}
-        <h2 class="section-header">Tips & Techniques</h2>
+    {# Sezione 1: Tips & Techniques #}
+    {# Questa sezione usa un grid statico, non tendine interne. #}
+    {% call info_card('tips', 'Tips & Techniques', initial_state='show') %}
         <p class="text-slate-700 mb-6">In this section, you will find the fundamental strategies to prepare for a salary negotiation, feel valued in your role, and get what you deserve.</p>
-        {# Manteniamo il layout a griglia originale qui #}
         <div class="grid md:grid-cols-2 gap-6">
-            {# Usiamo .lesson-card dal CSS master invece di bg-white... #}
-            <div class="lesson-card p-6"> {# Aggiunto p-6 per lo spazio interno #}
+            <div class="bg-white p-6 rounded-xl shadow-md">
                 <h3 class="font-bold text-slate-800 mb-2">Research is Key</h3>
                 <p class="text-slate-600">Understand the market value for your role in your industry and location. Websites like Glassdoor, Payscale, or industry reports can provide valuable insights. Be ready to explain why you believe you deserve a higher salary.</p>
             </div>
-            <div class="lesson-card p-6">
+            <div class="bg-white p-6 rounded-xl shadow-md">
                 <h3 class="font-bold text-slate-800 mb-2">Timing is Everything</h3>
-                <p class="text-slate-600">Ideally, negotiate after you've received a job offer but before you've accepted it... If you're already employed, choose an appropriate time...</p>
+                <p class="text-slate-600">Ideally, negotiate after you've received a job offer but before you've accepted it. This is when the employer is most motivated to hire you. If you're already employed, choose an appropriate time, such as during a performance review or when you've achieved significant results.</p>
             </div>
-            <div class="lesson-card p-6">
+            <div class="bg-white p-6 rounded-xl shadow-md">
                 <h3 class="font-bold text-slate-800 mb-2">Practice Your Pitch</h3>
-                <p class="text-slate-600">Clearly communicate your value to the organization. Highlight your accomplishments... Practice your talking points...</p>
+                <p class="text-slate-600">Clearly communicate your value to the organization. Highlight your accomplishments, skills, and any additional responsibilities you've taken on. Practice your talking points with a friend or mentor to build confidence.</p>
             </div>
-            <div class="lesson-card p-6">
+            <div class="bg-white p-6 rounded-xl shadow-md">
                 <h3 class="font-bold text-slate-800 mb-2">Be Confident and Positive</h3>
-                <p class="text-slate-600">Approach the negotiation with confidence, but remain positive and respectful...</p>
+                <p class="text-slate-600">Approach the negotiation with confidence, but remain positive and respectful. Focus on the value you bring to the organization rather than making it a confrontational conversation.</p>
             </div>
-            <div class="lesson-card p-6">
+            <div class="bg-white p-6 rounded-xl shadow-md">
                 <h3 class="font-bold text-slate-800 mb-2">Consider the Whole Package</h3>
-                <p class="text-slate-600">Don't just focus on the base salary. Consider other benefits such as bonuses, stock options...</p>
+                <p class="text-slate-600">Don't just focus on the base salary. Consider other benefits such as bonuses, stock options, health care, retirement plans, and vacation time. Employers sometimes have flexibility in non-salary components.</p>
             </div>
-            <div class="lesson-card p-6">
+            <div class="bg-white p-6 rounded-xl shadow-md">
                 <h3 class="font-bold text-slate-800 mb-2">Understand Your Priorities</h3>
-                <p class="text-slate-600">Identify your "non-negotiables" and the areas where you might be more flexible...</p>
+                <p class="text-slate-600">Identify your "non-negotiables" and the areas where you might be more flexible. This will help you navigate the negotiation process more effectively.</p>
             </div>
         </div>
-    </section>
+    {% endcall %}
 
+    <hr class="my-12 border-gray-200">
 
     {# Sezione 2: What to Ask/Say #}
     {% call info_card('what-to-say', 'What to Ask/Say') %}
         <p class="text-slate-700 mb-6">This section provides specific phrases to use to initiate the discussion. Click on each heading to see the recommended phrases.</p>
-        <div class="space-y-4">
-            <div class="lesson-card"> {# Usiamo .lesson-card qui #}
+        
+        {# Versione statica (come da HTML originale), per riferimento #}
+        <div class="space-y-4 mt-4">
+            <div class="lesson-card">
                 <div class="card-header flex justify-between items-center">
                     <h3 class="font-bold text-slate-800">Express gratitude and enthusiasm</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span> {# Usiamo la freccia standard #}
+                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
                 </div>
                 <div class="card-content">
                     <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
@@ -82,7 +100,7 @@
                     </ul>
                 </div>
             </div>
-             <div class="lesson-card">
+            <div class="lesson-card">
                 <div class="card-header flex justify-between items-center">
                     <h3 class="font-bold text-slate-800">Research-based approach</h3>
                     <span class="text-2xl text-slate-500 arrow-icon">▾</span>
@@ -117,7 +135,8 @@
             </div>
         </div>
     {% endcall %}
-
+        
+    <hr class="my-12 border-gray-200">
 
     {# Sezione 3: Likely Scenarios #}
     {% call info_card('likely-scenarios', 'Likely Scenarios') %}
@@ -129,7 +148,7 @@
                     <span class="text-2xl text-slate-500 arrow-icon">▾</span>
                 </div>
                 <div class="card-content">
-                    <p class="mt-4 text-slate-600">Express gratitude and discuss the next steps...</p>
+                    <p class="mt-4 text-slate-600">Express gratitude and discuss the next steps, such as confirming the details in writing or scheduling a follow-up meeting to finalize the adjustment.</p>
                 </div>
             </div>
             <div class="lesson-card">
@@ -138,7 +157,7 @@
                     <span class="text-2xl text-slate-500 arrow-icon">▾</span>
                 </div>
                 <div class="card-content">
-                    <p class="mt-4 text-slate-600">Provide specific examples of your contributions...</p>
+                    <p class="mt-4 text-slate-600">Provide specific examples of your contributions, achievements, and additional responsibilities. Reference market research or industry standards to strengthen your argument.</p>
                 </div>
             </div>
             <div class="lesson-card">
@@ -147,7 +166,7 @@
                     <span class="text-2xl text-slate-500 arrow-icon">▾</span>
                 </div>
                 <div class="card-content">
-                    <p class="mt-4 text-slate-600">Express understanding and ask if there is room for negotiation in other areas...</p>
+                    <p class="mt-4 text-slate-600">Express understanding and ask if there is room for negotiation in other areas of the compensation package, such as bonuses, stock options, or additional benefits. Alternatively, inquire about the possibility of a gradual salary increase or performance-based incentives.</p>
                 </div>
             </div>
             <div class="lesson-card">
@@ -156,13 +175,14 @@
                     <span class="text-2xl text-slate-500 arrow-icon">▾</span>
                 </div>
                 <div class="card-content">
-                    <p class="mt-4 text-slate-600">Express appreciation for the offer and ask for further consideration...</p>
+                    <p class="mt-4 text-slate-600">Express appreciation for the offer and ask for further consideration based on your research and contributions. Politely ask if there is room for further negotiation.</p>
                 </div>
             </div>
         </div>
     {% endcall %}
-
-
+        
+    <hr class="my-12 border-gray-200">
+        
     {# Sezione 4: Worst Case Scenarios #}
     {% call info_card('worst-scenarios', 'Worst Case Scenarios') %}
         <p class="text-slate-700 mb-6">Here's how to handle the most difficult situations and what to do to get out of them in the best possible way. Click to find out the details.</p>
@@ -173,7 +193,7 @@
                     <span class="text-2xl text-slate-500 arrow-icon">▾</span>
                 </div>
                 <div class="card-content">
-                    <p class="mt-4 text-slate-600">Express understanding and ask for the reasons behind the decision...</p>
+                    <p class="mt-4 text-slate-600">Express understanding and ask for the reasons behind the decision. Inquire if there are specific goals or milestones you can work towards for future reconsideration.</p>
                 </div>
             </div>
             <div class="lesson-card">
@@ -182,7 +202,7 @@
                     <span class="text-2xl text-slate-500 arrow-icon">▾</span>
                 </div>
                 <div class="card-content">
-                    <p class="mt-4 text-slate-600">Address the concerns directly and ask for specific feedback...</p>
+                    <p class="mt-4 text-slate-600">Address the concerns directly and ask for specific feedback. Demonstrate your commitment to improving and discuss how you plan to address any perceived shortcomings.</p>
                 </div>
             </div>
             <div class="lesson-card">
@@ -191,7 +211,7 @@
                     <span class="text-2xl text-slate-500 arrow-icon">▾</span>
                 </div>
                 <div class="card-content">
-                    <p class="mt-4 text-slate-600">Politely express the need to carefully consider the offer...</p>
+                    <p class="mt-4 text-slate-600">Politely express the need to carefully consider the offer. Ask for some time to reflect and reiterate your excitement for the role and the company.</p>
                 </div>
             </div>
             <div class="lesson-card">
@@ -200,12 +220,13 @@
                     <span class="text-2xl text-slate-500 arrow-icon">▾</span>
                 </div>
                 <div class="card-content">
-                    <p class="mt-4 text-slate-600">Politely bring the conversation back to the negotiation...</p>
+                    <p class="mt-4 text-slate-600">Politely bring the conversation back to the negotiation, restating your commitment to the company and the importance of fair compensation. Ask for clarification on the next steps.</p>
                 </div>
             </div>
         </div>
     {% endcall %}
 
+    <hr class="my-12 border-gray-200">
 
     {# Sezione 5: For Entrepreneurs #}
     {% call info_card('for-entrepreneurs', 'Exercises for Entrepreneurs') %}
@@ -217,12 +238,12 @@
                     <span class="text-2xl text-slate-500 arrow-icon">▾</span>
                 </div>
                 <div class="card-content">
-                    <p class="mt-4 text-slate-600"><strong>The Goal:</strong> Clearly articulate the value you offer...</p>
+                    <p class="mt-4 text-slate-600"><strong>The Goal:</strong> Clearly articulate the value you offer a client or an investor.</p>
                     <p class="mt-2 text-slate-600"><strong>Instructions:</strong></p>
                     <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
-                        <li><strong>Customer Profile:</strong> Identify your target customer...</li>
-                        <li><strong>Value Map:</strong> List the "Products & Services"...</li>
-                        <li><strong>Connect the Dots:</strong> The key is to match...</li>
+                        <li><strong>Customer Profile:</strong> Identify your target customer and their "Jobs to be Done" (the tasks they need to complete). What are their "Pains" (risks, bad outcomes) and their "Gains" (benefits, positive outcomes) when doing these jobs?</li>
+                        <li><strong>Value Map:</strong> List the "Products & Services" your business offers. How do they act as "Pain Relievers" for the customer's struggles and as "Gain Creators" for their desired outcomes?</li>
+                        <li><strong>Connect the Dots:</strong> The key is to match your Pain Relievers and Gain Creators directly to the customer's Pains and Gains. This forms the core of your negotiation pitch.</li>
                     </ul>
                 </div>
             </div>
@@ -232,15 +253,15 @@
                     <span class="text-2xl text-slate-500 arrow-icon">▾</span>
                 </div>
                 <div class="card-content">
-                    <p class="mt-4 text-slate-600"><strong>The Goal:</strong> Practice communicating the value...</p>
+                    <p class="mt-4 text-slate-600"><strong>The Goal:</strong> Practice communicating the value of your business in a high-stakes negotiation with potential investors.</p>
                     <p class="mt-2 text-slate-600"><strong>Instructions:</strong></p>
                     <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
-                        <li><strong>Problem:</strong> Define the problem...</li>
-                        <li><strong>Solution:</strong> Present your product/service...</li>
-                        <li><strong>Market:</strong> Demonstrate that a large...</li>
-                        <li><strong>Traction:</strong> Share key metrics...</li>
-                        <li><strong>Team:</strong> Highlight why your team...</li>
-                        <li><strong>The Ask:</strong> State exactly what you are asking for...</li>
+                        <li><strong>Problem:</strong> Define the problem that you are solving clearly and concisely.</li>
+                        <li><strong>Solution:</strong> Present your product/service and how it solves the problem.</li>
+                        <li><strong>Market:</strong> Demonstrate that a large, growing market exists.</li>
+                        <li><strong>Traction:</strong> Share key metrics that prove your business is gaining momentum (e.g., users, revenue, growth rate).</li>
+                        <li><strong>Team:</strong> Highlight why your team is uniquely qualified to execute the plan.</li>
+                        <li><strong>The Ask:</strong> State exactly what you are asking for (e.g., "$500,000 for 10% equity") and how you will use the funds.</li>
                     </ul>
                 </div>
             </div>
@@ -250,24 +271,19 @@
                     <span class="text-2xl text-slate-500 arrow-icon">▾</span>
                 </div>
                 <div class="card-content">
-                    <p class="mt-4 text-slate-600"><strong>The Goal:</strong> Prepare to negotiate different service levels...</p>
+                    <p class="mt-4 text-slate-600"><strong>The Goal:</strong> Prepare to negotiate different service levels, not just a single price point.</p>
                     <p class="mt-2 text-slate-600"><strong>Instructions:</strong></p>
                     <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
-                        <li><strong>Tier 1 (Base):</strong> Define your simplest offering...</li>
-                        <li><strong>Tier 2 (Growth):</strong> What features or services can you add...</li>
-                        <li><strong>Tier 3 (Premium):</strong> What is your top-tier...</li>
-                        <li><strong>Negotiation Practice:</strong> When a client says "your price is too high"...</li>
+                        <li><strong>Tier 1 (Base):</strong> Define your simplest offering. What is the minimum service/product a client can get from you? What's the price?</li>
+                        <li><strong>Tier 2 (Growth):</strong> What features or services can you add to the base tier to increase its value? What does this tier cost?</li>
+                        <li><strong>Tier 3 (Premium):</strong> What is your top-tier, most comprehensive offering? What exclusive benefits or services does it include? What is its price?</li>
+                        <li><strong>Negotiation Practice:</strong> When a client says "your price is too high" during a negotiation, you can quickly pivot to a lower-tier offering instead of simply lowering your price, maintaining your value.</li>
                     </ul>
                 </div>
             </div>
         </div>
     {% endcall %}
 
-    {# La sezione 6 (LLM Feature) è stata rimossa come richiesto #}
-
-{% endblock %}
-
-{# --- 5. JavaScript Specifico --- #}
-{# Non c'è bisogno di un blocco extra_scripts qui perché 
-   tutta l'interattività (accordion, nav) è gestita 
-   dal file master lesson_plan.js caricato da lesson_base.html #}
+    {# L'ultima sezione (llm-feature) e il suo <hr> sono stati rimossi #}
+    
+{% endblock lesson_content %}

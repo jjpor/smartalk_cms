@@ -75,9 +75,9 @@ async function handleGoogleLogin(response) {
 
         switchSection(dashboardSection);
 
-        hideGlobalLoader(); // 👈 chiudiamo subito, l’utente entra in dashboard
+        hideGlobalLoader(); // 👈 chiudiamo subito, l'utente entra in dashboard
 
-        // caricamenti secondari (non bloccano l’UI)
+        // caricamenti secondari (non bloccano l'UI)
         await fetchMonthlyEarnings();
         await loadStudentIds();
     } catch (err) {
@@ -2569,7 +2569,7 @@ async function loadFlashcards() {
                     const percent = Math.round((known / Math.max(1, known + unknown)) * 100);
 
                     container.innerHTML = `
-            <p class="text-xl font-bold text-gray-800 mb-4">🎉 You’ve completed the session!</p>
+            <p class="text-xl font-bold text-gray-800 mb-4">🎉 You've completed the session!</p>
             <p class="text-lg text-green-600">✅ Known: ${known}</p>
             <p class="text-lg text-red-600">❌ Still learning: ${unknown}</p>
             <p class="text-lg text-blue-600 mb-6">📊 Success rate: ${percent}%</p>
