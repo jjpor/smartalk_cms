@@ -6,7 +6,8 @@
 body {
     /* Questa riga è FONDAMENTALE. Corrisponde a site.css per fare spazio all'header */
     padding-top: 64px; 
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Dosis', sans-serif;
+    font-size: 17px;
     background-color: #F8F8F8;
     color: #333;
     line-height: 1.6;
@@ -86,7 +87,7 @@ body {
 }
 
 .card-content.show {
-    max-height: 2000px;
+    max-height: fit-content;
     margin-top: 1rem;
 }
 
@@ -505,7 +506,6 @@ body {
     color: #1F2937;
 }
 
-/* Componenti: Blocchi di Contenuto Specifici */
 .fill-in-the-blank {
     background-color: #f3f4f6; /* gray-100 */
     padding: 1rem;
@@ -582,7 +582,6 @@ body {
     display: none;
 }
 
-/* Componenti: Esercizi Specifici (non coperti da .interactive-wrapper) */
 .quiz-container, .vocab-container {
     border-radius: 0.75rem;
     padding: 1rem;
@@ -686,4 +685,52 @@ body {
     margin-left: 1rem;
     background-color: #F5FEFF;
     display: none;
+}
+/* ==================================================================== */
+/* --- Stili Liste Standard Dentro le Sezioni --- */
+/* ==================================================================== */
+
+/* Applica a tutte le liste UL e OL dentro il contenuto di una card */
+.card-content ul,
+.card-content ol {
+    list-style-position: outside; /* Usa list-outside di default */
+    padding-left: 1.75rem; /* Indentazione standard (equivale a ~pl-7) */
+    margin-top: 0.75rem; /* Spazio sopra la lista */
+    margin-bottom: 0.75rem; /* Spazio sotto la lista */
+}
+
+/* Stile specifico per liste puntate */
+.card-content ul {
+    list-style-type: disc;
+}
+
+/* Stile specifico per liste numerate */
+.card-content ol {
+    list-style-type: decimal;
+}
+
+/* Gestione liste annidate: aggiunge indentazione */
+.card-content ul ul,
+.card-content ul ol,
+.card-content ol ul,
+.card-content ol ol {
+    margin-top: 0.5rem; /* Meno spazio sopra le liste annidate */
+    margin-bottom: 0.5rem; /* Meno spazio sotto le liste annidate */
+    /* L'indentazione aggiuntiva viene ereditata dal padding-left genitore */
+}
+
+/* Spaziatura tra gli elementi della lista */
+.card-content li {
+   margin-bottom: 0.5rem; /* Spazio tra li */
+}
+
+/* Aggiusta lo spazio per i paragrafi DENTRO un list item (come negli scenari) */
+.card-content li p {
+    margin-top: 0.25rem;
+    margin-bottom: 0.25rem;
+    display: inline; /* Per evitare che il paragrafo vada a capo rispetto al bullet point se non necessario */
+}
+/* Ma se il paragrafo contiene un elemento block come <strong>, lascialo come blocco */
+.card-content li p:has(strong) {
+    display: block;
 }

@@ -1,0 +1,158 @@
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card %}
+
+{# === DEFINIZIONE DATI LEZIONE (PER BASE.HTML) === #}
+{% set lesson_title = "Mattering at Work" %}
+{% set lesson_subtitle = "The feeling of being seen, valued, and needed." %}
+
+{% set nav_links = [
+    {'id': 'warmup', 'title': 'Warm-Up'},
+    {'id': 'vocabulary', 'title': 'Vocabulary'},
+    {'id': 'reading1', 'title': 'Reading 1'},
+    {'id': 'reading2', 'title': 'Reading 2'},
+    {'id': 'reading3', 'title': 'Reading 3'},
+    {'id': 'wrapup', 'title': 'Wrap-Up'},
+    {'id': 'extra', 'title': 'Extra Activities'}
+] %}
+
+
+{% block lesson_content %}
+
+{# === INIZIO CONTENUTO LEZIONE === #}
+
+{% call info_card('warmup', '1. Warm-Up Discussion', initial_state='show') %}
+    <h4 class="font-semibold text-slate-800">Setting the Stage</h4>
+    <ul>
+        <li>What makes a job meaningful?</li>
+        <li>How do you know when someone appreciates your work?</li>
+        <li>Do you think people need to feel they "matter" at work? Why or why not?</li>
+    </ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('vocabulary', '2. Vocabulary') %}
+    <p class="mt-4 text-slate-600">(Students read definitions and create sentences. Teacher can provide examples too.)</p>
+    <ul>
+        <li><strong>Custodian</strong> - A person who takes care of a place or thing</li>
+        <li><strong>Affirm</strong> - To officially show something is true or correct</li>
+        <li><strong>Mattering</strong> - Feeling that your life or work has purpose</li>
+        <li><strong>Acknowledge</strong> - To say you noticed or recognized someone/something</li>
+        <li><strong>Self-efficacy</strong> - Belief in your ability to do things well</li>
+        <li><strong>Loneliness</strong> - The state of being alone or feeling not connected to others</li>
+        <li><strong>Belonging</strong> - The feeling of being accepted in a group</li>
+    </ul>
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Activity:</h4>
+        <ul>
+            <li>Match words with short example sentences.</li>
+            <li>Students use 2-3 words to describe their own workplace.</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('reading1', "3. Reading 1: Jane's Story") %}
+    <div class="reading-text">
+        <p class="mt-4 text-slate-700">Jane worked for many years as a live-in caregiver. After her family member passed away, she lost her sense of purpose and started a cleaning job at a university. She felt ashamed and thought she wasn't doing something "important."</p>
+        <p class="mt-2 text-slate-700">One day, her supervisor gave her a dictionary and asked her to read the definition of "custodian": someone responsible for looking after something. "That's you," he said. "You take care of this place and the people in it."</p>
+        <p class="mt-2 text-slate-700">That small moment changed Jane's thinking. She stayed in the job for 18 years and said it was one of the first times in her life that she felt valued. She realized she mattered.</p>
+    </div>
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Comprehension Questions:</h4>
+        <ul>
+            <li>How did Jane feel at the beginning of her new job?</li>
+            <li>What did the supervisor do that made a difference?</li>
+            <li>Why did this small moment have a big impact on her?</li>
+        </ul>
+    </div>
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Speaking Activity:</h4>
+        <ul>
+            <li>Roleplay: One student is Jane's supervisor, one is Jane. Practice affirming someone's role.</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('reading2', '4. Reading 2: What Is "Mattering"?') %}
+    <div class="reading-text">
+        <p class="mt-4 text-slate-700">"Mattering" means feeling like you are important to others-because they value you and your contributions. It is more than just "belonging." Belonging is about feeling accepted in a group. Mattering is about knowing that you make a difference in that group.</p>
+        <p class="mt-2 text-slate-700">When people feel like they matter at work, they have better self-esteem, more motivation, and are less likely to quit. In one study of over 7,000 teams, the groups where people felt cared for had better customer satisfaction and profits.</p>
+    </div>
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Comprehension Questions:</h4>
+        <ul>
+            <li>What is the difference between "belonging" and "mattering"?</li>
+            <li>What are some benefits of feeling like you matter at work?</li>
+            <li>Do you think your current or past job made you feel like you mattered?</li>
+        </ul>
+    </div>
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Speaking Activity:</h4>
+        <ul>
+            <li>Small group discussion: Share one workplace experience where you felt belonging vs. mattering.</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('reading3', '5. Reading 3: How to Make People Feel They Matter') %}
+    <div class="reading-text">
+        <p class="mt-4 text-slate-700">Leaders can help people feel they matter by doing three things:</p>
+        <ul>
+            <li><strong>See and Hear People</strong> - Notice how they're doing, ask questions, and truly listen to their answers. For example, ask "What has your attention today?" instead of just "How are you?"</li>
+            <li><strong>Affirm People</strong> - Show them what makes them special-like their strengths, ideas, or hard work. Be specific and sincere.</li>
+            <li><strong>Show They're Needed</strong> - Help people understand how their work connects to something bigger. Even a janitor at NASA once said, "I'm helping put a man on the moon," because he knew his work mattered.</li>
+        </ul>
+    </div>
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Discussion Questions:</h4>
+        <ul>
+            <li>What's one small thing a manager could do to make someone feel seen or heard?</li>
+            <li>Why is specific praise more powerful than a general thank-you?</li>
+            <li>Can you think of a time when someone made you feel like your work mattered?</li>
+        </ul>
+    </div>
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Activity:</h4>
+        <ul>
+            <li>Students create and practice <strong>giving specific feedback</strong> (e.g., instead of "Good job," say "Your detailed report helped us make the right decision.").</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+    
+{% call info_card('wrapup', '6. Wrap-Up Discussion') %}
+    <ul>
+        <li>What part of today's reading stood out to you most? Why?</li>
+        <li>In your opinion, what matters more at work: salary, flexibility, or feeling appreciated?</li>
+        <li>What can companies or leaders do to create more "mattering" at work?</li>
+        <li>Think of someone at work (or in life) who made you feel that you mattered. What did they do or say that had an impact on you?</li>
+    </ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('extra', '7. Extra Activities') %}
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Roleplay Scenarios (Business Focus):</h4>
+        <ul>
+            <li>A manager notices an employee seems disengaged. How can they affirm and support them?</li>
+            <li>A team finishes a big project. How can the leader show they're needed and valued?</li>
+            <li>You're mentoring a new employee. How can you help them feel they matter from day one?</li>
+        </ul>
+    </div>
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Personal Reflection Writing:</h4>
+        <ul>
+            <li>Write 5 sentences about what makes you feel like you matter at work. Share with a partner.</li>
+        </ul>
+    </div>
+{% endcall %}
+
+{% endblock %}

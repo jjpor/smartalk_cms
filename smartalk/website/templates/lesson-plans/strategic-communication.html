@@ -1,0 +1,205 @@
+{# --- 1. Definizione delle Variabili della Lezione --- #}
+{% set lesson_title = "Strategic Communication" %}
+{% set lesson_subtitle = "Connecting with clarity and impact." %}
+
+{% set nav_links = [
+    {'id': 'warm-up', 'title': 'Warm-Up'},
+    {'id': 'understanding-audience', 'title': 'Understanding Audience'},
+    {'id': 'constructing-message', 'title': 'Constructing Message'},
+    {'id': 'planning', 'title': 'Planning'},
+    {'id': 'impactful-communicator', 'title': 'Impactful Communicator'},
+    {'id': 'evaluating', 'title': 'Evaluating'},
+    {'id': 'scenarios', 'title': 'Scenarios'}
+] %}
+
+{# Dati per il suggerimento di esercizio interattivo (random_item_generator) #}
+{% set roleplay_scenarios = [
+    "A client project didn't meet expectations. Give feedback to your team without demotivating them.",
+    "Two team members are in conflict about responsibilities. Mediate the situation.",
+    "Present a new employee engagement idea to senior management and gain buy-in.",
+    "Delegate an urgent task to a colleague who is already overloaded. Communicate urgency while showing empathy."
+] %}
+
+
+{# --- 2. Estensione del Template Base e Import Macro --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, random_item_generator %}
+
+
+{# --- 3. Contenuto Specifico della Lezione --- #}
+{% block lesson_content %}
+
+    {# Sezione 1: Warm-Up Section #}
+    {% call info_card('warm-up', '1. Warm-Up Discussion', initial_state='show') %}
+        <div class="lesson-card"> {# Tendina interna #}
+            <div class="card-header flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Your Communication Experiences</h3>
+                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+            </div>
+            <div class="card-content">
+                <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                    <li>What's the most effective message you've ever received at work?</li>
+                    <li>Can you think of a time when communication failed? What happened?</li>
+                </ul>
+            </div>
+        </div>
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {# Sezione 2: Understanding the Audience #}
+    {% call info_card('understanding-audience', '2. Understanding the Audience') %}
+        <div class="lesson-card"> {# Tendina interna #}
+            <div class="card-header flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Explanation & Discussion</h3>
+                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+            </div>
+            <div class="card-content">
+                <p class="text-slate-700 mt-4">Effective communication begins with understanding who your audience is. Knowing their needs, preferences, and values helps you shape a message that resonates.</p>
+                <p class="text-slate-700 font-semibold mt-4">Key Points:</p>
+                <ul class="key-points-list mt-2 text-slate-600 space-y-1">
+                    <li>Adjust tone, formality, and content depending on the audience.</li>
+                    <li>Use empathy to connect.</li>
+                    <li>Identify different audience types and expectations.</li>
+                </ul>
+                <p class="text-slate-700 font-semibold mt-4">Discussion Questions:</p>
+                <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+                    <li>Can you think of a time when you felt truly understood? What did the communicator do well?</li>
+                    <li>How does communication change when speaking with friends vs. coworkers vs. clients?</li>
+                    <li>What strategies can you use to figure out your audience's needs before communicating?</li>
+                </ul>
+            </div>
+        </div>
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {# Sezione 3: Constructing the Message #}
+    {% call info_card('constructing-message', '3. Constructing the Message') %}
+        <div class="lesson-card"> {# Tendina interna #}
+            <div class="card-header flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Explanation & Discussion</h3>
+                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+            </div>
+            <div class="card-content">
+                <p class="text-slate-700 mt-4">After knowing your audience, construct a message that is clear, concise, and impactful.</p>
+                <p class="text-slate-700 font-semibold mt-4">Key Points:</p>
+                <ul class="key-points-list mt-2 text-slate-600 space-y-1">
+                    <li>Use simple, direct language.</li>
+                    <li>Structure your message: introduction → main point → conclusion.</li>
+                    <li>Use stories/examples to connect.</li>
+                </ul>
+                <p class="text-slate-700 font-semibold mt-4">Discussion Questions:</p>
+                <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+                    <li>What makes a message memorable—words, tone, or structure?</li>
+                    <li>Why do some people struggle to communicate ideas clearly?</li>
+                    <li>How can storytelling make communication more effective?</li>
+                </ul>
+            </div>
+        </div>
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {# Sezione 4: Planning Communication #}
+    {% call info_card('planning', '4. Planning Communication') %}
+        <div class="lesson-card"> {# Tendina interna #}
+            <div class="card-header flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Explanation & Discussion</h3>
+                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+            </div>
+            <div class="card-content">
+                <p class="text-slate-700 mt-4">Good communication requires planning—choosing the right medium, timing, and consistency.</p>
+                <p class="text-slate-700 font-semibold mt-4">Key Points:</p>
+                <ul class="key-points-list mt-2 text-slate-600 space-y-1">
+                    <li>Choose the right medium (email, phone, face-to-face).</li>
+                    <li>Time your message for maximum impact.</li>
+                    <li>Follow up when needed.</li>
+                </ul>
+                <p class="text-slate-700 font-semibold mt-4">Discussion Questions:</p>
+                <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+                    <li>What factors do you consider when choosing between email, phone call, or meeting?</li>
+                    <li>Have you ever regretted the timing of a message?</li>
+                    <li>How can poor planning affect workplace communication?</li>
+                </ul>
+            </div>
+        </div>
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {# Sezione 5: Becoming an Impactful Communicator #}
+    {% call info_card('impactful-communicator', '5. Becoming a More Impactful Communicator') %}
+        <div class="lesson-card"> {# Tendina interna #}
+            <div class="card-header flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Explanation & Discussion</h3>
+                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+            </div>
+            <div class="card-content">
+                <p class="text-slate-700 mt-4">Effective communication depends on how you say things—active listening, body language, and openness to feedback.</p>
+                <p class="text-slate-700 font-semibold mt-4">Key Points:</p>
+                <ul class="key-points-list mt-2 text-slate-600 space-y-1">
+                    <li>Practice active listening.</li>
+                    <li>Pay attention to tone, facial expressions, and body language.</li>
+                    <li>Ask for and use feedback to improve.</li>
+                </ul>
+                <p class="text-slate-700 font-semibold mt-4">Discussion Questions:</p>
+                <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+                    <li>What makes someone a great communicator—words, listening skills, or something else?</li>
+                    <li>How does body language impact how a message is received?</li>
+                    <li>Why is it difficult for some people to accept communication feedback?</li>
+                </ul>
+            </div>
+        </div>
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {# Sezione 6: Evaluating Effectiveness #}
+    {% call info_card('evaluating', '6. Evaluating Effectiveness') %}
+        <div class="lesson-card"> {# Tendina interna #}
+            <div class="card-header flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Explanation & Discussion</h3>
+                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+            </div>
+            <div class="card-content">
+                <p class="text-slate-700 mt-4">Always check if your message was understood.</p>
+                <p class="text-slate-700 font-semibold mt-4">Key Points:</p>
+                <ul class="key-points-list mt-2 text-slate-600 space-y-1">
+                    <li>Ask for feedback.</li>
+                    <li>Recognize success and areas to improve.</li>
+                    <li>Learn from mistakes.</li>
+                </ul>
+                <p class="text-slate-700 font-semibold mt-4">Discussion Questions:</p>
+                <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+                    <li>How do you measure if your message was understood correctly?</li>
+                    <li>What's the best way to ask for feedback without making others uncomfortable?</li>
+                    <li>Can you think of a time when your message wasn't received as intended?</li>
+                </ul>
+            </div>
+        </div>
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {# Sezione 7: Scenarios #}
+    {% call info_card('scenarios', '7. Scenarios (Roleplay Practice)') %}
+        
+        {# Versione statica (come da HTML originale), per riferimento #}
+        <div class="lesson-card mt-4"> {# Tendina interna #}
+            <div class="card-header flex justify-between items-center">
+                <h3 class="font-bold text-slate-800">Real-World Roleplay</h3>
+                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+            </div>
+            <div class="card-content">
+                <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                    <li>A client project didn't meet expectations. Give feedback to your team without demotivating them.</li>
+                    <li>Two team members are in conflict about responsibilities. Mediate the situation.</li>
+                    <li>Present a new employee engagement idea to senior management and gain buy-in.</li>
+                    <li>Delegate an urgent task to a colleague who is already overloaded. Communicate urgency while showing empathy.</li>
+                </ul>
+            </div>
+        </div>
+    {% endcall %}
+
+{% endblock lesson_content %}

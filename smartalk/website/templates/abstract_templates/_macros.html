@@ -30,61 +30,65 @@
 
 {# --- MACRO 1: Collapsible Info Card --- #}
 {% macro info_card(id, title, border_color=None, initial_state='show') %}
-    <section id="{{ id }}" class="pt-16 -mt-16">
-        <div class="lesson-card {% if border_color %}border-{{ border_color }}{% endif %}">
-            <div class="card-header">
-                <h3>{{ title }}</h3>
-                <span class="arrow-icon">▾</span>
-            </div>
-            <div class="card-content {{ initial_state }}">
-                {{ caller() }} {# The HTML content will be inserted here #}
-            </div>
-        </div>
-    </section>
+  <section id="{{ id }}" class="lesson-section mb-8">
+    <div class="lesson-card {% if border_color %}border-{{ border_color }}{% endif %}">
+      <div class="card-header">
+        <h3>{{ title }}</h3>
+        <span class="arrow-icon">▾</span>
+      </div>
+      <div class="card-content {{ initial_state }}">
+        {{ caller() }}
+      </div>
+    </div>
+  </section>
 {% endmacro %}
-
 
 {# --- MACRO 2: Fill-in-the-Gap Exercise --- #}
 {% macro fill_in_the_gap_exercise(exercise_id, sentences) %}
-    <div class="interactive-wrapper" data-exercise-container id="{{ exercise_id }}">
-        <div class="space-y-4">
-            {% for sentence in sentences %}
-                <p>
-                    {{ sentence.prefix | safe }}
-                    <input type="text" class="quiz-input-text" data-answer="{{ sentence.answer }}">
-                    {{ sentence.suffix | safe }}
-                    <span class="quiz-feedback"></span>
-                </p>
-            {% endfor %}
-        </div>
-        <button class="btn btn-primary" data-quiz-button data-quiz-type="fill-in">Check</button>
-        <div class="quiz-summary"></div>
+  <div class="interactive-wrapper" data-exercise-container id="{{ exercise_id }}">
+    <div class="space-y-4">
+      {% for s in sentences %}
+        {% set row_id = exercise_id ~ "-row-" ~ loop.index0 %}
+        <p id="{{ row_id }}">
+          {{ s.prefix | safe }}
+          <input type="text" class="quiz-input-text" data-answer="{{ s.answer }}">
+          {{ s.suffix | safe }}
+          <span class="quiz-feedback"></span>
+        </p>
+      {% endfor %}
     </div>
+    <button class="btn btn-primary" data-quiz-button data-quiz-type="fill-in">Check</button>
+    <div class="quiz-summary"></div>
+  </div>
 {% endmacro %}
-
 
 {# --- MACRO 3: Multiple Choice Exercise --- #}
 {% macro multiple_choice_exercise(exercise_id, questions) %}
-    <div class="interactive-wrapper" data-exercise-container id="{{ exercise_id }}">
-        {% for q in questions %}
-            <div class="quiz-question-item" data-answer="{{ q.correct_value }}">
-                <p class="font-semibold">{{ loop.index }}. {{ q.text }}</p>
-                <div class="options">
-                    {% for opt in q.options %}
-                        <label>
-                            <input type="radio" name="{{ exercise_id }}-q{{ loop.parent.loop.index }}" value="{{ opt.value }}">
-                            {{ opt.text }}
-                        </label>
-                    {% endfor %}
-                </div>
-                <div class="quiz-feedback"></div>
-            </div>
-        {% endfor %}
-        <button class="btn btn-primary" data-quiz-button data-quiz-type="multiple-choice">Check</button>
-        <div class="quiz-summary"></div>
-    </div>
+  <div class="interactive-wrapper" data-exercise-container id="{{ exercise_id }}">
+    {% for q in questions %}
+      {# ID stabile per questa domanda #}
+      {% set qid = exercise_id ~ "-q" ~ loop.index0 %}
+      <div class="quiz-question-item" data-answer="{{ q.correct_value }}">
+        <p class="font-semibold">{{ loop.index }}. {{ q.text }}</p>
+        <div class="options">
+          {% for opt in q.options %}
+            {% set opt_id = qid ~ "-opt" ~ loop.index0 %}
+            <label for="{{ opt_id }}">
+              <input id="{{ opt_id }}"
+                     type="radio"
+                     name="{{ qid }}"
+                     value="{{ opt.value }}">
+              {{ opt.text }}
+            </label>
+          {% endfor %}
+        </div>
+        <div class="quiz-feedback"></div>
+      </div>
+    {% endfor %}
+    <button class="btn btn-primary" data-quiz-button data-quiz-type="multiple-choice">Check</button>
+    <div class="quiz-summary"></div>
+  </div>
 {% endmacro %}
-
 
 {# --- MACRO 4: Match the Items Exercise --- #}
 {% macro match_exercise(exercise_id, group_a_items, group_b_items) %}
@@ -107,7 +111,6 @@
     </div>
 {% endmacro %}
 
-
 {# --- MACRO 5: Random Item Generator --- #}
 {% macro random_item_generator(exercise_id, button_text, source_list_id, items) %}
     <div class="interactive-wrapper" data-random-container id="{{ exercise_id }}">
@@ -123,4 +126,30 @@
             {% endfor %}
         </ul>
     </div>
+{% endmacro %}
+
+{# --- MACRO 6: Dropdown Fill-in Exercise --- #}
+{% macro dropdown_fill_in_exercise(exercise_id, sentences) %}
+  <div class="interactive-wrapper" data-exercise-container id="{{ exercise_id }}">
+    <div class="space-y-4">
+      {% for s in sentences %}
+        {% set row_id = exercise_id ~ "-row-" ~ loop.index0 %}
+        <p id="{{ row_id }}" class="dropdown-fill-item" data-answer="{{ s.answer }}">
+          {{ s.prefix | safe }}
+          {# Il select ha bisogno di classi per lo stile e un data-attribute per JS #}
+          <select class="quiz-select-dropdown mx-2 border-b-2 border-blue-500 focus:outline-none focus:border-blue-700" data-dropdown-input>
+            <option value="" disabled selected>Select...</option> {# Opzione placeholder #}
+            {% for opt in s.options %}
+              <option value="{{ opt }}">{{ opt }}</option>
+            {% endfor %}
+          </select>
+          {{ s.suffix | safe }}
+          <span class="quiz-feedback ml-2"></span> {# Feedback visivo #}
+        </p>
+      {% endfor %}
+    </div>
+    {# Nota il nuovo data-quiz-type #}
+    <button class="btn btn-primary" data-quiz-button data-quiz-type="dropdown-fill-in">Check</button>
+    <div class="quiz-summary"></div>
+  </div>
 {% endmacro %}

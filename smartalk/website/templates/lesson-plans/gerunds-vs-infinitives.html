@@ -1,0 +1,266 @@
+{% set lesson_title = "Gerunds vs. Infinitives" %}
+{% set lesson_subtitle = "Mastering verb forms in English." %}
+
+{% set nav_links = [
+    {'id': 'warmup', 'title': 'Warm-Up'},
+    {'id': 'explanation', 'title': 'Explanation'},
+    {'id': 'decision-tree', 'title': 'Quick Decision Tree'},
+    {'id': 'pronunciation', 'title': 'Pronunciation & Prosody'},
+    {'id': 'special-cases', 'title': 'Special Cases'},
+    {'id': 'verb-lists', 'title': 'Verb Lists'},
+    {'id': 'transform', 'title': 'Transformation Drills'},
+    {'id': 'error-hunt', 'title': 'Error Hunt'},
+    {'id': 'fivew-builder', 'title': '5W Question Builder'},
+    {'id': 'practice', 'title': 'Practice'},
+    {'id': 'discussion', 'title': 'Discussion'},
+    {'id': 'wrapup', 'title': 'Wrap-Up'}
+] %}
+
+{% set practice_sentences = [
+    {'prefix': 'She stopped', 'answer': 'smoking', 'suffix': '(smoke) years ago.'},
+    {'prefix': 'He stopped', 'answer': 'to check', 'suffix': '(check) his phone during the meeting.'},
+    {'prefix': 'I remember', 'answer': 'speaking', 'suffix': '(speak) with her at the conference last year.'},
+    {'prefix': 'Please remember', 'answer': 'to send', 'suffix': '(send) me the report today.'},
+    {'prefix': 'He forgot', 'answer': 'to book', 'suffix': '(book) the flight and had to pay more.'},
+    {'prefix': "I'll never forget", 'answer': 'meeting', 'suffix': '(meet) my first client.'},
+    {'prefix': 'They decided', 'answer': 'to launch', 'suffix': '(launch) the product in Europe.'},
+    {'prefix': 'We enjoyed', 'answer': 'working', 'suffix': '(work) on that project together.'},
+    {'prefix': 'She suggested', 'answer': 'scheduling', 'suffix': '(schedule) the meeting for Monday.'},
+    {'prefix': 'I hope', 'answer': 'to finish', 'suffix': '(finish) my presentation before lunch.'},
+    {'prefix': 'She likes', 'answer': 'working', 'suffix': '(work) under pressure.'},
+    {'prefix': 'They plan', 'answer': 'to expand', 'suffix': '(expand) next quarter.'},
+    {'prefix': 'We are used to', 'answer': 'working', 'suffix': '(work) late on Fridays.'},
+    {'prefix': 'He went on', 'answer': 'talking', 'suffix': '(talk) after the meeting ended.'},
+    {'prefix': 'I need', 'answer': 'to finish', 'suffix': '(finish) this by 5 p.m.'},
+    {'prefix': 'Thanks for', 'answer': 'sending', 'suffix': '(send) the files so quickly.'},
+    {'prefix': 'Try', 'answer': 'to restart', 'suffix': '(restart) the laptop and see if it helps.'},
+    {'prefix': 'I miss', 'answer': 'working', 'suffix': '(work) with that team.'},
+    {'prefix': 'He promised', 'answer': 'to help', 'suffix': '(help) with the slides.'},
+    {'prefix': "We can't afford", 'answer': 'to lose', 'suffix': '(lose) this client.'}
+] %}
+
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, fill_in_the_gap_exercise %}
+
+{# Questo è il blocco di codice che ti ho dato prima, che è corretto #}
+{% block lesson_content %}
+
+    {% call info_card('warmup', '1. Warm-Up Discussion', initial_state='show') %}
+        <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+            <li>What's something you enjoy doing outside of work?</li>
+            <li>Have you ever forgotten to do something important at work?</li>
+            <li>What's one new skill you've recently started learning?</li>
+        </ul>
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {% call info_card('explanation', '2. Explanation: Gerund vs. Infinitive', initial_state='show') %}
+        <div class="mt-4">
+            <h4 class="font-semibold text-slate-800">Gerunds (-ing form)</h4>
+            <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+                <li>Act like nouns (Smoking is not allowed).</li>
+                <li>Used after certain verbs (I enjoy reading).</li>
+                <li>Used after prepositions (before leaving).</li>
+                <li>Used when recalling past experiences (I remember meeting her).</li>
+            </ul>
+        </div>
+        <div class="mt-4">
+            <h4 class="font-semibold text-slate-800">Infinitives (to + verb)</h4>
+            <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+                <li>Used after certain verbs (She decided to stay).</li>
+                <li>Show intention, obligation, or future action (I hope to pass the exam).</li>
+                <li>Used for purpose (I came here to learn).</li>
+            </ul>
+        </div>
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {% call info_card('decision-tree', '3. Quick Decision Tree: Gerund or Infinitive?', initial_state='show') %}
+        <ol class="list-decimal list-inside space-y-2 text-slate-700">
+            <li>Is there a preposition (at, in, on, about, for, without, before, after, to as preposition)? Use -ing.
+                <div class="ml-5 text-slate-600 italic">She is good at speaking. I look forward to meeting you.</div>
+            </li>
+            <li>Is the main verb about intention, decision, plan, need (want, hope, decide, plan, need, promise)? Use to + verb.
+                <div class="ml-5 text-slate-600 italic">She decided to stay.</div>
+            </li>
+            <li>Is the verb on the gerund list (enjoy, avoid, suggest, finish, keep)? Use -ing.
+                <div class="ml-5 text-slate-600 italic">They suggested waiting.</div>
+            </li>
+            <li>Double-meaning verbs (stop, remember, forget). Check Special Cases.</li>
+        </ol>
+        <p class="mt-3 text-slate-600"><strong>Tip:</strong> If a noun fits after it, -ing often works. I enjoy coffee → I enjoy reading.</p>
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {% call info_card('pronunciation', '4. Pronunciation & Prosody for Gerunds/Infinitives', initial_state='show') %}
+        <div class="space-y-3">
+            <h4 class="font-semibold">Weak to and linking</h4>
+            <ul class="list-disc list-inside text-slate-700 space-y-1">
+                <li>to → /tə/ before consonants, /tu/ only when stressed. want tə go, need tə ask</li>
+                <li>Linking: want_to_eat, plan_to_answer, try_to_explain</li>
+            </ul>
+            <h4 class="font-semibold mt-2">-ing endings (no hard g)</h4>
+            <ul class="list-disc list-inside text-slate-700 space-y-1">
+                <li>-ing → ɪŋ (back nasal). speaking, waiting, making</li>
+                <li>Practice chain: speak → speaking → speaking about → speaking about it</li>
+            </ul>
+            <h4 class="font-semibold mt-2">Intonation</h4>
+            <ul class="list-disc list-inside text-slate-700 space-y-1">
+                <li>Wh-questions: falling tone. Why did you decide to go?</li>
+                <li>Statements: smooth fall, no clipped finals. I decided to wait.</li>
+            </ul>
+        </div>
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {% call info_card('special-cases', '5. Special Cases: Verbs That Change Meaning', initial_state='show') %}
+        <div class="mt-4">
+            <h4 class="font-semibold text-slate-800">Stop</h4>
+            <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+                <li><strong>Gerund</strong>: stop the action completely.
+                    <p class="ml-4 italic">She stopped smoking. She does not smoke anymore.</p>
+                </li>
+                <li><strong>Infinitive</strong>: stop one action to do another.
+                    <p class="ml-4 italic">She stopped talking to smoke. She paused talking so she could smoke.</p>
+                </li>
+            </ul>
+        </div>
+        <div class="mt-4">
+            <h4 class="font-semibold text-slate-800">Remember</h4>
+            <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+                <li><strong>Gerund</strong>: recall a past action.
+                    <p class="ml-4 italic">I remember locking the door.</p>
+                </li>
+                <li><strong>Infinitive</strong>: do not forget to do something in the future.
+                    <p class="ml-4 italic">Remember to lock the door.</p>
+                </li>
+            </ul>
+        </div>
+        <div class="mt-4">
+            <h4 class="font-semibold text-slate-800">Forget</h4>
+            <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+                <li><strong>Gerund</strong>: forgetting something that happened.
+                    <p class="ml-4 italic">I will never forget meeting her.</p>
+                </li>
+                <li><strong>Infinitive</strong>: failing to do something.
+                    <p class="ml-4 italic">I forgot to call him.</p>
+                </li>
+            </ul>
+        </div>
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {% call info_card('verb-lists', '6. Full Verb Lists', initial_state='show') %}
+        <div class="mt-4">
+            <h4 class="font-semibold text-slate-800">Common Verbs Followed by Gerunds</h4>
+            <ul class="list-disc list-inside mt-2 text-slate-600 space-y-1">
+                <li>admit, advise, avoid, be used to, get used to, can't stand, consider, discuss, dislike, enjoy, feel like, finish, give up, have difficulty, have problems, have trouble, imagine, keep, look forward to, miss, recommend, quit, stop, suggest, understand, waste time</li>
+            </ul>
+        </div>
+        <div class="mt-4">
+            <h4 class="font-semibold text-slate-800">Common Verbs Followed by Infinitives</h4>
+            <ul class="list-disc list-inside mt-2 text-slate-600 space-y-1">
+                <li>afford, agree, allow, appear, arrange, ask, care, challenge, convince, decide, demand, expect, fail, force, forget, hire, hope, invite, learn, manage, offer, order, pay, plan, prepare, pretend, program, promise, refuse, remember, teach, tell, volunteer, wait, want, warn, wish</li>
+            </ul>
+        </div>
+        <div class="mt-4">
+            <h4 class="font-semibold text-slate-800">Common Verbs Followed by Gerunds or Infinitives</h4>
+            <ul class="list-disc list-inside mt-2 text-slate-600 space-y-1">
+                <li>begin, continue, hate, like, love, prefer, propose, start</li>
+            </ul>
+        </div>
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {% call info_card('transform', '7. Transformation Drills (Meaning Matters)', initial_state='show') %}
+        <ol class="list-decimal list-inside space-y-1 text-slate-700">
+            <li>We stopped <strong>talking</strong>. Make it mean we paused another action in order to talk.</li>
+            <li>I remember <strong>meeting</strong> him in Milan. Make it a reminder for a future action.</li>
+            <li>She forgot <strong>to send</strong> the file. Make it a memory of a past event she will never forget.</li>
+            <li>He tried <strong>to open</strong> the door. Make it mean experimented with opening as an activity.</li>
+            <li>They regret <strong>telling</strong> the client. Make it an instruction for a future apology.</li>
+            <li>We prefer <strong>working</strong> remotely. Rephrase with infinitive and keep meaning.</li>
+            <li>She went on <strong>talking</strong>. Make it mean proceeded to talk after finishing something else.</li>
+            <li>He hates <strong>waiting</strong>. Rephrase with can't stand.</li>
+            <li>We finished <strong>reviewing</strong> the report. Rephrase with be done plus ing.</li>
+            <li>I like <strong>learning</strong> by doing. Rephrase with enjoy.</li>
+        </ol>
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {% call info_card('error-hunt', '8. Error Hunt: Fix the Form', initial_state='show') %}
+        <ol class="list-decimal list-inside space-y-1 text-slate-700">
+            <li>I look forward to <u>meet</u> you next week.</li>
+            <li>She is interested in <u>to change</u> teams.</li>
+            <li>They suggested <u>to move</u> the deadline.</li>
+            <li>We decided <u>moving</u> to a new office.</li>
+            <li>He forgot <u>calling</u> the landlord.</li>
+            <li>Remember <u>closing</u> the door before you leave. Future instruction intended.</li>
+            <li>I am used to D<u>work</u> late on Fridays.</li>
+            <li>She stopped <u>to smoke</u> last year. Do you mean quit?</li>
+            <li>Thanks for <u>to send</u> the report.</li>
+            <li>He managed <u>finishing</u> the project on time.</li>
+        </ol>
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {% call info_card('fivew-builder', '9. 5W Question Builder (Personal and Ethical Topics)', initial_state='show') %}
+        <div class="text-slate-700 space-y-3">
+            <p>Build five questions (Who, What, When, Where, Why) for each topic using gerunds or infinitives correctly.</p>
+            <ul class="list-disc list-inside space-y-1">
+                <li><strong>Respect regardless of gender</strong> (Who should teach children to respect others?)</li>
+                <li><strong>Remote work and productivity</strong> (Why do you prefer working from home?)</li>
+                <li><strong>Learning plans</strong> (What do you plan to improve this month?)</li>
+                <li><strong>Health and habits</strong> (When did you stop eating late at night?)</li>
+                <li><strong>Travel goals</strong> (Where do you hope to go next year?)</li>
+            </ul>
+        </div>
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {% call info_card('practice', '10. Controlled Practice (Fill in the Blank)', initial_state='show') %}
+        {{ fill_in_the_gap_exercise('gerund-infinitive-practice', practice_sentences) }}
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {% call info_card('discussion', '11. Business Discussion Questions', initial_state='show') %}
+        <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+            <li>What is something you have stopped doing at work because it was not effective?</li>
+            <li>Do you remember doing something in your career that made you proud?</li>
+            <li>Have you ever forgotten to do something important at work? What happened?</li>
+            <li>What is a new skill you have started learning for your job? Why?</li>
+            <li>Do you prefer planning to work late or finishing tasks early? Why?</li>
+            <li>What is something you look forward to doing in your career this year?</li>
+            <li>Would you consider taking a job in another country? Why or why not?</li>
+        </ul>
+    {% endcall %}
+
+    <hr class="my-12 border-gray-200">
+
+    {% call info_card('wrapup', '12. Wrap-Up', initial_state='show') %}
+        <ul class="key-points-list mt-4 text-slate-700 space-y-2">
+            <li><strong>Gerunds</strong> often describe experiences, habits, or activities (enjoy working, stop smoking).</li>
+            <li><strong>Infinitives</strong> often describe intentions, obligations, or future actions (want to learn, remember to call).</li>
+            <li>Some verbs such as stop, remember, forget change meaning depending on the form that follows.</li>
+        </ul>
+        <div class="mt-6">
+            <h4 class="font-semibold text-slate-800">Reflection</h4>
+            <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+                <li>What is one thing you need to remember to do this week?</li>
+                <li>What is something you enjoy doing that helps you at work?</li>
+                <li>What is something you have stopped doing that has made you more productive?</li>
+            </ul>
+        </div>
+    {% endcall %}
+
+{% endblock lesson_content %}
