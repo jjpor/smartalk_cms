@@ -1,0 +1,37 @@
+{% extends "abstract_templates/base.html" %}
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/coach_dashboard/global.css') }}?v={{ random() }}">
+</head>
+
+<body>
+
+    {% include "abstract_templates/coach_dashboard_header.html" %}
+
+    <div class="breadcrumb container">
+        <a href="/dashboard/coach/landing.html">Dashboard</a><span class="sep">/</span><a
+            href="/dashboard/coach/flashcards.html">Flashcards</a>
+    </div>
+    <main class="container" style="padding:16px;">
+
+        <section class="section">
+            <h1>Flashcards</h1>
+            <p class="form-label">Work area</p>
+            <div id="flashcardsRoot"></div>
+            <div style="margin-top:16px;">
+                <a class="btn secondary" href="/dashboard/coach/landing.html">Back to Dashboard</a>
+            </div>
+        </section>
+
+    </main>
+    <script type="module"
+        src="{{ url_for('static', filename='js/coach_dashboard/core/api_core.js') }}?v={{ random() }}"> </script>
+    <script type="module"
+        src="{{ url_for('static', filename='js/coach_dashboard/pages/flashcards.js') }}?v={{ random() }}"> </script>
+</body>
+
+</html>

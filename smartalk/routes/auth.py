@@ -69,26 +69,23 @@ def decode_jwt_token(token: str) -> dict:
         raise HTTPException(status_code=401, detail="Invalid token")
 
 
-async def get_current_user(request: Request, DBDependency: Any = DBDependency):
+async def get_current_user(request: Request, DBDependency: Any = DBDependency) -> Dict[str, Any] | None:
     """
     Dipendenza FastAPI per ottenere l'utente autenticato dal JWT.
     """
+    user = None
     auth_header = request.headers.get("Authorization")
-    if not auth_header or not auth_header.startswith("Bearer "):
-        raise HTTPException(status_code=401, detail="Missing Authorization header")
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(" ")[1]
+        payload = decode_jwt_token(token)
+        user_id = payload.get("sub")
+        email = payload.get("email")
+        user_type = payload.get("user_type")
 
-    token = auth_header.split(" ")[1]
-    payload = decode_jwt_token(token)
-    user_id = payload.get("sub")
-    email = payload.get("email")
-    user_type = payload.get("user_type")
-
-    if not user_id or not email or not user_type:
-        raise HTTPException(status_code=401, detail="Invalid token payload")
-
-    user = await get_user_by_email(email, DBDependency)
-    if not user or user.get("id") != user_id or user.get("user_type") != user_type:
-        raise HTTPException(status_code=401, detail="User not found")
+        if user_id and email and user_type:
+            user = await get_user_by_email(email, DBDependency)
+            if not user or user.get("id") != user_id or user.get("user_type") != user_type:
+                user = None
 
     return user
 

@@ -1,0 +1,28 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='css/coach_dashboard/global.css') }}?v={{ random() }}">
+
+{% if custom_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename=custom_css) }}">
+{% endif %}
+
+<div class="header-bar">
+    <div class="header-inner container">
+        <a href="/dashboard/coach/landing.html" class="logo"
+            style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+            <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756747292/smartalk_banner_ke1kkq.svg"
+                alt="Smartalk" style="height:40px;">
+        </a>
+        <nav class="header-nav">
+            <a href="/dashboard/coach/calls.html">Calls</a>
+            <a href="/dashboard/coach/debrief.html">Debrief</a>
+            <a href="/dashboard/coach/reportcards.html">Report Cards</a>
+            <a href="/dashboard/coach/students.html">Students</a>
+            <a href="/dashboard/coach/flashcards.html">Flashcards</a>
+            <a href="/dashboard/coach/teaching.html">Materials</a>
+            <a href="/dashboard/coach/logout.html">Logout</a>
+        </nav>
+    </div>
+</div>
+<div id="globalLoader">
+    <div class="loader-circle"></div>
+</div>
+<div id="toast"></div>

@@ -1,0 +1,57 @@
+{% extends "abstract_templates/base.html" %}
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/coach_dashboard/global.css') }}?v={{ random() }}">
+    <link rel="stylesheet"
+        href="{{ url_for('static', filename='css/coach_dashboard/pages/landing.css') }}?v={{ random() }}">
+</head>
+
+<body>
+
+    {% include "abstract_templates/coach_dashboard_header.html" %}
+
+    <div class="breadcrumb container">
+        <a href="/dashboard/coach/landing.html">Dashboard</a><span class="sep">/</span><span>Hub</span>
+    </div>
+    <main class="container" style="padding:16px;">
+
+        <section class="section">
+            <h1 style="margin:0;">Dashboard Hub</h1>
+            <p class="form-label">Welcome back, <span id="coachName"
+                    style="font-weight:700;color:#2563eb;">Coach</span>.</p>
+        </section>
+
+        <section
+            style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:16px;">
+            <a class="cube-button" href="/dashboard/coach/calls.html"><span class="emoji">📝</span>
+                <p>Log a new call</p>
+            </a>
+            <a class="cube-button" href="/dashboard/coach/debrief.html"><span class="emoji">💬</span>
+                <p>Coaching Debrief</p>
+            </a>
+            <a class="cube-button" href="/dashboard/coach/reportcards.html"><span class="emoji">📈</span>
+                <p>Report Cards</p>
+            </a>
+            <a class="cube-button" href="/dashboard/coach/students.html"><span class="emoji">🧑‍🎓</span>
+                <p>Students</p>
+            </a>
+            <a class="cube-button" href="/dashboard/coach/flashcards.html"><span class="emoji">🃏</span>
+                <p>Flashcards</p>
+            </a>
+            <a class="cube-button" href="/dashboard/coach/teaching.html"><span class="emoji">📚</span>
+                <p>Teaching Materials</p>
+            </a>
+        </section>
+
+    </main>
+    <script type="module"
+        src="{{ url_for('static', filename='js/coach_dashboard/core/api_core.js') }}?v={{ random() }}"> </script>
+    <script type="module"
+        src="{{ url_for('static', filename='js/coach_dashboard/pages/landing.js') }}?v={{ random() }}"> </script>
+</body>
+
+</html>

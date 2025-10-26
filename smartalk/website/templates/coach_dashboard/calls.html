@@ -1,0 +1,131 @@
+{% extends "abstract_templates/base.html" %}
+
+{% block content %}
+{% include "abstract_templates/coach_dashboard_header.html" %}
+
+<div class="breadcrumb container">
+    <a href="/dashboard/coach/landing.html">Dashboard</a><span class="sep">/</span><a
+        href="/dashboard/coach/calls.html">Calls</a>
+</div>
+<main class="container" style="padding:16px;">
+
+    <section class="section">
+        <h1 style="margin:0;">Log a New Call</h1>
+        <div style="margin-top:12px;display:flex;gap:14px;align-items:center;">
+            <label class="form-label">Type</label>
+            <label><input type="radio" name="callType" value="IND" checked> IND</label>
+            <label><input type="radio" name="callType" value="GROUP"> GROUP</label>
+        </div>
+    </section>
+
+    <section class="section" style="margin-top:16px;">
+        <form id="callForm">
+            <div style="display:grid;grid-template-columns:repeat(2, minmax(0,1fr));gap:12px;">
+                <div id="studentIdContainer">
+                    <label class="form-label">Student</label>
+                    <select id="studentId" class="form-input">
+                        <option value="" disabled selected>Select a student</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="form-label">Product</label>
+                    <select id="productIdSelect" class="form-input" disabled>
+                        <option value="" disabled selected>Select a student first</option>
+                    </select>
+                    <div id="remainingCalls" class="form-label" style="margin-top:6px; display:none;"></div>
+                </div>
+
+                <div id="groupStudentsContainer" style="grid-column: span 2; display:none;">
+                    <label class="form-label">Group Students</label>
+                    <div id="groupStudentsDynamic" class="section" style="padding:12px;">
+                        <!-- dynamic rows: select + Details button -->
+                    </div>
+                </div>
+
+                <div>
+                    <label class="form-label">Date</label>
+                    <input type="date" id="callDate" class="form-input">
+                </div>
+
+                <div>
+                    <label class="form-label">Duration Override (min)</label>
+                    <select id="callDuration" class="form-input">
+                        <option value="" selected disabled>Select duration</option>
+                        <option value="30">30</option>
+                        <option value="60">60</option>
+                        <option value="90">90</option>
+                        <option value="120">120</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="form-label">Coach Rate (€)</label>
+                    <input id="hourlyRate" class="form-input" readonly>
+                </div>
+                <div>
+                    <label class="form-label">Technical Duration (min)</label>
+                    <input id="technicalDuration" class="form-input" readonly>
+                </div>
+
+                <div style="grid-column: span 2;">
+                    <label class="form-label">General Notes (optional)</label>
+                    <textarea id="notes" class="form-input" rows="3"
+                        placeholder="General notes for the call..."></textarea>
+                </div>
+
+                <div id="attendanceRowInd">
+                    <label class="form-label">Attendance</label>
+                    <select id="attendance" class="form-input">
+                        <option value="YES" selected>YES</option>
+                        <option value="NO">NO</option>
+                    </select>
+                </div>
+            </div>
+
+            <input type="hidden" id="units">
+            <input type="hidden" id="productId">
+
+            <div style="margin-top:16px; display:flex; gap:8px;">
+                <button class="btn" type="submit">Log Call</button>
+                <a class="btn secondary" href="/dashboard/coach/landing.html">Back to Dashboard</a>
+            </div>
+            <div id="callMessageBox" class="form-label" style="margin-top:10px;"></div>
+        </form>
+    </section>
+
+    <!-- Modal for per-student details -->
+    <div id="studentDetailsModal" class="modal">
+        <div class="backdrop"></div>
+        <div class="dialog">
+            <div class="header">Student details</div>
+            <div class="content">
+                <div class="form-label">Student ID</div>
+                <input id="modalStudentId" class="form-input" readonly>
+                <div class="form-label" style="margin-top:12px;">Attendance <span style="color:#dc2626">*</span>
+                </div>
+                <select id="modalAttendance" class="form-input">
+                    <option value="">Select...</option>
+                    <option value="YES">YES</option>
+                    <option value="NO">NO</option>
+                </select>
+                <div class="form-label" style="margin-top:12px;">Notes (optional)</div>
+                <textarea id="modalNotes" class="form-input" rows="3"
+                    placeholder="Add notes for this student..."></textarea>
+            </div>
+            <div class="footer">
+                <button id="modalCancelBtn" class="btn secondary" type="button">Cancel</button>
+                <button id="modalSaveBtn" class="btn green" type="button">Save</button>
+            </div>
+        </div>
+    </div>
+
+</main>
+<script type="module"
+    src="{{ url_for('static', filename='js/coach_dashboard/core/api_core.js') }}?v={{ random() }}"> </script>
+
+{% if custom_js %}
+<script type="module" src="{{ url_for('static', filename=custom_js) }}"> </script>
+{% endif %}
+
+{% endblock %}

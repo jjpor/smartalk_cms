@@ -1,0 +1,134 @@
+
+/* === RESET BASE === */
+html, body { margin: 0; padding: 0; }
+
+/* ===========================
+   🎨 BASE E TIPOGRAFIA
+=========================== */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: #f3f4f6;
+}
+
+.container { max-width: 1100px; margin: 0 auto; }
+
+/* Header bar */
+.header-bar { position: sticky; top: 0; z-index: 50; background: #fff; border-bottom: 1px solid #e5e7eb; }
+.header-inner { display:flex; align-items:center; justify-content:space-between; padding: 10px 16px; }
+.header-nav a { margin:0 8px; color:#374151; text-decoration:none; font-weight:600; }
+.header-nav a.active { color:#2563eb; }
+
+/* Breadcrumb */
+.breadcrumb { font-size: 0.9rem; color:#6b7280; padding: 10px 16px; background:#fafafa; border-bottom:1px solid #eee; }
+.breadcrumb a { color:#2563eb; text-decoration:none; }
+.breadcrumb .sep { margin:0 6px; color:#9ca3af; }
+
+/* ===========================
+   🧱 FORM ELEMENTS
+=========================== */
+.form-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: #fff;
+  transition: all 0.2s;
+}
+.form-input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+.form-label { font-weight: 500; color: #4b5563; }
+
+button.btn {
+  display:inline-flex; align-items:center; justify-content:center;
+  gap:8px; padding:10px 14px; border-radius:10px; border:none; cursor:pointer;
+  background:#2563eb; color:#fff; font-weight:600;
+}
+button.btn.secondary { background:#6b7280; }
+button.btn.danger { background:#dc2626; }
+button.btn.green { background:#059669; }
+button.btn:disabled { opacity:.6; cursor:not-allowed; }
+
+/* ===========================
+   🟦 CUBE BUTTONS
+=========================== */
+.cube-button {
+  display: flex; flex-direction: column; justify-content: center; align-items: center;
+  padding: 18px; border-radius: 14px; text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.25s ease; cursor: pointer; min-height: 120px;
+  background:#2563eb; color:#fff;
+}
+.cube-button:hover { transform: translateY(-3px); box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15); }
+.cube-button .emoji { font-size: 2rem; }
+.cube-button p { font-size: 1rem; line-height: 1.3; margin:6px 0 0; }
+
+@media (min-width: 1024px) {
+  .cube-button { padding: 20px; min-height: 130px; }
+  .cube-button p { font-size: 1.05rem; }
+}
+@media (max-width: 640px) {
+  .cube-button { padding: 22px; min-height: 140px; }
+  .cube-button .emoji { font-size: 2.2rem; }
+}
+
+/* ===========================
+   ⏳ LOADER + TOAST
+=========================== */
+#globalLoader {
+  position: fixed; inset: 0; background: rgba(255, 255, 255, 0.7);
+  display: none; justify-content: center; align-items: center; z-index: 9999;
+  transition: opacity 0.3s ease; opacity: 0;
+}
+#globalLoader.active { display: flex !important; opacity: 1; }
+.loader-circle {
+  border: 6px solid #e5e7eb; border-top: 6px solid #3b82f6; border-radius: 50%;
+  width: 60px; height: 60px; animation: spin 1s linear infinite;
+}
+@keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
+
+#toast {
+  position: fixed; top: 16px; right: 16px; background:#059669; color:#fff;
+  padding:10px 12px; border-radius:10px; box-shadow:0 6px 14px rgba(0,0,0,.15);
+  z-index:99999; display:none; font-weight:600;
+}
+#toast.error { background:#dc2626; }
+#toast.warn { background:#d97706; }
+
+/* ===========================
+   🔄 FLASHCARDS FLIP EFFECT
+=========================== */
+.perspective { perspective: 1000px; }
+.transform-style-preserve-3d { transform-style: preserve-3d; }
+.backface-hidden { backface-visibility: hidden; }
+.rotate-y-180 { transform: rotateY(180deg); }
+
+/* ===========================
+   💬 Modal
+=========================== */
+.modal { position: fixed; inset:0; display:none; align-items:center; justify-content:center; z-index:9998; }
+.modal.open { display:flex; }
+.modal .backdrop { position:absolute; inset:0; background:rgba(0,0,0,.45); }
+.modal .dialog { position:relative; background:#fff; border-radius:16px; width:100%; max-width:520px; box-shadow:0 20px 60px rgba(0,0,0,.25); }
+.modal .dialog .content { padding:20px; }
+.modal .dialog .header { padding:16px 20px; border-bottom:1px solid #eee; font-weight:700; }
+.modal .dialog .footer { padding:16px 20px; border-top:1px solid #eee; display:flex; justify-content:flex-end; gap:8px; }
+
+/* Tables */
+.table { width:100%; border-collapse: collapse; }
+.table th, .table td { border:1px solid #e5e7eb; padding:10px; text-align:left; }
+.table thead { background:#f3f4f6; }
+
+/* Sections */
+.section { background:#fff; border:1px solid #e5e7eb; border-radius:16px; padding:16px; box-shadow:0 4px 10px rgba(0,0,0,.04); }
+
+/* ===========================
+   COACHING DEBRIEF - LARGHEZZA COLONNE
+=========================== */
+#debriefDraftsTable { table-layout: fixed; width:100%; }
+#debriefDraftsTable th, #debriefDraftsTable td { width: 9.09%; }
+#debriefDraftsTable th:nth-child(8), #debriefDraftsTable td:nth-child(8) { width: 18.18%; }
+#debriefDraftsTable th:last-child, #debriefDraftsTable td:last-child { width: 9.10%; }

@@ -1,0 +1,44 @@
+{% extends "abstract_templates/base.html" %}
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/coach_dashboard/global.css') }}?v={{ random() }}">
+</head>
+
+<body>
+    <div class="header-bar">
+        <div class="header-inner container">
+            <a href="#" class="logo" style="display:flex;align-items:center;gap:10px;text-decoration:none;">
+                <img src="https://res.cloudinary.com/dk5bqpodg/image/upload/v1756747292/smartalk_banner_ke1kkq.svg"
+                    alt="Smartalk" style="height:40px;">
+            </a>
+            <nav class="header-nav"><a href="/dashboard/coach/login.html" class="active">Login</a></nav>
+        </div>
+    </div>
+    <div id="globalLoader">
+        <div class="loader-circle"></div>
+    </div>
+    <div id="toast"></div>
+    <main class="container" style="padding:24px;">
+        <div class="section" style="max-width:520px;margin:32px auto;">
+            <h1>Login</h1>
+            <p class="form-label" style="margin-top:12px;">Coach ID</p>
+            <input id="coachId" class="form-input" placeholder="e.g. MA" autocomplete="username">
+            <p class="form-label" style="margin-top:12px;">Password</p>
+            <input id="password" type="password" class="form-input" placeholder="••••••••"
+                autocomplete="current-password">
+            <div style="margin-top:16px;display:flex;gap:8px;">
+                <button id="loginBtn" class="btn">Log in</button>
+            </div>
+        </div>
+    </main>
+    <script type="module"
+        src="{{ url_for('static', filename='js/coach_dashboard/core/api_core.js') }}?v={{ random() }}"> </script>
+    <script type="module"
+        src="{{ url_for('static', filename='js/coach_dashboard/pages/login.js') }}?v={{ random() }}"> </script>
+</body>
+
+</html>

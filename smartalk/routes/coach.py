@@ -8,7 +8,7 @@ from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource
 
 from smartalk.core.dynamodb import get_dynamodb_connection
 from smartalk.db_usage import dynamodb_coach
-from smartalk.routes.auth import create_token_response, get_current_user
+from smartalk.routes.auth import create_jwt_token, create_token_response, get_current_user
 
 router = APIRouter(tags=["Coach Dashboard"], prefix="/api/coach")
 
@@ -19,7 +19,7 @@ DBDependency = Depends(get_dynamodb_connection)
 # ====================================================================
 # VALIDAZIONE TIPO UTENTE (Dependency)
 # ====================================================================
-async def validate_coach_access(user: Dict[str, Any] = Depends(get_current_user)) -> Dict[str, Any]:
+async def validate_coach_access(user: Dict[str, Any] | None = Depends(get_current_user)) -> Dict[str, Any]:
     """Verifica che l'utente loggato sia di tipo 'coach' e restituisce l'oggetto utente completo."""
     if user.get("user_type") != "coach":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Accesso riservato ai coach")
@@ -29,6 +29,12 @@ async def validate_coach_access(user: Dict[str, Any] = Depends(get_current_user)
 # ====================================================================
 # GET ENDPOINTS
 # ====================================================================
+
+
+@router.get("/check_coach")
+async def check_coach(coach: Dict[str, Any] = Depends(validate_coach_access)) -> JSONResponse:
+    """Verifica di un utente autenticato (dopo il caricamento di una pagina della dashboard)"""
+    return create_token_response({"name": coach["name"]}, coach)
 
 
 @router.get("/getStudents")
