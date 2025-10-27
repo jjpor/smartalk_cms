@@ -309,7 +309,7 @@ async def migrate_users(db: Any):
 async def get_contract(db, student_id):
     contract_table = await get_table(db, settings.CONTRACTS_TABLE)
     response = await contract_table.query(
-        IndexName="student-id-index",
+        IndexName="student-id-status-index",
         KeyConditionExpression="student_id = :student_id",
         ExpressionAttributeValues={":student_id": student_id},
         Limit=1,

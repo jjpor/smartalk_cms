@@ -9,3 +9,4 @@ Dockerfile
 dynamodblocal/
 docker-compose.yml
 smartalk_cms.code-workspace
+*.odt*

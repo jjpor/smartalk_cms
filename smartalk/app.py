@@ -99,7 +99,7 @@ async def test_gsi(student_id):
     async with db_context_manager as db:
         contract_table = await get_table(db, settings.CONTRACTS_TABLE)
         response = await contract_table.query(
-            IndexName="student-id-index",
+            IndexName="student-id-status-index",
             KeyConditionExpression="student_id = :student_id",
             ExpressionAttributeValues={":student_id": student_id},
             Limit=1,

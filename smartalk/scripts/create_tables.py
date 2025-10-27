@@ -90,21 +90,19 @@ async def _create_contracts_table(db, table_name) -> None:
         ],
         GlobalSecondaryIndexes=[
             {
-                "IndexName": "student-id-index",
-                "KeySchema": [{"AttributeName": "student_id", "KeyType": "HASH"}],
+                "IndexName": "student-id-status-index",
+                "KeySchema": [
+                    {"AttributeName": "student_id", "KeyType": "HASH"},
+                    {"AttributeName": "status", "KeyType": "RANGE"},
+                ],
                 "Projection": {
                     "ProjectionType": "INCLUDE",
-                    "NonKeyAttributes": ["status", "left_calls", "used_calls", "max_end_date", "product_id"],
+                    "NonKeyAttributes": ["left_calls", "used_calls", "max_end_date", "product_id"],
                 },
             },
             {
                 "IndexName": "client-id-index",
                 "KeySchema": [{"AttributeName": "client_id", "KeyType": "HASH"}],
-                "Projection": {"ProjectionType": "KEYS_ONLY"},
-            },
-            {
-                "IndexName": "status-index",
-                "KeySchema": [{"AttributeName": "status", "KeyType": "HASH"}],
                 "Projection": {"ProjectionType": "KEYS_ONLY"},
             },
             {

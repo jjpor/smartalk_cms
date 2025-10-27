@@ -5,12 +5,13 @@ from datetime import date, datetime, timezone
 from decimal import Decimal
 from typing import Any, Dict, List, Optional
 
+import pandas as pd
 from boto3.dynamodb.conditions import Attr, Key
 from botocore.exceptions import ClientError
 from dateutil import relativedelta
 from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource
 
-from smartalk.core.dynamodb import get_client, get_table
+from smartalk.core.dynamodb import get_db_client, get_table
 from smartalk.core.settings import settings
 
 logger = logging.getLogger(__name__)
@@ -57,6 +58,49 @@ async def get_active_students(db: DynamoDBServiceResource) -> List[str]:
     except ClientError as e:
         logger.error(f"DynamoDB Error in get_active_students (USERS table): {e}")
         return []
+
+
+async def get_client_name(client_id: str, db: DynamoDBServiceResource) -> str:
+    """Recupera gli ID degli studenti attivi (USERS Table)."""
+    # HASH: user_type (index: user-type-index)
+    table = await get_table(db, settings.USERS_TABLE)
+    response = await table.get_item(Key({"id": client_id}))
+    client = response["Item"]
+    if client["user_type"] == "student":
+        return f"{client['name']} {client['surname']}"
+    if client["user_type"] == "company":
+        return client["name"]
+
+
+async def get_student_contracts_for_individual(student_id: str, db: DynamoDBServiceResource) -> List[Dict[str, Any]]:
+    contracts_table = await get_table(db, settings.CONTRACTS_TABLE)
+    contracts_response = await contracts_table.query(
+        IndexName="student-id-status-index",
+        KeyConditionExpression=Key("student_id").eq(student_id) & Key("status").eq("active"),
+        ScanIndexForward=False,
+        ProjectionExpression=", ".join(["product_id"]),
+    )
+    products_table = await get_table(db, settings.PRODUCTS_TABLE)
+
+    contracts = []
+    for item in contracts_response.get("Items", []):
+        product_response = await products_table.get_item(Key={"product_id": item.get("product_id")})
+        if product_response["Item"]["participants"] == 1:
+            client_name = await get_client_name(item["client_id"], db)
+            contracts.append(
+                {
+                    "productName": product_response["Item"]["product_name"],
+                    "duration": product_response["Item"]["duration"],
+                    "clientName": client_name,
+                    "contract_id": item["contract_id"],
+                }
+            )
+    # validazione unicità
+    assert max(pd.DataFrame.from_dict(contracts).groupby("contract_id").size()) == 1, (
+        "Contract mapping for individual call not unique"
+    )
+
+    return contracts
 
 
 def create_student_response(student_info: dict) -> dict:
@@ -255,10 +299,10 @@ async def get_calls_by_student(student_id: str, db: DynamoDBServiceResource) -> 
 async def get_student_contracts(student_id: str, db: DynamoDBServiceResource) -> List[Dict[str, Any]]:
     contracts_table = await get_table(db, settings.CONTRACTS_TABLE)
     contracts_response = await contracts_table.query(
-        IndexName="student-id-index",
+        IndexName="student-id-status-index",
         KeyConditionExpression=Key("student_id").eq(student_id),
         ScanIndexForward=False,
-        ProjectionExpression=", ".join(["status", "left_calls", "used_calls", "max_end_date", "product_id"]),
+        ProjectionExpression=", ".join(["left_calls", "used_calls", "max_end_date", "product_id"]),
     )
     products_table = await get_table(db, settings.PRODUCTS_TABLE)
 

@@ -23,7 +23,7 @@ async def get_table(db: DynamoDBServiceResource, table_name: str) -> Table:
     return await db.Table(table_name)
 
 
-def get_client(db: DynamoDBServiceResource) -> DynamoDBClient:
+def get_db_client(db: DynamoDBServiceResource) -> DynamoDBClient:
     return db.meta.client
 
 

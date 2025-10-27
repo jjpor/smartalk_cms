@@ -49,6 +49,18 @@ async def get_students_endpoint(
     return create_token_response({"students": students_data}, coach)
 
 
+@router.get("/getStudentContractsForIndividual")
+async def get_student_contracts_for_individual_endpoint(
+    request: Request, coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
+) -> JSONResponse:
+    """Replica doGet(action='getStudentContracts')."""
+
+    params = dict(request.query_params)
+    student_contracts = await dynamodb_coach.get_student_contracts_for_individual(params.get("studentId"), DBDependency)
+
+    return create_token_response({"contracts": student_contracts}, coach)
+
+
 @router.get("/getMonthlyEarnings")
 async def get_earnings_endpoint(
     coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
