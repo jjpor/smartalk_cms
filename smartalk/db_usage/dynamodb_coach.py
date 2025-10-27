@@ -72,7 +72,9 @@ async def get_client_name(client_id: str, db: DynamoDBServiceResource) -> str:
         return client["name"]
 
 
-async def get_student_contracts_for_individual(student_id: str, db: DynamoDBServiceResource) -> List[Dict[str, Any]]:
+async def get_student_contracts_for_individual(
+    student_id: str, coach_role: str, db: DynamoDBServiceResource
+) -> List[Dict[str, Any]]:
     contracts_table = await get_table(db, settings.CONTRACTS_TABLE)
     contracts_response = await contracts_table.query(
         IndexName="student-id-status-index",
@@ -85,7 +87,8 @@ async def get_student_contracts_for_individual(student_id: str, db: DynamoDBServ
     contracts = []
     for item in contracts_response.get("Items", []):
         product_response = await products_table.get_item(Key={"product_id": item.get("product_id")})
-        if product_response["Item"]["participants"] == 1:
+        product = product_response["Item"]
+        if product["participants"] == 1:
             client_name = await get_client_name(item["client_id"], db)
             contracts.append(
                 {
@@ -93,6 +96,7 @@ async def get_student_contracts_for_individual(student_id: str, db: DynamoDBServ
                     "duration": product_response["Item"]["duration"],
                     "clientName": client_name,
                     "contract_id": item["contract_id"],
+                    "coach_rate": product[f"{coach_role.split(' ')[0].lower()}_coach_rate"],
                 }
             )
     # validazione unicità

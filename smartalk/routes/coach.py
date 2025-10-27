@@ -56,7 +56,9 @@ async def get_student_contracts_for_individual_endpoint(
     """Replica doGet(action='getStudentContracts')."""
 
     params = dict(request.query_params)
-    student_contracts = await dynamodb_coach.get_student_contracts_for_individual(params.get("studentId"), DBDependency)
+    student_contracts = await dynamodb_coach.get_student_contracts_for_individual(
+        params.get("studentId"), coach["role"], DBDependency
+    )
 
     return create_token_response({"contracts": student_contracts}, coach)
 
