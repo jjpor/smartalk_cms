@@ -85,6 +85,8 @@ async def _create_contracts_table(db, table_name) -> None:
             {"AttributeName": "student_id", "AttributeType": "S"},
             {"AttributeName": "client_id", "AttributeType": "S"},
             {"AttributeName": "status", "AttributeType": "S"},
+            {"AttributeName": "report_card_cadency", "AttributeType": "N"},
+            {"AttributeName": "report_card_start_month", "AttributeType": "S"},
         ],
         GlobalSecondaryIndexes=[
             {
@@ -106,10 +108,10 @@ async def _create_contracts_table(db, table_name) -> None:
                 "Projection": {"ProjectionType": "KEYS_ONLY"},
             },
             {
-                "IndexName": "report-card-cadency-report-card-start-date-index",
+                "IndexName": "report-card-cadency-report-card-start-month-index",
                 "KeySchema": [
                     {"AttributeName": "report_card_cadency", "KeyType": "HASH"},
-                    {"AttributeName": "report_card_start_date", "KeyType": "RANGE"},
+                    {"AttributeName": "report_card_start_month", "KeyType": "RANGE"},
                 ],
                 "Projection": {"ProjectionType": "ALL"},
             },
@@ -188,8 +190,8 @@ async def _create_tracker_table(db, table_name) -> None:
 
 async def _create_report_card_generators_table(db, table_name) -> None:
     """Tabella Report Cards (pagelle).
-    report_card_generator_id=student_id#client_id#report_card_email_recipients#report_card_cadency
-        (es: ABC.XYZ#COMPANY_NAME#123/2025XYZ#tizio1@domain1.com,tizio2@domain2.com#1)
+    report_card_generator_id=student_id#client_id#report_card_cadency
+        (es: ABC.XYZ#COMPANY_ID#1)
     """
     await db.create_table(
         TableName=table_name,
@@ -203,8 +205,8 @@ async def _create_report_card_generators_table(db, table_name) -> None:
 
 async def _create_report_cards_table(db, table_name) -> None:
     """Tabella Report Cards (pagelle).
-    report_id=coach_id#report_card_generator_id
-    raport_range=start_month#end_month (es.: 2025-10#2025-11)
+    report_card_id=coach_id#report_card_generator_id
+    start_month (es.: 2025-10)
 
     (student_id per il momento è implicito in report_card_generator_id)
     (quando esiste solo il no show report card, allora coach_id è l'id del coach con role "Head Coach")
@@ -213,26 +215,30 @@ async def _create_report_cards_table(db, table_name) -> None:
         TableName=table_name,
         BillingMode="PAY_PER_REQUEST",
         KeySchema=[
-            {"AttributeName": "report_id", "KeyType": "HASH"},
-            {"AttributeName": "report_range", "KeyType": "RANGE"},
+            {"AttributeName": "report_card_id", "KeyType": "HASH"},
+            {"AttributeName": "start_month", "KeyType": "RANGE"},
         ],
         AttributeDefinitions=[
-            {"AttributeName": "report_id", "AttributeType": "S"},
-            {"AttributeName": "report_range", "AttributeType": "S"},
+            {"AttributeName": "report_card_id", "AttributeType": "S"},
+            {"AttributeName": "coach_id", "AttributeType": "S"},
             {"AttributeName": "start_month", "AttributeType": "S"},
-            {"AttributeName": "end_month", "AttributeType": "S"},
             {"AttributeName": "report_card_generator_id", "AttributeType": "S"},
             {"AttributeName": "status", "AttributeType": "S"},
         ],
         GlobalSecondaryIndexes=[
+            # per vedere i completati di un periodo
             {
-                "IndexName": "status-report-range-index",
+                "IndexName": "status-start-month-index",
                 "KeySchema": [
                     {"AttributeName": "status", "KeyType": "HASH"},
-                    {"AttributeName": "report_range", "KeyType": "RANGE"},
+                    {"AttributeName": "start_month", "KeyType": "RANGE"},
                 ],
-                "Projection": {"ProjectionType": "KEYS_ONLY"},
+                "Projection": {
+                    "ProjectionType": "INCLUDE",
+                    "NonKeyAttributes": ["end_month", "student_id", "coach_id"],
+                },
             },
+            # per editare da un coach le draft (o i no show)
             {
                 "IndexName": "coach-id-status-index",
                 "KeySchema": [
@@ -240,6 +246,18 @@ async def _create_report_cards_table(db, table_name) -> None:
                     {"AttributeName": "status", "KeyType": "RANGE"},
                 ],
                 "Projection": {"ProjectionType": "ALL"},
+            },
+            # per capire se esiste un report card di un altro coach
+            {
+                "IndexName": "report-card-generator-id-start-month-index",
+                "KeySchema": [
+                    {"AttributeName": "report_card_generator_id", "KeyType": "HASH"},
+                    {"AttributeName": "start_month", "KeyType": "RANGE"},
+                ],
+                "Projection": {
+                    "ProjectionType": "INCLUDE",
+                    "NonKeyAttributes": ["end_month", "coach_id"],
+                },
             },
         ],
     )

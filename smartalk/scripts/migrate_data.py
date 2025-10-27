@@ -8,6 +8,7 @@ from decimal import Decimal
 from typing import Any, Dict, List, Optional
 
 import httpx
+from dateutil import relativedelta
 from pydantic import BaseModel, EmailStr, Field, ValidationError, field_validator
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -68,7 +69,6 @@ class StudentUser(BaseModel):
     phone: Optional[str] = Field(None, alias="Phone")
     status: str = Field(..., alias="Status")
     onboarded: bool = Field(False, alias="Onboarded (dashboard)")
-    report_card_cadency_months: Optional[int | str] = Field(None, alias="Report Card Cadency Months")
     quizlet: Optional[str] = Field(None, alias="Quizlet")
     drive: Optional[str] = Field(None, alias="Drive")
     homework: Optional[str] = Field(None, alias="Homework")
@@ -124,16 +124,20 @@ class Contract(BaseModel):
     unlimited: bool = Field(False, alias="Unlimited")
     start_date: Optional[date] = Field(None, alias="Start Date")
     max_end_date: Optional[date] = Field(None, alias="Max End Date")
-    report_card_start_date: Optional[date] = Field(None, alias="Report Card Start Date")
+    report_card_start_month: Optional[date] = Field(None, alias="Report Card Start Date")
     report_card_email_recipients: Optional[str] = Field(None, alias="Report Card Email Recipient(s)")
 
     @field_validator("unlimited", mode="before")
     def standardize_unlimited(cls, value):
         return str(value).strip().upper() in ["Y", "YES", "TRUE"]
 
-    @field_validator("start_date", "max_end_date", "report_card_start_date", mode="before")
+    @field_validator("start_date", "max_end_date", mode="before")
     def _parse_date_fields(cls, value):
         return parse_date_field(value)
+
+    @field_validator("report_card_start_month", mode="before")
+    def _parse_month_field(cls, value):
+        return parse_date_field(value)[:7]
 
 
 class Tracker(BaseModel):
@@ -199,24 +203,18 @@ class Debrief(BaseModel):
 
 
 class ReportCard(BaseModel):
-    report_date: date = Field(..., alias="Date")
     student_id: str = Field(..., alias="Student ID")
-    contract_id: str = Field(
-        ..., alias="Contract ID"
-    )  # obbligatorio, se non c'é viene riscostruito dai dati sui contracts
     coach_id: str = Field(..., alias="Coach ID")
     attendance: Optional[str] = Field(None, alias="Attendance")
     report: Optional[str] = Field(None, alias="Report")
-    status: Optional[str] = Field(None, alias="Status")
-    sent: bool = Field(False, alias="Sent")
-
-    @field_validator("sent", mode="before")
-    def standardize_sent(cls, value):
-        return str(value).strip().upper() in ["Y", "YES", "TRUE"]
-
-    @field_validator("report_date", mode="before")
-    def _parse_date(cls, value):
-        return parse_date_field(value)
+    status: str = Field(..., alias="status")
+    report_card_generator_id: str = Field(..., alias="report_card_generator_id")
+    report_card_id: str = Field(..., alias="report_card_id")
+    report_card_email_recipients: str = Field(..., alias="report_card_email_recipients")
+    report_card_cadency: int = Field(..., alias="report_card_cadency")
+    start_month: str = Field(..., alias="start_month")
+    end_month: str = Field(..., alias="end_month")
+    client_id: str = Field(..., alias="client_id")
 
 
 # ---
@@ -271,7 +269,7 @@ key_map = {
     "Tracker": ["contract_id", "session_id"],
     "Invoices": ["invoice_id"],
     "Debriefs": ["student_id", "date"],
-    "Report Cards": ["student_id", "report_id"],
+    "Report Cards": ["report_card_id", "start_month"],
 }
 
 user_class_map = {"Coaches": CoachUser, "Students": StudentUser, "Clients": ClientUser}
@@ -308,7 +306,7 @@ async def migrate_users(db: Any):
             row_index += 1
 
 
-async def get_contract_id(db, student_id):
+async def get_contract(db, student_id):
     contract_table = await get_table(db, settings.CONTRACTS_TABLE)
     response = await contract_table.query(
         IndexName="student-id-index",
@@ -317,9 +315,15 @@ async def get_contract_id(db, student_id):
         Limit=1,
     )
     if "Items" in response and len(response["Items"]) > 0:
-        return response["Items"][0]["contract_id"]
+        return response["Items"][0]
     else:
         return None
+
+
+async def get_contract_by_id(db, contract_id):
+    contract_table = await get_table(db, settings.CONTRACTS_TABLE)
+    response = await contract_table.get_item(Key={"contract_id": contract_id})
+    return response["Item"]
 
 
 async def migrate_generic(db: Any, table_name: str, sheet_name: str, model_cls: BaseModel, special_logic=None):
@@ -333,9 +337,47 @@ async def migrate_generic(db: Any, table_name: str, sheet_name: str, model_cls: 
             if sheet_name == "Debriefs" and (row.get("Coach ID") in ["", None] or row.get("Student ID") in ["", None]):
                 continue
 
-            if sheet_name == "Report Cards" and row.get("Contract ID") in ["", None]:
-                # prendere contract_id del primo contract in cui compare row['Student ID']
-                row["Contract ID"] = await get_contract_id(db, row["Student ID"])
+            if sheet_name == "Report Cards":
+                contract_id = row.get("Contract ID")
+                contract = None
+                if contract_id in ["", None]:
+                    # prendere contract_id del primo contract in cui compare row['Student ID']
+                    contract = await get_contract(db, row["Student ID"])
+                else:
+                    contract = await get_contract_by_id(db, contract_id)
+                if contract is None:
+                    # salta per la migrazione (dati troppo vecchi)
+                    continue
+                row["client_id"] = contract["client_id"]
+                row["report_card_cadency"] = contract["report_card_cadency"]
+                row["report_card_email_recipients"] = contract["report_card_email_recipients"]
+                row["report_card_generator_id"] = (
+                    f"{contract['student_id']}#{row['client_id']}#{row['report_card_cadency']}"
+                )
+                row["report_card_id"] = f"{row['Coach ID']}#{row['report_card_generator_id']}"
+                report_card_start_month = contract["report_card_start_month"]
+                row["start_month"] = report_card_start_month
+                report_date = parse_date_field(row["Date"])
+                while True:
+                    if row["start_month"] <= report_date:
+                        break
+                    else:
+                        row["start_month"] = parse_date_field(
+                            datetime.fromisoformat(row["start_month"] + "01").date()
+                            + relativedelta(months=row["report_card_cadency"])
+                        )[:7]
+                row["end_month"] = parse_date_field(
+                    datetime.fromisoformat(row["start_month"] + "01").date()
+                    + relativedelta(months=row["report_card_cadency"])
+                )[:7]
+                if row["Sent"]:
+                    row["status"] = "sent"
+                else:
+                    if row["Status"]:
+                        row["status"] = "completed"
+                    else:
+                        # nella migrazione non esistono no_show
+                        row["status"] = "draft"
 
             data = model_cls.model_validate(row)
             item = to_dynamodb_item(data.model_dump())
@@ -405,12 +447,25 @@ async def migrate_all_data(db: Any):
     logger.info("\n--- Migrating Debriefs ---")
     await migrate_generic(db, settings.DEBRIEFS_TABLE, "Debriefs", Debrief, special_logic=debrief_logic)
 
-    def report_card_logic(item):
-        item["date"] = item.pop("report_date")
-        item["report_id"] = f"{item['coach_id']}#{item['contract_id']}#{item['date']}"
-        return item
-
     logger.info("\n--- Migrating Report Cards ---")
-    await migrate_generic(db, settings.REPORT_CARDS_TABLE, "Report Cards", ReportCard, special_logic=report_card_logic)
+    await migrate_generic(db, settings.REPORT_CARDS_TABLE, "Report Cards", ReportCard)
 
     logger.info("DATA MIGRATION COMPLETED.")
+
+
+# TODO:
+# a fine migrazione, creare una funzione per creare i report card generator attuali:
+# prendere tutti i contratti attivi
+# raggrupparli per report_card_generator_id (non nulli)
+# per ogni gruppo, vedere se hanno la stessa report_card_email_recipients
+#   se no sollevare ecezione
+#   se sì, creare il report card generator e salvarlo
+#       report_card_generator_id = student_id#client_id#report_card_cadency
+#       student_id = report_card_generator_id.split('#')[0]
+#       client_id = report_card_generator_id.split('#')[1]
+#       report_card_cadency = int(report_card_generator_id.split('#')[2])
+#       start_month = min(report_card_start_month)
+#       current_start_month = start_month <= today di report_card associato non in status sent
+#       next_start_month = parse_date_field(
+#          datetime.fromisoformat(current_start_month + "01").date() + relativedelta(months=report_card_cadency])
+#       )[:7]

@@ -20,7 +20,7 @@ lock = asyncio.Lock()
 
 
 async def get_table(db: DynamoDBServiceResource, table_name: str) -> Table:
-    return await get_table(db, table_name)
+    return await db.Table(table_name)
 
 
 def get_client(db: DynamoDBServiceResource) -> DynamoDBClient:

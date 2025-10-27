@@ -121,11 +121,7 @@
     </div>
 
 </main>
-<script type="module"
-    src="{{ url_for('static', filename='js/coach_dashboard/core/api_core.js') }}?v={{ random() }}"> </script>
 
-{% if custom_js %}
-<script type="module" src="{{ url_for('static', filename=custom_js) }}"> </script>
-{% endif %}
+{% include "abstract_templates/coach_dashboard_footer.html" %}
 
 {% endblock %}

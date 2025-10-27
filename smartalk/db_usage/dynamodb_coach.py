@@ -315,15 +315,15 @@ async def get_report_card_tasks_db(coach: dict, db: DynamoDBServiceResource) -> 
     tracker_table = await get_table(db, settings.TRACKER_TABLE)
     report_cards_table = await get_table(db, settings.REPORT_CARDS_TABLE)
 
-    # contracts[report_card_start_date <= month(today) and ]
+    # contracts[report_card_start_month <= month(today) and ]
     cadencies = month_divisors(today_string)
     next_month = next_month_prefix(today_date)
     contracts = []
     for cadency in cadencies:
         contracts_by_cadency = await contracts_table.query(
-            IndexName="report-card-cadency-report-card-start-date-index",
+            IndexName="report-card-cadency-report-card-start-month-index",
             KeyConditionExpression=(
-                Key("report_card_cadency").eq(cadency) & Key("report_card_start_date").lt(next_month)
+                Key("report_card_cadency").eq(cadency) & Key("report_card_start_month").lt(next_month)
             ),
         )
         contracts += contracts_by_cadency.get("Items", [])
@@ -354,14 +354,14 @@ async def handle_report_card_submission(db, data: Dict[str, Any]) -> Dict[str, A
     student_id = data.get("studentId")
     current_date_iso = get_today_string()
 
-    # PK: student_id, SK: report_id (coach_id#contract_id#date)
-    report_id = f"{coach_id}#{contract_id}#{current_date_iso}"
+    # PK: student_id, SK: report_card_id (coach_id#contract_id#date)
+    report_card_id = f"{coach_id}#{contract_id}#{current_date_iso}"
 
     try:
         db.put_item(
             Item={
                 "student_id": student_id,
-                "report_id": report_id,
+                "report_card_id": report_card_id,
                 "coach_id": coach_id,
                 "contract_id": contract_id,
                 "date": current_date_iso,

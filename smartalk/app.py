@@ -7,7 +7,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 # Importa i componenti chiave
-from smartalk.core.dynamodb import AWS_EGRESS_DB_COUNTER_BYTES, get_dynamodb_resource_context
+from smartalk.core.dynamodb import AWS_EGRESS_DB_COUNTER_BYTES, get_dynamodb_resource_context, get_table
 from smartalk.core.settings import settings
 from smartalk.routes import auth, coach, student, website
 from smartalk.scripts.create_tables import ensure_tables

@@ -211,3 +211,6 @@ __marimo__/
 
 #dynamodb data
 dynamodb_local/
+
+#analisi
+*.odt*
