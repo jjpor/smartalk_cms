@@ -1,0 +1,218 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "Conflict Resolution" %}
+{% set lesson_subtitle = "A guide to resolving disagreements in the workplace." %}
+
+{% set nav_links = [
+{'id': 'warmup', 'title': 'Warm-Up'},
+{'id': 'vocabulary', 'title': 'Vocabulary'},
+{'id': 'professional', 'title': 'Professional or Not?'},
+{'id': 'deescalate', 'title': 'De-escalation Steps'},
+{'id': 'discussion', 'title': 'Discussion'},
+{'id': 'scenarios', 'title': 'Scenarios'},
+{'id': 'wrapup', 'title': 'Wrap-Up'}
+] %}
+
+
+{# --- Fase 2: Estensione e Import (AGGIORNATO) --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, multiple_choice_exercise %}
+
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne - REGOLA CRITICA) --- #}
+
+{# Dati per Sezione 3 (Professional or Not? Quiz) #}
+{% set prof_questions = [
+{
+'text': 'Ignoring the problem.',
+'options': [{'value': 'prof', 'text': 'Professional'}, {'value': 'not_prof', 'text': 'Unprofessional'}],
+'correct_value': 'not_prof'
+},
+{
+'text': 'Listening to the other person first.',
+'options': [{'value': 'prof', 'text': 'Professional'}, {'value': 'not_prof', 'text': 'Unprofessional'}],
+'correct_value': 'prof'
+},
+{
+'text': 'Sending a heated email.',
+'options': [{'value': 'prof', 'text': 'Professional'}, {'value': 'not_prof', 'text': 'Unprofessional'}],
+'correct_value': 'not_prof'
+},
+{
+'text': 'Suggesting a compromise.',
+'options': [{'value': 'prof', 'text': 'Professional'}, {'value': 'not_prof', 'text': 'Unprofessional'}],
+'correct_value': 'prof'
+},
+{
+'text': 'Keeping calm when the other person is upset.',
+'options': [{'value': 'prof', 'text': 'Professional'}, {'value': 'not_prof', 'text': 'Unprofessional'}],
+'correct_value': 'prof'
+},
+{
+'text': 'Talking to colleagues about the conflict instead of directly addressing it.',
+'options': [{'value': 'prof', 'text': 'Professional'}, {'value': 'not_prof', 'text': 'Unprofessional'}],
+'correct_value': 'not_prof'
+}
+] %}
+
+
+{# --- Fase 5: Conversione Contenuto (Modello Semplice) --- #}
+
+{% call info_card('warmup', '1. Warm-Up Discussion', initial_state='show') %}
+<ul class="text-slate-600">
+    <li>What's the most common cause of conflict in the workplace?</li>
+    <li>Do you usually try to avoid conflict, or address it immediately?</li>
+    <li>Have you ever seen conflict improve a team's performance? How?</li>
+    <li>What's harder: resolving conflict with a manager, a peer, or a client? Why?</li>
+    <li>Do you think conflict styles are influenced by culture?</li>
+</ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# --- SEZIONE 2 (VOCAB) LASCIATA STATICA COME RICHIESTO --- #}
+{% call info_card('vocabulary', '2. Vocabulary', initial_state='show') %}
+<p class="mt-4 text-slate-600">(Teacher explains, students make examples.)</p>
+<ul class="text-slate-600">
+    <li><strong>Mediation</strong> - A neutral person helps resolve conflict.</li>
+    <li><strong>Compromise</strong> - Each side gives up something to reach agreement.</li>
+    <li><strong>Escalate</strong> - Conflict becomes more intense or serious.</li>
+    <li><strong>De-escalate</strong> - To calm or reduce the level of conflict.</li>
+    <li><strong>Win-win</strong> - A solution where both sides benefit.</li>
+    <li><strong>Common ground</strong> - Shared interests or goals.</li>
+    <li><strong>Miscommunication</strong> - When poor communication causes misunderstanding.</li>
+    <li><strong>Assertive</strong> - Firm but respectful communication.</li>
+</ul>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Activity:</h4>
+    <p class="mt-2 text-slate-600">Students use each word in a short "mini-scenario" about work.</p>
+</div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# --- SEZIONE 3 (PROFESSIONAL) CONVERTITA IN QUIZ --- #}
+{% call info_card('professional', '3. Professional or Not? (Conflict Edition)', initial_state='show') %}
+<p class="mb-4 text-slate-600">Students decide if the response is professional or unprofessional:</p>
+{{ multiple_choice_exercise('prof-quiz', prof_questions) }}
+<p class="mt-4 text-slate-600"><strong>Follow-up:</strong> Which of these behaviors are most common in your workplace?
+</p>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('deescalate', '4. Steps to De-escalate a Conflict', initial_state='show') %}
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Step 1: Stay Calm</h4>
+    <ul class="text-slate-600">
+        <li>Control your tone and body language.</li>
+        <li>Breathe before responding.</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Step 2: Listen Actively</h4>
+    <ul class="text-slate-600">
+        <li>Let the other person explain fully.</li>
+        <li>Use phrases like "I hear you" or "I understand your point."</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Step 3: Acknowledge Emotions</h4>
+    <ul class="text-slate-600">
+        <li>Show empathy: "I see why this is frustrating for you."</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Step 4: Clarify the Problem</h4>
+    <ul class="text-slate-600">
+        <li>Identify the root issue, not just the symptoms.</li>
+        <li>Ask open-ended questions: "What do you think the main problem is?"</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Step 5: Find Common Ground</h4>
+    <ul class="text-slate-600">
+        <li>Focus on shared goals or values.</li>
+    </ul>
+    <p class="mt-2 text-slate-600 italic">Example: "We both want the project to succeed."</p>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Step 6: Explore Solutions</h4>
+    <ul class="text-slate-600">
+        <li>Brainstorm options together.</li>
+        <li>Aim for a <strong>win-win</strong> if possible.</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Step 7: Agree and Follow Through</h4>
+    <ul class="text-slate-600">
+        <li>Decide on a concrete next step.</li>
+        <li>Check back to ensure the solution is working.</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <p class="mt-2 text-slate-600"><strong>Activity:</strong> Students apply these steps to one of the scenarios
+        (roleplay).</p>
+</div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('discussion', '5. Guided Discussion', initial_state='show') %}
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Personal but Professional</h4>
+    <ul class="text-slate-600">
+        <li>What's the biggest conflict you've had to solve in your career?</li>
+        <li>Do you find it harder to stay calm or to listen during conflict? Why?</li>
+        <li>What phrases help you stay respectful in disagreement?</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Workplace-focused</h4>
+    <ul class="text-slate-600">
+        <li>How should a manager handle conflict between two employees?</li>
+        <li>What's the best way to disagree with your boss?</li>
+        <li>Should conflict always be resolved privately, or is it okay in group settings?</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Cultural or General</h4>
+    <ul class="text-slate-600">
+        <li>In your culture, how do people usually handle disagreements?</li>
+        <li>Is compromise always the best solution? Why or why not?</li>
+        <li>Can conflict sometimes be avoided completely? Or is that unhealthy?</li>
+    </ul>
+</div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('scenarios', '6. Scenarios (Speaking Practice)', initial_state='show') %}
+<p class="mt-4 text-slate-600">Students roleplay or discuss strategies:</p>
+<ul class="text-slate-600">
+    <li>Two colleagues disagree on how to complete a project.</li>
+    <li>A client is upset about a mistake in their order.</li>
+    <li>A team member feels they are doing more work than others.</li>
+    <li>You and your manager strongly disagree on priorities.</li>
+    <li>A coworker takes credit for your idea.</li>
+</ul>
+<p class="mt-4 text-slate-600"><strong>Follow-up:</strong> Which steps from the "de-escalation framework" fit best in
+    each case?</p>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('wrapup', '7. Reflection & Wrap-Up', initial_state='show') %}
+<ul class="text-slate-600">
+    <li>Which de-escalation step do you find easiest? Hardest?</li>
+    <li>How do you normally show empathy during conflict?</li>
+    <li>Is conflict resolution more about listening or speaking clearly?</li>
+    <li>How can practicing conflict resolution in English help you in international workplaces?</li>
+    <li>What's one new phrase or strategy you want to use next time conflict arises?</li>
+</ul>
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}

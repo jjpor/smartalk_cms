@@ -1,0 +1,154 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "Business Trends & Innovation" %}
+{% set lesson_subtitle = "A lesson on modern business and adapting to change." %}
+
+{% set nav_links = [
+{'id': 'warmup', 'title': 'Warm-Up'},
+{'id': 'vocabulary', 'title': 'Vocabulary'},
+{'id': 'discussion', 'title': 'Discussion'},
+{'id': 'pitch', 'title': 'Activity'},
+{'id': 'practice', 'title': 'Practice'},
+{'id': 'wrapup', 'title': 'Wrap-Up'}
+] %}
+
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, fill_in_the_gap_exercise %}
+
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne - REGOLA CRITICA) --- #}
+{% set practice_sentences = [
+{'prefix': 'Netflix caused major', 'answer': 'disruption', 'suffix': 'in the film and TV industry.'},
+{'prefix': 'Solar energy is becoming a key part of', 'answer': 'sustainability', 'suffix': 'in many companies.'},
+{'prefix': 'Our software has great', 'answer': 'scalability', 'suffix': '; it can handle millions of users.'},
+{'prefix': 'Startups often win because of their', 'answer': 'agility', 'suffix': 'to adapt quickly.'},
+{'prefix': 'Many businesses saw fast', 'answer': 'adoption', 'suffix': 'of digital tools during the pandemic.'}
+] %}
+
+
+{# --- Fase 5: Conversione Contenuto (Modello Semplice) --- #}
+
+{% call info_card('warmup', '1. Warm-Up Discussion', initial_state='show') %}
+<ul class="text-slate-600">
+    <li>What recent business trend have you noticed in your industry?</li>
+    <li>Do you think businesses should always innovate, or only when necessary? Why?</li>
+    <li>Which innovation in the last 10 years has changed your work or daily life the most?</li>
+    <li>Do you think following trends is risky or necessary?</li>
+    <li>Which company do you think is the most innovative today? Why?</li>
+</ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('vocabulary', '2. Vocabulary', initial_state='show') %}
+<p class="mt-4 text-slate-600">(Teacher explains, students make examples in business contexts.)</p>
+<ul class="text-slate-600">
+    <li><strong>Disruption</strong> - Innovation that changes an industry completely. <br><span class="italic">Example:
+            Streaming services disrupted the movie rental industry.</span></li>
+    <li><strong>Sustainability</strong> - Practices that protect the environment and resources.</li>
+    <li><strong>Scalability</strong> - The ability of a business or idea to grow efficiently.</li>
+    <li><strong>Agility</strong> - Flexibility to adapt quickly to change.</li>
+    <li><strong>Adoption</strong> - When customers or businesses start using a new product or trend.</li>
+    <li><strong>Early adopter</strong> - A person or company that uses new technology before most others.</li>
+    <li><strong>Market shift</strong> - A major change in consumer behavior or industry conditions.</li>
+    <li><strong>Innovative mindset</strong> - A way of thinking that focuses on creativity and new solutions.</li>
+</ul>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Activity:</h4>
+    <p class="mt-2 text-slate-600">Students brainstorm which of these words best describe their company/industry today.
+    </p>
+</div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('discussion', '3. Guided Discussion', initial_state='show') %}
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Trends in the Workplace</h4>
+    <ul class="text-slate-600">
+        <li>What trends have changed the way you work in the past 5 years?</li>
+        <li>Which technologies have your colleagues or company adopted recently?</li>
+        <li>How do trends like remote work or AI affect employee engagement?</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Risks and Opportunities</h4>
+    <ul class="text-slate-600">
+        <li>What risks do companies face if they don't innovate?</li>
+        <li>Can following trends ever be dangerous or wasteful? Give examples.</li>
+        <li>Is it better to be an early adopter or to wait and see if a trend is successful?</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Personal Experience</h4>
+    <ul class="text-slate-600">
+        <li>Have you ever suggested an innovative idea at work? What happened?</li>
+        <li>Have you ever resisted a new trend? Why?</li>
+        <li>Do you consider yourself innovative? Why or why not?</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Future of Business</h4>
+    <ul class="text-slate-600">
+        <li>Which industries will be most affected by innovation in the next 10 years?</li>
+        <li>What's a current trend that you think will disappear soon?</li>
+        <li>If you could invent something for your job, what would it be?</li>
+    </ul>
+</div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('pitch', '4. Activity: Innovation Pitch', initial_state='show') %}
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Instructions:</h4>
+    <ul class="text-slate-600">
+        <li>Students imagine they are starting a new company or improving their current company.</li>
+        <li>They must choose <strong>one trend</strong> (AI, sustainability, remote work, automation, customer
+            personalization, etc.) and design a product, service, or improvement around it.</li>
+        <li>In pairs or small groups, they prepare a <strong>2-minute "innovation pitch"</strong> explaining:</li>
+        <li>The problem.</li>
+        <li>The innovative idea.</li>
+        <li>Why it will succeed (using vocabulary like scalability, adoption, disruption).</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Example:</h4>
+    <p class="mt-2 text-slate-600">"Our company will disrupt the restaurant industry by using AI to create personalized
+        meal plans for customers. It's scalable because it works with any cuisine, and adoption will be fast since
+        people already order food online."</p>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Follow-up Discussion:</h4>
+    <ul class="text-slate-600">
+        <li>Which idea sounded the most innovative?</li>
+        <li>Which idea is the most realistic?</li>
+        <li>Which idea would you invest in?</li>
+    </ul>
+</div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('practice', '5. Vocabulary Practice (Fill in the blanks)', initial_state='show') %}
+{# Questa macro usa i dati definiti nella Fase 4 #}
+{{ fill_in_the_gap_exercise('vocab-practice', practice_sentences) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('wrapup', '6. Reflection & Wrap-Up', initial_state='show') %}
+<ul class="text-slate-600">
+    <li>What's one trend you think will shape the future of your industry?</li>
+    <li>Do you believe your company is innovative? Why or why not?</li>
+    <li>Which is more valuable: being first with an idea, or improving someone else's idea?</li>
+    <li>What's one innovation you'd like to see in your workplace?</li>
+</ul>
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}

@@ -1,0 +1,173 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "Work-Life Balance" %}
+{% set lesson_subtitle = "A guide to finding balance in your professional life." %}
+
+{% set nav_links = [
+{'id': 'warmup', 'title': 'Warm-Up'},
+{'id': 'vocabulary', 'title': 'Vocabulary'},
+{'id': 'reading', 'title': 'Reading'},
+{'id': 'scenarios', 'title': 'Scenarios'},
+{'id': 'reflection', 'title': 'Reflection'},
+{'id': 'thisorthat', 'title': 'This or That'},
+{'id': 'wrapup', 'title': 'Wrap-Up'}
+] %}
+
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, fill_in_the_gap_exercise, random_item_generator %}
+
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne - REGOLA CRITICA) --- #}
+
+{# Dati per Sezione 2 (Vocabulary Fill-in) #}
+{% set vocab_fill_in_data = [
+{'prefix': 'Feeling overwhelmed by too many mental tasks is called', 'answer': 'cognitive overload', 'suffix': '.'},
+{'prefix': 'Saying "I cannot answer emails after 6 PM" is setting', 'answer': 'professional boundaries', 'suffix': '.'},
+{'prefix': 'Taking a quick, secret break while pretending to work is a', 'answer': 'stealth break', 'suffix': '.'},
+{'prefix': 'When a company makes rest an accepted part of the culture, it helps to', 'answer': 'normalize time off',
+'suffix': '.'},
+{'prefix': 'Your capacity to handle stress is your', 'answer': 'emotional bandwidth', 'suffix': '.'},
+{'prefix': 'To speak up for your own needs at work is to', 'answer': 'self-advocate', 'suffix': '.'},
+{'prefix': 'Planned rest that improves long-term performance is called', 'answer': 'strategic recovery', 'suffix': '.'}
+] %}
+
+{# Dati per Sezione 6 (This or That) #}
+{% set this_or_that_data = [
+'Sitting in silence with tea vs. Watching short videos on social media',
+'A 10-minute walk outside vs. Doing personal errands',
+'Listening to music vs. Chatting casually with a colleague',
+'Reading something non-work related vs. Clearing your inbox',
+'Taking a short nap vs. Playing a puzzle or game',
+'Light exercise/stretching vs. Watching one episode of a comfort show',
+'Journaling vs. Snacking and scrolling online',
+'Walking your dog vs. Calling a friend or family member'
+] %}
+
+
+{# --- Fase 5: Conversione Contenuto (Modello Semplice) --- #}
+
+{% call info_card('warmup', '1. Warm-Up Discussion', initial_state='show') %}
+<ul class="text-slate-600">
+    <li>What does "work-life balance" mean to you?</li>
+    <li>Do you think you have a good work-life balance right now? Why or why not?</li>
+    <li>How often do you take breaks during your workday?</li>
+    <li>What do you usually do when you feel overwhelmed or mentally tired?</li>
+    <li>Is it better to take many short breaks or one long break? Why?</li>
+</ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# --- SEZIONE 2 (VOCAB) AGGIORNATA --- #}
+{% call info_card('vocabulary', '2. Vocabulary', initial_state='show') %}
+<p class="mt-4 text-slate-600">(Teacher explains, students make their own sentences with each word.)</p>
+<ul class="text-slate-600">
+    <li><strong>Cognitive overload</strong> - Too much mental processing, leading to fatigue or poor decisions.</li>
+    <li><strong>Professional boundaries</strong> - Limits you set at work to protect your time, energy, or privacy.</li>
+    <li><strong>Stealth break</strong> - A secret or hidden break taken without telling your team.</li>
+    <li><strong>Normalize time off</strong> - Make rest and breaks an accepted part of company culture.</li>
+    <li><strong>Emotional bandwidth</strong> - Your mental and emotional capacity to handle work or stress.</li>
+    <li><strong>Self-advocate</strong> - To speak up for your own needs or well-being.</li>
+    <li><strong>Strategic recovery</strong> - Planned rest that improves focus and long-term performance.</li>
+</ul>
+
+<div class="mt-6">
+    <h4 class="font-semibold text-slate-800">Vocabulary Check:</h4>
+    <p class="mt-2 mb-4 text-slate-600">Let's check your understanding of the new terms.</p>
+    {{ fill_in_the_gap_exercise('vocab-check', vocab_fill_in_data) }}
+</div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('reading', '3. Reading: Why Breaks Matter', initial_state='show') %}
+<div class="mt-4 text-slate-600">
+    <p>In today's work culture, long hours and constant connectivity are often mistaken for dedication. But studies show
+        that strategic rest is essential to avoid burnout and maintain high performance. While extended sabbaticals may
+        be out of reach for many, well-timed short breaks can have a significant impact on mental clarity, emotional
+        regulation, and creative thinking.</p>
+    <p class="mt-4">Despite the benefits, many employees feel pressure to "power through" the day, fearing judgment or
+        appearing unproductive. These internal and external pressures lead to "stealth breaks" - moments of rest taken
+        in secret, often tainted by guilt or anxiety, and therefore less effective.</p>
+    <p class="mt-4">Effective breaks, however, are intentional and restorative. Whether it's a quick walk, ten minutes
+        of quiet, or a moment to connect with a colleague, these pauses help reset your mental state. Organizations that
+        normalize and support healthy breaks see improved morale, resilience, and productivity across the board. But in
+        many cases, it's up to employees to self-advocate for time off and structure their day in ways that protect
+        their energy and well-being.</p>
+</div>
+<div class="mt-6">
+    <h4 class="font-semibold text-slate-800">Comprehension Questions:</h4>
+    <ul class="text-slate-600">
+        <li>Why do some employees feel guilty about taking breaks?</li>
+        <li>What are examples of "stealth breaks"? Why are they less effective?</li>
+        <li>What are examples of effective, restorative breaks?</li>
+        <li>How can organizations support healthy breaks?</li>
+        <li>How can employees self-advocate for breaks in a respectful way?</li>
+    </ul>
+</div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('scenarios', '4. Scenarios (Speaking Practice)', initial_state='show') %}
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Scenario 1: You feel burnt out, but there's a deadline.</h4>
+    <ul class="text-slate-600">
+        <li>What would you do?</li>
+        <li>How would you communicate your limits to a colleague or manager?</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Scenario 2: Design the ideal 8-hour workday.</h4>
+    <ul class="text-slate-600">
+        <li>When would you schedule breaks, and why?</li>
+        <li>Would you allow flexible time off?</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class_a="font-semibold text-slate-800">Scenario 3: How do you tell your team you need time off?</h4>
+    <ul class="text-slate-600">
+        <li>What words or strategies would you use to ask for it respectfully?</li>
+    </ul>
+</div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('reflection', '5. Reflection Questions', initial_state='show') %}
+<ul class="text-slate-600">
+    <li>What's one small change you could make to improve your work-life balance this week?</li>
+    <li>How do you plan to take better breaks in the future?</li>
+    <li>How would you explain to your boss or team why taking breaks is important?</li>
+    <li>Do you feel more confident talking about time off in English after today's lesson?</li>
+    <li>Has your idea of a "productive" workday changed after this discussion?</li>
+</ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# --- SEZIONE 6 (THIS OR THAT) AGGIORNATA --- #}
+{% call info_card('thisorthat', '6. Interactive Activity: This or That', initial_state='show') %}
+<p class="mt-4 text-slate-600">What's a better break for you? Click the button to get a random choice, then explain your
+    preference.</p>
+{{ random_item_generator('this-or-that-random', 'Get a New Choice', 'this-or-that-list', this_or_that_data) }}
+<p class="mt-4 text-slate-600"><strong>Follow-up Question:</strong> Which option helps you return to work more
+    refreshed? Why?</p>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('wrapup', '7. Wrap-Up', initial_state='show') %}
+<ul class="text-slate-600">
+    <li>Why do you think companies often fail to encourage breaks?</li>
+    <li>What's the best argument for "normalizing time off"?</li>
+    <li>What kind of break will you try this week that you haven't done before?</li>
+</ul>
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}

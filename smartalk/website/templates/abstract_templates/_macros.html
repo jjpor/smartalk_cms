@@ -3,153 +3,227 @@
 {# ==================================================================== #}
 
 {% macro render_guide_section(section_id, section_data) %}
-    <section id="{{ section_id }}" class="mb-12">
-        <h2 class="section-header">{{ section_data.title }}</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {% for guide in section_data.guides %}
-                {{ guide_card_link(guide) }}
-            {% endfor %}
-        </div>
-    </section>
+<section id="{{ section_id }}" class="mb-12">
+  <h2 class="section-header">{{ section_data.title }}</h2>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for guide in section_data.guides %}
+    {{ guide_card_link(guide) }}
+    {% endfor %}
+  </div>
+</section>
 {% endmacro %}
 
 
 {% macro guide_card_link(guide) %}
-    {# This URL matches the one found in the error logs: /auth/lesson-plans/SLUG #}
-    <a href="/auth/lesson-plans/{{ guide.url_slug }}" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center">
-        <h3 class="font-bold text-xl text-slate-800 mb-2">{{ guide.title }}</h3>
-        <p class="text-slate-600 text-sm">{{ guide.desc }}</p>
-    </a>
+{# This URL matches the one found in the error logs: /auth/lesson-plans/SLUG #}
+<a href="/auth/lesson-plans/{{ guide.url_slug }}" target="_blank"
+  class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center">
+  <h3 class="font-bold text-xl text-slate-800 mb-2">{{ guide.title }}</h3>
+  <p class="text-slate-600 text-sm">{{ guide.desc }}</p>
+</a>
 {% endmacro %}
 
 {#
-                    JINJA2 MACROS FOR STANDARD EXERCISES
-    This file contains reusable "components" for exercises.
-    Lessons will import these macros to build their interactive content.
+JINJA2 MACROS FOR STANDARD EXERCISES
+This file contains reusable "components" for exercises.
+Lessons will import these macros to build their interactive content.
 #}
 
 {# --- MACRO 1: Collapsible Info Card --- #}
 {% macro info_card(id, title, border_color=None, initial_state='show') %}
-  <section id="{{ id }}" class="lesson-section mb-8">
-    <div class="lesson-card {% if border_color %}border-{{ border_color }}{% endif %}">
-      <div class="card-header">
-        <h3>{{ title }}</h3>
-        <span class="arrow-icon">▾</span>
-      </div>
-      <div class="card-content {{ initial_state }}">
-        {{ caller() }}
-      </div>
+<section id="{{ id }}" class="lesson-section mb-8">
+  <div class="lesson-card {% if border_color %}border-{{ border_color }}{% endif %}">
+    <div class="card-header">
+      <h3>{{ title }}</h3>
+      <span class="arrow-icon">▾</span>
     </div>
-  </section>
+    <div class="card-content {{ initial_state }}">
+      {{ caller() }}
+    </div>
+  </div>
+</section>
 {% endmacro %}
 
 {# --- MACRO 2: Fill-in-the-Gap Exercise --- #}
 {% macro fill_in_the_gap_exercise(exercise_id, sentences) %}
-  <div class="interactive-wrapper" data-exercise-container id="{{ exercise_id }}">
-    <div class="space-y-4">
-      {% for s in sentences %}
-        {% set row_id = exercise_id ~ "-row-" ~ loop.index0 %}
-        <p id="{{ row_id }}">
-          {{ s.prefix | safe }}
-          <input type="text" class="quiz-input-text" data-answer="{{ s.answer }}">
-          {{ s.suffix | safe }}
-          <span class="quiz-feedback"></span>
-        </p>
-      {% endfor %}
-    </div>
-    <button class="btn btn-primary" data-quiz-button data-quiz-type="fill-in">Check</button>
-    <div class="quiz-summary"></div>
+<div class="interactive-wrapper" data-exercise-container id="{{ exercise_id }}">
+  <div class="space-y-4">
+    {% for s in sentences %}
+    {% set row_id = exercise_id ~ "-row-" ~ loop.index0 %}
+    <p id="{{ row_id }}">
+      {{ s.prefix | safe }}
+      <input type="text" class="quiz-input-text" data-answer="{{ s.answer }}">
+      {{ s.suffix | safe }}
+      <span class="quiz-feedback"></span>
+    </p>
+    {% endfor %}
   </div>
+  <button class="btn btn-primary" data-quiz-button data-quiz-type="fill-in">Check</button>
+  <div class="quiz-summary"></div>
+</div>
 {% endmacro %}
 
 {# --- MACRO 3: Multiple Choice Exercise --- #}
 {% macro multiple_choice_exercise(exercise_id, questions) %}
-  <div class="interactive-wrapper" data-exercise-container id="{{ exercise_id }}">
-    {% for q in questions %}
-      {# ID stabile per questa domanda #}
-      {% set qid = exercise_id ~ "-q" ~ loop.index0 %}
-      <div class="quiz-question-item" data-answer="{{ q.correct_value }}">
-        <p class="font-semibold">{{ loop.index }}. {{ q.text }}</p>
-        <div class="options">
-          {% for opt in q.options %}
-            {% set opt_id = qid ~ "-opt" ~ loop.index0 %}
-            <label for="{{ opt_id }}">
-              <input id="{{ opt_id }}"
-                     type="radio"
-                     name="{{ qid }}"
-                     value="{{ opt.value }}">
-              {{ opt.text }}
-            </label>
-          {% endfor %}
-        </div>
-        <div class="quiz-feedback"></div>
-      </div>
-    {% endfor %}
-    <button class="btn btn-primary" data-quiz-button data-quiz-type="multiple-choice">Check</button>
-    <div class="quiz-summary"></div>
+<div class="interactive-wrapper" data-exercise-container id="{{ exercise_id }}">
+  {% for q in questions %}
+  {# ID stabile per questa domanda #}
+  {% set qid = exercise_id ~ "-q" ~ loop.index0 %}
+  <div class="quiz-question-item" data-answer="{{ q.correct_value }}">
+    <p class="font-semibold">{{ loop.index }}. {{ q.text }}</p>
+    <div class="options">
+      {% for opt in q.options %}
+      {% set opt_id = qid ~ "-opt" ~ loop.index0 %}
+      <label for="{{ opt_id }}">
+        <input id="{{ opt_id }}" type="radio" name="{{ qid }}" value="{{ opt.value }}">
+        {{ opt.text }}
+      </label>
+      {% endfor %}
+    </div>
+    <div class="quiz-feedback"></div>
   </div>
+  {% endfor %}
+  <button class="btn btn-primary" data-quiz-button data-quiz-type="multiple-choice">Check</button>
+  <div class="quiz-summary"></div>
+</div>
 {% endmacro %}
 
 {# --- MACRO 4: Match the Items Exercise --- #}
 {% macro match_exercise(exercise_id, group_a_items, group_b_items) %}
-    <div class="interactive-wrapper" data-match-container id="{{ exercise_id }}">
-        <div class="quiz-feedback match-feedback text-center mb-4">
-            Select one item from each column to match them.
-        </div>
-        <div class="flex flex-col md:flex-row justify-around gap-4">
-            <div class="match-group-a flex flex-col gap-2">
-                {% for item in group_a_items | shuffle %}
-                    <div class="match-item" data-match-id="{{ item.id }}">{{ item.text }}</div>
-                {% endfor %}
-            </div>
-            <div class="match-group-b flex flex-col gap-2">
-                {% for item in group_b_items | shuffle %}
-                    <div class="match-item" data-match-id="{{ item.id }}">{{ item.text }}</div>
-                {% endfor %}
-            </div>
-        </div>
+<div class="interactive-wrapper" data-match-container id="{{ exercise_id }}">
+  <div class="quiz-feedback match-feedback text-center mb-4">
+    Select one item from each column to match them.
+  </div>
+  <div class="flex flex-col md:flex-row justify-around gap-4">
+    <div class="match-group-a flex flex-col gap-2">
+      {% for item in group_a_items | shuffle %}
+      <div class="match-item" data-match-id="{{ item.id }}">{{ item.text }}</div>
+      {% endfor %}
     </div>
+    <div class="match-group-b flex flex-col gap-2">
+      {% for item in group_b_items | shuffle %}
+      <div class="match-item" data-match-id="{{ item.id }}">{{ item.text }}</div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
 {% endmacro %}
 
 {# --- MACRO 5: Random Item Generator --- #}
 {% macro random_item_generator(exercise_id, button_text, source_list_id, items) %}
-    <div class="interactive-wrapper" data-random-container id="{{ exercise_id }}">
-        <div class="random-display">Click the button</div>
-        <button class="btn btn-primary" data-random-button data-source-list="#{{ source_list_id }}">
-            {{ button_text }}
-        </button>
+<div class="interactive-wrapper" data-random-container id="{{ exercise_id }}">
+  <div class="random-display">Click the button</div>
+  <button class="btn btn-primary" data-random-button data-source-list="#{{ source_list_id }}">
+    {{ button_text }}
+  </button>
 
-        {# The source list is hidden #}
-        <ul id="{{ source_list_id }}" class="hidden">
-            {% for item in items %}
-                <li>{{ item }}</li>
-            {% endfor %}
-        </ul>
-    </div>
+  {# The source list is hidden #}
+  <ul id="{{ source_list_id }}" class="hidden">
+    {% for item in items %}
+    <li>{{ item }}</li>
+    {% endfor %}
+  </ul>
+</div>
 {% endmacro %}
 
 {# --- MACRO 6: Dropdown Fill-in Exercise --- #}
 {% macro dropdown_fill_in_exercise(exercise_id, sentences) %}
-  <div class="interactive-wrapper" data-exercise-container id="{{ exercise_id }}">
-    <div class="space-y-4">
-      {% for s in sentences %}
-        {% set row_id = exercise_id ~ "-row-" ~ loop.index0 %}
-        <p id="{{ row_id }}" class="dropdown-fill-item" data-answer="{{ s.answer }}">
-          {{ s.prefix | safe }}
-          {# Il select ha bisogno di classi per lo stile e un data-attribute per JS #}
-          <select class="quiz-select-dropdown mx-2 border-b-2 border-blue-500 focus:outline-none focus:border-blue-700" data-dropdown-input>
-            <option value="" disabled selected>Select...</option> {# Opzione placeholder #}
-            {% for opt in s.options %}
-              <option value="{{ opt }}">{{ opt }}</option>
-            {% endfor %}
-          </select>
-          {{ s.suffix | safe }}
-          <span class="quiz-feedback ml-2"></span> {# Feedback visivo #}
-        </p>
+<div class="interactive-wrapper" data-exercise-container id="{{ exercise_id }}">
+  <div class="space-y-4">
+    {% for s in sentences %}
+    {% set row_id = exercise_id ~ "-row-" ~ loop.index0 %}
+    <p id="{{ row_id }}" class="dropdown-fill-item" data-answer="{{ s.answer }}">
+      {{ s.prefix | safe }}
+      {# Il select ha bisogno di classi per lo stile e un data-attribute per JS #}
+      <select class="quiz-select-dropdown mx-2 border-b-2 border-blue-500 focus:outline-none focus:border-blue-700"
+        data-dropdown-input>
+        <option value="" disabled selected>Select...</option> {# Opzione placeholder #}
+        {% for opt in s.options %}
+        <option value="{{ opt }}">{{ opt }}</option>
+        {% endfor %}
+      </select>
+      {{ s.suffix | safe }}
+      <span class="quiz-feedback ml-2"></span> {# Feedback visivo #}
+    </p>
+    {% endfor %}
+  </div>
+  {# Nota il nuovo data-quiz-type #}
+  <button class="btn btn-primary" data-quiz-button data-quiz-type="dropdown-fill-in">Check</button>
+  <div class="quiz-summary"></div>
+</div>
+{% endmacro %}
+
+
+{# --- MACRO 7: Classification (Drag & Drop) Exercise --- #}
+{#
+COME SI USA:
+{% set categories = ['Categoria A', 'Categoria B'] %}
+{% set items_to_classify = [
+{'text': 'Item 1', 'category': 'Categoria A'},
+{'text': 'Item 2', 'category': 'Categoria B'},
+{'text': 'Item 3', 'category': 'Categoria A'}
+] %}
+{{ classify_exercise('classify-1', categories, items_to_classify) }}
+#}
+{% macro classify_exercise(exercise_id, categories, items) %}
+<div class="interactive-wrapper" data-exercise-container data-quiz-type="classify" id="{{ exercise_id }}">
+
+  <div class="classify-pool-wrapper mb-6 p-4 bg-gray-100 rounded-lg border-2 border-dashed">
+    <strong class="block text-center text-slate-700 mb-2">Trascina gli elementi da qui:</strong>
+    <div class="classify-pool" data-classify-pool>
+      {% for item in items | shuffle %}
+      <div class="classify-item" draggable="true" data-correct-category="{{ item.category | safe }}">
+        {{ item.text | safe }}
+      </div>
       {% endfor %}
     </div>
-    {# Nota il nuovo data-quiz-type #}
-    <button class="btn btn-primary" data-quiz-button data-quiz-type="dropdown-fill-in">Check</button>
-    <div class="quiz-summary"></div>
   </div>
+
+  <div class="classify-categories-wrapper">
+    <div class="grid grid-cols-{{ categories|length }} gap-4">
+      {% for category in categories %}
+      <div class="classify-category">
+        <h4 class="font-semibold text-slate-800 text-center mb-2 p-3 bg-gray-200 rounded-t-lg">{{ category }}</h4>
+        <div class="classify-dropzone" data-category-name="{{ category | safe }}">
+          <span class="dropzone-placeholder">Trascina qui...</span>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <button class="btn btn-primary" data-quiz-button>Check</button>
+  <div class="quiz-summary"></div>
+</div>
+{% endmacro %}
+
+
+{# --- MACRO 8: Sequence (Ordering) Exercise --- #}
+{#
+COME SI USA:
+{% set items_to_order = [
+{'text': 'Primo passo', 'order': 1},
+{'text': 'Secondo passo', 'order': 2},
+{'text': 'Terzo passo', 'order': 3}
+] %}
+{{ sequence_exercise('sequence-1', items_to_order) }}
+#}
+{% macro sequence_exercise(exercise_id, items) %}
+<div class="interactive-wrapper" data-exercise-container data-quiz-type="sequence" id="{{ exercise_id }}">
+
+  <p class="mb-4 text-slate-600">Trascina gli elementi per metterli nell'ordine corretto.</p>
+
+  <div class="sequence-list" data-sequence-list>
+    {% for item in items | shuffle %}
+    <div class="sequence-item" draggable="true" data-correct-order="{{ item.order }}">
+      <span class="sequence-drag-handle" title="Drag to reorder">::</span>
+      <span class="sequence-text">{{ item.text | safe }}</span>
+      <span class="quiz-feedback ml-2"></span>
+    </div>
+    {% endfor %}
+  </div>
+
+  <button class="btn btn-primary" data-quiz-button>Check</button>
+  <div class="quiz-summary"></div>
+</div>
 {% endmacro %}
