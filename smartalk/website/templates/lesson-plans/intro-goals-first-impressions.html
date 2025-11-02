@@ -1,231 +1,220 @@
-{# --- 2. Estensione Template (deve stare per primo) --- #}
-{% extends "abstract_templates/lesson_base.html" %}
-
-{# --- 1. Definizioni Variabili --- #}
 {% set lesson_title = 'First Impressions & Goals' %}
 {% set lesson_subtitle = 'A guide to self-reflection and professional communication.' %}
 {% set nav_links = [
-    {'id': 'getting-to-know-you', 'title': 'Get to Know You'},
-    {'id': 'introductions-impressions', 'title': 'Introductions'},
-    {'id': 'scenarios', 'title': 'Practice Scenarios'}
+{'id': 'getting-to-know-you', 'title': 'Get to Know You'},
+{'id': 'introductions-impressions', 'title': 'Introductions'},
+{'id': 'scenarios', 'title': 'Practice Scenarios'}
 ] %}
-{% set goal_questions = [
-    "Imagine your English skills six months from now. What would you like to be able to do that feels difficult today?",
-    "If you had to choose one main goal for this program, what would it be?",
-    "Which is more important for you: speaking more accurately (fewer mistakes) or speaking more fluently (faster, more natural)?",
-    "Would you like to focus more on everyday work English (emails, small talk, meetings) or high-level skills (presentations, negotiations, leadership)?",
-    "How will you measure your progress—for example, joining meetings more confidently, writing faster, or receiving positive feedback from colleagues/clients?",
-    "What specific situations (e.g., weekly team stand-ups, client calls, negotiations) do you want to handle with more confidence by the end of this course?",
-    "Which two micro-skills would most move the needle for you right now (e.g., clarifying questions, signposting, summarizing, interrupting politely)?",
-    "What communication habit would you like to replace (e.g., over-apologizing, speaking too fast, using fillers like 'um') and what will you replace it with?",
-    "Identify one high-stakes event in the next 3-6 months (presentation, interview, pitch). What result would make you say, 'That was a success'?",
-    "How many minutes per week can you realistically commit outside lessons, and what will you do in that time (drills, writing, shadowing, meetings review)?",
-    "Which pronunciation areas feel most urgent (e.g., TH, short/long vowels, word stress, sentence stress) and why?",
-    "What writing outcome do you want (e.g., send concise emails in under 10 minutes, write clear updates, produce client-ready proposals)?",
-    "How will you track progress weekly (checklist, short reflection, call recording review, vocabulary log)? Be specific.",
-    "What vocabulary domains do you need most (industry terms, leadership language, negotiation phrases, small talk) and how will you practice them?",
-    "What will you stop doing to make space for learning (e.g., translating in your head, rewriting emails 5 times, avoiding meetings)?",
-    "On a scale of 1-10, how confident are you in meetings now? What would make that number +2 points by next month?",
-    "Which feedback format helps you most (live correction, end-of-activity notes, recorded voice notes, written comments)?",
-    "What is one 'minimum viable win' you want in the first 2-3 weeks (e.g., introduce yourself smoothly, ask clarifying questions without freezing)?",
-    "Who will notice your improvement first (manager, clients, teammates), and what do you want them to say about your communication?",
-    "If you had to pick a theme for this semester (e.g., 'Clarity over speed', 'Executive presence', 'Concise writing'), which one and why?"
-] %}
+{# Dati complessi (goal_questions) spostati DENTRO il blocco lesson_content #}
 
-{# --- 3. Importazione Macro --- #}
+
+{# --- 2. Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
 {% from "abstract_templates/_macros.html" import info_card, random_item_generator %}
 
-{# --- 4. Contenuto Lezione --- #}
+{# --- 3. Contenuto Lezione --- #}
 {% block lesson_content %}
 
-    {# Sezione 1: Getting to Know You & Goal Setting #}
-    {% call info_card('getting-to-know-you', 'Getting to Know You & Goal Setting') %}
-        <p class="text-slate-700 mb-6">
-            This section helps us understand your unique professional context and set clear, achievable goals for your English language journey.
-        </p>
+{# Dati per l'esercizio (spostati qui per evitare errore parser backend) #}
+{% set goal_questions = [
+"Imagine your English skills six months from now. What would you like to be able to do that feels difficult today?",
+"If you had to choose one main goal for this program, what would it be?",
+"Which is more important for you: speaking more accurately (fewer mistakes) or speaking more fluently (faster, more
+natural)?",
+"Would you like to focus more on everyday work English (emails, small talk, meetings) or high-level skills
+(presentations, negotiations, leadership)?",
+"How will you measure your progress—for example, joining meetings more confidently, writing faster, or receiving
+positive feedback from colleagues/clients?",
+"What specific situations (e.g., weekly team stand-ups, client calls, negotiations) do you want to handle with more
+confidence by the end of this course?",
+"Which two micro-skills would most move the needle for you right now (e.g., clarifying questions, signposting,
+summarizing, interrupting politely)?",
+"What communication habit would you like to replace (e.g., over-apologizing, speaking too fast, using fillers like 'um')
+and what will you replace it with?",
+"Identify one high-stakes event in the next 3-6 months (presentation, interview, pitch). What result would make you say,
+'That was a success'?",
+"How many minutes per week can you realistically commit outside lessons, and what will you do in that time (drills,
+writing, shadowing, meetings review)?",
+"Which pronunciation areas feel most urgent (e.g., TH, short/long vowels, word stress, sentence stress) and why?",
+"What writing outcome do you want (e.g., send concise emails in under 10 minutes, write clear updates, produce
+client-ready proposals)?",
+"How will you track progress weekly (checklist, short reflection, call recording review, vocabulary log)? Be specific.",
+"What vocabulary domains do you need most (industry terms, leadership language, negotiation phrases, small talk) and how
+will you practice them?",
+"What will you stop doing to make space for learning (e.g., translating in your head, rewriting emails 5 times, avoiding
+meetings)?",
+"On a scale of 1-10, how confident are you in meetings now? What would make that number +2 points by next month?",
+"Which feedback format helps you most (live correction, end-of-activity notes, recorded voice notes, written
+comments)?",
+"What is one 'minimum viable win' you want in the first 2-3 weeks (e.g., introduce yourself smoothly, ask clarifying
+questions without freezing)?",
+"Who will notice your improvement first (manager, clients, teammates), and what do you want them to say about your
+communication?",
+"If you had to pick a theme for this semester (e.g., 'Clarity over speed', 'Executive presence', 'Concise writing'),
+which one and why?"
+] %}
 
-        <div class="space-y-4">
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Your Current English Use</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-                        <li><strong>Warm-Up:</strong> Can you tell me a little bit about your current role and responsibilities at work?</li>
-                        <li><strong>Frequency:</strong> How often do you use English in your job?</li>
-                        <li><strong>Confidence:</strong> In what situations do you feel most comfortable speaking English?</li>
-                        <li><strong>Challenges:</strong> In what situations do you feel less confident or want more practice?</li>
-                        <li><strong>Past Experience:</strong> Have you studied English with a teacher before? What did you like (or not like) about it?</li>
-                    </ul>
-                </div>
-            </div>
+{# Sezione 1: Getting to Know You & Goal Setting #}
+{% call info_card('getting-to-know-you', '1. Getting to Know You & Goal Setting', initial_state='show') %}
+<p class="text-slate-700 mb-6">
+    This section helps us understand your unique professional context and set clear, achievable goals for your English
+    language journey.
+</p>
 
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Exploring Needs & Context</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-                        <li><strong>Audience:</strong> Who do you usually speak English with — coworkers, clients, managers, international partners?</li>
-                        <li><strong>Skills:</strong> Do you need English more for speaking, writing, listening, or presenting?</li>
-                        <li><strong>Specifics:</strong> Are there specific business situations you want to focus on (meetings, negotiations, networking, emails, presentations)?</li>
-                        <li><strong>Weaknesses:</strong> Are there grammar points or pronunciation issues you know you'd like to work on?</li>
-                        <li><strong>Personal Interests:</strong> What topics outside of work would you like to practice in English (travel, hobbies, personal growth, etc.)?</li>
-                    </ul>
-                </div>
-            </div>
+{# Struttura "Matrioska" rimossa. h4 e ul sono ora diretti figli. #}
+<h4 class="font-bold text-slate-800 mt-4">Your Current English Use</h4>
+{# Classi Tailwind per liste rimosse (gestite da CSS master) #}
+<ul class="text-slate-600">
+    <li><strong>Warm-Up:</strong> Can you tell me a little bit about your current role and responsibilities at work?
+    </li>
+    <li><strong>Frequency:</strong> How often do you use English in your job?</li>
+    <li><strong>Confidence:</strong> In what situations do you feel most comfortable speaking English?</li>
+    <li><strong>Challenges:</strong> In what situations do you feel less confident or want more practice?</li>
+    <li><strong>Past Experience:</strong> Have you studied English with a teacher before? What did you like (or not
+        like) about it?</li>
+</ul>
 
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Setting Your Goals</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-                        <li><strong>Vision:</strong> Imagine your English skills six months from now. What would you like to be able to do that feels difficult today?</li>
-                        <li><strong>Primary Goal:</strong> If you had to choose one main goal for this program, what would it be?</li>
-                        <li><strong>Focus:</strong> Which is more important for you: speaking more accurately (fewer mistakes) or speaking more fluently (faster, more natural)?</li>
-                        <li><strong>Scope:</strong> Would you like to focus more on everyday work English (emails, small talk, meetings) or high-level skills (presentations, negotiations, leadership)?</li>
-                        <li><strong>Measurement:</strong> How will you measure your progress — for example, being able to join meetings more confidently, writing faster, or receiving positive feedback from colleagues/clients?</li>
-                    </ul>
-                </div>
-            </div>
+<h4 class="font-bold text-slate-800 mt-4">Exploring Needs & Context</h4>
+<ul class="text-slate-600">
+    <li><strong>Audience:</strong> Who do you usually speak English with — coworkers, clients, managers, international
+        partners?</li>
+    <li><strong>Skills:</strong> Do you need English more for speaking, writing, listening, or presenting?</li>
+    <li><strong>Specifics:</strong> Are there specific business situations you want to focus on (meetings, negotiations,
+        networking, emails, presentations)?</li>
+    <li><strong>Weaknesses:</strong> Are there grammar points or pronunciation issues you know you'd like to work on?
+    </li>
+    <li><strong>Personal Interests:</strong> What topics outside of work would you like to practice in English (travel,
+        hobbies, personal growth, etc.)?</li>
+</ul>
 
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Program Agreement</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-                        <li><strong>Commitment:</strong> How much time per week can you realistically spend on homework or practice outside of class?</li>
-                        <li><strong>Preference:</strong> Do you prefer structured lessons (with grammar and vocabulary each week) or flexible lessons based on real workplace situations?</li>
-                        <li><strong>Motivation:</strong> What motivates you most when learning a language (clear progress, interactive practice, personal interest, professional growth)?</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+<h4 class="font-bold text-slate-800 mt-4">Setting Your Goals</h4>
+<ul class="text-slate-600">
+    <li><strong>Vision:</strong> Imagine your English skills six months from now. What would you like to be able to do
+        that feels difficult today?</li>
+    <li><strong>Primary Goal:</strong> If you had to choose one main goal for this program, what would it be?</li>
+    <li><strong>Focus:</strong> Which is more important for you: speaking more accurately (fewer mistakes) or speaking
+        more fluently (faster, more natural)?</li>
+    <li><strong>Scope:</strong> Would you like to focus more on everyday work English (emails, small talk, meetings) or
+        high-level skills (presentations, negotiations, leadership)?</li>
+    <li><strong>Measurement:</strong> How will you measure your progress — for example, being able to join meetings more
+        confidently, writing faster, or receiving positive feedback from colleagues/clients?</li>
+</ul>
 
-        <hr class="my-6 border-gray-200">
+<h4 class="font-bold text-slate-800 mt-4">Program Agreement</h4>
+<ul class="text-slate-600">
+    <li><strong>Commitment:</strong> How much time per week can you realistically spend on homework or practice outside
+        of class?</li>
+    <li><strong>Preference:</strong> Do you prefer structured lessons (with grammar and vocabulary each week) or
+        flexible lessons based on real workplace situations?</li>
+    <li><strong>Motivation:</strong> What motivates you most when learning a language (clear progress, interactive
+        practice, personal interest, professional growth)?</li>
+</ul>
 
-        <h3 class="font-bold text-lg text-slate-800 mb-4 text-center">Practice Goal Setting</h3>
-        {# ID univoco per la lista: 'goal-question-list' #}
-        {{ random_item_generator(
-            exercise_id='goal-q-generator',
-            button_text='Get a Goal Question',
-            source_list_id='goal-question-list',
-            items=goal_questions
-        ) }}
-    {% endcall %}
+<hr class="my-6 border-gray-200">
 
-    {# Sezione 2: Introductions & First Impressions #}
-    {% call info_card('introductions-impressions', 'Introductions & First Impressions') %}
-        <p class="text-slate-700 mb-6">
-            Learn the essentials of making a strong first impression, from professional greetings to the art of small talk.
-        </p>
+<h3 class="font-bold text-lg text-slate-800 mb-4 text-center">Practice Goal Setting</h3>
+{{ random_item_generator(
+exercise_id='goal-q-generator',
+button_text='Get a Goal Question',
+source_list_id='goal-question-list',
+items=goal_questions
+) }}
+{% endcall %}
 
-        <div class="space-y-4">
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Why First Impressions Matter</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <p class="mt-4 text-slate-600">
-                        First impressions are powerful in business. Research shows that people often form an opinion of someone within the first few seconds of meeting them. A strong introduction and confident body language can build trust, show professionalism, and open doors to future opportunities. On the other hand, a poor first impression can be difficult to change. In this lesson, we will practice professional introductions, explore how to make a positive impression, and learn strategies for adjusting introductions across different business situations.
-                    </p>
-                </div>
-            </div>
+<hr class="my-12 border-gray-200">
 
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Professional Introductions</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-                        <li><strong>Basic Professional Introduction:</strong> How do you clearly state your full name and job title? What details should you include about your company and department?</li>
-                        <li><strong>Stating Your Role and Responsibilities:</strong> How can you describe your main tasks or area of expertise in one or two sentences? How does your role support your team/company?</li>
-                        <li><strong>Sharing Professional Background:</strong> How can you briefly mention your years of experience or past roles? How do you connect your background to your current position?</li>
-                        <li><strong>Connecting to the Situation:</strong> How do you explain why you are in a meeting or event? What is the best way to mention your goals for the conversation?</li>
-                        <li><strong>Adding a Professional, Personal Touch:</strong> What small, personal detail could make you more memorable in a business introduction? What types of personal details are appropriate in a professional setting?</li>
-                        <li><strong>Cultural & Context Adjustments:</strong> How should you introduce yourself differently in a formal vs. informal setting? What changes when introducing yourself in person vs. on a video call?</li>
-                        <li><strong>Inviting Others to Introduce Themselves:</strong> How can you politely ask someone to share their role? What expressions are professional and respectful?</li>
-                    </ul>
-                </div>
-            </div>
+{# Sezione 2: Introductions & First Impressions #}
+{% call info_card('introductions-impressions', '2. Introductions & First Impressions', initial_state='show') %}
+<p class="text-slate-700 mb-6">
+    Learn the essentials of making a strong first impression, from professional greetings to the art of small talk.
+</p>
 
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Greetings & Small Talk</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-                        <li><strong>How to make a good first impression:</strong> What are the key elements? (Body language, dressing appropriately, choosing words carefully, showing interest in others)</li>
-                        <li><strong>Reflecting on Experience:</strong> Tell us about a time you made a bad first impression. What caused it? How did you correct it?</li>
-                        <li><strong>Different Greetings for Different People:</strong> How would you greet a friend? A coworker? A client? What are the differences? Which greetings are acceptable for each situation? Greetings to discuss: "What's up?", "Hi, how are you today?", "Hey, how's it going?", "What's good?", "Long time no see!", "Good morning / afternoon / evening"</li>
-                        <li><strong>Small Talk:</strong> What is small talk and why do we do it? In what scenarios is small talk useful? What topics are safe and appropriate for small talk in business?</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    {% endcall %}
+<h4 class="font-bold text-slate-800 mt-4">Why First Impressions Matter</h4>
+<p class="mt-4 text-slate-600">
+    First impressions are powerful in business. Research shows that people often form an opinion of someone within the
+    first few seconds of meeting them. A strong introduction and confident body language can build trust, show
+    professionalism, and open doors to future opportunities. On the other hand, a poor first impression can be difficult
+    to change. In this lesson, we will practice professional introductions, explore how to make a positive impression,
+    and learn strategies for adjusting introductions across different business situations.
+</p>
 
-    {# Sezione 3: Practice Scenarios #}
-    {% call info_card('scenarios', 'Practice Scenarios') %}
-        <p class="text-slate-700 mb-6">
-            These scenarios provide opportunities to practice your communication skills in real-world professional situations.
-        </p>
+<h4 class="font-bold text-slate-800 mt-4">Professional Introductions</h4>
+<ul class="text-slate-600">
+    <li><strong>Basic Professional Introduction:</strong> How do you clearly state your full name and job title? What
+        details should you include about your company and department?</li>
+    <li><strong>Stating Your Role and Responsibilities:</strong> How can you describe your main tasks or area of
+        expertise in one or two sentences? How does your role support your team/company?</li>
+    <li><strong>Sharing Professional Background:</strong> How can you briefly mention your years of experience or past
+        roles? How do you connect your background to your current position?</li>
+    <li><strong>Connecting to the Situation:</strong> How do you explain why you are in a meeting or event? What is the
+        best way to mention your goals for the conversation?</li>
+    <li><strong>Adding a Professional, Personal Touch:</strong> What small, personal detail could make you more
+        memorable in a business introduction? What types of personal details are appropriate in a professional setting?
+    </li>
+    <li><strong>Cultural & Context Adjustments:</strong> How should you introduce yourself differently in a formal vs.
+        informal setting? What changes when introducing yourself in person vs. on a video call?</li>
+    <li><strong>Inviting Others to Introduce Themselves:</strong> How can you politely ask someone to share their role?
+        What expressions are professional and respectful?</li>
+</ul>
 
-        <div class="space-y-4">
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">In-Person Scenarios</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-                        <li>You are introduced to a new colleague at work, but you forget their name immediately after hearing it. How do you continue the conversation without revealing that you forgot?</li>
-                        <li>You arrive late to a job interview because of traffic. How can you explain the situation politely while still making a positive impression?</li>
-                        <li>You meet a client from a different cultural background and accidentally use a gesture that could be offensive. How do you correct yourself and recover?</li>
-                        <li>You are speaking with a client in person, and you realize you have spinach in your teeth or your tie/shirt is out of place. How do you handle the situation professionally?</li>
-                    </ul>
-                </div>
-            </div>
+<h4 class="font-bold text-slate-800 mt-4">Greetings & Small Talk</h4>
+<ul class="text-slate-600">
+    <li><strong>How to make a good first impression:</strong> What are the key elements? (Body language, dressing
+        appropriately, choosing words carefully, showing interest in others)</li>
+    <li><strong>Reflecting on Experience:</strong> Tell us about a time you made a bad first impression. What caused it?
+        How did you correct it?</li>
+    <li><strong>Different Greetings for Different People:</strong> How would you greet a friend? A coworker? A client?
+        What are the differences? Which greetings are acceptable for each situation? Greetings to discuss: "What's up?",
+        "Hi, how are you today?", "Hey, how's it going?", "What's good?", "Long time no see!", "Good morning / afternoon
+        / evening"</li>
+    <li><strong>Small Talk:</strong> What is small talk and why do we do it? In what scenarios is small talk useful?
+        What topics are safe and appropriate for small talk in business?</li>
+</ul>
+{% endcall %}
 
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Video Call Scenarios</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-                        <li>You are introducing yourself on a video call, but your microphone isn't working. How can you handle the situation calmly and professionally?</li>
-                        <li>During a team meeting on Zoom, your colleague accidentally interrupts while you are speaking. How do you continue without sounding frustrated?</li>
-                        <li>You are presenting to a client online, and your slides won't share properly. What do you say to keep the meeting on track?</li>
-                        <li>You are attending a video call with clients in a different time zone and accidentally join 15 minutes late. How can you recover and still make a good impression?</li>
-                    </ul>
-                </div>
-            </div>
+<hr class="my-12 border-gray-200">
 
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Written Message Scenarios</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-                        <li>You receive an email from a client that you don't fully understand. How can you ask for clarification without sounding unprofessional?</li>
-                        <li>You are sending a LinkedIn message to a potential contact. What is the best way to introduce yourself and make a strong first impression?</li>
-                        <li>You are writing an email to your manager, but you realize you made a small spelling mistake after sending it. How should you handle it?</li>
-                        <li>You want to follow up with a potential client after meeting them at an event, but you don't remember exactly what you discussed. How can you write a polite and professional message?</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    {% endcall %}
+{# Sezione 3: Practice Scenarios #}
+{% call info_card('scenarios', '3. Practice Scenarios', initial_state='show') %}
+<p class="text-slate-700 mb-6">
+    These scenarios provide opportunities to practice your communication skills in real-world professional situations.
+</p>
 
-{% endblock %}
+<h4 class="font-bold text-slate-800 mt-4">In-Person Scenarios</h4>
+<ul class="text-slate-600">
+    <li>You are introduced to a new colleague at work, but you forget their name immediately after hearing it. How do
+        you continue the conversation without revealing that you forgot?</li>
+    <li>You arrive late to a job interview because of traffic. How can you explain the situation politely while still
+        making a positive impression?</li>
+    <li>You meet a client from a different cultural background and accidentally use a gesture that could be offensive.
+        How do you correct yourself and recover?</li>
+    <li>You are speaking with a client in person, and you realize you have spinach in your teeth or your tie/shirt is
+        out of place. How do you handle the situation professionally?</li>
+</ul>
+
+<h4 class="font-bold text-slate-800 mt-4">Video Call Scenarios</h4>
+<ul class="text-slate-600">
+    <li>You are introducing yourself on a video call, but your microphone isn't working. How can you handle the
+        situation calmly and professionally?</li>
+    <li>During a team meeting on Zoom, your colleague accidentally interrupts while you are speaking. How do you
+        continue without sounding frustrated?</li>
+    <li>You are presenting to a client online, and your slides won't share properly. What do you say to keep the meeting
+        on track?</li>
+    <li>You are attending a video call with clients in a different time zone and accidentally join 15 minutes late. How
+        can you recover and still make a good impression?</li>
+</ul>
+
+<h4 class="font-bold text-slate-800 mt-4">Written Message Scenarios</h4>
+<ul class="text-slate-600">
+    <li>You receive an email from a client that you don't fully understand. How can you ask for clarification without
+        sounding unprofessional?</li>
+    <li>You are sending a LinkedIn message to a potential contact. What is the best way to introduce yourself and make a
+        strong first impression?</li>
+    <li>You are writing an email to your manager, but you realize you made a small spelling mistake after sending it.
+        How should you handle it?</li>
+    <li>You want to follow up with a potential client after meeting them at an event, but you don't remember exactly
+        what you discussed. How can you write a polite and professional message?</li>
+</ul>
+{% endcall %}
+
+{% endblock lesson_content %}

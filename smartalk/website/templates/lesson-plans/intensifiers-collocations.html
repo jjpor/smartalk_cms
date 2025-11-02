@@ -1,31 +1,32 @@
-{# --- Lezione: Intensifiers & Collocations --- #}
-
 {% set lesson_title = "Intensifiers & Collocations" %}
 {% set lesson_subtitle = "Enhancing your fluency with natural word pairs." %}
 {% set nav_links = [
-    {'id': 'introduction', 'title': 'Introduction'},
-    {'id': 'vocabulary', 'title': 'Vocabulary'},
-    {'id': 'usage', 'title': 'Explanation of Usage'},
-    {'id': 'practice', 'title': 'Practice'},
-    {'id': 'discussion', 'title': 'Discussion'},
-    {'id': 'upgrade', 'title': 'Upgrade the Sentence'},
-    {'id': 'wrap-up', 'title': 'Wrap-Up'}
+{'id': 'introduction', 'title': 'Introduction'},
+{'id': 'vocabulary', 'title': 'Vocabulary'},
+{'id': 'usage', 'title': 'Explanation of Usage'},
+{'id': 'practice', 'title': 'Practice'},
+{'id': 'discussion', 'title': 'Discussion'},
+{'id': 'upgrade', 'title': 'Upgrade the Sentence'},
+{'id': 'wrap-up', 'title': 'Wrap-Up'}
 ] %}
 
 {# --- Dati per Esercizi Interattivi (Versione 100% pulita) --- #}
 {% set fill_in_the_gap_data = [
-    {'prefix': 'They\'re not hard to get a hold of. They\'re', 'answer': 'widely', 'suffix': 'available on the Internet.'},
-    {'prefix': 'He\'s a', 'answer': 'highly', 'suffix': 'respected scientist. He has won many awards.'},
-    {'prefix': 'It\'s a serious matter. I\'m not sure if you\'re', 'answer': 'fully', 'suffix': 'aware of the consequences.'},
-    {'prefix': 'Penelope is generally calm, but she can be', 'answer': 'easily', 'suffix': 'excited sometimes.'},
-    {'prefix': 'I didn\'t know the words to the song, but the tune was', 'answer': 'vaguely', 'suffix': 'familiar.'},
-    {'prefix': 'Although nobody was killed, two people were', 'answer': 'seriously', 'suffix': 'injured.'},
-    {'prefix': 'It\'s not', 'answer': 'politically', 'suffix': 'correct to say "policeman" these days-"police officer" is better.'},
-    {'prefix': 'Everything at the market is', 'answer': 'reasonably', 'suffix': 'priced, so it\'s great for people on a budget.'},
-    {'prefix': 'If you help me with this problem, I\'ll be', 'answer': 'eternally', 'suffix': 'grateful.'},
-    {'prefix': 'Joe\'s friends were supportive, but his wife was', 'answer': 'strongly', 'suffix': 'opposed to the idea.'},
-    {'prefix': 'The supermarket is', 'answer': 'conveniently', 'suffix': 'located next to the station.'},
-    {'prefix': 'I was', 'answer': 'absolutely', 'suffix': 'delighted when I heard the news.'}
+{'prefix': 'They\'re not hard to get a hold of. They\'re', 'answer': 'widely', 'suffix': 'available on the Internet.'},
+{'prefix': 'He\'s a', 'answer': 'highly', 'suffix': 'respected scientist. He has won many awards.'},
+{'prefix': 'It\'s a serious matter. I\'m not sure if you\'re', 'answer': 'fully', 'suffix': 'aware of the
+consequences.'},
+{'prefix': 'Penelope is generally calm, but she can be', 'answer': 'easily', 'suffix': 'excited sometimes.'},
+{'prefix': 'I didn\'t know the words to the song, but the tune was', 'answer': 'vaguely', 'suffix': 'familiar.'},
+{'prefix': 'Although nobody was killed, two people were', 'answer': 'seriously', 'suffix': 'injured.'},
+{'prefix': 'It\'s not', 'answer': 'politically', 'suffix': 'correct to say "policeman" these days-"police officer" is
+better.'},
+{'prefix': 'Everything at the market is', 'answer': 'reasonably', 'suffix': 'priced, so it\'s great for people on a
+budget.'},
+{'prefix': 'If you help me with this problem, I\'ll be', 'answer': 'eternally', 'suffix': 'grateful.'},
+{'prefix': 'Joe\'s friends were supportive, but his wife was', 'answer': 'strongly', 'suffix': 'opposed to the idea.'},
+{'prefix': 'The supermarket is', 'answer': 'conveniently', 'suffix': 'located next to the station.'},
+{'prefix': 'I was', 'answer': 'absolutely', 'suffix': 'delighted when I heard the news.'}
 ] %}
 
 
@@ -34,121 +35,139 @@
 
 {% block lesson_content %}
 
-    {% call info_card('introduction', '1. Introduction', initial_state='show') %}
-        <h4 class="font-semibold text-slate-800 mt-4">What are collocations?</h4>
-        <p class="text-slate-700 mt-2">A <strong>collocation</strong> is a natural combination of words that frequently appear together in English. These pairings "sound right" to native speakers because of their common use.</p>
-        <p class="text-slate-700 mt-2"><strong>Examples:</strong> <em>make a decision, heavy rain, strong coffee.</em></p>
-        <p class="text-slate-700 mt-2">Using collocations makes your English sound more natural and fluent.</p>
-        <h4 class="font-semibold text-slate-800 mt-4">What are intensifiers?</h4>
-        <p class="text-slate-700 mt-2">An <strong>intensifier</strong> is a word or phrase that strengthens or softens the meaning of another word, usually an adjective or adverb.</p>
-        <p class="text-slate-700 mt-2"><strong>Example:</strong> <em>very happy</em> (stronger than <em>happy</em>).</p>
-        <p class="text-slate-700 mt-2">Intensifiers allow you to show degrees of intensity: strong, weak, extreme, or subtle.</p>
-        <h4 class="font-semibold text-slate-800 mt-4">Types of Intensifiers</h4>
-        <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
-            <li><strong>Amplifiers</strong> (make the meaning stronger): <em>very, extremely, highly, absolutely, completely.</em></li>
-            <li><strong>Downtoners</strong> (make the meaning weaker): <em>somewhat, rather, slightly, kind of, a little.</em></li>
-        </ul>
-    {% endcall %}
+{% call info_card('introduction', '1. Introduction', initial_state='show') %}
+<h4 class="font-semibold text-slate-800 mt-4">What are collocations?</h4>
+<p class="text-slate-700 mt-2">A <strong>collocation</strong> is a natural combination of words that frequently appear
+    together in English. These pairings "sound right" to native speakers because of their common use.</p>
+<p class="text-slate-700 mt-2"><strong>Examples:</strong> <em>make a decision, heavy rain, strong coffee.</em></p>
+<p class="text-slate-700 mt-2">Using collocations makes your English sound more natural and fluent.</p>
+<h4 class="font-semibold text-slate-800 mt-4">What are intensifiers?</h4>
+<p class="text-slate-700 mt-2">An <strong>intensifier</strong> is a word or phrase that strengthens or softens the
+    meaning of another word, usually an adjective or adverb.</p>
+<p class="text-slate-700 mt-2"><strong>Example:</strong> <em>very happy</em> (stronger than <em>happy</em>).</p>
+<p class="text-slate-700 mt-2">Intensifiers allow you to show degrees of intensity: strong, weak, extreme, or subtle.
+</p>
+<h4 class="font-semibold text-slate-800 mt-4">Types of Intensifiers</h4>
+<ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+    <li><strong>Amplifiers</strong> (make the meaning stronger): <em>very, extremely, highly, absolutely,
+            completely.</em></li>
+    <li><strong>Downtoners</strong> (make the meaning weaker): <em>somewhat, rather, slightly, kind of, a little.</em>
+    </li>
+</ul>
+{% endcall %}
 
-    <hr class="my-12 border-gray-200">
+<hr class="my-12 border-gray-200">
 
-    {% call info_card('vocabulary', '2. Vocabulary Lists', initial_state='show') %}
-        <div class="grid md:grid-cols-2 gap-4 mt-4">
-            <div>
-                <h4 class="font-semibold text-slate-800">Group 1: Intensifiers</h4>
-                <p class="text-slate-700 mt-2"><em>conveniently, widely, fully, highly, eternally, vaguely, reasonably, easily, strongly, seriously, absolutely, politically</em></p>
-            </div>
-            <div>
-                <h4 class="font-semibold text-slate-800">Group 2: Adjectives/Participles</h4>
-                <p class="text-slate-700 mt-2"><em>respected, grateful, located, available, injured, priced, delighted, excited, aware, correct, opposed, familiar</em></p>
-            </div>
-        </div>
-        <p class="text-slate-700 font-semibold mt-4">Examples:</p>
-        <ul class="list-disc list-inside mt-2 text-slate-600 space-y-1">
-            <li>Fully aware</li>
-            <li>Eternally grateful</li>
-            <li>Politically correct</li>
-            <li>Highly respected</li>
-            <li>Reasonably priced</li>
-            <li>Absolutely delighted</li>
-        </ul>
-        <div class="grid md:grid-cols-2 gap-4 mt-4">
-            <div>
-                <h4 class="font-semibold text-slate-800">Group 1: Intensifiers</h4>
-                <p class="text-slate-700 mt-2"><em>strictly, painfully, happily, brightly, completely, deeply, pleasantly, bitterly, perfectly, absolutely, strongly, utterly</em></p>
-            </div>
-            <div>
-                <h4 class="font-semibold text-slate-800">Group 2: Adjectives/Participles</h4>
-                <p class="text-slate-700 mt-2"><em>furious, cold, married, shy, normal, recommended, different, concerned, ridiculous, forbidden, lit, surprised</em></p>
-            </div>
-        </div>
-        <p class="text-slate-700 font-semibold mt-4">Examples:</p>
-        <ul class="list-disc list-inside mt-2 text-slate-600 space-y-1">
-            <li>Strictly forbidden</li>
-            <li>Happily married</li>
-            <li>Brightly lit</li>
-            <li>Completely different</li>
-            <li>Utterly ridiculous</li>
-            <li>Absolutely furious</li>
-            <li>Painfully shy</li>
-        </ul>
-    {% endcall %}
+{% call info_card('vocabulary', '2. Vocabulary Lists', initial_state='show') %}
+<div class="grid md:grid-cols-2 gap-4 mt-4">
+    <div>
+        <h4 class="font-semibold text-slate-800">Group 1: Intensifiers</h4>
+        <p class="text-slate-700 mt-2"><em>conveniently, widely, fully, highly, eternally, vaguely, reasonably, easily,
+                strongly, seriously, absolutely, politically</em></p>
+    </div>
+    <div>
+        <h4 class="font-semibold text-slate-800">Group 2: Adjectives/Participles</h4>
+        <p class="text-slate-700 mt-2"><em>respected, grateful, located, available, injured, priced, delighted, excited,
+                aware, correct, opposed, familiar</em></p>
+    </div>
+</div>
+<p class="text-slate-700 font-semibold mt-4">Examples:</p>
+<ul class="list-disc list-inside mt-2 text-slate-600 space-y-1">
+    <li>Fully aware</li>
+    <li>Eternally grateful</li>
+    <li>Politically correct</li>
+    <li>Highly respected</li>
+    <li>Reasonably priced</li>
+    <li>Absolutely delighted</li>
+</ul>
+<div class="grid md:grid-cols-2 gap-4 mt-4">
+    <div>
+        <h4 class="font-semibold text-slate-800">Group 1: Intensifiers</h4>
+        <p class="text-slate-700 mt-2"><em>strictly, painfully, happily, brightly, completely, deeply, pleasantly,
+                bitterly, perfectly, absolutely, strongly, utterly</em></p>
+    </div>
+    <div>
+        <h4 class="font-semibold text-slate-800">Group 2: Adjectives/Participles</h4>
+        <p class="text-slate-700 mt-2"><em>furious, cold, married, shy, normal, recommended, different, concerned,
+                ridiculous, forbidden, lit, surprised</em></p>
+    </div>
+</div>
+<p class="text-slate-700 font-semibold mt-4">Examples:</p>
+<ul class="list-disc list-inside mt-2 text-slate-600 space-y-1">
+    <li>Strictly forbidden</li>
+    <li>Happily married</li>
+    <li>Brightly lit</li>
+    <li>Completely different</li>
+    <li>Utterly ridiculous</li>
+    <li>Absolutely furious</li>
+    <li>Painfully shy</li>
+</ul>
+{% endcall %}
 
-    <hr class="my-12 border-gray-200">
+<hr class="my-12 border-gray-200">
 
-    {% call info_card('usage', '3. Explanation of Usage', initial_state='show') %}
-        <p class="text-slate-700 mt-4"><strong>Strong collocations:</strong> Certain adjectives almost always go with certain intensifiers. For example:</p>
-        <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
-            <li>We say <em>"deeply concerned"</em> (not <em>"strongly concerned"</em>).</li>
-            <li>We say <em>"absolutely delighted"</em> (not <em>"very delighted"</em>).</li>
-        </ul>
-        <p class="text-slate-700 mt-4"><strong>Why?</strong> English has <strong>fixed patterns</strong> that sound natural to native speakers. Choosing the right intensifier makes your English more accurate and polished.</p>
-        <p class="text-slate-700 mt-4"><strong>Common mistake:</strong> Overusing <em>very</em>. Instead of saying <em>very angry</em>, say <em>absolutely furious</em>. Instead of <em>very cold</em>, say <em>bitterly cold</em>.</p>
-    {% endcall %}
+{% call info_card('usage', '3. Explanation of Usage', initial_state='show') %}
+<p class="text-slate-700 mt-4"><strong>Strong collocations:</strong> Certain adjectives almost always go with certain
+    intensifiers. For example:</p>
+<ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+    <li>We say <em>"deeply concerned"</em> (not <em>"strongly concerned"</em>).</li>
+    <li>We say <em>"absolutely delighted"</em> (not <em>"very delighted"</em>).</li>
+</ul>
+<p class="text-slate-700 mt-4"><strong>Why?</strong> English has <strong>fixed patterns</strong> that sound natural to
+    native speakers. Choosing the right intensifier makes your English more accurate and polished.</p>
+<p class="text-slate-700 mt-4"><strong>Common mistake:</strong> Overusing <em>very</em>. Instead of saying <em>very
+        angry</em>, say <em>absolutely furious</em>. Instead of <em>very cold</em>, say <em>bitterly cold</em>.</p>
+{% endcall %}
 
-    <hr class="my-12 border-gray-200">
+<hr class="my-12 border-gray-200">
 
-    {% call info_card('practice', '4. Practice: Fill-in-the-Blank', initial_state='show') %}
-        <p class="text-slate-700 mt-4 font-semibold">Word Bank:</p>
-        <p class="text-slate-700 mt-2"><em>fully, highly, vaguely, easily, seriously, politically, reasonably, eternally, strongly, conveniently, absolutely, widely</em></p>
-        
-        {# --- Esercizio Interattivo --- #}
-        {{ fill_in_the_gap_exercise('practice-1', fill_in_the_gap_data) }}
-    {% endcall %}
+{% call info_card('practice', '4. Practice: Fill-in-the-Blank', initial_state='show') %}
+<p class="text-slate-700 mt-4 font-semibold">Word Bank:</p>
+<p class="text-slate-700 mt-2"><em>fully, highly, vaguely, easily, seriously, politically, reasonably, eternally,
+        strongly, conveniently, absolutely, widely</em></p>
 
-    <hr class="my-12 border-gray-200">
+{# --- Esercizio Interattivo --- #}
+{{ fill_in_the_gap_exercise('practice-1', fill_in_the_gap_data) }}
+{% endcall %}
 
-    {% call info_card('discussion', '5. Discussion Questions', initial_state='show') %}
-        <h4 class="font-semibold text-slate-800 mt-4">General</h4>
-        <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
-            <li>What's a situation when you felt <em>utterly ridiculous</em>?</li>
-            <li>Have you ever been <em>pleasantly surprised</em> by something at work or in life?</li>
-            <li>What do you feel <em>eternally grateful</em> for?</li>
-        </ul>
-        <h4 class="font-semibold text-slate-800 mt-4">Business</h4>
-        <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
-            <li>When is it important to be <em>politically correct</em> at work?</li>
-            <li>Can you think of a time when you were <em>deeply concerned</em> about a project?</li>
-            <li>What's something you would <em>strongly recommend</em> to a client?</li>
-        </ul>
-    {% endcall %}
+<hr class="my-12 border-gray-200">
 
-    <hr class="my-12 border-gray-200">
+{% call info_card('discussion', '5. Discussion Questions', initial_state='show') %}
+<h4 class="font-semibold text-slate-800 mt-4">General</h4>
+<ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+    <li>What's a situation when you felt <em>utterly ridiculous</em>?</li>
+    <li>Have you ever been <em>pleasantly surprised</em> by something at work or in life?</li>
+    <li>What do you feel <em>eternally grateful</em> for?</li>
+</ul>
+<h4 class="font-semibold text-slate-800 mt-4">Business</h4>
+<ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+    <li>When is it important to be <em>politically correct</em> at work?</li>
+    <li>Can you think of a time when you were <em>deeply concerned</em> about a project?</li>
+    <li>What's something you would <em>strongly recommend</em> to a client?</li>
+</ul>
+{% endcall %}
 
-    {% call info_card('upgrade', '6. Speaking Activity: Upgrade the Sentence', initial_state='show') %}
-        <p class="text-slate-700 mt-4">Take these "basic" sentences and make them stronger by using collocations and intensifiers.</p>
-        <ul class="list-disc list-inside mt-2 text-slate-600 space-y-4">
-            <li><strong>I was very happy when I got the job.</strong><br>→ <em>I was absolutely delighted when I got the job.</em></li>
-            <li><strong>It was very cold during the conference in Chicago.</strong><br>→ <em>It was bitterly cold during the conference in Chicago.</em></li>
-            <li><strong>The instructions were very clear.</strong><br>→ <em>The instructions were perfectly clear.</em></li>
-        </ul>
-    {% endcall %}
+<hr class="my-12 border-gray-200">
 
-    <hr class="my-12 border-gray-200">
+{% call info_card('upgrade', '6. Speaking Activity: Upgrade the Sentence', initial_state='show') %}
+<p class="text-slate-700 mt-4">Take these "basic" sentences and make them stronger by using collocations and
+    intensifiers.</p>
+<ul class="list-disc list-inside mt-2 text-slate-600 space-y-4">
+    <li><strong>I was very happy when I got the job.</strong><br>→ <em>I was absolutely delighted when I got the
+            job.</em></li>
+    <li><strong>It was very cold during the conference in Chicago.</strong><br>→ <em>It was bitterly cold during the
+            conference in Chicago.</em></li>
+    <li><strong>The instructions were very clear.</strong><br>→ <em>The instructions were perfectly clear.</em></li>
+</ul>
+{% endcall %}
 
-    {% call info_card('wrap-up', '7. Wrap-Up', initial_state='show') %}
-        <p class="text-slate-700 mt-4">Collocations and intensifiers help you sound <strong>more natural, fluent, and expressive.</strong></p>
-        <p class="text-slate-700 mt-2">Instead of repeating <em>very</em> or <em>really</em>, upgrade your language with phrases like <em>utterly ridiculous, deeply concerned, strongly opposed, absolutely delighted.</em></p>
-    {% endcall %}
+<hr class="my-12 border-gray-200">
+
+{% call info_card('wrap-up', '7. Wrap-Up', initial_state='show') %}
+<p class="text-slate-700 mt-4">Collocations and intensifiers help you sound <strong>more natural, fluent, and
+        expressive.</strong></p>
+<p class="text-slate-700 mt-2">Instead of repeating <em>very</em> or <em>really</em>, upgrade your language with phrases
+    like <em>utterly ridiculous, deeply concerned, strongly opposed, absolutely delighted.</em></p>
+{% endcall %}
 
 {% endblock lesson_content %}

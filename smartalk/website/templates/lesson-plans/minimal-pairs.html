@@ -1,12 +1,10 @@
-{# --- Lezione: Minimal Pairs --- #}
-
 {% set lesson_title = "Minimal Pairs" %}
 {% set lesson_subtitle = "Differentiating between similar-sounding words." %}
 {% set nav_links = [
-    {'id': 'part1', 'title': 'Part 1'},
-    {'id': 'tongue-twisters1', 'title': 'Tongue Twisters'},
-    {'id': 'part2', 'title': 'Part 2'},
-    {'id': 'tongue-twisters2', 'title': 'Tongue Twisters'}
+{'id': 'part1', 'title': 'Part 1'},
+{'id': 'tongue-twisters1', 'title': 'Tongue Twisters'},
+{'id': 'part2', 'title': 'Part 2'},
+{'id': 'tongue-twisters2', 'title': 'Tongue Twisters'}
 ] %}
 
 {% extends "abstract_templates/lesson_base.html" %}
@@ -14,110 +12,110 @@
 
 {% block lesson_content %}
 
-    {% call info_card('part1', '1. Part 1 – Minimal Pairs', initial_state='show') %}
-        <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-            <li>leather / leader / litter / ladder / lather / letter</li>
-            <li>fell / fill / feel / fail / felt / file</li>
-            <li>look / luck / lack / lick / leak / lock</li>
-            <li>hat / hut / heat / hit / hot</li>
-            <li>eat / it / ate / at / ought</li>
-            <li>set / seed / said / sad / sit / seat</li>
-            <li>sheep / cheap / ship / chip / shop / chop</li>
-            <li>rice / rise / raise / race</li>
-            <li>will / well / whale / while / wall / wheel</li>
-            <li>meet / mate / met / made / mitt</li>
-            <li>bear / beer / beard / bird / bored</li>
-            <li>heat / hit / height / hat / hate</li>
-            <li>people / paper / pebble / pepper</li>
-            <li>sing / sink / sin / sick / sign / song</li>
-            <li>ring / wrong / rang / rung</li>
-            <li>boot / bought / boat / but / bot</li>
-            <li>ear / here / hair / hire / air / error</li>
-            <li>since / science / scenes / signs / sends / sense</li>
-            <li>choose / Jews / shoes / juice</li>
-            <li>caught / cut / coat / cat / cute</li>
-            <li>dog / dug / dock / duck</li>
-        </ul>
-    {% endcall %}
+{% call info_card('part1', '1. Part 1 – Minimal Pairs', initial_state='show') %}
+<ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+    <li>leather / leader / litter / ladder / lather / letter</li>
+    <li>fell / fill / feel / fail / felt / file</li>
+    <li>look / luck / lack / lick / leak / lock</li>
+    <li>hat / hut / heat / hit / hot</li>
+    <li>eat / it / ate / at / ought</li>
+    <li>set / seed / said / sad / sit / seat</li>
+    <li>sheep / cheap / ship / chip / shop / chop</li>
+    <li>rice / rise / raise / race</li>
+    <li>will / well / whale / while / wall / wheel</li>
+    <li>meet / mate / met / made / mitt</li>
+    <li>bear / beer / beard / bird / bored</li>
+    <li>heat / hit / height / hat / hate</li>
+    <li>people / paper / pebble / pepper</li>
+    <li>sing / sink / sin / sick / sign / song</li>
+    <li>ring / wrong / rang / rung</li>
+    <li>boot / bought / boat / but / bot</li>
+    <li>ear / here / hair / hire / air / error</li>
+    <li>since / science / scenes / signs / sends / sense</li>
+    <li>choose / Jews / shoes / juice</li>
+    <li>caught / cut / coat / cat / cute</li>
+    <li>dog / dug / dock / duck</li>
+</ul>
+{% endcall %}
 
-    <hr class="my-12 border-gray-200">
+<hr class="my-12 border-gray-200">
 
-    {% call info_card('tongue-twisters1', '2. Tongue Twisters – Part 1', initial_state='show') %}
-        <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-            <li>The leather-clad leader lifted the litter, leapt the ladder, lost the lather, and located a letter.</li>
-            <li>Phil felt he'd fail to fill the file, but fell and felt fine.</li>
-            <li>Look at the lack of luck when the lock leaks as the dog licks.</li>
-            <li>The hot hut's heat hit my hat hard.</li>
-            <li>I ate it at noon, but ought to have eaten it before it got hot.</li>
-            <li>Sid said, "Set the sad seed on the seat before you sit."</li>
-            <li>The shop sells cheap chips for sheep ships that chop trees.</li>
-            <li>The rice rises as you raise your hand in the race.</li>
-            <li>Will the whale watch while the wheel turns by the well wall?</li>
-            <li>I met my mate and made a mitt to meet at the match.</li>
-            <li>The bear with a beard drank beer, bored by the bird.</li>
-            <li>I hate how the heat hit my hat at this height.</li>
-            <li>People passed the paper on pepper and pebbles.</li>
-            <li>Sick Sid sings a sinful song by the sink under the sign.</li>
-            <li>The wrong ring rang when I had already rung.</li>
-            <li>I bought a boot for my boat, but the bot bought the wrong boot.</li>
-            <li>Here, the air messed up my hair, and I heard an error about the hire.</li>
-            <li>Since science sends sense, scenes of signs seem sensible.</li>
-            <li>Jews choose juice while shopping for shoes.</li>
-            <li>The cute cat caught my coat and cut a corner.</li>
-            <li>The dog dug a dock while a duck ducked the dig.</li>
-        </ul>
-    {% endcall %}
+{% call info_card('tongue-twisters1', '2. Tongue Twisters – Part 1', initial_state='show') %}
+<ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+    <li>The leather-clad leader lifted the litter, leapt the ladder, lost the lather, and located a letter.</li>
+    <li>Phil felt he'd fail to fill the file, but fell and felt fine.</li>
+    <li>Look at the lack of luck when the lock leaks as the dog licks.</li>
+    <li>The hot hut's heat hit my hat hard.</li>
+    <li>I ate it at noon, but ought to have eaten it before it got hot.</li>
+    <li>Sid said, "Set the sad seed on the seat before you sit."</li>
+    <li>The shop sells cheap chips for sheep ships that chop trees.</li>
+    <li>The rice rises as you raise your hand in the race.</li>
+    <li>Will the whale watch while the wheel turns by the well wall?</li>
+    <li>I met my mate and made a mitt to meet at the match.</li>
+    <li>The bear with a beard drank beer, bored by the bird.</li>
+    <li>I hate how the heat hit my hat at this height.</li>
+    <li>People passed the paper on pepper and pebbles.</li>
+    <li>Sick Sid sings a sinful song by the sink under the sign.</li>
+    <li>The wrong ring rang when I had already rung.</li>
+    <li>I bought a boot for my boat, but the bot bought the wrong boot.</li>
+    <li>Here, the air messed up my hair, and I heard an error about the hire.</li>
+    <li>Since science sends sense, scenes of signs seem sensible.</li>
+    <li>Jews choose juice while shopping for shoes.</li>
+    <li>The cute cat caught my coat and cut a corner.</li>
+    <li>The dog dug a dock while a duck ducked the dig.</li>
+</ul>
+{% endcall %}
 
-    <hr class="my-12 border-gray-200">
+<hr class="my-12 border-gray-200">
 
-    {% call info_card('part2', '3. Part 2 – Minimal Pairs', initial_state='show') %}
-        <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-            <li>bog / bock / back / buck / bug / bag</li>
-            <li>vet / bet / boat / vote / vest / best</li>
-            <li>decease / disease / desist</li>
-            <li>beets / beads / beds / bets</li>
-            <li>less / lease / lice / lies</li>
-            <li>this / these / tease</li>
-            <li>lose / loose / lust / lost / lest / last</li>
-            <li>star / store / steer / stare</li>
-            <li>through / tow / though / tough / too</li>
-            <li>layer / lawyer / liar / loyal / lower</li>
-            <li>cheese / chess / chase / choice</li>
-            <li>mat / math / tens / tenths / tents</li>
-            <li>pull / bull / pat / bat / bath / bet</li>
-            <li>peach / beach / pitch / which / rich / reach</li>
-            <li>we're / veer / wheel / veal</li>
-            <li>face / faced / phase / phased</li>
-            <li>card / cart / curt / court / core</li>
-            <li>beat / Pete / bit / pitt</li>
-            <li>crush / crutch / watch / wash</li>
-        </ul>
-    {% endcall %}
+{% call info_card('part2', '3. Part 2 – Minimal Pairs', initial_state='show') %}
+<ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+    <li>bog / bock / back / buck / bug / bag</li>
+    <li>vet / bet / boat / vote / vest / best</li>
+    <li>decease / disease / desist</li>
+    <li>beets / beads / beds / bets</li>
+    <li>less / lease / lice / lies</li>
+    <li>this / these / tease</li>
+    <li>lose / loose / lust / lost / lest / last</li>
+    <li>star / store / steer / stare</li>
+    <li>through / tow / though / tough / too</li>
+    <li>layer / lawyer / liar / loyal / lower</li>
+    <li>cheese / chess / chase / choice</li>
+    <li>mat / math / tens / tenths / tents</li>
+    <li>pull / bull / pat / bat / bath / bet</li>
+    <li>peach / beach / pitch / which / rich / reach</li>
+    <li>we're / veer / wheel / veal</li>
+    <li>face / faced / phase / phased</li>
+    <li>card / cart / curt / court / core</li>
+    <li>beat / Pete / bit / pitt</li>
+    <li>crush / crutch / watch / wash</li>
+</ul>
+{% endcall %}
 
-    <hr class="my-12 border-gray-200">
+<hr class="my-12 border-gray-200">
 
-    {% call info_card('tongue-twisters2', '4. Tongue Twisters – Part 2', initial_state='show') %}
-        <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-            <li>The bug in the bag bounced back and bucked the bog into the bock.</li>
-            <li>The vet bet the best boat would vote for a vest.</li>
-            <li>The disease caused him to desist, but he managed to avoid the decease.</li>
-            <li>Beets and beads were on the beds while bets were being made.</li>
-            <li>The lease was less, but the lice lied about the lies.</li>
-            <li>This tease about these things is starting to please.</li>
-            <li>Don't lose your loose laces or you might get lost in lust or last lest you fail.</li>
-            <li>The star stared at the store while trying to steer away from the stare.</li>
-            <li>Though it was tough to tow through the storm, they managed to make it too.</li>
-            <li>The lawyer found a loyal liar, while the layer of evidence began to lower.</li>
-            <li>Cheese chased chess pieces while making a tough choice.</li>
-            <li>The mat on the math sheet had tens, tenths, and even tents printed on it.</li>
-            <li>He pulled the bull with a bat, but the pat on its back wasn't as gentle as his bath bet.</li>
-            <li>The peach on the beach matched the pitch of which rich person reached it first.</li>
-            <li>We're veering towards the wheel, hoping to steer the veal clear.</li>
-            <li>The face that faced the phase of the moon was unfazed.</li>
-            <li>The cart carried a card to court, but the curt judge focused on the core of the case.</li>
-            <li>Pete beat the bit out of the pitt, making it hard to quit.</li>
-            <li>The crush of the crowd broke my crutch, but I still managed to watch the wash.</li>
-        </ul>
-    {% endcall %}
+{% call info_card('tongue-twisters2', '4. Tongue Twisters – Part 2', initial_state='show') %}
+<ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+    <li>The bug in the bag bounced back and bucked the bog into the bock.</li>
+    <li>The vet bet the best boat would vote for a vest.</li>
+    <li>The disease caused him to desist, but he managed to avoid the decease.</li>
+    <li>Beets and beads were on the beds while bets were being made.</li>
+    <li>The lease was less, but the lice lied about the lies.</li>
+    <li>This tease about these things is starting to please.</li>
+    <li>Don't lose your loose laces or you might get lost in lust or last lest you fail.</li>
+    <li>The star stared at the store while trying to steer away from the stare.</li>
+    <li>Though it was tough to tow through the storm, they managed to make it too.</li>
+    <li>The lawyer found a loyal liar, while the layer of evidence began to lower.</li>
+    <li>Cheese chased chess pieces while making a tough choice.</li>
+    <li>The mat on the math sheet had tens, tenths, and even tents printed on it.</li>
+    <li>He pulled the bull with a bat, but the pat on its back wasn't as gentle as his bath bet.</li>
+    <li>The peach on the beach matched the pitch of which rich person reached it first.</li>
+    <li>We're veering towards the wheel, hoping to steer the veal clear.</li>
+    <li>The face that faced the phase of the moon was unfazed.</li>
+    <li>The cart carried a card to court, but the curt judge focused on the core of the case.</li>
+    <li>Pete beat the bit out of the pitt, making it hard to quit.</li>
+    <li>The crush of the crowd broke my crutch, but I still managed to watch the wash.</li>
+</ul>
+{% endcall %}
 
 {% endblock lesson_content %}

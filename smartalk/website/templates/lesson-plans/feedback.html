@@ -1,9 +1,8 @@
-{# --- 1. Definizioni Variabili --- #}
 {% set lesson_title = 'Feedback Essentials: The Decalogue' %} {# Titolo suggerito #}
 {% set lesson_subtitle = 'Mastering the art of effective feedback for personal and professional growth.' %}
 {% set nav_links = [
-    {'id': 'giving', 'title': 'Giving Feedback'},
-    {'id': 'receiving', 'title': 'Receiving Feedback'}
+{'id': 'giving', 'title': 'Giving Feedback'},
+{'id': 'receiving', 'title': 'Receiving Feedback'}
 ] %}
 
 {# --- 2. Estensione Template --- #}
@@ -16,230 +15,301 @@
 {# --- 4. Contenuto Lezione --- #}
 {% block lesson_content %}
 
-    {# Sezione 1: Giving Feedback #}
-    {% call info_card('giving', 'Giving Feedback') %}
-        {# Rimosso il bottone TTS #}
-        <p class="text-slate-700 mb-6">Giving feedback effectively requires a thoughtful approach. It's not about just telling someone what they did wrong, but about helping them understand and grow.</p>
-        <div class="space-y-4">
-            <div class="lesson-card"> {# Usiamo la classe master .lesson-card #}
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">The Feedback Decalogue</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span> {# Usiamo la freccia standard #}
-                </div>
-                <div class="card-content">
-                    {# Usiamo le classi standard Tailwind per le liste #}
-                    <ul class="list-decimal list-inside mt-4 text-slate-600 space-y-2">
-                        <li><strong>Be Specific and Timely</strong>: Give clear examples as promptly as possible.</li>
-                        <li><strong>Focus on Behavior, Not Personality</strong>: Address specific actions and behaviors, not a person's character or traits.</li>
-                        <li><strong>Balance Positivity and Constructiveness</strong>: Highlight strengths as well as areas for growth.</li>
-                        <li><strong>Use the "Sandwich" Technique</strong>: Begin and end the conversation with a positive note, with the constructive feedback in between.</li>
-                        <li><strong>Be Objective and Empathetic</strong>: Base your feedback on facts and objective observations, while also considering the other person's feelings and perspective.</li>
-                        <li><strong>Encourage Dialogue and Offer Solutions</strong>: Foster open communication and provide actionable steps or solutions.</li>
-                        <li><strong>Follow Up and Lead by Example</strong>: Check on progress and demonstrate that you are also receptive to feedback.</li>
-                        <li><strong>Maintain Respect and Professionalism</strong>: Deliver all feedback courteously and professionally.</li>
-                        <li><strong>Tailor Feedback to Individual Needs</strong>: Customize your approach to suit the individual's learning style and preferences.</li>
-                        <li><strong>Promote Continuous Improvement</strong>: Emphasize that feedback is a tool for ongoing development and growth.</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">The Feedback Script</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    {# Usiamo list-none per replicare lo stile originale #}
-                    <ul class="list-none mt-4 text-slate-600 space-y-2">
-                        <li><strong>Opening:</strong> "Hey [Name], I wanted to chat with you for a moment about something." or "Hi [Name], do you have a moment to discuss some feedback?"</li>
-                        <li><strong>Specific Observation:</strong> "I noticed during yesterday's meeting that you interrupted several team members while they were speaking." or "I observed that you missed the deadline for submitting the quarterly report."</li>
-                        <li><strong>Impact:</strong> "When you interrupted others, it made it difficult for everyone to stay focused on the agenda." or "Missing the deadline delayed the project timeline and put additional pressure on the rest of the team."</li>
-                        <li><strong>Relevance:</strong> "Effective communication is crucial for productive meetings and ensuring everyone's voices are heard." or "Meeting deadlines is essential for maintaining the flow of work and meeting project milestones."</li>
-                        <li><strong>Suggestion or Request for Change:</strong> "In the future, could you try to hold off on speaking until others have finished their thoughts?" or "Is there anything I can do to support you in managing your time better and meeting deadlines?"</li>
-                        <li><strong>Support and Encouragement:</strong> "I believe with a bit of practice, you'll find it easier to actively listen and contribute to discussions." or "I know you're capable of meeting deadlines, and I'm here to help if you need any assistance or resources."</li>
-                        <li><strong>Closing:</strong> "Thanks for being open to this feedback. Let's keep the lines of communication open, and if you have any questions or concerns, feel free to reach out." or "I appreciate your willingness to discuss this. I'm confident that together, we can find solutions that work for everyone."</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Scenarios for Practice</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <ol class="list-decimal list-inside mt-4 text-slate-600 space-y-4">
-                        {# Usiamo le classi .scenario-item e .scenario-questions dal CSS master #}
-                        <li class="scenario-item">
-                            <strong>Missed Deadline:</strong> An employee consistently misses project deadlines, impacting team performance.
-                            <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
-                                <li>How would you approach the conversation to ensure it's supportive rather than accusatory?</li>
-                                <li>What specific, measurable action plan could you collaboratively create to help them meet future deadlines?</li>
-                                <li>What are the potential underlying reasons for the missed deadlines, and how would you identify them?</li>
-                            </ul>
-                        </li>
-                        <li class="scenario-item">
-                            <strong>Poor Quality Work:</strong> A team member consistently produces work of low quality, affecting the overall output of the team.
-                            <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
-                                <li>How can you provide feedback on quality without discouraging the employee's effort?</li>
-                                <li>What kind of examples or standards would you use to illustrate what "quality work" looks like?</li>
-                                <li>How can you determine if the issue is a lack of skill versus a lack of attention to detail?</li>
-                            </ul>
-                        </li>
-                        <li class="scenario-item">
-                            <strong>Communication Breakdown:</strong> Two team members are involved in a project but have conflicting communication styles, leading to misunderstandings and delays.
-                            <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
-                                <li>What techniques could you teach them to improve their communication? (e.g., active listening, I-statements)</li>
-                                <li>How would you mediate a follow-up conversation to ensure a resolution is reached?</li>
-                                <li>What steps could you take to promote a more open and collaborative team culture?</li>
-                            </ul>
-                        </li>
-                        <li class="scenario-item">
-                            <strong>Negative Attitude:</strong> An employee frequently displays a negative attitude in team meetings and interactions, affecting team morale.
-                            <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
-                                <li>How can you address the behavior while showing empathy for any underlying issues?</li>
-                                <li>What are some ways to measure the impact of their attitude and explain it to them objectively?</li>
-                                <li>How can you encourage the employee to share their concerns in a constructive way?</li>
-                            </ul>
-                        </li>
-                        <li class="scenario-item">
-                            <strong>Lack of Initiative:</strong> A team member consistently waits to be told what to do rather than taking initiative or proactively seeking opportunities to contribute.
-                            <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
-                                <li>How can you motivate them to take on more ownership and responsibility?</li>
-                                <li>What opportunities could you present to them to practice taking initiative on a smaller scale?</li>
-                                <li>How can you create a safe environment where they feel comfortable taking risks and making mistakes?</li>
-                            </ul>
-                        </li>
-                         <li class="scenario-item">
-                            <strong>Interpersonal Conflict:</strong> Two team members are involved in an ongoing interpersonal conflict that is affecting team dynamics and productivity.
-                            <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
-                                <li>What role do you play as a manager or leader in a conflict like this?</li>
-                                <li>How can you encourage them to find a solution themselves, rather than just solving it for them?</li>
-                                <li>What ground rules would you establish for a mediation session to ensure a productive conversation?</li>
-                            </ul>
-                        </li>
-                         <li class="scenario-item">
-                            <strong>Resistance to Feedback:</strong> An employee consistently reacts defensively or dismisses feedback provided by their supervisor or peers.
-                            <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
-                                <li>What could be the underlying reason for their defensiveness, and how would you address it?</li>
-                                <li>How would you adjust your own approach to make the feedback more receptive?</li>
-                                <li>What steps would you take to build a relationship of trust before giving feedback?</li>
-                            </ul>
-                        </li>
-                    </ol>
-                </div>
-            </div>
+{# Sezione 1: Giving Feedback #}
+{% call info_card('giving', 'Giving Feedback') %}
+{# Rimosso il bottone TTS #}
+<p class="text-slate-700 mb-6">Giving feedback effectively requires a thoughtful approach. It's not about just telling
+    someone what they did wrong, but about helping them understand and grow.</p>
+<div class="space-y-4">
+    <div class="lesson-card"> {# Usiamo la classe master .lesson-card #}
+        <div class="card-header flex justify-between items-center">
+            <h3 class="font-bold text-slate-800">The Feedback Decalogue</h3>
+            <span class="text-2xl text-slate-500 arrow-icon">▾</span> {# Usiamo la freccia standard #}
         </div>
-    {% endcall %}
+        <div class="card-content">
+            {# Usiamo le classi standard Tailwind per le liste #}
+            <ul class="list-decimal list-inside mt-4 text-slate-600 space-y-2">
+                <li><strong>Be Specific and Timely</strong>: Give clear examples as promptly as possible.</li>
+                <li><strong>Focus on Behavior, Not Personality</strong>: Address specific actions and behaviors, not a
+                    person's character or traits.</li>
+                <li><strong>Balance Positivity and Constructiveness</strong>: Highlight strengths as well as areas for
+                    growth.</li>
+                <li><strong>Use the "Sandwich" Technique</strong>: Begin and end the conversation with a positive note,
+                    with the constructive feedback in between.</li>
+                <li><strong>Be Objective and Empathetic</strong>: Base your feedback on facts and objective
+                    observations, while also considering the other person's feelings and perspective.</li>
+                <li><strong>Encourage Dialogue and Offer Solutions</strong>: Foster open communication and provide
+                    actionable steps or solutions.</li>
+                <li><strong>Follow Up and Lead by Example</strong>: Check on progress and demonstrate that you are also
+                    receptive to feedback.</li>
+                <li><strong>Maintain Respect and Professionalism</strong>: Deliver all feedback courteously and
+                    professionally.</li>
+                <li><strong>Tailor Feedback to Individual Needs</strong>: Customize your approach to suit the
+                    individual's learning style and preferences.</li>
+                <li><strong>Promote Continuous Improvement</strong>: Emphasize that feedback is a tool for ongoing
+                    development and growth.</li>
+            </ul>
+        </div>
+    </div>
+    <div class="lesson-card">
+        <div class="card-header flex justify-between items-center">
+            <h3 class="font-bold text-slate-800">The Feedback Script</h3>
+            <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+        </div>
+        <div class="card-content">
+            {# Usiamo list-none per replicare lo stile originale #}
+            <ul class="list-none mt-4 text-slate-600 space-y-2">
+                <li><strong>Opening:</strong> "Hey [Name], I wanted to chat with you for a moment about something." or
+                    "Hi [Name], do you have a moment to discuss some feedback?"</li>
+                <li><strong>Specific Observation:</strong> "I noticed during yesterday's meeting that you interrupted
+                    several team members while they were speaking." or "I observed that you missed the deadline for
+                    submitting the quarterly report."</li>
+                <li><strong>Impact:</strong> "When you interrupted others, it made it difficult for everyone to stay
+                    focused on the agenda." or "Missing the deadline delayed the project timeline and put additional
+                    pressure on the rest of the team."</li>
+                <li><strong>Relevance:</strong> "Effective communication is crucial for productive meetings and ensuring
+                    everyone's voices are heard." or "Meeting deadlines is essential for maintaining the flow of work
+                    and meeting project milestones."</li>
+                <li><strong>Suggestion or Request for Change:</strong> "In the future, could you try to hold off on
+                    speaking until others have finished their thoughts?" or "Is there anything I can do to support you
+                    in managing your time better and meeting deadlines?"</li>
+                <li><strong>Support and Encouragement:</strong> "I believe with a bit of practice, you'll find it easier
+                    to actively listen and contribute to discussions." or "I know you're capable of meeting deadlines,
+                    and I'm here to help if you need any assistance or resources."</li>
+                <li><strong>Closing:</strong> "Thanks for being open to this feedback. Let's keep the lines of
+                    communication open, and if you have any questions or concerns, feel free to reach out." or "I
+                    appreciate your willingness to discuss this. I'm confident that together, we can find solutions that
+                    work for everyone."</li>
+            </ul>
+        </div>
+    </div>
+    <div class="lesson-card">
+        <div class="card-header flex justify-between items-center">
+            <h3 class="font-bold text-slate-800">Scenarios for Practice</h3>
+            <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+        </div>
+        <div class="card-content">
+            <ol class="list-decimal list-inside mt-4 text-slate-600 space-y-4">
+                {# Usiamo le classi .scenario-item e .scenario-questions dal CSS master #}
+                <li class="scenario-item">
+                    <strong>Missed Deadline:</strong> An employee consistently misses project deadlines, impacting team
+                    performance.
+                    <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
+                        <li>How would you approach the conversation to ensure it's supportive rather than accusatory?
+                        </li>
+                        <li>What specific, measurable action plan could you collaboratively create to help them meet
+                            future deadlines?</li>
+                        <li>What are the potential underlying reasons for the missed deadlines, and how would you
+                            identify them?</li>
+                    </ul>
+                </li>
+                <li class="scenario-item">
+                    <strong>Poor Quality Work:</strong> A team member consistently produces work of low quality,
+                    affecting the overall output of the team.
+                    <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
+                        <li>How can you provide feedback on quality without discouraging the employee's effort?</li>
+                        <li>What kind of examples or standards would you use to illustrate what "quality work" looks
+                            like?</li>
+                        <li>How can you determine if the issue is a lack of skill versus a lack of attention to detail?
+                        </li>
+                    </ul>
+                </li>
+                <li class="scenario-item">
+                    <strong>Communication Breakdown:</strong> Two team members are involved in a project but have
+                    conflicting communication styles, leading to misunderstandings and delays.
+                    <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
+                        <li>What techniques could you teach them to improve their communication? (e.g., active
+                            listening, I-statements)</li>
+                        <li>How would you mediate a follow-up conversation to ensure a resolution is reached?</li>
+                        <li>What steps could you take to promote a more open and collaborative team culture?</li>
+                    </ul>
+                </li>
+                <li class="scenario-item">
+                    <strong>Negative Attitude:</strong> An employee frequently displays a negative attitude in team
+                    meetings and interactions, affecting team morale.
+                    <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
+                        <li>How can you address the behavior while showing empathy for any underlying issues?</li>
+                        <li>What are some ways to measure the impact of their attitude and explain it to them
+                            objectively?</li>
+                        <li>How can you encourage the employee to share their concerns in a constructive way?</li>
+                    </ul>
+                </li>
+                <li class="scenario-item">
+                    <strong>Lack of Initiative:</strong> A team member consistently waits to be told what to do rather
+                    than taking initiative or proactively seeking opportunities to contribute.
+                    <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
+                        <li>How can you motivate them to take on more ownership and responsibility?</li>
+                        <li>What opportunities could you present to them to practice taking initiative on a smaller
+                            scale?</li>
+                        <li>How can you create a safe environment where they feel comfortable taking risks and making
+                            mistakes?</li>
+                    </ul>
+                </li>
+                <li class="scenario-item">
+                    <strong>Interpersonal Conflict:</strong> Two team members are involved in an ongoing interpersonal
+                    conflict that is affecting team dynamics and productivity.
+                    <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
+                        <li>What role do you play as a manager or leader in a conflict like this?</li>
+                        <li>How can you encourage them to find a solution themselves, rather than just solving it for
+                            them?</li>
+                        <li>What ground rules would you establish for a mediation session to ensure a productive
+                            conversation?</li>
+                    </ul>
+                </li>
+                <li class="scenario-item">
+                    <strong>Resistance to Feedback:</strong> An employee consistently reacts defensively or dismisses
+                    feedback provided by their supervisor or peers.
+                    <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
+                        <li>What could be the underlying reason for their defensiveness, and how would you address it?
+                        </li>
+                        <li>How would you adjust your own approach to make the feedback more receptive?</li>
+                        <li>What steps would you take to build a relationship of trust before giving feedback?</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+{% endcall %}
 
 
-    {# Sezione 2: Receiving Feedback #}
-    {% call info_card('receiving', 'Receiving Feedback') %}
-        {# Rimosso il bottone TTS #}
-        <p class="text-slate-700 mb-6">How you receive feedback is just as important as how you give it. An open and receptive attitude can turn a tough conversation into a valuable learning experience.</p>
-        <div class="space-y-4">
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">The Receiving Feedback Decalogue</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <ul class="list-decimal list-inside mt-4 text-slate-600 space-y-2">
-                        <li><strong>Listen Attentively</strong>: Pay close attention without interrupting the person giving you feedback.</li>
-                        <li><strong>Remain Calm</strong>: Stay composed and open-minded, even if the feedback is difficult to hear.</li>
-                        <li><strong>Seek Clarity</strong>: Ask for specifics and examples to ensure you fully understand.</li>
-                        <li><strong>Avoid Defensiveness</strong>: Refrain from justifying your actions or becoming defensive.</li>
-                        <li><strong>Express Gratitude</strong>: Thank the person for their time and for being willing to provide their perspective.</li>
-                        <li><strong>Reflect</strong>: Take time to digest and consider the feedback before reacting.</li>
-                        <li><strong>Find Value</strong>: Look for insights and areas for improvement, even if you disagree with some of the points.</li>
-                        <li><strong>Take Action</strong>: Identify concrete steps you can take to improve and follow through on them.</li>
-                        <li><strong>Follow Up</strong>: Provide updates on your progress if it seems appropriate.</li>
-                        <li><strong>Continuous Growth</strong>: Use feedback as a tool for your ongoing personal and professional development.</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">The Receiving Feedback Script</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                     <ul class="list-none mt-4 text-slate-600 space-y-2">
-                        <li><strong>Opening:</strong> "Thank you for taking the time to provide me with feedback. I appreciate your perspective."</li>
-                        <li><strong>Listening:</strong> "I'm all ears. Please go ahead and share your thoughts."</li>
-                        <li><strong>Receiving the Feedback:</strong> "I hear what you're saying. Let me make sure I understand correctly..." or "Could you provide more details or examples?"</li>
-                        <li><strong>Acknowledgment:</strong> "I understand where you're coming from." or "I appreciate you bringing this to my attention."</li>
-                        <li><strong>Reflection:</strong> "I'll take some time to reflect on what you've said." or "I'll consider how I can incorporate your feedback into my approach."</li>
-                        <li><strong>Action Plan:</strong> "I'll work on addressing this concern." or "Here's how I plan to improve based on your feedback..."</li>
-                        <li><strong>Gratitude and Follow-Up:</strong> "Thank you again for sharing your thoughts." or "I'll keep you updated on my progress."</li>
-                        <li><strong>Closing:</strong> "I value your input, and I'm committed to continuous improvement." or "Please don't hesitate to provide further feedback in the future."</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Scenarios for Practice</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                 <div class="card-content">
-                    <ol class="list-decimal list-inside mt-4 text-slate-600 space-y-4">
-                        <li class="scenario-item">
-                            <strong>Performance Review:</strong> During your annual performance review, your manager provides feedback on areas where you need improvement.
-                            <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
-                                <li>How do you react to the feedback?</li>
-                                <li>How would you summarize the key points of the feedback to show your understanding?</li>
-                                <li>What questions would you ask your manager to create a clear action plan for improvement?</li>
-                                <li>How might you incorporate the feedback into your professional development plan?</li>
-                            </ul>
-                        </li>
-                         <li class="scenario-item">
-                            <strong>Peer Feedback:</strong> A co-worker approaches you and offers feedback on your communication style during team meetings, noting that you sometimes dominate discussions.
-                            <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
-                                <li>How do you receive the feedback from your coworker?</li>
-                                <li>What is a professional way to ask for more specific examples without seeming defensive?</li>
-                                <li>What steps can you take to address your coworker's concerns?</li>
-                                <li>How would you follow up with your coworker to let them know you've acted on their feedback?</li>
-                            </ul>
-                        </li>
-                        <li class="scenario-item">
-                            <strong>Project Debrief:</strong> After completing a project, your team leader gives feedback on areas where the team could have performed better.
-                            <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
-                                <li>How do you respond to the feedback from your team leader?</li>
-                                <li>How do you separate personal responsibility from team-wide issues when reflecting on the feedback?</li>
-                                <li>What improvements do you plan to implement for future projects based on the feedback?</li>
-                                <li>What can you say to show you're taking the feedback seriously and value the team's input?</li>
-                            </ul>
-                        </li>
-                         <li class="scenario-item">
-                            <strong>Client Feedback:</strong> A client provides feedback on your deliverables, expressing dissatisfaction with certain aspects of the work.
-                            <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
-                                <li>How do you receive the feedback from the client?</li>
-                                <li>What specific clarifying questions would you ask the client to ensure you understand their dissatisfaction?</li>
-                                <li>How would you communicate your action plan to the client to rebuild trust?</li>
-                                <li>How do you manage your emotions when receiving negative feedback from a client?</li>
-                            </ul>
-                        </li>
-                         <li class="scenario-item">
-                            <strong>Direct Supervisor's Input:</strong> Your direct supervisor schedules a meeting to discuss areas of improvement based on recent performance evaluations.
-                            <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
-                                <li>How do you approach the meeting with your supervisor?</li>
-                                <li>How can you prepare for the meeting to get the most out of the conversation?</li>
-                                <li>What specific steps will you take to address the areas of improvement identified by your supervisor?</li>
-                                <li>What would you do if you disagreed with some of the feedback provided?</li>
-                            </ul>
-                        </li>
-                        <li class="scenario-item">
-                            <strong>Upward Feedback:</strong> Your team conducts a 360-degree feedback session, and you receive feedback from your direct reports about your leadership style.
-                            <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
-                                <li>How do you receive the feedback from your direct reports?</li>
-                                <li>What steps can you take to show your team that you've heard their feedback and are committed to changing?</li>
-                                <li>How will you use the feedback to improve your leadership effectiveness?</li>
-                                <li>How do you decide which feedback to prioritize and act on first?</li>
-                            </ul>
-                        </li>
-                    </ol>
-                </div>
-            </div>
+{# Sezione 2: Receiving Feedback #}
+{% call info_card('receiving', 'Receiving Feedback') %}
+{# Rimosso il bottone TTS #}
+<p class="text-slate-700 mb-6">How you receive feedback is just as important as how you give it. An open and receptive
+    attitude can turn a tough conversation into a valuable learning experience.</p>
+<div class="space-y-4">
+    <div class="lesson-card">
+        <div class="card-header flex justify-between items-center">
+            <h3 class="font-bold text-slate-800">The Receiving Feedback Decalogue</h3>
+            <span class="text-2xl text-slate-500 arrow-icon">▾</span>
         </div>
-    {% endcall %}
+        <div class="card-content">
+            <ul class="list-decimal list-inside mt-4 text-slate-600 space-y-2">
+                <li><strong>Listen Attentively</strong>: Pay close attention without interrupting the person giving you
+                    feedback.</li>
+                <li><strong>Remain Calm</strong>: Stay composed and open-minded, even if the feedback is difficult to
+                    hear.</li>
+                <li><strong>Seek Clarity</strong>: Ask for specifics and examples to ensure you fully understand.</li>
+                <li><strong>Avoid Defensiveness</strong>: Refrain from justifying your actions or becoming defensive.
+                </li>
+                <li><strong>Express Gratitude</strong>: Thank the person for their time and for being willing to provide
+                    their perspective.</li>
+                <li><strong>Reflect</strong>: Take time to digest and consider the feedback before reacting.</li>
+                <li><strong>Find Value</strong>: Look for insights and areas for improvement, even if you disagree with
+                    some of the points.</li>
+                <li><strong>Take Action</strong>: Identify concrete steps you can take to improve and follow through on
+                    them.</li>
+                <li><strong>Follow Up</strong>: Provide updates on your progress if it seems appropriate.</li>
+                <li><strong>Continuous Growth</strong>: Use feedback as a tool for your ongoing personal and
+                    professional development.</li>
+            </ul>
+        </div>
+    </div>
+    <div class="lesson-card">
+        <div class="card-header flex justify-between items-center">
+            <h3 class="font-bold text-slate-800">The Receiving Feedback Script</h3>
+            <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+        </div>
+        <div class="card-content">
+            <ul class="list-none mt-4 text-slate-600 space-y-2">
+                <li><strong>Opening:</strong> "Thank you for taking the time to provide me with feedback. I appreciate
+                    your perspective."</li>
+                <li><strong>Listening:</strong> "I'm all ears. Please go ahead and share your thoughts."</li>
+                <li><strong>Receiving the Feedback:</strong> "I hear what you're saying. Let me make sure I understand
+                    correctly..." or "Could you provide more details or examples?"</li>
+                <li><strong>Acknowledgment:</strong> "I understand where you're coming from." or "I appreciate you
+                    bringing this to my attention."</li>
+                <li><strong>Reflection:</strong> "I'll take some time to reflect on what you've said." or "I'll consider
+                    how I can incorporate your feedback into my approach."</li>
+                <li><strong>Action Plan:</strong> "I'll work on addressing this concern." or "Here's how I plan to
+                    improve based on your feedback..."</li>
+                <li><strong>Gratitude and Follow-Up:</strong> "Thank you again for sharing your thoughts." or "I'll keep
+                    you updated on my progress."</li>
+                <li><strong>Closing:</strong> "I value your input, and I'm committed to continuous improvement." or
+                    "Please don't hesitate to provide further feedback in the future."</li>
+            </ul>
+        </div>
+    </div>
+    <div class="lesson-card">
+        <div class="card-header flex justify-between items-center">
+            <h3 class="font-bold text-slate-800">Scenarios for Practice</h3>
+            <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+        </div>
+        <div class="card-content">
+            <ol class="list-decimal list-inside mt-4 text-slate-600 space-y-4">
+                <li class="scenario-item">
+                    <strong>Performance Review:</strong> During your annual performance review, your manager provides
+                    feedback on areas where you need improvement.
+                    <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
+                        <li>How do you react to the feedback?</li>
+                        <li>How would you summarize the key points of the feedback to show your understanding?</li>
+                        <li>What questions would you ask your manager to create a clear action plan for improvement?
+                        </li>
+                        <li>How might you incorporate the feedback into your professional development plan?</li>
+                    </ul>
+                </li>
+                <li class="scenario-item">
+                    <strong>Peer Feedback:</strong> A co-worker approaches you and offers feedback on your communication
+                    style during team meetings, noting that you sometimes dominate discussions.
+                    <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
+                        <li>How do you receive the feedback from your coworker?</li>
+                        <li>What is a professional way to ask for more specific examples without seeming defensive?</li>
+                        <li>What steps can you take to address your coworker's concerns?</li>
+                        <li>How would you follow up with your coworker to let them know you've acted on their feedback?
+                        </li>
+                    </ul>
+                </li>
+                <li class="scenario-item">
+                    <strong>Project Debrief:</strong> After completing a project, your team leader gives feedback on
+                    areas where the team could have performed better.
+                    <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
+                        <li>How do you respond to the feedback from your team leader?</li>
+                        <li>How do you separate personal responsibility from team-wide issues when reflecting on the
+                            feedback?</li>
+                        <li>What improvements do you plan to implement for future projects based on the feedback?</li>
+                        <li>What can you say to show you're taking the feedback seriously and value the team's input?
+                        </li>
+                    </ul>
+                </li>
+                <li class="scenario-item">
+                    <strong>Client Feedback:</strong> A client provides feedback on your deliverables, expressing
+                    dissatisfaction with certain aspects of the work.
+                    <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
+                        <li>How do you receive the feedback from the client?</li>
+                        <li>What specific clarifying questions would you ask the client to ensure you understand their
+                            dissatisfaction?</li>
+                        <li>How would you communicate your action plan to the client to rebuild trust?</li>
+                        <li>How do you manage your emotions when receiving negative feedback from a client?</li>
+                    </ul>
+                </li>
+                <li class="scenario-item">
+                    <strong>Direct Supervisor's Input:</strong> Your direct supervisor schedules a meeting to discuss
+                    areas of improvement based on recent performance evaluations.
+                    <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
+                        <li>How do you approach the meeting with your supervisor?</li>
+                        <li>How can you prepare for the meeting to get the most out of the conversation?</li>
+                        <li>What specific steps will you take to address the areas of improvement identified by your
+                            supervisor?</li>
+                        <li>What would you do if you disagreed with some of the feedback provided?</li>
+                    </ul>
+                </li>
+                <li class="scenario-item">
+                    <strong>Upward Feedback:</strong> Your team conducts a 360-degree feedback session, and you receive
+                    feedback from your direct reports about your leadership style.
+                    <ul class="scenario-questions list-disc list-inside mt-2 text-slate-500 space-y-1">
+                        <li>How do you receive the feedback from your direct reports?</li>
+                        <li>What steps can you take to show your team that you've heard their feedback and are committed
+                            to changing?</li>
+                        <li>How will you use the feedback to improve your leadership effectiveness?</li>
+                        <li>How do you decide which feedback to prioritize and act on first?</li>
+                    </ul>
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+{% endcall %}
 
 {% endblock %}
 

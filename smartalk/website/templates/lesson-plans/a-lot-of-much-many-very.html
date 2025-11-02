@@ -1,27 +1,35 @@
-{# --- Lezione: A lot of / Much / Many / Very --- #}
-
 {% set lesson_title = "A lot of / Much / Many / Very" %}
 {% set lesson_subtitle = "Expressing quantity and intensity with precision." %}
 {% set nav_links = [
-    {'id': 'warmup', 'title': 'Warm-Up'},
-    {'id': 'explanations', 'title': 'Explanations'},
-    {'id': 'practice', 'title': 'Practice'},
-    {'id': 'speaking', 'title': 'Speaking'},
-    {'id': 'wrapup', 'title': 'Wrap-Up'}
+{'id': 'warmup', 'title': 'Warm-Up'},
+{'id': 'explanations', 'title': 'Explanations'},
+{'id': 'practice', 'title': 'Practice'},
+{'id': 'speaking', 'title': 'Speaking'},
+{'id': 'wrapup', 'title': 'Wrap-Up'}
 ] %}
 
 {# --- Dati per Esercizio Dropdown --- #}
 {% set practice_dropdown_data = [
-    {'prefix': 'There are', 'options': ['a lot of', 'much', 'many', 'very'], 'answer': 'a lot of', 'suffix': 'interesting places to visit in this city.'},
-    {'prefix': 'Do you have', 'options': ['a lot of', 'much', 'many', 'very'], 'answer': 'much', 'suffix': 'free time on weekends?'},
-    {'prefix': 'I don\'t have', 'options': ['a lot of', 'much', 'many', 'very'], 'answer': 'much', 'suffix': 'experience in cooking.'},
-    {'prefix': 'We have', 'options': ['a lot of', 'much', 'many', 'very'], 'answer': 'a lot of', 'suffix': 'friends coming to the party.'},
-    {'prefix': 'She is', 'options': ['a lot of', 'much', 'many', 'very'], 'answer': 'very', 'suffix': 'good at playing the piano.'},
-    {'prefix': 'How', 'options': ['a lot of', 'much', 'many', 'very'], 'answer': 'much', 'suffix': 'water do you drink every day?'},
-    {'prefix': 'I have', 'options': ['a lot of', 'much', 'many', 'very'], 'answer': 'a lot of', 'suffix': 'tasks to finish by tomorrow.'},
-    {'prefix': 'He is', 'options': ['a lot of', 'much', 'many', 'very'], 'answer': 'very', 'suffix': 'happy with his new job.'},
-    {'prefix': 'Are there', 'options': ['a lot of', 'much', 'many', 'very'], 'answer': 'many', 'suffix': 'people in the office today?'},
-    {'prefix': 'I didn\'t eat', 'options': ['a lot of', 'much', 'many', 'very'], 'answer': 'much', 'suffix': 'for breakfast.'}
+{'prefix': 'There are', 'options': ['a lot of', 'much', 'many', 'very'], 'answer': 'a lot of', 'suffix': 'interesting
+places to visit in this city.'},
+{'prefix': 'Do you have', 'options': ['a lot of', 'much', 'many', 'very'], 'answer': 'much', 'suffix': 'free time on
+weekends?'},
+{'prefix': 'I don\'t have', 'options': ['a lot of', 'much', 'many', 'very'], 'answer': 'much', 'suffix': 'experience in
+cooking.'},
+{'prefix': 'We have', 'options': ['a lot of', 'much', 'many', 'very'], 'answer': 'a lot of', 'suffix': 'friends coming
+to the party.'},
+{'prefix': 'She is', 'options': ['a lot of', 'much', 'many', 'very'], 'answer': 'very', 'suffix': 'good at playing the
+piano.'},
+{'prefix': 'How', 'options': ['a lot of', 'much', 'many', 'very'], 'answer': 'much', 'suffix': 'water do you drink every
+day?'},
+{'prefix': 'I have', 'options': ['a lot of', 'much', 'many', 'very'], 'answer': 'a lot of', 'suffix': 'tasks to finish
+by tomorrow.'},
+{'prefix': 'He is', 'options': ['a lot of', 'much', 'many', 'very'], 'answer': 'very', 'suffix': 'happy with his new
+job.'},
+{'prefix': 'Are there', 'options': ['a lot of', 'much', 'many', 'very'], 'answer': 'many', 'suffix': 'people in the
+office today?'},
+{'prefix': 'I didn\'t eat', 'options': ['a lot of', 'much', 'many', 'very'], 'answer': 'much', 'suffix': 'for
+breakfast.'}
 ] %}
 
 
@@ -31,139 +39,142 @@
 
 {% block lesson_content %}
 
-    {% call info_card('warmup', '1. Warm-Up Questions', initial_state='show') %}
-        <ul class="text-slate-600">
-            <li>Do you usually drink a lot of coffee or tea during the day?</li>
-            <li>How many hours do you normally work in a week?</li>
-            <li>How much free time do you get on weekdays?</li>
-            <li>What is something you are very good at?</li>
+{% call info_card('warmup', '1. Warm-Up Questions', initial_state='show') %}
+<ul class="text-slate-600">
+    <li>Do you usually drink a lot of coffee or tea during the day?</li>
+    <li>How many hours do you normally work in a week?</li>
+    <li>How much free time do you get on weekdays?</li>
+    <li>What is something you are very good at?</li>
+</ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('explanations', '2. Explanations', initial_state='show') %}
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">A lot of</h4>
+    <ul class="text-slate-600">
+        <li>Used in positive sentences for a large quantity or amount.</li>
+        <li>Can be used with <strong>countable</strong> and <strong>uncountable</strong> nouns.</li>
+    </ul>
+    <div class="info-box info-box-blue mt-3">
+        <p><strong>Examples:</strong></p>
+        <ul>
+            <li>There are a lot of books on the shelf.</li>
+            <li>We have a lot of time before the meeting.</li>
         </ul>
-    {% endcall %}
-
-    <hr class="my-12 border-gray-200">
-
-    {% call info_card('explanations', '2. Explanations', initial_state='show') %}
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">A lot of</h4>
-            <ul class="text-slate-600">
-                <li>Used in positive sentences for a large quantity or amount.</li>
-                <li>Can be used with <strong>countable</strong> and <strong>uncountable</strong> nouns.</li>
-            </ul>
-            <div class="info-box info-box-blue mt-3">
-                <p><strong>Examples:</strong></p>
-                <ul>
-                    <li>There are a lot of books on the shelf.</li>
-                    <li>We have a lot of time before the meeting.</li>
-                </ul>
-            </div>
-        </div>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">Much</h4>
-            <ul class="text-slate-600">
-                <li>Used in <strong>negative sentences</strong> and <strong>questions</strong> with <strong>uncountable nouns</strong>.</li>
-            </ul>
-            <div class="info-box info-box-blue mt-3">
-                <p><strong>Examples:</strong></p>
-                <ul>
-                    <li>There isn't much sugar in the coffee.</li>
-                    <li>Do you have much experience in programming?</li>
-                </ul>
-            </div>
-        </div>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">Many</h4>
-            <ul class="text-slate-600">
-                <li>Used in <strong>negative sentences</strong> and <strong>questions</strong> with <strong>countable nouns</strong>.</li>
-            </ul>
-            <div class="info-box info-box-blue mt-3">
-                <p><strong>Examples:</strong></p>
-                <ul>
-                    <li>There aren't many chairs in the room.</li>
-                    <li>How many siblings do you have?</li>
-                </ul>
-            </div>
-        </div>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">Very</h4>
-            <ul class="text-slate-600">
-                <li>Used to <strong>intensify adjectives or adverbs</strong>.</li>
-            </ul>
-            <div class="info-box info-box-blue mt-3">
-                <p><strong>Examples:</strong></p>
-                <ul>
-                    <li>It's very hot outside.</li>
-                    <li>She is very skilled at speaking Spanish.</li>
-                </ul>
-            </div>
-        </div>
-    {% endcall %}
-
-    <hr class="my-12 border-gray-200">
-
-    {% call info_card('practice', '3. Controlled Practice', initial_state='show') %}
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">Select the correct word: Use a lot of, much, many, very.</h4>
-            {# --- Esercizio Interattivo Dropdown --- #}
-            {{ dropdown_fill_in_exercise('practice-much-many-dropdown', practice_dropdown_data) }}
-        </div>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">Sentence Transformations</h4>
-            <ul class="text-slate-600">
-                <li>Rewrite using the correct word:
-                    <p class="ml-4 italic mt-1">There is sugar in my coffee. → Use <strong>a lot of</strong>.</p>
-                    <p class="ml-4 italic mt-1">Do you have experience in web development? → Use <strong>much</strong>.</p>
-                    <p class="ml-4 italic mt-1">There are chairs in the living room. → Use <strong>many</strong> in a negative sentence.</p>
-                    <p class="ml-4 italic mt-1">She is skilled at playing the guitar. → Use <strong>very</strong>.</p>
-                </li>
-            </ul>
-        </div>
-    {% endcall %}
-
-    <hr class="my-12 border-gray-200">
-
-    {% call info_card('speaking', '4. Speaking Practice', initial_state='show') %}
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">General Topics:</h4>
-            <ul class="text-slate-600">
-                <li><strong>Food:</strong> How much fruit do you eat each week? Do you cook a lot?</li>
-                <li><strong>Travel:</strong> How many countries have you visited? Do you enjoy traveling a lot?</li>
-                <li><strong>Hobbies:</strong> How much time do you spend on hobbies? Do you have many books or movies?</li>
-                <li><strong>Friends & Family:</strong> How many close friends do you have? Do you see your family a lot?</li>
-                <li><strong>Technology:</strong> How much time do you spend on your phone daily? Do you use many apps?</li>
-            </ul>
-        </div>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">Business Topics:</h4>
-            <ul class="text-slate-600">
-                <li>How much time do you usually spend in meetings? Do you think it's too much?</li>
-                <li>Are there many opportunities for growth in your company?</li>
-                <li>Do you think your company spends a lot of money on training or employee development?</li>
-                <li>How much information do you usually receive before starting a new project? Is it enough?</li>
-                <li>Do you work with many international clients?</li>
-                <li>How many emails do you usually get in one day? Do you spend a lot of time replying?</li>
-                <li>How much pressure do you feel at work? Do deadlines make you very stressed?</li>
-                <li>Do you think your company invests much effort in employee engagement?</li>
-            </ul>
-        </div>
-    {% endcall %}
-
-    <hr class="my-12 border-gray-200">
-
-    {% call info_card('wrapup', '5. Wrap-Up', initial_state='show') %}
-        <ul class="key-points-list text-slate-700">
-            <li><strong>A lot of</strong> → positive sentences, both countable & uncountable.</li>
-            <li><strong>Much</strong> → questions/negatives with uncountable nouns.</li>
-            <li><strong>Many</strong> → questions/negatives with countable nouns.</li>
-            <li><strong>Very</strong> → intensifies adjectives/adverbs.</li>
+    </div>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Much</h4>
+    <ul class="text-slate-600">
+        <li>Used in <strong>negative sentences</strong> and <strong>questions</strong> with <strong>uncountable
+                nouns</strong>.</li>
+    </ul>
+    <div class="info-box info-box-blue mt-3">
+        <p><strong>Examples:</strong></p>
+        <ul>
+            <li>There isn't much sugar in the coffee.</li>
+            <li>Do you have much experience in programming?</li>
         </ul>
-        <div class="mt-6">
-            <h4 class="font-semibold text-slate-800">Final Reflection Questions:</h4>
-            <ul class="text-slate-600">
-                <li>Do you spend a lot of time working, or do you have many breaks?</li>
-                <li>How much stress do you usually experience in your job?</li>
-                <li>What's something you're very proud of in your career?</li>
-            </ul>
-        </div>
-    {% endcall %}
+    </div>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Many</h4>
+    <ul class="text-slate-600">
+        <li>Used in <strong>negative sentences</strong> and <strong>questions</strong> with <strong>countable
+                nouns</strong>.</li>
+    </ul>
+    <div class="info-box info-box-blue mt-3">
+        <p><strong>Examples:</strong></p>
+        <ul>
+            <li>There aren't many chairs in the room.</li>
+            <li>How many siblings do you have?</li>
+        </ul>
+    </div>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Very</h4>
+    <ul class="text-slate-600">
+        <li>Used to <strong>intensify adjectives or adverbs</strong>.</li>
+    </ul>
+    <div class="info-box info-box-blue mt-3">
+        <p><strong>Examples:</strong></p>
+        <ul>
+            <li>It's very hot outside.</li>
+            <li>She is very skilled at speaking Spanish.</li>
+        </ul>
+    </div>
+</div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('practice', '3. Controlled Practice', initial_state='show') %}
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Select the correct word: Use a lot of, much, many, very.</h4>
+    {# --- Esercizio Interattivo Dropdown --- #}
+    {{ dropdown_fill_in_exercise('practice-much-many-dropdown', practice_dropdown_data) }}
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Sentence Transformations</h4>
+    <ul class="text-slate-600">
+        <li>Rewrite using the correct word:
+            <p class="ml-4 italic mt-1">There is sugar in my coffee. → Use <strong>a lot of</strong>.</p>
+            <p class="ml-4 italic mt-1">Do you have experience in web development? → Use <strong>much</strong>.</p>
+            <p class="ml-4 italic mt-1">There are chairs in the living room. → Use <strong>many</strong> in a negative
+                sentence.</p>
+            <p class="ml-4 italic mt-1">She is skilled at playing the guitar. → Use <strong>very</strong>.</p>
+        </li>
+    </ul>
+</div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('speaking', '4. Speaking Practice', initial_state='show') %}
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">General Topics:</h4>
+    <ul class="text-slate-600">
+        <li><strong>Food:</strong> How much fruit do you eat each week? Do you cook a lot?</li>
+        <li><strong>Travel:</strong> How many countries have you visited? Do you enjoy traveling a lot?</li>
+        <li><strong>Hobbies:</strong> How much time do you spend on hobbies? Do you have many books or movies?</li>
+        <li><strong>Friends & Family:</strong> How many close friends do you have? Do you see your family a lot?</li>
+        <li><strong>Technology:</strong> How much time do you spend on your phone daily? Do you use many apps?</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Business Topics:</h4>
+    <ul class="text-slate-600">
+        <li>How much time do you usually spend in meetings? Do you think it's too much?</li>
+        <li>Are there many opportunities for growth in your company?</li>
+        <li>Do you think your company spends a lot of money on training or employee development?</li>
+        <li>How much information do you usually receive before starting a new project? Is it enough?</li>
+        <li>Do you work with many international clients?</li>
+        <li>How many emails do you usually get in one day? Do you spend a lot of time replying?</li>
+        <li>How much pressure do you feel at work? Do deadlines make you very stressed?</li>
+        <li>Do you think your company invests much effort in employee engagement?</li>
+    </ul>
+</div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('wrapup', '5. Wrap-Up', initial_state='show') %}
+<ul class="key-points-list text-slate-700">
+    <li><strong>A lot of</strong> → positive sentences, both countable & uncountable.</li>
+    <li><strong>Much</strong> → questions/negatives with uncountable nouns.</li>
+    <li><strong>Many</strong> → questions/negatives with countable nouns.</li>
+    <li><strong>Very</strong> → intensifies adjectives/adverbs.</li>
+</ul>
+<div class="mt-6">
+    <h4 class="font-semibold text-slate-800">Final Reflection Questions:</h4>
+    <ul class="text-slate-600">
+        <li>Do you spend a lot of time working, or do you have many breaks?</li>
+        <li>How much stress do you usually experience in your job?</li>
+        <li>What's something you're very proud of in your career?</li>
+    </ul>
+</div>
+{% endcall %}
 
 {% endblock lesson_content %}

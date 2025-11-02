@@ -1,68 +1,73 @@
-{# --- 1. Definizione delle Variabili della Lezione --- #}
 {% set lesson_title = "Mastering Modal Verbs" %}
 {% set lesson_subtitle = "Expressing ability, possibility, necessity, obligation, permission, and more." %}
 
 {# Nav links basati sulla struttura combinata #}
 {% set nav_links = [
-    {'id': 'introduction', 'title': 'Introduction'},
-    {'id': 'definitions', 'title': 'Definitions & Discussion'},
-    {'id': 'forms', 'title': 'Forms Table'},
-    {'id': 'application', 'title': 'Application'},
-    {'id': 'exercises', 'title': 'Exercises'}
+{'id': 'introduction', 'title': 'Introduction'},
+{'id': 'definitions', 'title': 'Definitions & Discussion'},
+{'id': 'forms', 'title': 'Forms Table'},
+{'id': 'application', 'title': 'Application'},
+{'id': 'exercises', 'title': 'Exercises'}
 ] %}
 
 {# Dati per Esercizio 1 (Multiple Choice) #}
 {% set mcq_questions = [
-    {
-        'text': "Ted's flight from Amsterdam took more than 11 hours. He ___ be exhausted after such a long flight.",
-        'options': [{'value': 'can', 'text': 'can'}, {'value': 'must', 'text': 'must'}, {'value': 'had better', 'text': 'had better'}],
-        'correct_value': 'must'
-    },
-    {
-        'text': "The book is optional. My professor said we could read it if we needed extra credit. But we ___ read it if we don't want to.",
-        'options': [{'value': 'must not', 'text': 'must not'}, {'value': 'cannot', 'text': 'cannot'}, {'value': 'don’t have to', 'text': 'don’t have to'}],
-        'correct_value': 'don’t have to'
-    },
-    {
-        'text': "Susan ___ hear the speaker because the crowd was cheering so loudly.",
-        'options': [{'value': 'couldn’t', 'text': 'couldn’t'}, {'value': 'might not', 'text': 'might not'}, {'value': 'can’t', 'text': 'can’t'}],
-        'correct_value': 'couldn’t'
-    },
-    {
-        'text': "The television isn't working. It ___ damaged during the move.",
-        'options': [{'value': 'must have been', 'text': 'must have been'}, {'value': 'must be', 'text': 'must be'}, {'value': 'must', 'text': 'must'}],
-        'correct_value': 'must have been'
-    },
-    {
-        'text': "Kate: ___ hold your breath for more than a minute? Jack: No, I can't.",
-        'options': [{'value': 'Might you', 'text': 'Might you'}, {'value': 'Can you', 'text': 'Can you'}, {'value': 'Are you able to', 'text': 'Are you able to'}],
-        'correct_value': 'Can you'
-    }
+{
+'text': "Ted's flight from Amsterdam took more than 11 hours. He ___ be exhausted after such a long flight.",
+'options': [{'value': 'can', 'text': 'can'}, {'value': 'must', 'text': 'must'}, {'value': 'had better', 'text': 'had
+better'}],
+'correct_value': 'must'
+},
+{
+'text': "The book is optional. My professor said we could read it if we needed extra credit. But we ___ read it if we
+don't want to.",
+'options': [{'value': 'must not', 'text': 'must not'}, {'value': 'cannot', 'text': 'cannot'}, {'value': 'don’t have to',
+'text': 'don’t have to'}],
+'correct_value': 'don’t have to'
+},
+{
+'text': "Susan ___ hear the speaker because the crowd was cheering so loudly.",
+'options': [{'value': 'couldn’t', 'text': 'couldn’t'}, {'value': 'might not', 'text': 'might not'}, {'value': 'can’t',
+'text': 'can’t'}],
+'correct_value': 'couldn’t'
+},
+{
+'text': "The television isn't working. It ___ damaged during the move.",
+'options': [{'value': 'must have been', 'text': 'must have been'}, {'value': 'must be', 'text': 'must be'}, {'value':
+'must', 'text': 'must'}],
+'correct_value': 'must have been'
+},
+{
+'text': "Kate: ___ hold your breath for more than a minute? Jack: No, I can't.",
+'options': [{'value': 'Might you', 'text': 'Might you'}, {'value': 'Can you', 'text': 'Can you'}, {'value': 'Are you
+able to', 'text': 'Are you able to'}],
+'correct_value': 'Can you'
+}
 ] %}
 
 {# Dati per Esercizio 2 (Fill-in) #}
 {% set fill_in_sentences = [
-    {'prefix': 'George has traveled a lot. He', 'answer': 'can', 'suffix': 'speak many languages.'},
-    {'prefix': 'I can hear you quite well. You', 'answer': 'need not', 'suffix': 'shout.'},
-    {'prefix': 'I\'m not sure where I will go for my holidays but I', 'answer': 'might', 'suffix': 'go to Italy.'},
-    {'prefix': 'She', 'answer': 'must not', 'suffix': 'ride her bike at night without lights. It\'s not allowed.'},
-    {'prefix': 'She', 'answer': 'should not', 'suffix': 'eat so much chocolate because it\'s bad for her figure.'},
-    {'prefix': 'I', 'answer': 'cannot', 'suffix': 'understand him. He should speak louder.'},
-    {'prefix': 'It\'s later than I thought. I', 'answer': 'must', 'suffix': 'go now.'},
-    {'prefix': 'You', 'answer': 'ought to find', 'suffix': 'a better trainer if you want to improve yourself.'},
-    {'prefix': 'Talk to Ann about your problems. I\'m sure she', 'answer': 'will', 'suffix': 'help you.'},
-    {'prefix': 'You', 'answer': 'need not', 'suffix': 'vacuum the carpets, Carol has already done it.'}
+{'prefix': 'George has traveled a lot. He', 'answer': 'can', 'suffix': 'speak many languages.'},
+{'prefix': 'I can hear you quite well. You', 'answer': 'need not', 'suffix': 'shout.'},
+{'prefix': 'I\'m not sure where I will go for my holidays but I', 'answer': 'might', 'suffix': 'go to Italy.'},
+{'prefix': 'She', 'answer': 'must not', 'suffix': 'ride her bike at night without lights. It\'s not allowed.'},
+{'prefix': 'She', 'answer': 'should not', 'suffix': 'eat so much chocolate because it\'s bad for her figure.'},
+{'prefix': 'I', 'answer': 'cannot', 'suffix': 'understand him. He should speak louder.'},
+{'prefix': 'It\'s later than I thought. I', 'answer': 'must', 'suffix': 'go now.'},
+{'prefix': 'You', 'answer': 'ought to find', 'suffix': 'a better trainer if you want to improve yourself.'},
+{'prefix': 'Talk to Ann about your problems. I\'m sure she', 'answer': 'will', 'suffix': 'help you.'},
+{'prefix': 'You', 'answer': 'need not', 'suffix': 'vacuum the carpets, Carol has already done it.'}
 ] %}
 
 {# Dati per Esercizio 3 (Coldplay Fill-in) #}
 {% set coldplay_lyrics = [
-    {'prefix': 'And how', 'answer': 'could', 'suffix': 'anybody deny you'},
-    {'prefix': 'And honey you', 'answer': 'should', 'suffix': 'know'},
-    {'prefix': 'That I', 'answer': 'could', 'suffix': 'never go on without you'},
-    {'prefix': 'I think you', 'answer': 'should', 'suffix': 'know'},
-    {'prefix': '', 'answer': 'must', 'suffix': 'be out of their mind'},
-    {'prefix': 'And honey you', 'answer': 'should', 'suffix': 'know'},
-    {'prefix': 'That I', 'answer': 'could', 'suffix': 'never go on without you'}
+{'prefix': 'And how', 'answer': 'could', 'suffix': 'anybody deny you'},
+{'prefix': 'And honey you', 'answer': 'should', 'suffix': 'know'},
+{'prefix': 'That I', 'answer': 'could', 'suffix': 'never go on without you'},
+{'prefix': 'I think you', 'answer': 'should', 'suffix': 'know'},
+{'prefix': '', 'answer': 'must', 'suffix': 'be out of their mind'},
+{'prefix': 'And honey you', 'answer': 'should', 'suffix': 'know'},
+{'prefix': 'That I', 'answer': 'could', 'suffix': 'never go on without you'}
 ] %}
 
 
@@ -74,493 +79,563 @@
 {# --- 3. Contenuto Specifico della Lezione --- #}
 {% block lesson_content %}
 
-    {# Sezione 1: Introduction #}
-    {% call info_card('introduction', 'Introduction', initial_state='show') %}
-        <p class="text-slate-700">Modal verbs are commonly used in English to express ability, possibility, necessity, obligation, advice, and conditionals. This lesson introduces each modal with explanations and examples, followed by discussion questions to help you practice using them in context.</p>
-    {% endcall %}
+{# Sezione 1: Introduction #}
+{% call info_card('introduction', 'Introduction', initial_state='show') %}
+<p class="text-slate-700">Modal verbs are commonly used in English to express ability, possibility, necessity,
+    obligation, advice, and conditionals. This lesson introduces each modal with explanations and examples, followed by
+    discussion questions to help you practice using them in context.</p>
+{% endcall %}
 
-    <hr class="my-12 border-gray-200">
+<hr class="my-12 border-gray-200">
 
-    {# Sezione 2: Definitions & Discussion (Contenuto dal primo HTML) #}
-    {% call info_card('definitions', 'Modal Definitions & Discussion') %}
-        {# Qui inseriamo le "tendine" interne per ogni modale #}
+{# Sezione 2: Definitions & Discussion (Contenuto dal primo HTML) #}
+{% call info_card('definitions', 'Modal Definitions & Discussion') %}
+{# Qui inseriamo le "tendine" interne per ogni modale #}
 
-        <div class="lesson-card"> {# Usiamo .lesson-card #}
-            <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">CAN</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                <p class="text-slate-700 mt-4">One of the most commonly used modal verbs in English. It can be used to express ability or opportunity, to request or offer permission, and to show possibility or impossibility.</p>
-                <p class="text-slate-700 font-semibold mt-2">Examples:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>I can ride a horse. (ability)</li>
-                    <li>We can stay with my brother when we are in Paris. (opportunity)</li>
-                    <li>She cannot stay out after 10 PM. (permission - negative)</li>
-                    <li>Can you hand me the stapler? (request)</li>
-                    <li>Any child can grow up to be president. (possibility)</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What is something you can do really well?</li>
-                    <li>What can children usually learn faster than adults?</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What skills can help someone succeed in your industry?</li>
-                    <li>How can teamwork improve results in your company?</li>
-                </ul>
-            </div>
+<div class="lesson-card"> {# Usiamo .lesson-card #}
+    <div class="card-header flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">CAN</h3>
+        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+    </div>
+    <div class="card-content">
+        <p class="text-slate-700 mt-4">One of the most commonly used modal verbs in English. It can be used to express
+            ability or opportunity, to request or offer permission, and to show possibility or impossibility.</p>
+        <p class="text-slate-700 font-semibold mt-2">Examples:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>I can ride a horse. (ability)</li>
+            <li>We can stay with my brother when we are in Paris. (opportunity)</li>
+            <li>She cannot stay out after 10 PM. (permission - negative)</li>
+            <li>Can you hand me the stapler? (request)</li>
+            <li>Any child can grow up to be president. (possibility)</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What is something you can do really well?</li>
+            <li>What can children usually learn faster than adults?</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What skills can help someone succeed in your industry?</li>
+            <li>How can teamwork improve results in your company?</li>
+        </ul>
+    </div>
+</div>
+
+<div class="lesson-card">
+    <div class="card-header flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">COULD</h3>
+        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+    </div>
+    <div class="card-content">
+        <p class="text-slate-700 mt-4">Used to express possibility or past ability as well as to make suggestions and
+            requests. "Could" is also commonly used in conditional sentences as the conditional form of "can."</p>
+        <p class="text-slate-700 font-semibold mt-2">Examples:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>Extreme rain could cause the river to flood the city. (possibility)</li>
+            <li>Nancy could ski like a pro by the age of 11. (past ability)</li>
+            <li>You could see a movie or go out to dinner. (suggestion)</li>
+            <li>Could I use your computer to email my boss? (request)</li>
+            <li>We could go on the trip if I didn't have to work this weekend. (conditional)</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What's something you could do as a child that you can't do now?</li>
+            <li>What could someone do to improve their health?</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What could companies do to improve employee satisfaction?</li>
+            <li>What could your team do to work more efficiently?</li>
+        </ul>
+    </div>
+</div>
+
+<div class="lesson-card">
+    <div class="card-header flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">HAVE TO</h3>
+        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+    </div>
+    <div class="card-content">
+        <p class="text-slate-700 mt-4">Used to express certainty, necessity, and obligation.</p>
+        <p class="text-slate-700 font-semibold mt-2">Examples:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>This answer has to be correct. (certainty)</li>
+            <li>The soup has to be stirred continuously to prevent burning. (necessity)</li>
+            <li>They have to leave early. (obligation)</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What do you have to do every morning before work or school?</li>
+            <li>What do students have to do to pass exams?</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What do employees have to do to follow company policies?</li>
+            <li>What do you have to do daily to succeed in your role?</li>
+        </ul>
+    </div>
+</div>
+
+<div class="lesson-card">
+    <div class="card-header flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">MUST</h3>
+        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+    </div>
+    <div class="card-content">
+        <p class="text-slate-700 mt-4">Most commonly used to express certainty. It can also be used to express necessity
+            or strong recommendation, although native speakers prefer the more flexible form "have to." "Must not" can
+            be used to prohibit actions, but this sounds very severe; speakers prefer to use softer modal verbs such as
+            "should not" or "ought not."</p>
+        <p class="text-slate-700 font-semibold mt-2">Examples:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>This must be the right address! (certainty)</li>
+            <li>Students must pass an entrance examination to study at this school. (necessity)</li>
+            <li>You must take some medicine for that cough. (strong recommendation)</li>
+            <li>Jenny, you must not play in the street! (prohibition)</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What must people do to live a healthy life?</li>
+            <li>What must travelers do before visiting another country?</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What must a leader do to earn respect from their team?</li>
+            <li>What must companies do to stay competitive?</li>
+        </ul>
+    </div>
+</div>
+
+<div class="lesson-card">
+    <div class="card-header flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">MIGHT</h3>
+        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+    </div>
+    <div class="card-content">
+        <p class="text-slate-700 mt-4">Most commonly used to express possibility. It is also often used in conditional
+            sentences. English speakers can also use "might" to make suggestions or requests, although this is less
+            common in American English.</p>
+        <p class="text-slate-700 font-semibold mt-2">Examples:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>Your purse might be in the living room. (possibility)</li>
+            <li>If I didn't have to work, I might go with you. (conditional)</li>
+            <li>You might visit the botanical gardens during your visit. (suggestion)</li>
+            <li>Might I borrow your pen? (request)</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What might happen if someone doesn't sleep enough?</li>
+            <li>What might be the advantages of learning another language?</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What might happen if a company doesn't adapt to market changes?</li>
+            <li>What risks might your industry face in the next few years?</li>
+        </ul>
+    </div>
+</div>
+
+<div class="lesson-card">
+    <div class="card-header flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">MAY</h3>
+        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+    </div>
+    <div class="card-content">
+        <p class="text-slate-700 mt-4">Most commonly used to express possibility. It can also be used to give or request
+            permission, although this usage is becoming less common.</p>
+        <p class="text-slate-700 font-semibold mt-2">Examples:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>Cheryl may be at home, or perhaps at work. (possibility)</li>
+            <li>Johnny, you may leave the table when you have finished your dinner. (give permission)</li>
+            <li>May I use your bathroom? (request permission)</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What may happen if the weather is bad this weekend?</li>
+            <li>What may children learn from traveling?</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What may be the benefits of adopting new technology at work?</li>
+            <li>How may AI change the way you work in the future?</li>
+        </ul>
+    </div>
+</div>
+
+<div class="lesson-card">
+    <div class="card-header flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">WOULD</h3>
+        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+    </div>
+    <div class="card-content">
+        <p class="text-slate-700 mt-4">Most commonly used to create conditional verb forms. It also serves as the past
+            form of the modal verb "will." Additionally, "would" can indicate repetition in the past.</p>
+        <p class="text-slate-700 font-semibold mt-2">Examples:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>If he were an actor, he would be in adventure movies. (conditional)</li>
+            <li>I knew that she would be very successful in her career. (past of "will")</li>
+            <li>When they first met, they would always have picnics on the beach. (repetition)</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What would you do if you could live anywhere in the world?</li>
+            <li>What would your perfect weekend look like?</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What would you change about the way your company communicates?</li>
+            <li>What would happen if your team missed a big deadline?</li>
+        </ul>
+    </div>
+</div>
+
+<div class="lesson-card">
+    <div class="card-header flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">SHOULD</h3>
+        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+    </div>
+    <div class="card-content">
+        <p class="text-slate-700 mt-4">Most commonly used to make recommendations or give advice. It can also be used to
+            express obligation as well as expectation.</p>
+        <p class="text-slate-700 font-semibold mt-2">Examples:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>When you go to Berlin, you should visit the palaces in Potsdam. (recommendation)</li>
+            <li>You should focus more on your family and less on work. (advice)</li>
+            <li>I really should be in the office by 7:00 AM. (obligation)</li>
+            <li>By now, they should already be in Dubai. (expectation)</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What should people do to stay happy?</li>
+            <li>What should travelers always do before a trip?</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What should managers do to motivate their teams?</li>
+            <li>What should a team do if a project is behind schedule?</li>
+        </ul>
+    </div>
+</div>
+
+<div class="lesson-card">
+    <div class="card-header flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">OUGHT TO</h3>
+        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+    </div>
+    <div class="card-content">
+        <p class="text-slate-700 mt-4">Used to advise or make recommendations. It also expresses assumption or
+            expectation as well as strong probability, often with the idea that something is deserved. "Ought not"
+            (without "to") is used to advise against doing something.</p>
+        <p class="text-slate-700 font-semibold mt-2">Examples:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>You ought to stop smoking. (recommendation)</li>
+            <li>Jim ought to get the promotion. It is expected because he deserves it. (probability)</li>
+            <li>Mark ought not drink so much. (advice against something)</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What ought people to do more often to help the environment?</li>
+            <li>Who is someone that ought to be more appreciated in society?</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What ought companies to do to keep their employees happy?</li>
+            <li>What qualities ought a leader to have?</li>
+        </ul>
+    </div>
+</div>
+
+<div class="lesson-card">
+    <div class="card-header flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">HAVE GOT TO</h3>
+        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+    </div>
+    <div class="card-content">
+        <p class="text-slate-700 mt-4">Used to express necessity and obligation.</p>
+        <p class="text-slate-700 font-semibold mt-2">Examples:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>Drivers have got to get a license to drive a car in the US. (necessity)</li>
+            <li>I have got to be at work by 8:30 AM. (obligation)</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What have you got to do before the end of today?</li>
+            <li>What have you got to take with you when traveling abroad?</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What tasks have you got to finish this week?</li>
+            <li>What have companies got to do to stay successful in your industry?</li>
+        </ul>
+    </div>
+</div>
+
+<div class="lesson-card">
+    <div class="card-header flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">SHALL</h3>
+        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+    </div>
+    <div class="card-content">
+        <p class="text-slate-700 mt-4">Used to indicate future action. It is most commonly used in sentences with "I" or
+            "we," and is often found in suggestions. In formal English, "shall" can express inevitability or
+            predestination. It is much more common in British English.</p>
+        <p class="text-slate-700 font-semibold mt-2">Examples:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>Shall we go?</li>
+            <li>He shall become our next king. (predestination)</li>
+            <li>Shall I help you? (suggestion)</li>
+            <li>I shall never forget where I came from. (promise)</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>Shall we talk about a time you made a promise you kept?</li>
+            <li>Do you think people shall (will) travel more or less in the future?</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>Shall leaders always make the final decision, or should teams share responsibility?</li>
+            <li>What challenges shall companies face in the next 10 years?</li>
+        </ul>
+    </div>
+</div>
+
+<div class="lesson-card">
+    <div class="card-header flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">TO BE ABLE TO</h3>
+        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+    </div>
+    <div class="card-content">
+        <p class="text-slate-700 mt-4">We use "be able to" to express ability, interchangeable with "can" or "could."
+            Unlike "can" (present) and "could" (past), "be able to" works in all tenses and has an infinitive form,
+            offering more flexibility.</p>
+        <p class="text-slate-700 font-semibold mt-2">Examples:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>I have been able to swim since I was five. (present perfect)</li>
+            <li>You will be able to speak perfect English very soon. (future simple)</li>
+            <li>I would like to be able to fly an airplane. (infinitive)</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What is something you'd like to be able to do in the future?</li>
+            <li>When were you able to overcome a challenge?</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>How can employees be able to adapt to big changes?</li>
+            <li>What should leaders be able to do to earn respect?</li>
+        </ul>
+    </div>
+</div>
+
+<div class="lesson-card">
+    <div class="card-header flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">HAD BETTER</h3>
+        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+    </div>
+    <div class="card-content">
+        <p class="text-slate-700 mt-4">Most commonly used to make recommendations. It can also be used to express
+            desperate hope as well as warnings.</p>
+        <p class="text-slate-700 font-semibold mt-2">Examples:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>You had better take your umbrella with you today. (recommendation)</li>
+            <li>That bus had better get here soon! (desperate hope)</li>
+            <li>You had better watch the way you talk to me in the future! (warning)</li>
+            <li>You had better not be late. (negative recommendation/warning)</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What had better happen for you to have a good week?</li>
+            <li>What had better change in the world for life to improve?</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
+        <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
+            <li>What had better be done before launching a new product?</li>
+            <li>What had better change in your company to improve teamwork?</li>
+        </ul>
+    </div>
+</div>
+
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# Sezione 3: Forms Table (Contenuto dal secondo HTML) #}
+{% call info_card('forms', 'Modal Forms Summary Table') %}
+<div class="lesson-card"> {# Tendina interna - parte chiusa #}
+    <div class="card-header flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">Present, Past, and Future Equivalents</h3>
+        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+    </div>
+    <div class="card-content">
+        <div class="table-wrapper mt-4"> {# Usiamo la classe CSS master #}
+            <table class="lesson-table"> {# Usiamo la classe CSS master #}
+                <thead>
+                    <tr>
+                        <th>Modal</th>
+                        <th>PRESENT</th>
+                        <th>PAST</th>
+                        <th>FUTURE</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>can</td>
+                        <td>can</td>
+                        <td>could</td>
+                        <td>(will be able to)</td>
+                    </tr>
+                    <tr>
+                        <td>could</td>
+                        <td>could</td>
+                        <td>could</td>
+                        <td>(would be able to)</td>
+                    </tr>
+                    <tr>
+                        <td>will</td>
+                        <td>will</td>
+                        <td>would</td>
+                        <td>will</td>
+                    </tr>
+                    <tr>
+                        <td>would</td>
+                        <td>would</td>
+                        <td>would</td>
+                        <td>would</td>
+                    </tr>
+                    <tr>
+                        <td>shall</td>
+                        <td>shall</td>
+                        <td>should</td>
+                        <td>shall</td>
+                    </tr>
+                    <tr>
+                        <td>should</td>
+                        <td>should</td>
+                        <td>should</td>
+                        <td>should</td>
+                    </tr>
+                    <tr>
+                        <td>may</td>
+                        <td>may</td>
+                        <td>might</td>
+                        <td>may</td>
+                    </tr>
+                    <tr>
+                        <td>might</td>
+                        <td>might</td>
+                        <td>might</td>
+                        <td>might</td>
+                    </tr>
+                    <tr>
+                        <td>must</td>
+                        <td>must</td>
+                        <td>had to</td>
+                        <td>will have to</td>
+                    </tr>
+                    <tr>
+                        <td>have to</td>
+                        <td>have to</td>
+                        <td>had to</td>
+                        <td>will have to</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
+    </div>
+</div>
+{% endcall %}
 
-        <div class="lesson-card">
-            <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">COULD</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                <p class="text-slate-700 mt-4">Used to express possibility or past ability as well as to make suggestions and requests. "Could" is also commonly used in conditional sentences as the conditional form of "can."</p>
-                <p class="text-slate-700 font-semibold mt-2">Examples:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>Extreme rain could cause the river to flood the city. (possibility)</li>
-                    <li>Nancy could ski like a pro by the age of 11. (past ability)</li>
-                    <li>You could see a movie or go out to dinner. (suggestion)</li>
-                    <li>Could I use your computer to email my boss? (request)</li>
-                    <li>We could go on the trip if I didn't have to work this weekend. (conditional)</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What's something you could do as a child that you can't do now?</li>
-                    <li>What could someone do to improve their health?</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What could companies do to improve employee satisfaction?</li>
-                    <li>What could your team do to work more efficiently?</li>
-                </ul>
-            </div>
+<hr class="my-12 border-gray-200">
+
+{# Sezione 4: Application/Discussion (Contenuto dal secondo HTML) #}
+{% call info_card('application', 'Application and Discussion Questions') %}
+<div class="lesson-card"> {# Tendina interna - parte chiusa #}
+    <div class="card-header flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">Applying Modals to Professional and Personal Scenarios</h3>
+        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+    </div>
+    <div class="card-content">
+        <div class="mt-4 text-slate-700 space-y-4">
+            <p class="step-title">Use the appropriate modals (must, could, should, can, might) when answering these
+                questions:</p>
+            <ol class="list-decimal ml-6 space-y-2">
+                <li>How should companies decide whether to invest in new technology?</li>
+                <li>What might happen if a company doesn't adapt to market changes?</li>
+                <li>What must employees do to ensure they follow company policies?</li>
+                <li>What could companies do to improve remote work policies?</li>
+                <li>How can project managers ensure deadlines are met?</li>
+                <li>What should a team do if a project is falling behind schedule?</li>
+                <li>How should you handle a difficult client?</li>
+                <li>What might be the consequences of poor customer service?</li>
+                <li>What must team members do to effectively collaborate on a project?</li>
+                <li>What could happen if there is a lack of communication within a team?</li>
+                <li>What should a leader do to motivate their team?</li>
+                <li>How can managers handle conflicts between employees?</li>
+            </ol>
         </div>
+    </div>
+</div>
+{% endcall %}
 
-        <div class="lesson-card">
-            <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">HAVE TO</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                <p class="text-slate-700 mt-4">Used to express certainty, necessity, and obligation.</p>
-                <p class="text-slate-700 font-semibold mt-2">Examples:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>This answer has to be correct. (certainty)</li>
-                    <li>The soup has to be stirred continuously to prevent burning. (necessity)</li>
-                    <li>They have to leave early. (obligation)</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What do you have to do every morning before work or school?</li>
-                    <li>What do students have to do to pass exams?</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What do employees have to do to follow company policies?</li>
-                    <li>What do you have to do daily to succeed in your role?</li>
-                </ul>
-            </div>
+<hr class="my-12 border-gray-200">
+
+{# Sezione 5: Exercises (Contenuto dal secondo HTML, convertito in macro) #}
+{% call info_card('exercises', 'Interactive Exercises') %}
+
+{# Esercizio 1: Multiple Choice #}
+<div class="lesson-card">
+    <div class="card-header flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">Exercise 1: Choose the Right One (Context)</h3>
+        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+    </div>
+    <div class="card-content">
+        {{ multiple_choice_exercise('mcq-modals', mcq_questions) }}
+    </div>
+</div>
+
+{# Esercizio 2: Fill-in #}
+<div class="lesson-card">
+    <div class="card-header flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">Exercise 2: Fill in the Gap (Short Answers)</h3>
+        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+    </div>
+    <div class="card-content">
+        {{ fill_in_the_gap_exercise('fill-in-modals', fill_in_sentences) }}
+    </div>
+</div>
+
+{# Esercizio 3: Coldplay Lyrics (Fill-in) #}
+<div class="lesson-card">
+    <div class="card-header flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">Exercise 3: Song Lyrics (Coldplay - Green Eyes)</h3>
+        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+    </div>
+    <div class="card-content">
+        <div class="interactive-wrapper" data-exercise-container> {# Aggiungo wrapper per coerenza stile #}
+            <p class="text-center font-serif italic text-lg mb-4">Green Eyes - Coldplay</p>
+            <p>Honey you are a rock</p>
+            <p>Upon which I stand</p>
+            <p>And I come here to talk</p>
+            <p>I hope you understand</p>
+            <p>That green eyes</p>
+            <p>Yeah the spotlight, shines upon you</p>
+            {# Inserisco qui la chiamata alla macro fill_in_the_gap_exercise con i dati dei testi #}
+            {{ fill_in_the_gap_exercise('fill-in-coldplay', coldplay_lyrics) }}
+            <p>Green eyes</p>
+            <p>Honey you are the sea</p>
+            <p>Upon which I float</p>
+            <p>And I came here to talk</p>
+            <p>Green eyes</p>
+            <p>You're the one that I wanted to find</p>
+            <p>And anyone who tried to deny you</p>
+            <p>‘Cause I came here with a load</p>
+            <p>And it feels so much lighter</p>
+            <p>Since I met you</p>
+            <p>Green eyes</p>
         </div>
+    </div>
+</div>
 
-        <div class="lesson-card">
-            <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">MUST</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                <p class="text-slate-700 mt-4">Most commonly used to express certainty. It can also be used to express necessity or strong recommendation, although native speakers prefer the more flexible form "have to." "Must not" can be used to prohibit actions, but this sounds very severe; speakers prefer to use softer modal verbs such as "should not" or "ought not."</p>
-                <p class="text-slate-700 font-semibold mt-2">Examples:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>This must be the right address! (certainty)</li>
-                    <li>Students must pass an entrance examination to study at this school. (necessity)</li>
-                    <li>You must take some medicine for that cough. (strong recommendation)</li>
-                    <li>Jenny, you must not play in the street! (prohibition)</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What must people do to live a healthy life?</li>
-                    <li>What must travelers do before visiting another country?</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What must a leader do to earn respect from their team?</li>
-                    <li>What must companies do to stay competitive?</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="lesson-card">
-            <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">MIGHT</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                <p class="text-slate-700 mt-4">Most commonly used to express possibility. It is also often used in conditional sentences. English speakers can also use "might" to make suggestions or requests, although this is less common in American English.</p>
-                <p class="text-slate-700 font-semibold mt-2">Examples:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>Your purse might be in the living room. (possibility)</li>
-                    <li>If I didn't have to work, I might go with you. (conditional)</li>
-                    <li>You might visit the botanical gardens during your visit. (suggestion)</li>
-                    <li>Might I borrow your pen? (request)</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What might happen if someone doesn't sleep enough?</li>
-                    <li>What might be the advantages of learning another language?</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What might happen if a company doesn't adapt to market changes?</li>
-                    <li>What risks might your industry face in the next few years?</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="lesson-card">
-            <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">MAY</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                <p class="text-slate-700 mt-4">Most commonly used to express possibility. It can also be used to give or request permission, although this usage is becoming less common.</p>
-                <p class="text-slate-700 font-semibold mt-2">Examples:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>Cheryl may be at home, or perhaps at work. (possibility)</li>
-                    <li>Johnny, you may leave the table when you have finished your dinner. (give permission)</li>
-                    <li>May I use your bathroom? (request permission)</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What may happen if the weather is bad this weekend?</li>
-                    <li>What may children learn from traveling?</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What may be the benefits of adopting new technology at work?</li>
-                    <li>How may AI change the way you work in the future?</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="lesson-card">
-            <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">WOULD</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                <p class="text-slate-700 mt-4">Most commonly used to create conditional verb forms. It also serves as the past form of the modal verb "will." Additionally, "would" can indicate repetition in the past.</p>
-                <p class="text-slate-700 font-semibold mt-2">Examples:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>If he were an actor, he would be in adventure movies. (conditional)</li>
-                    <li>I knew that she would be very successful in her career. (past of "will")</li>
-                    <li>When they first met, they would always have picnics on the beach. (repetition)</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What would you do if you could live anywhere in the world?</li>
-                    <li>What would your perfect weekend look like?</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What would you change about the way your company communicates?</li>
-                    <li>What would happen if your team missed a big deadline?</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="lesson-card">
-            <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">SHOULD</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                <p class="text-slate-700 mt-4">Most commonly used to make recommendations or give advice. It can also be used to express obligation as well as expectation.</p>
-                <p class="text-slate-700 font-semibold mt-2">Examples:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>When you go to Berlin, you should visit the palaces in Potsdam. (recommendation)</li>
-                    <li>You should focus more on your family and less on work. (advice)</li>
-                    <li>I really should be in the office by 7:00 AM. (obligation)</li>
-                    <li>By now, they should already be in Dubai. (expectation)</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What should people do to stay happy?</li>
-                    <li>What should travelers always do before a trip?</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What should managers do to motivate their teams?</li>
-                    <li>What should a team do if a project is behind schedule?</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="lesson-card">
-            <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">OUGHT TO</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                <p class="text-slate-700 mt-4">Used to advise or make recommendations. It also expresses assumption or expectation as well as strong probability, often with the idea that something is deserved. "Ought not" (without "to") is used to advise against doing something.</p>
-                <p class="text-slate-700 font-semibold mt-2">Examples:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>You ought to stop smoking. (recommendation)</li>
-                    <li>Jim ought to get the promotion. It is expected because he deserves it. (probability)</li>
-                    <li>Mark ought not drink so much. (advice against something)</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What ought people to do more often to help the environment?</li>
-                    <li>Who is someone that ought to be more appreciated in society?</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What ought companies to do to keep their employees happy?</li>
-                    <li>What qualities ought a leader to have?</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="lesson-card">
-            <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">HAVE GOT TO</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                <p class="text-slate-700 mt-4">Used to express necessity and obligation.</p>
-                <p class="text-slate-700 font-semibold mt-2">Examples:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>Drivers have got to get a license to drive a car in the US. (necessity)</li>
-                    <li>I have got to be at work by 8:30 AM. (obligation)</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What have you got to do before the end of today?</li>
-                    <li>What have you got to take with you when traveling abroad?</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What tasks have you got to finish this week?</li>
-                     <li>What have companies got to do to stay successful in your industry?</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="lesson-card">
-            <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">SHALL</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                <p class="text-slate-700 mt-4">Used to indicate future action. It is most commonly used in sentences with "I" or "we," and is often found in suggestions. In formal English, "shall" can express inevitability or predestination. It is much more common in British English.</p>
-                <p class="text-slate-700 font-semibold mt-2">Examples:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>Shall we go?</li>
-                    <li>He shall become our next king. (predestination)</li>
-                    <li>Shall I help you? (suggestion)</li>
-                    <li>I shall never forget where I came from. (promise)</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>Shall we talk about a time you made a promise you kept?</li>
-                    <li>Do you think people shall (will) travel more or less in the future?</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>Shall leaders always make the final decision, or should teams share responsibility?</li>
-                    <li>What challenges shall companies face in the next 10 years?</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="lesson-card">
-            <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">TO BE ABLE TO</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                <p class="text-slate-700 mt-4">We use "be able to" to express ability, interchangeable with "can" or "could." Unlike "can" (present) and "could" (past), "be able to" works in all tenses and has an infinitive form, offering more flexibility.</p>
-                <p class="text-slate-700 font-semibold mt-2">Examples:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>I have been able to swim since I was five. (present perfect)</li>
-                    <li>You will be able to speak perfect English very soon. (future simple)</li>
-                    <li>I would like to be able to fly an airplane. (infinitive)</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What is something you'd like to be able to do in the future?</li>
-                    <li>When were you able to overcome a challenge?</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>How can employees be able to adapt to big changes?</li>
-                    <li>What should leaders be able to do to earn respect?</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="lesson-card">
-            <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">HAD BETTER</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                <p class="text-slate-700 mt-4">Most commonly used to make recommendations. It can also be used to express desperate hope as well as warnings.</p>
-                <p class="text-slate-700 font-semibold mt-2">Examples:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>You had better take your umbrella with you today. (recommendation)</li>
-                    <li>That bus had better get here soon! (desperate hope)</li>
-                    <li>You had better watch the way you talk to me in the future! (warning)</li>
-                     <li>You had better not be late. (negative recommendation/warning)</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">General Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What had better happen for you to have a good week?</li>
-                    <li>What had better change in the world for life to improve?</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">Business Questions:</p>
-                <ul class="list-disc list-inside mt-1 text-slate-600 space-y-1">
-                    <li>What had better be done before launching a new product?</li>
-                    <li>What had better change in your company to improve teamwork?</li>
-                </ul>
-            </div>
-        </div>
-
-    {% endcall %}
-
-    <hr class="my-12 border-gray-200">
-
-    {# Sezione 3: Forms Table (Contenuto dal secondo HTML) #}
-    {% call info_card('forms', 'Modal Forms Summary Table') %}
-        <div class="lesson-card"> {# Tendina interna - parte chiusa #}
-            <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">Present, Past, and Future Equivalents</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                <div class="table-wrapper mt-4"> {# Usiamo la classe CSS master #}
-                    <table class="lesson-table"> {# Usiamo la classe CSS master #}
-                        <thead>
-                            <tr>
-                                <th>Modal</th>
-                                <th>PRESENT</th>
-                                <th>PAST</th>
-                                <th>FUTURE</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr><td>can</td><td>can</td><td>could</td><td>(will be able to)</td></tr>
-                            <tr><td>could</td><td>could</td><td>could</td><td>(would be able to)</td></tr>
-                            <tr><td>will</td><td>will</td><td>would</td><td>will</td></tr>
-                            <tr><td>would</td><td>would</td><td>would</td><td>would</td></tr>
-                            <tr><td>shall</td><td>shall</td><td>should</td><td>shall</td></tr>
-                            <tr><td>should</td><td>should</td><td>should</td><td>should</td></tr>
-                            <tr><td>may</td><td>may</td><td>might</td><td>may</td></tr>
-                            <tr><td>might</td><td>might</td><td>might</td><td>might</td></tr>
-                            <tr><td>must</td><td>must</td><td>had to</td><td>will have to</td></tr>
-                            <tr><td>have to</td><td>have to</td><td>had to</td><td>will have to</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    {% endcall %}
-
-    <hr class="my-12 border-gray-200">
-
-    {# Sezione 4: Application/Discussion (Contenuto dal secondo HTML) #}
-    {% call info_card('application', 'Application and Discussion Questions') %}
-         <div class="lesson-card"> {# Tendina interna - parte chiusa #}
-            <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">Applying Modals to Professional and Personal Scenarios</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                <div class="mt-4 text-slate-700 space-y-4">
-                    <p class="step-title">Use the appropriate modals (must, could, should, can, might) when answering these questions:</p>
-                    <ol class="list-decimal ml-6 space-y-2">
-                        <li>How should companies decide whether to invest in new technology?</li>
-                        <li>What might happen if a company doesn't adapt to market changes?</li>
-                        <li>What must employees do to ensure they follow company policies?</li>
-                        <li>What could companies do to improve remote work policies?</li>
-                        <li>How can project managers ensure deadlines are met?</li>
-                        <li>What should a team do if a project is falling behind schedule?</li>
-                        <li>How should you handle a difficult client?</li>
-                        <li>What might be the consequences of poor customer service?</li>
-                        <li>What must team members do to effectively collaborate on a project?</li>
-                        <li>What could happen if there is a lack of communication within a team?</li>
-                        <li>What should a leader do to motivate their team?</li>
-                        <li>How can managers handle conflicts between employees?</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    {% endcall %}
-
-    <hr class="my-12 border-gray-200">
-
-    {# Sezione 5: Exercises (Contenuto dal secondo HTML, convertito in macro) #}
-    {% call info_card('exercises', 'Interactive Exercises') %}
-
-        {# Esercizio 1: Multiple Choice #}
-        <div class="lesson-card">
-             <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">Exercise 1: Choose the Right One (Context)</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                {{ multiple_choice_exercise('mcq-modals', mcq_questions) }}
-            </div>
-        </div>
-
-        {# Esercizio 2: Fill-in #}
-         <div class="lesson-card">
-             <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">Exercise 2: Fill in the Gap (Short Answers)</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                 {{ fill_in_the_gap_exercise('fill-in-modals', fill_in_sentences) }}
-             </div>
-        </div>
-
-        {# Esercizio 3: Coldplay Lyrics (Fill-in) #}
-        <div class="lesson-card">
-             <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">Exercise 3: Song Lyrics (Coldplay - Green Eyes)</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                <div class="interactive-wrapper" data-exercise-container> {# Aggiungo wrapper per coerenza stile #}
-                    <p class="text-center font-serif italic text-lg mb-4">Green Eyes - Coldplay</p>
-                    <p>Honey you are a rock</p>
-                    <p>Upon which I stand</p>
-                    <p>And I come here to talk</p>
-                    <p>I hope you understand</p>
-                    <p>That green eyes</p>
-                    <p>Yeah the spotlight, shines upon you</p>
-                    {# Inserisco qui la chiamata alla macro fill_in_the_gap_exercise con i dati dei testi #}
-                    {{ fill_in_the_gap_exercise('fill-in-coldplay', coldplay_lyrics) }}
-                    <p>Green eyes</p>
-                    <p>Honey you are the sea</p>
-                    <p>Upon which I float</p>
-                    <p>And I came here to talk</p>
-                    <p>Green eyes</p>
-                    <p>You're the one that I wanted to find</p>
-                    <p>And anyone who tried to deny you</p>
-                    <p>‘Cause I came here with a load</p>
-                    <p>And it feels so much lighter</p>
-                    <p>Since I met you</p>
-                    <p>Green eyes</p>
-                </div>
-            </div>
-        </div>
-
-    {% endcall %}
+{% endcall %}
 
 {% endblock lesson_content %}

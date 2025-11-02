@@ -1,13 +1,11 @@
-{# --- Lezione: Commonly Mispronounced Words --- #}
-
 {% set lesson_title = "Commonly Mispronounced Words" %}
 {% set lesson_subtitle = "Mastering tricky sounds and patterns in English." %}
 {% set nav_links = [
-    {'id': 'introduction', 'title': 'Introduction'},
-    {'id': 'patterns', 'title': 'Common Patterns'},
-    {'id': 'stress', 'title': 'Word Stress'},
-    {'id': 'other-tricks', 'title': 'Other Tricky Sounds'},
-    {'id': 'weird-stress-list', 'title': 'Tricky Stress Words'}
+{'id': 'introduction', 'title': 'Introduction'},
+{'id': 'patterns', 'title': 'Common Patterns'},
+{'id': 'stress', 'title': 'Word Stress'},
+{'id': 'other-tricks', 'title': 'Other Tricky Sounds'},
+{'id': 'weird-stress-list', 'title': 'Tricky Stress Words'}
 ] %}
 
 {% extends "abstract_templates/lesson_base.html" %}
@@ -15,244 +13,322 @@
 
 {% block lesson_content %}
 
-    {% call info_card('introduction', '1. Introduction', initial_state='show') %}
-        <p class="text-slate-700 mt-4">English pronunciation can be tricky because words are not always spelled the way they sound. Today we'll practice groups of words that learners often mispronounce, focusing on patterns, stress, and tricky sounds.</p>
-    {% endcall %}
+{% call info_card('introduction', '1. Introduction', initial_state='show') %}
+<p class="text-slate-700 mt-4">English pronunciation can be tricky because words are not always spelled the way they
+    sound. Today we'll practice groups of words that learners often mispronounce, focusing on patterns, stress, and
+    tricky sounds.</p>
+{% endcall %}
 
-    <hr class="my-12 border-gray-200">
+<hr class="my-12 border-gray-200">
 
-    {% call info_card('patterns', '2. Common Patterns', initial_state='show') %}
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">-ous</h4>
-            <p class="text-slate-700 mt-2">The "ous" rhymes with <em>miss</em> (not "us" or "mouse").</p>
-            <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
-                <li>various, serious, nervous, obvious, previous</li>
-            </ul>
-        </div>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">-tion / -sion</h4>
-            <p class="text-slate-700 mt-2">Pronounced /ʃən/ (like <em>shin</em>).</p>
-            <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
-                <li>information, section, decision, population, association, organization, position, commission</li>
-            </ul>
-        </div>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">-ate</h4>
-            <p class="text-slate-700 mt-2">Verbs rhyme with <em>eight</em>. Nouns and adjectives rhyme with <em>it</em>.</p>
-            <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
-                <li>private, separate, demonstrate, concentrate, corporate, initiate, negotiate, adequate</li>
-            </ul>
-        </div>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">-ence / -ance</h4>
-            <p class="text-slate-700 mt-2">End with the sound /əns/.</p>
-            <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
-                <li>violence, dependence, experience, conference, evidence, resistance, performance, importance</li>
-            </ul>
-        </div>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">/dʒ/ sound (like <em>German</em>)</h4>
-            <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
-                <li>educate / education, graduate / graduation, soldier, individual, procedure</li>
-            </ul>
-        </div>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">ch = k</h4>
-            <p class="text-slate-700 mt-2">The "ch" sounds like <em>k</em>.</p>
-            <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
-                <li>chemical, mechanical, psychiatry, ache, technique, chaos</li>
-            </ul>
-        </div>
-    {% endcall %}
+{% call info_card('patterns', '2. Common Patterns', initial_state='show') %}
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">-ous</h4>
+    <p class="text-slate-700 mt-2">The "ous" rhymes with <em>miss</em> (not "us" or "mouse").</p>
+    <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
+        <li>various, serious, nervous, obvious, previous</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">-tion / -sion</h4>
+    <p class="text-slate-700 mt-2">Pronounced /ʃən/ (like <em>shin</em>).</p>
+    <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
+        <li>information, section, decision, population, association, organization, position, commission</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">-ate</h4>
+    <p class="text-slate-700 mt-2">Verbs rhyme with <em>eight</em>. Nouns and adjectives rhyme with <em>it</em>.</p>
+    <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
+        <li>private, separate, demonstrate, concentrate, corporate, initiate, negotiate, adequate</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">-ence / -ance</h4>
+    <p class="text-slate-700 mt-2">End with the sound /əns/.</p>
+    <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
+        <li>violence, dependence, experience, conference, evidence, resistance, performance, importance</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">/dʒ/ sound (like <em>German</em>)</h4>
+    <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
+        <li>educate / education, graduate / graduation, soldier, individual, procedure</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">ch = k</h4>
+    <p class="text-slate-700 mt-2">The "ch" sounds like <em>k</em>.</p>
+    <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
+        <li>chemical, mechanical, psychiatry, ache, technique, chaos</li>
+    </ul>
+</div>
+{% endcall %}
 
-    <hr class="my-12 border-gray-200">
+<hr class="my-12 border-gray-200">
 
-    {% call info_card('stress', '3. Word Stress', initial_state='show') %}
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">Noun vs. Verb Stress</h4>
-            <p class="text-slate-700 mt-2">Nouns → stress on the <strong>first syllable</strong>. Verbs → stress on the <strong>second syllable</strong>.</p>
-            
-            {# Mappato alle classi CSS master '.table-wrapper' e '.lesson-table' #}
-            <div class="table-wrapper mt-4">
-                <table class="lesson-table">
-                    <thead>
-                        <tr>
-                            <th>Noun (stress on 1st syllable)</th>
-                            <th>Verb (stress on 2nd syllable)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>CONduct</td><td>conDUCT</td></tr>
-                        <tr><td>ATTribute</td><td>attrIBute</td></tr>
-                        <tr><td>COMbat</td><td>comBAT</td></tr>
-                        <tr><td>CONflict</td><td>conFLICT</td></tr>
-                        <tr><td>CONtest</td><td>conTEST</td></tr>
-                        <tr><td>CONtract</td><td>conTRACT</td></tr>
-                        <tr><td>DEcrease</td><td>deCREASE</td></tr>
-                        <tr><td>EScort</td><td>esCORT</td></tr>
-                        <tr><td>IMpact</td><td>imPACT</td></tr>
-                        <tr><td>INcrease</td><td>inCREASE</td></tr>
-                        <tr><td>INsult</td><td>inSULT</td></tr>
-                        <tr><td>OBject</td><td>obJECT</td></tr>
-                        <tr><td>PERmit</td><td>perMIT</td></tr>
-                        <tr><td>PREsent</td><td>preSENT</td></tr>
-                        <tr><td>PROceed</td><td>proCEED</td></tr>
-                        <tr><td>PROgress</td><td>proGRESS</td></tr>
-                        <tr><td>PROject</td><td>proJECT</td></tr>
-                        <tr><td>REbel</td><td>reBEL</td></tr>
-                        <tr><td>REfill</td><td>reFILL</td></tr>
-                        <tr><td>REfund</td><td>reFUND</td></tr>
-                        <tr><td>REject</td><td>reJECT</td></tr>
-                        <tr><td>REpeat</td><td>rePEAT</td></tr>
-                        <tr><td>SUBject</td><td>subJECT</td></tr>
-                        <tr><td>SUSpect</td><td>susPECT</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">Self / Selves Stress</h4>
-            <p class="text-slate-700 mt-2">Stress goes on the <strong>second syllable</strong>.</p>
-            <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
-                <li>myself, yourself, himself, herself, ourselves, themselves</li>
-            </ul>
-        </div>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">Numbers – teen vs. ty</h4>
-            <p class="text-slate-700 mt-2"><strong>Teen</strong> → stress on the <strong>second syllable</strong> (sixTEEN). <strong>Ty</strong> → stress on the <strong>first syllable</strong> (SIXty).</p>
-            <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
-                <li>fourteen / forty</li>
-                <li>fifteen / fifty</li>
-                <li>sixteen / sixty</li>
-                <li>seventeen / seventy</li>
-            </ul>
-        </div>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">Weird Stress Words</h4>
-            <p class="text-slate-700 mt-2">Words often stressed incorrectly by learners:</p>
-            <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
-                <li>hotel, engineer, museum, comfortable, recipe, cousin, iron, lawyer, desert vs. dessert, dangerous, popular, mayor / major, rural, scissors, status, surface, European</li>
-            </ul>
-        </div>
-    {% endcall %}
+{% call info_card('stress', '3. Word Stress', initial_state='show') %}
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Noun vs. Verb Stress</h4>
+    <p class="text-slate-700 mt-2">Nouns → stress on the <strong>first syllable</strong>. Verbs → stress on the
+        <strong>second syllable</strong>.</p>
 
-    <hr class="my-12 border-gray-200">
+    {# Mappato alle classi CSS master '.table-wrapper' e '.lesson-table' #}
+    <div class="table-wrapper mt-4">
+        <table class="lesson-table">
+            <thead>
+                <tr>
+                    <th>Noun (stress on 1st syllable)</th>
+                    <th>Verb (stress on 2nd syllable)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>CONduct</td>
+                    <td>conDUCT</td>
+                </tr>
+                <tr>
+                    <td>ATTribute</td>
+                    <td>attrIBute</td>
+                </tr>
+                <tr>
+                    <td>COMbat</td>
+                    <td>comBAT</td>
+                </tr>
+                <tr>
+                    <td>CONflict</td>
+                    <td>conFLICT</td>
+                </tr>
+                <tr>
+                    <td>CONtest</td>
+                    <td>conTEST</td>
+                </tr>
+                <tr>
+                    <td>CONtract</td>
+                    <td>conTRACT</td>
+                </tr>
+                <tr>
+                    <td>DEcrease</td>
+                    <td>deCREASE</td>
+                </tr>
+                <tr>
+                    <td>EScort</td>
+                    <td>esCORT</td>
+                </tr>
+                <tr>
+                    <td>IMpact</td>
+                    <td>imPACT</td>
+                </tr>
+                <tr>
+                    <td>INcrease</td>
+                    <td>inCREASE</td>
+                </tr>
+                <tr>
+                    <td>INsult</td>
+                    <td>inSULT</td>
+                </tr>
+                <tr>
+                    <td>OBject</td>
+                    <td>obJECT</td>
+                </tr>
+                <tr>
+                    <td>PERmit</td>
+                    <td>perMIT</td>
+                </tr>
+                <tr>
+                    <td>PREsent</td>
+                    <td>preSENT</td>
+                </tr>
+                <tr>
+                    <td>PROceed</td>
+                    <td>proCEED</td>
+                </tr>
+                <tr>
+                    <td>PROgress</td>
+                    <td>proGRESS</td>
+                </tr>
+                <tr>
+                    <td>PROject</td>
+                    <td>proJECT</td>
+                </tr>
+                <tr>
+                    <td>REbel</td>
+                    <td>reBEL</td>
+                </tr>
+                <tr>
+                    <td>REfill</td>
+                    <td>reFILL</td>
+                </tr>
+                <tr>
+                    <td>REfund</td>
+                    <td>reFUND</td>
+                </tr>
+                <tr>
+                    <td>REject</td>
+                    <td>reJECT</td>
+                </tr>
+                <tr>
+                    <td>REpeat</td>
+                    <td>rePEAT</td>
+                </tr>
+                <tr>
+                    <td>SUBject</td>
+                    <td>subJECT</td>
+                </tr>
+                <tr>
+                    <td>SUSpect</td>
+                    <td>susPECT</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Self / Selves Stress</h4>
+    <p class="text-slate-700 mt-2">Stress goes on the <strong>second syllable</strong>.</p>
+    <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
+        <li>myself, yourself, himself, herself, ourselves, themselves</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Numbers – teen vs. ty</h4>
+    <p class="text-slate-700 mt-2"><strong>Teen</strong> → stress on the <strong>second syllable</strong> (sixTEEN).
+        <strong>Ty</strong> → stress on the <strong>first syllable</strong> (SIXty).</p>
+    <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
+        <li>fourteen / forty</li>
+        <li>fifteen / fifty</li>
+        <li>sixteen / sixty</li>
+        <li>seventeen / seventy</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Weird Stress Words</h4>
+    <p class="text-slate-700 mt-2">Words often stressed incorrectly by learners:</p>
+    <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
+        <li>hotel, engineer, museum, comfortable, recipe, cousin, iron, lawyer, desert vs. dessert, dangerous, popular,
+            mayor / major, rural, scissors, status, surface, European</li>
+    </ul>
+</div>
+{% endcall %}
 
-    {% call info_card('other-tricks', '4. Other Tricky Sounds', initial_state='show') %}
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">Silent letters</h4>
-            <p class="text-slate-700 mt-2">Each of these words contains at least one silent letter.</p>
-            <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
-                <li>receipt, answer, vegetable, towards, camera, salmon, basically / physically / typically, February, laboratory, temperature, corporate, average, difference, often, Wednesday, whistle, castle</li>
-            </ul>
-        </div>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">French words</h4>
-            <p class="text-slate-700 mt-2">The "t" is silent.</p>
-            <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
-                <li>ballet, valet, buffet, merlot, chalet</li>
-            </ul>
-        </div>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">Glottal Stop</h4>
-            <p class="text-slate-700 mt-2">We often don't pronounce the "t," instead cutting it off in the throat.</p>
-            <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
-                <li>button, mountain, certain, curtain, fountain, important</li>
-            </ul>
-        </div>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">t → d (flap sound in American English)</h4>
-            <p class="text-slate-700 mt-2">The "t" often sounds like a soft "d."</p>
-            <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
-                <li>better, butter, turtle, later, literature, bottle, computer</li>
-            </ul>
-        </div>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">/ʊ/ sound (like "good")</h4>
-            <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
-                <li>put, could, should, would, wood, took</li>
-            </ul>
-        </div>
-    {% endcall %}
+<hr class="my-12 border-gray-200">
 
-    {# --- NUOVA SEZIONE --- #}
-    <hr class="my-12 border-gray-200">
+{% call info_card('other-tricks', '4. Other Tricky Sounds', initial_state='show') %}
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Silent letters</h4>
+    <p class="text-slate-700 mt-2">Each of these words contains at least one silent letter.</p>
+    <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
+        <li>receipt, answer, vegetable, towards, camera, salmon, basically / physically / typically, February,
+            laboratory, temperature, corporate, average, difference, often, Wednesday, whistle, castle</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">French words</h4>
+    <p class="text-slate-700 mt-2">The "t" is silent.</p>
+    <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
+        <li>ballet, valet, buffet, merlot, chalet</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Glottal Stop</h4>
+    <p class="text-slate-700 mt-2">We often don't pronounce the "t," instead cutting it off in the throat.</p>
+    <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
+        <li>button, mountain, certain, curtain, fountain, important</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">t → d (flap sound in American English)</h4>
+    <p class="text-slate-700 mt-2">The "t" often sounds like a soft "d."</p>
+    <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
+        <li>better, butter, turtle, later, literature, bottle, computer</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">/ʊ/ sound (like "good")</h4>
+    <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
+        <li>put, could, should, would, wood, took</li>
+    </ul>
+</div>
+{% endcall %}
 
-    {% call info_card('weird-stress-list', '5. Focus on Tricky Stress Words', initial_state='show') %}
-        <p class="text-slate-700 mt-4">These are some words that typically give students problems with word stress.</p>
-        <ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
-             {# Ho diviso la lunga lista in list items separati per leggibilità #}
-            <li>hotel</li>
-            <li>located</li>
-            <li>engineer</li>
-            <li>contributed</li>
-            <li>appear</li>
-            <li>control</li>
-            <li>museum</li>
-            <li>complicated</li>
-            <li>pursue</li>
-            <li>reward</li>
-            <li>until</li>
-            <li>upstairs</li>
-            <li>Halloween</li>
-            <li>comfortable</li>
-            <li>recipe</li>
-            <li>cousin</li>
-            <li>iron</li>
-            <li>elite</li>
-            <li>purpose</li>
-            <li>necessity</li>
-            <li>nature</li>
-            <li>natural</li>
-            <li>drawer</li>
-            <li>jewelry</li>
-            <li>lawyer</li>
-            <li>dessert</li>
-            <li>desert</li>
-            <li>loose</li>
-            <li>lose</li>
-            <li>dangerous</li>
-            <li>popular</li>
-            <li>menu</li>
-            <li>alien</li>
-            <li>capture</li>
-            <li>encourage</li>
-            <li>glove</li>
-            <li>hurry</li>
-            <li>mayor</li>
-            <li>major</li>
-            <li>measure</li>
-            <li>naked</li>
-            <li>pure</li>
-            <li>stomach</li>
-            <li>touch</li>
-            <li>evil</li>
-            <li>women</li>
-            <li>extraordinary</li>
-            <li>bargain</li>
-            <li>tongue</li>
-            <li>curious</li>
-            <li>bird</li>
-            <li>beard</li>
-            <li>bear</li>
-            <li>beer</li>
-            <li>chef</li>
-            <li>sugar</li>
-            <li>ask</li>
-            <li>war</li>
-            <li>blood</li>
-            <li>floor</li>
-            <li>pint</li>
-            <li>rural</li>
-            <li>murder</li>
-            <li>vulnerable</li>
-            <li>scissors</li>
-            <li>status</li>
-            <li>surface</li>
-            <li>ton</li>
-            <li>Europe</li>
-            <li>European</li>
-        </ul>
-    {% endcall %}
+{# --- NUOVA SEZIONE --- #}
+<hr class="my-12 border-gray-200">
+
+{% call info_card('weird-stress-list', '5. Focus on Tricky Stress Words', initial_state='show') %}
+<p class="text-slate-700 mt-4">These are some words that typically give students problems with word stress.</p>
+<ul class="list-disc list-inside mt-2 text-slate-600 pattern-list">
+    {# Ho diviso la lunga lista in list items separati per leggibilità #}
+    <li>hotel</li>
+    <li>located</li>
+    <li>engineer</li>
+    <li>contributed</li>
+    <li>appear</li>
+    <li>control</li>
+    <li>museum</li>
+    <li>complicated</li>
+    <li>pursue</li>
+    <li>reward</li>
+    <li>until</li>
+    <li>upstairs</li>
+    <li>Halloween</li>
+    <li>comfortable</li>
+    <li>recipe</li>
+    <li>cousin</li>
+    <li>iron</li>
+    <li>elite</li>
+    <li>purpose</li>
+    <li>necessity</li>
+    <li>nature</li>
+    <li>natural</li>
+    <li>drawer</li>
+    <li>jewelry</li>
+    <li>lawyer</li>
+    <li>dessert</li>
+    <li>desert</li>
+    <li>loose</li>
+    <li>lose</li>
+    <li>dangerous</li>
+    <li>popular</li>
+    <li>menu</li>
+    <li>alien</li>
+    <li>capture</li>
+    <li>encourage</li>
+    <li>glove</li>
+    <li>hurry</li>
+    <li>mayor</li>
+    <li>major</li>
+    <li>measure</li>
+    <li>naked</li>
+    <li>pure</li>
+    <li>stomach</li>
+    <li>touch</li>
+    <li>evil</li>
+    <li>women</li>
+    <li>extraordinary</li>
+    <li>bargain</li>
+    <li>tongue</li>
+    <li>curious</li>
+    <li>bird</li>
+    <li>beard</li>
+    <li>bear</li>
+    <li>beer</li>
+    <li>chef</li>
+    <li>sugar</li>
+    <li>ask</li>
+    <li>war</li>
+    <li>blood</li>
+    <li>floor</li>
+    <li>pint</li>
+    <li>rural</li>
+    <li>murder</li>
+    <li>vulnerable</li>
+    <li>scissors</li>
+    <li>status</li>
+    <li>surface</li>
+    <li>ton</li>
+    <li>Europe</li>
+    <li>European</li>
+</ul>
+{% endcall %}
 
 {% endblock lesson_content %}

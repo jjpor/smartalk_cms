@@ -150,7 +150,7 @@ async def get_section_landing_page(request: Request, section_landing_page: str):
         return templates.TemplateResponse(
             request=request,
             name=f"landing_pages/{section_landing_page}.html",
-            context={"lang": "en", "page_name": {section_landing_page}},
+            context={"lang": "en", "page_name": section_landing_page},
         )
     except Exception as e:
         logger.error(e)
@@ -177,7 +177,7 @@ async def get_section_page(request: Request, section: str, item: str):
         return templates.TemplateResponse(
             request=request,
             name=f"{section}/{item}.html",
-            context={"lang": "en", "page_name": "-".join([{section}, {item}])},
+            context={"lang": "en", "page_name": f"{section}-{item}"},
         )
     except Exception as e:
         logger.error(e)
@@ -198,12 +198,10 @@ async def get_dashboard_page(request: Request, path_user_type: str, page: str):
         assert "/" not in page, "indirizzo non valido"
         assert path_user_type in ["coach", "student"], "indirizzo non valido"
 
-        context = (
-            {
-                "lang": "en",
-                "page_name": "-".join([{f"{path_user_type}'s dashboard"}, {page}]),
-            },
-        )
+        context = {
+            "lang": "en",
+            "page_name": f"{path_user_type}'s dashboard-{page}",
+        }
         # aggiungi custom css se esiste
         custom_css = f"css/{path_user_type}_dashboard/{page}.css"
         context["custom_css"] = custom_css if exists_static_resource(custom_css) else None
