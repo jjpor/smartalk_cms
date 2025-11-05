@@ -1,0 +1,132 @@
+{# ================================================================== #}
+{# ZONA 1: INTESTAZIONE SICURA (SOLO DEFINIZIONI SEMPLICI)            #}
+{# ================================================================== #}
+{% set lesson_title = "The Present Perfect Tense" %}
+{% set lesson_subtitle = "Connecting the past to the present: Talking about experiences, changes, and ongoing actions." %}
+
+{# REGOLA D'ORO: nav_links SU UNA SOLA RIGA #}
+{% set nav_links = [{'id': 'structure', 'title': 'Form & Uses'}, {'id': 'practice-1', 'title': 'Practice 1 (Conjugation)'}, {'id': 'practice-2', 'title': 'Practice 2 (Adverbs)'}, {'id': 'practice-3', 'title': 'Practice 3 (Transformation)'}, {'id': 'discussion', 'title': 'Discussion Topics'}] %}
+
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, fill_in_the_gap_exercise, dropdown_fill_in_exercise, random_item_generator %}
+
+{# ================================================================== #}
+{# ZONA 2: AREA DATI & CONTENUTO (TUTTO IL RESTO QUI DENTRO)          #}
+{# ================================================================== #}
+{% block lesson_content %}
+
+{# --- DATI PER ESERCIZI INTERATTIVI --- #}
+
+{# Sezione 2: Conjugation Practice Data (Fill-in-the-gap) #}
+{% set conjugation_data = [
+    {'prefix': '1. She ', 'answer': 'has lived', 'suffix': ' in Paris since 2010. <span class="text-sm text-slate-500 italic">(live)</span>'},
+    {'prefix': '2. I ', 'answer': 'have seen', 'suffix': ' that movie three times already. <span class="text-sm text-slate-500 italic">(see)</span>'},
+    {'prefix': '3. They ', 'answer': 'have not finished', 'suffix': ' their homework yet. <span class="text-sm text-slate-500 italic">(not finish)</span>'},
+    {'prefix': '4. He ', 'answer': 'has been', 'suffix': ' to New York twice this year. <span class="text-sm text-slate-500 italic">(be)</span>'},
+    {'prefix': '5. We ', 'answer': 'have not tried', 'suffix': ' Peruvian food before. <span class="text-sm text-slate-500 italic">(not try)</span>'},
+    {'prefix': '6. You look tired! What ', 'answer': 'have you done', 'suffix': '? <span class="text-sm text-slate-500 italic">(you / do)</span>'}
+] %}
+
+{# Sezione 3: Adverb Practice Data (Dropdown Fill-in) #}
+{% set adverb_options = ['Just', 'Already', 'Yet', 'Never', 'Ever'] %}
+{% set adverb_data = [
+    {'prefix': '1. We haven\'t received the package ', 'options': adverb_options, 'answer': 'Yet', 'suffix': '.'},
+    {'prefix': '2. The train has ', 'options': adverb_options, 'answer': 'Just', 'suffix': ' left the station. We\'re too late!'},
+    {'prefix': '3. I have ', 'options': adverb_options, 'answer': 'Already', 'suffix': ' finished my entire project. That was fast!'},
+    {'prefix': '4. He has ', 'options': adverb_options, 'answer': 'Never', 'suffix': ' eaten meat in his life; he\'s a strict vegetarian.'},
+    {'prefix': '5. I\'m going to ask my teacher because I haven\'t understood the homework ', 'options': adverb_options, 'answer': 'Yet', 'suffix': '.'}
+] %}
+
+{# Sezione 4: Transformation Practice Data (Fill-in-the-gap) #}
+{% set transformation_data = [
+    {'prefix': '1. Simple Past: I went to Brazil last month.<br>Present Perfect: ', 'answer': 'I have been to Brazil.', 'suffix': '<br><span class="text-sm text-slate-500 italic">Hint: Use "be to" (Go)</span>'},
+    {'prefix': '2. Simple Past: He quit smoking last week.<br>Present Perfect: ', 'answer': 'He has quit smoking.', 'suffix': '<br><span class="text-sm text-slate-500 italic">Hint: (Quit) Focus on the result</span>'},
+    {'prefix': '3. Simple Past: They finished renovating the house last night.<br>Present Perfect: ', 'answer': 'They have finished renovating the house.', 'suffix': '<br><span class="text-sm text-slate-500 italic">Hint: (Finish) Focus on the completed task</span>'}
+] %}
+
+{# Sezione 5: Discussion Topics Data (Random Generator) #}
+{% set discussion_questions = [
+    'Have you ever visited another country? Which one?',
+    'What’s the best place you’ve ever stayed at?',
+    'Have you ever lost your luggage or missed a flight?',
+    'Have you ever tried food that you didn’t like?',
+    'What’s the most unusual dish you’ve ever eaten?',
+    'Have you ever cooked for a large group of people?',
+    'Have you ever met a famous person?',
+    'Which concerts or live shows have you been to?',
+    'Have you ever watched a movie more than five times?',
+    'What have you accomplished this year that you’re proud of?',
+    'Have you ever learned a new skill by yourself?',
+    'What’s something you’ve never done but would like to try?',
+    'Have you ever broken your phone?',
+    'What apps or websites have you recently discovered?',
+    'Have you ever bought something online that surprised you (good or bad)?'
+] %}
+
+{# --- INIZIO CONTENUTO LEZIONE --- #}
+
+{% call info_card('structure', '1. Form, Functions, and Common Words', initial_state='show') %}
+    <div class="text-slate-600 space-y-6">
+        <div>
+            <h4 class="font-bold text-slate-800 text-lg mb-2">Structure:</h4>
+            <div class="ml-4 border-l-4 border-blue-500 pl-4 space-y-2">
+                <p><strong class="text-blue-700">Affirmative:</strong> Subject + have / has + Past Participle.<br>
+                <em class="text-sm">Example: He has walked. (Regular) | They have gone. (Irregular)</em></p>
+                
+                <p><strong class="text-blue-700">Negative:</strong> Subject + haven't / hasn't + Past Participle.<br>
+                <em class="text-sm">Example: He hasn’t gone.</em></p>
+                
+                <p><strong class="text-blue-700">Question:</strong> Have / Has + Subject + Past Participle?<br>
+                <em class="text-sm">Example: Has he gone?</em></p>
+            </div>
+        </div>
+
+        <div>
+            <h4 class="font-bold text-slate-800 text-lg mb-2">Four Key Uses:</h4>
+            <ol class="list-decimal list-inside space-y-3 ml-2">
+                <li><strong>Ongoing Actions:</strong> To indicate an action that began in the past and continues to the present.
+                    <br><em class="text-sm ml-6">Example: Sue has known Hector since he came to San Diego. (She still knows him.)</em>
+                </li>
+                <li><strong>Unfinished Time or Experience:</strong> To indicate an action that began at an unspecified time in the past and may be finished, but has some relation to the present (often discussing life experience).
+                    <br><em class="text-sm ml-6">Example: We have already filed our taxes. (The filing is done, but the results matter now.)</em>
+                </li>
+                <li><strong>Repeated Actions:</strong> To indicate repeated actions in the past that may happen again in the present (usually with 'several times' or 'many times').
+                    <br><em class="text-sm ml-6">Example: She has seen the doctor several times about her allergy problem.</em>
+                </li>
+                <li><strong>With Time Words:</strong> Commonly used with time words like <strong>ever, never, already, yet, just,</strong> and <strong>for/since</strong>.
+                    <br><em class="text-sm ml-6">Example: I haven’t completed the math problem yet. Have you ever seen a real movie star in person?</em>
+                </li>
+            </ol>
+        </div>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('practice-1', '2. Practice 1: Conjugation Challenge (Fill-in-the-Blank)', initial_state='show') %}
+    <p class="mb-6 text-slate-600">Fill in the blanks with the correct Present Perfect form (<strong>have/has + past participle</strong>) of the verb given in parentheses.</p>
+    {{ fill_in_the_gap_exercise('pp-conjugation-1', conjugation_data) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('practice-2', '3. Practice 2: Present Perfect Adverbs', initial_state='show') %}
+    <p class="mb-6 text-slate-600">Choose the most appropriate adverb to complete the Present Perfect sentence, based on the context provided.</p>
+    {{ dropdown_fill_in_exercise('pp-adverbs-1', adverb_data) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('practice-3', '4. Practice 3: Sentence Transformation', initial_state='show') %}
+    <p class="mb-6 text-slate-600">Rewrite the Simple Past sentence as a Present Perfect sentence, focusing on the current result or ongoing nature.</p>
+    {{ fill_in_the_gap_exercise('pp-transformation-1', transformation_data) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('discussion', '5. Practice: Discussion Topics', initial_state='show') %}
+    <p class="mb-6 text-slate-600">Use the random generator to get a question and practice the Present Perfect tense with a partner.</p>
+    {{ random_item_generator('pp-discussion-gen', 'Next Topic', 'pp-discussion-list', discussion_questions) }}
+{% endcall %}
+
+{% endblock lesson_content %}

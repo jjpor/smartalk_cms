@@ -1,0 +1,119 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "Leading Downwards" %}
+{% set lesson_subtitle = "From Anxiety to Empowerment" %}
+
+{% set nav_links = [{'id': 'core-idea', 'title': 'Core Idea'}, {'id': 'mantra', 'title': 'The Mantra'}, {'id': 'steps', 'title': 'Practical Steps'}, {'id': 'discussion', 'title': 'Discussion'}, {'id': 'forward', 'title': 'Forward-Looking'}] %}
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, multiple_choice_exercise, match_exercise, random_item_generator %}
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne) --- #}
+
+{# Dati per Core Idea Quiz #}
+{% set core_quiz = [
+    {
+        'text': 'What is the main focus of "leading downwards"?',
+        'options': [
+            {'value': 'up', 'text': 'Managing your boss’s expectations constantly.'},
+            {'value': 'down', 'text': 'Caring for, guiding, and trusting your team.'},
+            {'value': 'ignore', 'text': 'Ignoring what upper management wants.'}
+        ],
+        'correct_value': 'down'
+    }
+] %}
+
+{# Dati per Steps Matching (Action -> Benefit) #}
+{% set step_actions = [
+    {'id': '1', 'text': 'Stop constantly monitoring above'},
+    {'id': '2', 'text': 'Ask what the team needs'},
+    {'id': '3', 'text': 'Delegate with trust'},
+    {'id': '4', 'text': 'Celebrate small wins'}
+] %}
+
+{% set step_benefits = [
+    {'id': '1', 'text': 'Reduces your leadership anxiety'},
+    {'id': '2', 'text': 'Identifies blockers and builds support'},
+    {'id': '3', 'text': 'Empowers team members to take ownership'},
+    {'id': '4', 'text': 'Makes progress visible and boosts morale'}
+] %}
+
+{# Dati per Discussion Randomizer #}
+{% set discuss_questions = [
+    'What’s the difference between managing upwards and leading downwards?',
+    'Why do many people spend more energy looking up than looking down?',
+    'What happens to a team when the manager only focuses on their boss?',
+    'Which companies or leaders do you admire for putting their team first?',
+    'How do you recognize when a team needs more support?',
+    'What’s one way to make colleagues feel more empowered?',
+    'How do you celebrate a team’s successes?',
+    'How do you balance accountability with empathy?'
+] %}
+
+{# --- Fase 5: Conversione Contenuto --- #}
+
+{% call info_card('core-idea', '1. Core Idea', initial_state='show') %}
+    <h4 class="font-bold text-slate-800 mb-4">The Shift in Focus</h4>
+    <div class="text-slate-600 space-y-4">
+        <p>Leadership is not only about managing upwards and worrying about what others think.</p>
+        <p>True leadership also means <span class="font-semibold">leading downwards</span> — caring for the team, guiding them, and trusting that their success will reflect on the whole organization.</p>
+    </div>
+
+    <div class="mt-8">
+        <h4 class="font-semibold text-slate-800 mb-4">Quick Check</h4>
+        {{ multiple_choice_exercise('core-idea-quiz', core_quiz) }}
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('mantra', '2. Mantra for Leaders', initial_state='show') %}
+    <h4 class="font-bold text-slate-800 mb-6">Your Guiding Principle</h4>
+    <div class="bg-blue-50 p-8 rounded-xl text-center border-l-4 border-blue-500">
+        <p class="text-2xl italic font-semibold text-slate-700">“If I take care of my team, my team will take care of me.”</p>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('steps', '3. Steps to Shift Your Focus', initial_state='show') %}
+    <h4 class="font-bold text-slate-800 mb-4">Practical Actions</h4>
+    <p class="text-slate-600 mb-6">Shift your energy from worrying about perception to creating actual value through your team.</p>
+    
+    <ul class="list-disc list-inside text-slate-600 space-y-2 mb-8">
+        <li>Stop constantly monitoring what people above you might think.</li>
+        <li>Start asking: What does the team need to succeed?</li>
+        <li>Delegate tasks clearly and with trust.</li>
+        <li>Offer feedback that builds confidence, not fear.</li>
+        <li>Celebrate small wins and make them visible.</li>
+        <li><span class="font-semibold">Remember:</span> the stronger the team, the stronger your position.</li>
+    </ul>
+
+    <h4 class="font-semibold text-slate-800 mb-4">Match Action to Benefit</h4>
+    {{ match_exercise('steps-benefit-match', step_actions, step_benefits) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('discussion', '4. Discussion Questions', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Use these questions to explore how this shift applies to your real work environment.</p>
+    {{ random_item_generator('leadership-discuss-random', 'Next Question', 'leadership-discuss-list', discuss_questions) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('forward', '5. Forward-looking', initial_state='show') %}
+    <h4 class="font-bold text-slate-800 mb-4">Next Steps</h4>
+    <ul class="list-disc list-inside text-slate-600 space-y-3">
+        <li>What’s one small action to “look downwards” more this week?</li>
+        <li>How can this new focus reduce anxiety at work?</li>
+        <li>If the team grows stronger under this approach, what will be noticed first?</li>
+        <li>What part of this mindset shift feels most challenging?</li>
+    </ul>
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}

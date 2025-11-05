@@ -1,0 +1,134 @@
+{# --- Fase 1: Intestazione (Variabili Semplici & Navigazione) --- #}
+{% set lesson_title = "Lying and Manipulation: Understanding Deception" %}
+{% set lesson_subtitle = "Identifying the subtle differences between telling lies and purposeful manipulation." %}
+
+{# CRITICO: nav_links su UNA SOLA RIGA per sicurezza parser backend #}
+{% set nav_links = [{'id': 'warmup', 'title': 'Warm-up'}, {'id': 'discussion', 'title': 'Discussion'}, {'id': 'vocab', 'title': 'Vocabulary'}, {'id': 'scenarios', 'title': 'Scenarios'}, {'id': 'reflection', 'title': 'Final Activities'}] %}
+
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, match_exercise, multiple_choice_exercise %}
+
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Dati Esercizi (Definiti INTERNAMENTE per sicurezza) --- #}
+
+{# Dati per Sezione 3 (Vocab Match) #}
+{% set vocab_terms = [
+    {'id': '1', 'text': 'A White Lie'},
+    {'id': '2', 'text': 'Fibbing'},
+    {'id': '3', 'text': 'Leading Me On'},
+    {'id': '4', 'text': 'Lied To My Face'},
+    {'id': '5', 'text': 'It’s Written All Over Your Face'},
+    {'id': '6', 'text': 'That’s Total BS'},
+    {'id': '7', 'text': '’Fess Up'},
+    {'id': '8', 'text': 'Come Clean'},
+    {'id': '9', 'text': 'Be Straight With Me'}
+] %}
+{% set vocab_defs = [
+    {'id': '1', 'text': 'A harmless or trivial lie told to avoid hurting someone\'s feelings or to be polite.'},
+    {'id': '2', 'text': 'Telling a small, unimportant lie, often used when talking about children.'},
+    {'id': '3', 'text': 'Intentionally giving someone false hope or misleading them about your true intentions.'},
+    {'id': '4', 'text': 'Telling a direct lie to a person when they are standing right in front of you.'},
+    {'id': '5', 'text': 'Meaning the truth is obvious from someone\'s facial expression, despite what they say.'},
+    {'id': '6', 'text': 'A slang phrase meaning "That\'s completely false" or "That\'s nonsense."'},
+    {'id': '7', 'text': 'A short, informal phrase meaning to confess or admit the truth.'},
+    {'id': '8', 'text': 'To finally tell the complete truth about something kept secret.'},
+    {'id': '9', 'text': 'An urgent request for someone to be honest and direct.'}
+] %}
+
+{# Dati per Sezione 4 (Scenarios Multiple Choice) #}
+{# Opzioni standard per riutilizzo #}
+{% set opts = [{'value': 'l', 'text': 'Lying (only)'}, {'value': 'm', 'text': 'Manipulation (only)'}, {'value': 'b', 'text': 'Both'}, {'value': 'n', 'text': 'Neither'}] %}
+
+{% set scenario_quiz = [
+    {'text': 'Politician hiding important financial details to win votes.', 'options': opts, 'correct_value': 'b'},
+    {'text': 'Wife telling her husband he looks fat so he will start exercising.', 'options': opts, 'correct_value': 'm'},
+    {'text': 'Teacher saying students aren’t good enough to make them study harder.', 'options': opts, 'correct_value': 'm'},
+    {'text': 'Writer deliberately altering historical facts in a play to make a new leader look good.', 'options': opts, 'correct_value': 'l'},
+    {'text': 'Employee telling the boss a project is finished when only 10% is complete.', 'options': opts, 'correct_value': 'l'},
+    {'text': 'Colleague feigns a serious personal emergency to transfer their work to you.', 'options': opts, 'correct_value': 'b'},
+    {'text': 'You falsely reassure a major client that all project sponsors are confirmed and funded.', 'options': opts, 'correct_value': 'l'},
+    {'text': 'Boss tells you confidential office gossip hoping you\'ll use it to "fix" a team issue indirectly.', 'options': opts, 'correct_value': 'm'},
+    {'text': 'Vendor pressures you with a "limited offer" that you later find out is available year-round.', 'options': opts, 'correct_value': 'm'},
+    {'text': 'Speaker fabricating offers from rival companies to negotiate a higher fee for themselves.', 'options': opts, 'correct_value': 'l'},
+    {'text': 'A friend carefully selects details of a story to present themselves in the best light.', 'options': opts, 'correct_value': 'm'}
+] %}
+
+
+{# --- Fase 5: Conversione Contenuto --- #}
+
+{% call info_card('warmup', '1. Warm-up Game: 2 Truths & 1 Lie', initial_state='show') %}
+    <div class="mt-4 text-slate-700 space-y-3">
+        <p class="font-bold text-lg text-indigo-900">Objective: Practice fluency, careful listening, and spotting deception.</p>
+        <ol class="ml-6 list-decimal space-y-2">
+            <li>Each person prepares three short statements about themselves.</li>
+            <li><span class="font-bold">Two</span> of the statements must be absolutely true.</li>
+            <li><span class="font-bold">One</span> of the statements must be a lie.</li>
+            <li>Share your three statements with the group.</li>
+            <li>The rest of the group discusses and votes on which statement is the lie.</li>
+        </ol>
+        <p class="italic text-sm text-slate-500 pt-2">Tip: Try to deliver the lie with the same confidence and detail as the truths!</p>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('discussion', '2. Defining the Boundaries', initial_state='show') %}
+    <div class="mt-4 text-slate-700">
+        <h4 class="font-bold text-slate-800 mb-4">Lying vs. Manipulation: What's the Difference?</h4>
+        <ul class="ml-6 list-disc space-y-2">
+            <li>What is <span class="font-bold text-indigo-600">lying</span>? What is <span class="font-bold text-indigo-600">manipulation</span>? What is the core difference between them?</li>
+            <li>How does it feel when you find out someone lied to you or manipulated you?</li>
+            <li>Why do people lie? (Focus on common motives like fear, protection, or self-interest.)</li>
+            <li>Why do people manipulate? (Focus on motives like control, power, or achieving a specific outcome.)</li>
+            <li>Is it natural or socially acceptable to manipulate others to get what we want in certain situations (e.g., negotiating)?</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('vocab', '3. Vocabulary: Phrasal Verbs & Expressions', initial_state='show') %}
+    <div class="mt-4">
+        <h4 class="font-bold text-slate-800 mb-4">Match the expression to its meaning</h4>
+        {{ match_exercise('deception-vocab-match', vocab_terms, vocab_defs) }}
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('scenarios', '4. Scenario Challenge', initial_state='show') %}
+    <div class="mt-4">
+        <p class="mb-6 text-slate-600">Read each situation and decide: Is it Lying, Manipulation, Both, or Neither?</p>
+        {{ multiple_choice_exercise('deception-scenarios-quiz', scenario_quiz) }}
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('reflection', '5. Final Activities', initial_state='show') %}
+    <div class="mt-4 text-slate-700 space-y-8">
+        
+        <div>
+            <h4 class="font-bold text-lg text-indigo-900 mb-2">Game: Manipulation Challenge 🎭</h4>
+            <p class="mb-2">Use a bizarre, false statement (e.g., "Eating ice cream every day will make you live longer.").</p>
+            <p>The student must convince the group that the statement is true by using techniques of manipulation, such as flattery, emotional appeals, fake statistics, or promises.</p>
+        </div>
+
+        <div class="pt-6 border-t border-gray-200">
+            <h4 class="font-bold text-lg text-indigo-900 mb-4">Final Reflection</h4>
+            <ul class="ml-6 list-disc space-y-2">
+                <li>When (if ever) is it acceptable to lie or manipulate others?</li>
+                <li>Which type of manipulation do you think is the most powerful in the professional world (e.g., emotional, logical, financial)?</li>
+                <li>Share one personal story (real or imagined) where you chose to lie or manipulate and briefly explain how it turned out.</li>
+            </ul>
+        </div>
+
+    </div>
+{% endcall %}
+
+{% endblock lesson_content %}

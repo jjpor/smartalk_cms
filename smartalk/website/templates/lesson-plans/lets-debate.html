@@ -1,0 +1,85 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "Let's Debate" %}
+{% set lesson_subtitle = "Structured practice for high-level discussion and argumentation." %}
+
+{% set nav_links = [{'id': 'warmup', 'title': 'Warm-Up'}, {'id': 'instructions', 'title': 'Roles'}, {'id': 'global-topics', 'title': 'Global Topics'}, {'id': 'modern-topics', 'title': 'Modern Debates'}] %}
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, random_item_generator %}
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne) --- #}
+
+{# Dati per Warm-up (Tongue Twisters) #}
+{% set tongue_twisters = [
+    'Peter Piper projected profitable prospects for premium products.',
+    'Betty’s bustling business buys buzzing bees by the barrel.',
+    'Mixed marketing metrics mystify many managers monthly.',
+    'Sally sells software suites by the seashore to startups seeking solutions.',
+    'Five financial forecasters fought fiercely for funding futures.',
+    'Crisp corporate contracts cause cautious CEOs considerable concern.',
+    'Larry’s legal eagles leverage lengthy litigation for lesser liabilities.',
+    'Ted’s tech team tinkers with tiny transistors to turn them into top tech toys.',
+    'Fran’s frantic franchise faced frequent fluctuations every Friday.',
+    'Quinn questioned quick quality control’s quirky quandaries.'
+] %}
+
+{# Dati per Global Debate Topics #}
+{# Nota: Uso HTML dentro le stringhe per formattare ogni topic come una mini-card #}
+{% set global_topics = [
+    '<h4 class="font-bold text-slate-800 mb-2">Business Ethics</h4><div class="space-y-2"><p><span class="font-bold text-green-700">Pro:</span> Businesses should prioritize <span class="font-semibold">profit</span> above all else.</p><p><span class="font-bold text-red-700">Con:</span> Businesses have a responsibility to prioritize <span class="font-semibold">ethical considerations</span> over profit.</p><p class="text-sm text-slate-500 italic mt-3 border-t pt-2">Vocab: Integrity, Morality, CSR, Ethical dilemma, Transparency</p></div>',
+    '<h4 class="font-bold text-slate-800 mb-2">Corporate Taxation</h4><div class="space-y-2"><p><span class="font-bold text-green-700">Pro:</span> Corporations should be taxed at a <span class="font-semibold">higher rate</span> to fund social welfare.</p><p><span class="font-bold text-red-700">Con:</span> <span class="font-semibold">Lowering corporate taxes</span> stimulates economic growth and investment.</p><p class="text-sm text-slate-500 italic mt-3 border-t pt-2">Vocab: Tax incentives, Progressive taxation, Loopholes, Revenue, Burden</p></div>',
+    '<h4 class="font-bold text-slate-800 mb-2">Big Tech & Democracy</h4><div class="space-y-2"><p><span class="font-bold text-green-700">Pro:</span> Big Tech needs <span class="font-semibold">stricter regulations</span> to protect democracy.</p><p><span class="font-bold text-red-700">Con:</span> Regulation <span class="font-semibold">stifles innovation</span> and infringes on free speech.</p><p class="text-sm text-slate-500 italic mt-3 border-t pt-2">Vocab: Censorship, Algorithmic bias, Platform regulation, Monopoly power</p></div>',
+    '<h4 class="font-bold text-slate-800 mb-2">Economic Sanctions</h4><div class="space-y-2"><p><span class="font-bold text-green-700">Pro:</span> Sanctions are an <span class="font-semibold">effective tool</span> against authoritarian regimes.</p><p><span class="font-bold text-red-700">Con:</span> Sanctions <span class="font-semibold">harm innocent civilians</span> and rarely achieve goals.</p><p class="text-sm text-slate-500 italic mt-3 border-t pt-2">Vocab: Embargo, Coercion, Diplomatic isolation, Collateral damage</p></div>',
+    '<h4 class="font-bold text-slate-800 mb-2">Environmental Deregulation</h4><div class="space-y-2"><p><span class="font-bold text-green-700">Pro:</span> Rolling back regulations is <span class="font-semibold">necessary for growth</span> and jobs.</p><p><span class="font-bold text-red-700">Con:</span> Deregulation <span class="font-semibold">jeopardizes public health</span> and the climate.</p><p class="text-sm text-slate-500 italic mt-3 border-t pt-2">Vocab: Degradation, Carbon emissions, Impact assessment, Biodiversity</p></div>',
+    '<h4 class="font-bold text-slate-800 mb-2">Trade Wars</h4><div class="space-y-2"><p><span class="font-bold text-green-700">Pro:</span> Trade wars are <span class="font-semibold">necessary</span> to address unfair practices and protect local industries.</p><p><span class="font-bold text-red-700">Con:</span> Trade wars <span class="font-semibold">harm everyone</span> by disrupting supply chains and increasing costs.</p><p class="text-sm text-slate-500 italic mt-3 border-t pt-2">Vocab: Retaliation, Tariffs, Supply chain disruption, Protectionism</p></div>',
+    '<h4 class="font-bold text-slate-800 mb-2">Refugee Crisis</h4><div class="space-y-2"><p><span class="font-bold text-green-700">Pro:</span> Developed countries have a <span class="font-semibold">moral obligation</span> to accept refugees.</p><p><span class="font-bold text-red-700">Con:</span> Accepting many refugees poses <span class="font-semibold">security and economic risks</span>.</p><p class="text-sm text-slate-500 italic mt-3 border-t pt-2">Vocab: Asylum seekers, Resettlement, Humanitarian aid, Integration</p></div>',
+    '<h4 class="font-bold text-slate-800 mb-2">Arms Trade</h4><div class="space-y-2"><p><span class="font-bold text-green-700">Pro:</span> The arms trade is a <span class="font-semibold">legitimate business</span> that provides necessary defense capabilities.</p><p><span class="font-bold text-red-700">Con:</span> Selling arms <span class="font-semibold">undermines global peace</span> and fuels humanitarian crises.</p><p class="text-sm text-slate-500 italic mt-3 border-t pt-2">Vocab: Proliferation, Military-industrial complex, Embargo, Security</p></div>'
+] %}
+
+{# Dati per Modern Debate Topics #}
+{% set modern_topics = [
+    '<h4 class="font-bold text-slate-800 mb-2">Four-Day Workweek</h4><div class="space-y-2"><p><span class="font-bold text-green-700">Pro:</span> Boosts <span class="font-semibold">satisfaction</span>, reduces burnout, maintains productivity.</p><p><span class="font-bold text-red-700">Con:</span> Not feasible for all industries, may lead to <span class="font-semibold">longer, more stressful days</span>.</p></div>',
+    '<h4 class="font-bold text-slate-800 mb-2">Salary Transparency</h4><div class="space-y-2"><p><span class="font-bold text-green-700">Pro:</span> Promotes <span class="font-semibold">fairness</span> and helps eliminate pay gaps.</p><p><span class="font-bold text-red-700">Con:</span> Can lead to <span class="font-semibold">envy and dissatisfaction</span> among colleagues.</p></div>',
+    '<h4 class="font-bold text-slate-800 mb-2">AI in the Workplace</h4><div class="space-y-2"><p><span class="font-bold text-green-700">Pro:</span> AI enhances <span class="font-semibold">efficiency</span> and frees humans for creative tasks.</p><p><span class="font-bold text-red-700">Con:</span> Over-reliance leads to <span class="font-semibold">job displacement</span> and ethical issues.</p></div>'
+] %}
+
+{# --- Fase 5: Conversione Contenuto --- #}
+
+{% call info_card('warmup', '1. Warm-Up: Pronunciation & Flow', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Practice saying these quickly to prepare your mouth and mind for fast-paced debate!</p>
+    {{ random_item_generator('warmup-twister-random', 'Next Tongue Twister', 'twister-list', tongue_twisters) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('instructions', '2. Debate Structure & Roles', initial_state='show') %}
+    <h4 class="font-bold text-slate-800 mb-4">Instructions: Three-Person Debate</h4>
+    <p class="text-slate-600 mb-4">For each topic, assign these roles:</p>
+    
+    <div class="bg-gray-100 p-4 rounded-lg mt-4 border-l-4 border-blue-500 space-y-3">
+        <p><span class="font-bold text-slate-800">Person 1 (Pro):</span> Argue IN FAVOR. Focus on strong, logical evidence.</p>
+        <p><span class="font-bold text-slate-800">Person 2 (Con):</span> Argue AGAINST. Focus on counter-arguments and exposing weaknesses.</p>
+        <p><span class="font-bold text-slate-800">Person 3 (Judge):</span> Stay neutral. Listen, ask clarifying questions, and decide the winner.</p>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('global-topics', '3. Global & Economic Debate Topics', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Spin the wheel to get your debate topic. Use the provided vocabulary to strengthen your argument.</p>
+    {{ random_item_generator('global-topic-random', 'New Global Topic', 'global-topic-list', global_topics) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('modern-topics', '4. Workplace Debates (Modern Topics)', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Debate these current trends affecting the professional world.</p>
+    {{ random_item_generator('modern-topic-random', 'New Modern Topic', 'modern-topic-list', modern_topics) }}
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}

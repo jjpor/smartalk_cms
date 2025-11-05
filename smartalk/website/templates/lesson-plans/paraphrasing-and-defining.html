@@ -1,0 +1,136 @@
+{# ================================================================== #}
+{# ZONA 1: INTESTAZIONE SICURA (SOLO DEFINIZIONI SEMPLICI)            #}
+{# ================================================================== #}
+{% set lesson_title = "Paraphrasing and Defining" %}
+{% set lesson_subtitle = "Rebuilding ideas to increase flexibility and avoid mental blocks." %}
+
+{# REGOLA D'ORO: nav_links SU UNA SOLA RIGA #}
+{% set nav_links = [{'id': 'concept', 'title': 'Concept'}, {'id': 'practice-1', 'title': 'Practice 1 (Define)'}, {'id': 'practice-2', 'title': 'Practice 2 (Rephrase)'}, {'id': 'freestyle', 'title': 'Freestyle Challenge'}] %}
+
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, random_item_generator %}
+
+{# ================================================================== #}
+{# ZONA 2: AREA DATI & CONTENUTO (TUTTO IL RESTO QUI DENTRO)          #}
+{# ================================================================== #}
+{% block lesson_content %}
+
+{# --- DATI PER MACRO INTERATTIVE --- #}
+
+{# Dati per Practice 1 (Define the Word) - Combinato parola e starter #}
+{% set define_words = [
+    '<strong>Laptop</strong><br><em class="text-sm text-slate-500">Starter: It’s a type of computer that...</em>',
+    '<strong>Motivation</strong><br><em class="text-sm text-slate-500">Starter: It’s a feeling or energy that...</em>',
+    '<strong>Negotiation</strong><br><em class="text-sm text-slate-500">Starter: It’s a process where two groups...</em>',
+    '<strong>Environment</strong><br><em class="text-sm text-slate-500">Starter: It’s everything around us, like...</em>',
+    '<strong>Procrastination</strong><br><em class="text-sm text-slate-500">Starter: It’s the habit of...</em>',
+    '<strong>Consequence</strong><br><em class="text-sm text-slate-500">Starter: It’s the result of...</em>',
+    '<strong>Archive</strong><br><em class="text-sm text-slate-500">Starter: It’s a physical or digital place where...</em>',
+    '<strong>Entrepreneur</strong><br><em class="text-sm text-slate-500">Starter: It’s a person who...</em>',
+    '<strong>Pencil</strong><br><em class="text-sm text-slate-500">Starter: It’s a long, thin object you use to...</em>',
+    '<strong>Dedication</strong><br><em class="text-sm text-slate-500">Starter: It’s similar to commitment or...</em>',
+    '<strong>Symptom</strong><br><em class="text-sm text-slate-500">Starter: It\'s a physical or mental sign that...</em>',
+    '<strong>Efficiency</strong><br><em class="text-sm text-slate-500">Starter: It describes how well something...</em>',
+    '<strong>Currency</strong><br><em class="text-sm text-slate-500">Starter: It’s the system of money used in a...</em>',
+    '<strong>Horizon</strong><br><em class="text-sm text-slate-500">Starter: It\'s the line in the distance where...</em>',
+    '<strong>Dilemma</strong><br><em class="text-sm text-slate-500">Starter: It’s a difficult choice between...</em>',
+    '<strong>Innovation</strong><br><em class="text-sm text-slate-500">Starter: It’s the creation of a new method or...</em>',
+    '<strong>Curiosity</strong><br><em class="text-sm text-slate-500">Starter: It’s the strong desire to know or...</em>',
+    '<strong>Commitment</strong><br><em class="text-sm text-slate-500">Starter: It means being pledged to a course of...</em>',
+    '<strong>Algorithm</strong><br><em class="text-sm text-slate-500">Starter: It\'s a detailed set of instructions or...</em>',
+    '<strong>Infrastructure</strong><br><em class="text-sm text-slate-500">Starter: It’s the basic physical and organizational structures...</em>',
+    '<strong>Optimism</strong><br><em class="text-sm text-slate-500">Starter: It’s the belief that good things will...</em>',
+    '<strong>Appliance</strong><br><em class="text-sm text-slate-500">Starter: It\'s a device or piece of equipment designed to...</em>',
+    '<strong>Headquarters</strong><br><em class="text-sm text-slate-500">Starter: It’s the main office or central building where...</em>',
+    '<strong>Fiasco</strong><br><em class="text-sm text-slate-500">Starter: It’s a complete and total failure, especially a...</em>',
+    '<strong>Tolerance</strong><br><em class="text-sm text-slate-500">Starter: It\'s the ability or willingness to endure...</em>',
+    '<strong>Disruption</strong><br><em class="text-sm text-slate-500">Starter: It refers to a disturbance or problem that...</em>',
+    '<strong>Sustainability</strong><br><em class="text-sm text-slate-500">Starter: It\'s the ability to maintain something at a...</em>'
+] %}
+
+{# Dati per Practice 2 (Paraphrase) - Combinato frase e strategie #}
+{% set paraphrase_sentences = [
+    '<strong>I don’t have enough money to buy it.</strong><br><em class="text-sm text-slate-500">Try: I can’t afford it. / It’s too expensive.</em>',
+    '<strong>I was very tired after work.</strong><br><em class="text-sm text-slate-500">Try: I felt exhausted. / Work drained my energy.</em>',
+    '<strong>He didn’t come because he was sick.</strong><br><em class="text-sm text-slate-500">Try: He was absent due to illness.</em>',
+    '<strong>We need to finish this by Friday.</strong><br><em class="text-sm text-slate-500">Try: The deadline is Friday. / This must be done before the weekend.</em>',
+    '<strong>Could you repeat that, please?</strong><br><em class="text-sm text-slate-500">Try: Could you say that again? / I missed that part.</em>',
+    '<strong>It\'s important to be focused.</strong><br><em class="text-sm text-slate-500">Try: Concentration is essential. / You must maintain focus.</em>',
+    '<strong>I really look forward to the holidays.</strong><br><em class="text-sm text-slate-500">Try: I\'m eagerly anticipating my vacation.</em>',
+    '<strong>The new marketing strategy is better.</strong><br><em class="text-sm text-slate-500">Try: The updated approach is superior.</em>',
+    '<strong>I disagree with your proposal.</strong><br><em class="text-sm text-slate-500">Try: I don\'t share your view on that plan.</em>',
+    '<strong>They will probably announce the winner tomorrow.</strong><br><em class="text-sm text-slate-500">Try: The announcement is likely expected tomorrow.</em>',
+    '<strong>We should hold off on that decision for now.</strong><br><em class="text-sm text-slate-500">Try: Let\'s postpone/defer that choice.</em>',
+    '<strong>The presentation was too long and confusing.</strong><br><em class="text-sm text-slate-500">Try: It lacked brevity and clarity.</em>',
+    '<strong>She is responsible for managing the entire team.</strong><br><em class="text-sm text-slate-500">Try: She oversees all team operations.</em>',
+    '<strong>If you don\'t comply, there will be serious repercussions.</strong><br><em class="text-sm text-slate-500">Try: Failure to follow instructions leads to penalties.</em>',
+    '<strong>I haven\'t seen them since last summer.</strong><br><em class="text-sm text-slate-500">Try: It has been about a year since we last met.</em>',
+    '<strong>It is essential that you prioritize the client\'s needs.</strong><br><em class="text-sm text-slate-500">Try: You must focus on the client first.</em>',
+    '<strong>We are currently operating at maximum capacity.</strong><br><em class="text-sm text-slate-500">Try: We cannot handle any more work right now.</em>',
+    '<strong>His performance has been consistently below expectations.</strong><br><em class="text-sm text-slate-500">Try: He has repeatedly failed to meet standards.</em>',
+    '<strong>The company must adapt to rapidly changing market conditions.</strong><br><em class="text-sm text-slate-500">Try: The firm needs to quickly adjust to market shifts.</em>',
+    '<strong>The cost of materials increased unexpectedly.</strong><br><em class="text-sm text-slate-500">Try: Material prices saw an abrupt rise.</em>',
+    '<strong>I would appreciate it if you could send the report soon.</strong><br><em class="text-sm text-slate-500">Try: Please expedite the report delivery.</em>',
+    '<strong>Many people find public speaking terrifying.</strong><br><em class="text-sm text-slate-500">Try: Speaking in front of others causes great anxiety for many.</em>',
+    '<strong>The weather is highly unpredictable this time of year.</strong><br><em class="text-sm text-slate-500">Try: Expect volatile/erratic weather patterns currently.</em>',
+    '<strong>They decided to merge the two departments to save money.</strong><br><em class="text-sm text-slate-500">Try: The departments combined to achieve cost savings.</em>',
+    '<strong>It\'s impossible for us to meet that deadline.</strong><br><em class="text-sm text-slate-500">Try: We cannot realistically complete it by that date.</em>',
+    '<strong>She said she might go to the party.</strong><br><em class="text-sm text-slate-500">Try: She expressed tentative interest in attending.</em>'
+] %}
+
+{# --- INIZIO CONTENUTO LEZIONE --- #}
+
+{% call info_card('concept', '1. Concept Breakdown: What Does It Mean to Paraphrase?', initial_state='show') %}
+    <div class="text-slate-600">
+        <p class="mb-4">Paraphrasing means re-expressing an idea using different words while keeping the original meaning. It’s a key skill for fluency, especially when you forget a word or need to sound more natural.</p>
+        <ul class="list-disc list-inside ml-4 space-y-2 mb-4">
+            <li>Instead of freezing, you can <strong class="text-indigo-700">describe, explain, or give examples</strong>.</li>
+            <li>Good paraphrasing isn't just finding synonyms — it means <strong class="text-indigo-700">rebuilding the idea</strong> in your own words.</li>
+            <li>💡 <em>Tip: A short pause before paraphrasing can make you sound thoughtful, not uncertain.</em></li>
+        </ul>
+        <div class="p-3 bg-indigo-50 rounded-lg border-l-4 border-indigo-500 font-medium text-indigo-900">
+            In short: Don’t panic. Breathe. Rebuild the message.
+        </div>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('practice-1', '2. Practice 1 – Define the Word', initial_state='show') %}
+    <p class="mb-6 text-slate-600">Goal: Describe the word shown below without naming it directly. Use the suggested "starter" phrase if you get stuck.</p>
+    {{ random_item_generator('define-word-gen', 'New Word Challenge', 'define-word-list', define_words) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('practice-2', '3. Practice 2 – Paraphrase the Sentence', initial_state='show') %}
+    <p class="mb-6 text-slate-600">Goal: Rephrase the full sentence while maintaining the same meaning. Try using different synonyms or changing the sentence structure.</p>
+    
+    <div class="mb-8">
+        {{ random_item_generator('paraphrase-gen', 'New Sentence', 'paraphrase-list', paraphrase_sentences) }}
+    </div>
+
+    <div class="p-4 bg-gray-100 rounded-lg">
+        <p class="font-bold text-lg text-slate-800 mb-2">Useful Strategies for Rephrasing:</p>
+        <ul class="list-disc list-inside ml-4 space-y-1 text-slate-700">
+            <li>Replace phrases (e.g. "because" → "due to" / "since").</li>
+            <li>Change the main verb's form (e.g. "I explained it" → "The explanation was given").</li>
+            <li>Simplify or expand the sentence length.</li>
+            <li>Change the sentence order.</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('freestyle', '4. Optional Add-On – Freestyle Paraphrasing', initial_state='show') %}
+    <div class="text-slate-600">
+        <h4 class="text-lg font-bold text-slate-800 mb-4">The Ultimate Challenge</h4>
+        <div class="p-4 bg-pink-50 rounded-lg border-l-4 border-pink-500 mb-4">
+            <strong>Task:</strong> Take a short paragraph (from a news article, a social media post, or a story you like) and rewrite it entirely in your own words. Focus on changing the structure and replacing at least five key words.
+        </div>
+        <p>This exercise reinforces structure, vocabulary, and fluency all at once, helping you develop a signature voice in English.</p>
+    </div>
+{% endcall %}
+
+{% endblock lesson_content %}

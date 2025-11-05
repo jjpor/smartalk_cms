@@ -1,0 +1,137 @@
+{# --- Fase 1: Intestazione (Variabili Semplici & Navigazione) --- #}
+{% set lesson_title = "Risk Management: Analyzing Uncertainty" %}
+{% set lesson_subtitle = "A foundational lesson on identifying, measuring, and managing potential risks in life and business." %}
+
+{# CRITICO: nav_links su UNA SOLA RIGA per sicurezza parser backend #}
+{% set nav_links = [{'id': 'intro', 'title': 'Introduction'}, {'id': 'types', 'title': 'Strategies'}, {'id': 'vocab', 'title': 'Vocabulary'}, {'id': 'discussion', 'title': 'Idioms & Case Study'}] %}
+
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, match_exercise, dropdown_fill_in_exercise, random_item_generator %}
+
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Dati Esercizi (Definiti INTERNAMENTE per sicurezza) --- #}
+
+{# Dati per Sezione 2 (Strategies Match) #}
+{% set strategy_terms = [
+    {'id': '1', 'text': 'Identify risk'},
+    {'id': '2', 'text': 'Measure risk'},
+    {'id': '3', 'text': 'Worth the risk'},
+    {'id': '4', 'text': 'Avoid risk'},
+    {'id': '5', 'text': 'Calculated risk'},
+    {'id': '6', 'text': 'Eliminate risk'}
+] %}
+{% set strategy_defs = [
+    {'id': '1', 'text': 'A process of listing potential risks.'},
+    {'id': '2', 'text': 'To quantify the amount of risk (e.g., likelihood and impact).'},
+    {'id': '3', 'text': 'When something is high risk but you still want to do it.'},
+    {'id': '4', 'text': 'To stay away from any risk.'},
+    {'id': '5', 'text': 'A chance taken after an estimation of the possible outcomes.'},
+    {'id': '6', 'text': 'To remove any risk entirely.'}
+] %}
+
+{# Dati per Sezione 3 (Vocab Dropdown) #}
+{% set vocab_options = ['avoid', 'calculated', 'measure', 'worth', 'identify', 'eliminate'] %}
+{% set vocab_data = [
+    {'prefix': 'The cautious investor always tried to', 'options': vocab_options, 'answer': 'avoid', 'suffix': 'risk associated with volatile stocks and instead focused on stable assets.'},
+    {'prefix': 'The entrepreneur\'s success story was built on taking', 'options': vocab_options, 'answer': 'calculated', 'suffix': 'risks, carefully analysing market trends before investing.'},
+    {'prefix': 'As part of their financial strategy, the company always tries to', 'options': vocab_options, 'answer': 'measure', 'suffix': 'risk against any potential rewards.'},
+    {'prefix': 'The risk management team\'s primary goal is to', 'options': vocab_options, 'answer': 'identify', 'suffix': 'risk factors early in the project to prevent disruptions.'},
+    {'prefix': 'By implementing rigorous quality control, the company aims to', 'options': vocab_options, 'answer': 'eliminate', 'suffix': 'risks from the manufacturing process.'},
+    {'prefix': 'Despite the uncertain market conditions, the bold decision to expand overseas seemed', 'options': vocab_options, 'answer': 'worth', 'suffix': 'the risk, given the potential for profit.'}
+] %}
+
+{# Dati per Sezione 4 (Olympics Randomizer) #}
+{% set olympics_questions = [
+    'What risks may be associated with a country hosting the Olympics (e.g., financial, security, infrastructure)?',
+    'If you were the president of your country, would you want to host the Olympics? Why or why not?',
+    'If the Olympics were hosted in your city, would you attend?',
+    'If the Olympics were cancelled forever, would many niche sports die out?',
+    'If the TV revenues were shared equally, would more countries bid to host it?',
+    'If the Olympics had a clear, verifiable sustainability plan, would more countries want to host it?'
+] %}
+
+
+{# --- Fase 5: Conversione Contenuto --- #}
+
+{% call info_card('intro', '1. Introduction to Risk', initial_state='show') %}
+    <div class="mt-4 text-slate-600">
+        <p>Risk, in simple terms, is the possibility of something bad happening. In business and life, managing risk means anticipating negative outcomes and planning how to deal with them, or deciding if a potential reward is worth the uncertainty.</p>
+        
+        <div class="mt-6 p-4 bg-cyan-50 rounded-lg border-l-4 border-cyan-500">
+            <h4 class="font-bold text-cyan-800 mb-2">Warm-up Activity: Risk Assessment</h4>
+            <p class="text-sm text-slate-700 mb-2">In small groups, decide which item in each category below carries the <strong>most</strong> and <strong>least</strong> amount of risk. Discuss your reasoning.</p>
+            <ul class="ml-6 text-sm text-slate-700 list-disc space-y-1">
+                <li><strong>Finance:</strong> Investing in a new cryptocurrency / Buying government bonds / Keeping cash under a mattress.</li>
+                <li><strong>Career:</strong> Starting a new company / Staying in the same job for 20 years / Changing careers every two years.</li>
+                <li><strong>Travel:</strong> Skydiving / Taking a road trip / Staying in a five-star hotel.</li>
+            </ul>
+        </div>
+
+        <h4 class="font-bold text-slate-800 mt-8 mb-4">Discussion: What's the Risk?</h4>
+        <ol class="ml-6 text-slate-700 list-decimal space-y-3">
+            <li>Describe a risk you took in your personal life. What was the outcome?</li>
+            <li>Describe a risk you took in your professional life. What was the outcome?</li>
+            <li>Describe the common risks that businesses face (e.g., financial, operational, competitive).</li>
+            <li>How can governments minimise risk for new businesses?</li>
+            <li>Do businesses have to take risks in order to be successful? Explain.</li>
+        </ol>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('types', '2. Six Risk Strategies', initial_state='show') %}
+    <div class="mt-4">
+        <h4 class="font-bold text-slate-800 mb-4">Match the strategy to its definition</h4>
+        {{ match_exercise('risk-strategies-match', strategy_terms, strategy_defs) }}
+    </div>
+
+    <div class="mt-8 text-slate-600">
+        <h4 class="font-bold text-slate-800 mb-4">Discussion Questions</h4>
+        <ul class="ml-6 list-disc space-y-2">
+            <li>How can you <strong>identify</strong> risks in a new project (e.g., brainstorming, historical data)?</li>
+            <li>What are the benefits of <strong>measuring</strong> risk before making a decision?</li>
+            <li>Can you give examples of things that are <strong>worth the risk</strong> in your job or personal life?</li>
+            <li>Which types of risks (e.g., illegal, unethical) do you personally try to <strong>avoid</strong> completely?</li>
+            <li>How do you <strong>calculate</strong> risks? Why is it important to do so, instead of just guessing?</li>
+            <li>Which risks do you think are necessary to <strong>eliminate</strong> entirely in your job or life?</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('vocab', '3. Vocabulary Fill-in', initial_state='show') %}
+    <div class="mt-4">
+        <p class="text-slate-600 mb-4">Select the correct word from the list to complete the sentences (use each word once).</p>
+        {{ dropdown_fill_in_exercise('risk-vocab-dropdown', vocab_data) }}
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('discussion', '4. Idioms & Case Study', initial_state='show') %}
+    <div class="mt-4 text-slate-600">
+        <h4 class="font-bold text-cyan-800 mb-4">Discussion: Risk Idioms</h4>
+        <ol class="ml-6 list-decimal space-y-3">
+            <li>Describe a situation in business when it is necessary to <span class="font-bold">throw caution to the wind</span> (take a big risk).</li>
+            <li>Have you ever <span class="font-bold">stuck your neck out</span> (taken a personal risk for the benefit of the team) at work? Describe what happened.</li>
+            <li>Describe a situation in business when it is necessary to <span class="font-bold">play it safe</span> (avoid risk).</li>
+            <li>Do you think investing in Apple stock is a <span class="font-bold">safe bet</span>? Explain.</li>
+            <li>Describe a <span class="font-bold">dicey situation</span> (risky or uncertain) that you experienced and what you learned from it.</li>
+        </ol>
+
+        <hr class="my-8 border-gray-200">
+
+        <h4 class="font-bold text-cyan-800 mb-4">Case Study: Olympics</h4>
+        <p class="mb-4">Hosting a major international event involves massive risks. Use the generator to discuss different aspects of this risk.</p>
+        {{ random_item_generator('olympics-random-discuss', 'Next Question', 'olympics-list', olympics_questions) }}
+    </div>
+{% endcall %}
+
+{% endblock lesson_content %}

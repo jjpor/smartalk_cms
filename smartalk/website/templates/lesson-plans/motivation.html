@@ -1,0 +1,153 @@
+{# ================================================================== #}
+{# ZONA 1: INTESTAZIONE SICURA (SOLO DEFINIZIONI SEMPLICI)            #}
+{# ================================================================== #}
+{% set lesson_title = "Mastering Motivation" %}
+{% set lesson_subtitle = "Exploring the drive behind our actions and how to sustain it." %}
+
+{# REGOLA D'ORO: nav_links SU UNA SOLA RIGA #}
+{% set nav_links = [{'id': 'definition', 'title': 'Core Concepts'}, {'id': 'practice-1', 'title': 'Practice 1 (Types)'}, {'id': 'idioms', 'title': 'Idioms'}, {'id': 'quotes', 'title': 'Quotes'}, {'id': 'discussion', 'title': 'Discussion'}] %}
+
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, multiple_choice_exercise, random_item_generator %}
+
+{# ================================================================== #}
+{# ZONA 2: AREA DATI & CONTENUTO (TUTTO IL RESTO QUI DENTRO)          #}
+{# ================================================================== #}
+{% block lesson_content %}
+
+{# --- DATI PER ESERCIZI INTERATTIVI --- #}
+
+{# Sezione 2: Practice 1 Data (Multiple Choice) #}
+{% set motivation_options = [{'value': 'Intrinsic', 'text': 'Intrinsic'}, {'value': 'Extrinsic', 'text': 'Extrinsic'}] %}
+{% set motivation_quiz = [
+    {'text': 'Studying for an exam only because your parents promised you money.', 'options': motivation_options, 'correct_value': 'Extrinsic'},
+    {'text': 'Learning to play the guitar purely for the joy of making music.', 'options': motivation_options, 'correct_value': 'Intrinsic'},
+    {'text': 'Volunteering at an animal shelter because you love animals.', 'options': motivation_options, 'correct_value': 'Intrinsic'},
+    {'text': 'Writing a report perfectly to win a "Best Employee" award.', 'options': motivation_options, 'correct_value': 'Extrinsic'},
+    {'text': 'Going for a run every morning because it makes you feel energized.', 'options': motivation_options, 'correct_value': 'Intrinsic'}
+] %}
+
+{# Sezione 4: Quotes Data (Random Generator) #}
+{% set motivational_quotes = [
+    "The best way to predict the future is to create it.",
+    "The journey of a thousand miles begins with a single step.",
+    "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+    "Believe you can and you’re halfway there.",
+    "The only way to do great work is to love what you do.",
+    "You miss 100% of the shots you don't take.",
+    "The mind is everything. What you think you become."
+] %}
+
+{# --- INIZIO CONTENUTO LEZIONE --- #}
+
+{% call info_card('definition', '1. Defining the Core Concepts', initial_state='show') %}
+    <div class="text-slate-600">
+        <p class="mb-4">Motivation is the reason or reasons one has for acting or behaving in a particular way. It's the engine that drives us to achieve goals, whether they're personal, academic, or professional.</p>
+        
+        <h4 class="font-bold text-slate-800 mb-2">Two Main Types:</h4>
+        <div class="ml-4 border-l-4 border-indigo-500 pl-4 space-y-4">
+            <div>
+                <span class="font-bold text-indigo-700">Intrinsic Motivation:</span> This comes from within. You do something because it's inherently rewarding, interesting, or enjoyable to you. It's about personal satisfaction, not external pressure.
+                <br><em class="text-sm text-slate-500">Example: Solving a puzzle because you enjoy the challenge.</em>
+            </div>
+            <div>
+                <span class="font-bold text-indigo-700">Extrinsic Motivation:</span> This is driven by external rewards or consequences. You do something to earn a reward, avoid punishment, or meet an external expectation.
+                <br><em class="text-sm text-slate-500">Example: Working overtime to receive a financial bonus.</em>
+            </div>
+        </div>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('practice-1', '2. Practice 1: Intrinsic vs. Extrinsic Drivers', initial_state='show') %}
+    <p class="mb-6 text-slate-600">Decide whether the following actions are driven by <strong>Intrinsic</strong> (internal reward) or <strong>Extrinsic</strong> (external reward/pressure) motivation.</p>
+    {{ multiple_choice_exercise('motivation-type-quiz', motivation_quiz) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('idioms', '3. Motivation Idioms', initial_state='show') %}
+    <p class="mb-6 text-slate-600">Here are some common idioms related to drive, energy, and enthusiasm.</p>
+    <div class="grid md:grid-cols-2 gap-4">
+        {# Idiom 1 #}
+        <div class="p-4 bg-amber-50 rounded-lg border-l-4 border-amber-500">
+            <h5 class="font-bold text-amber-800">Dial it back</h5>
+            <p class="text-slate-700 text-sm mt-1">To reduce the intensity of something, or tone it down.</p>
+            <p class="text-xs italic mt-2 text-slate-500">"When Lucas started getting all excited, his mother said: Hey Lucas, dial it back a bit!"</p>
+        </div>
+        {# Idiom 2 #}
+        <div class="p-4 bg-amber-50 rounded-lg border-l-4 border-amber-500">
+            <h5 class="font-bold text-amber-800">Eager beaver</h5>
+            <p class="text-slate-700 text-sm mt-1">A person who is hardworking and enthusiastic, sometimes considered overzealous.</p>
+            <p class="text-xs italic mt-2 text-slate-500">"The new accountant works all the time - first to arrive and last to leave. He's a real eager beaver!"</p>
+        </div>
+        {# Idiom 3 #}
+        <div class="p-4 bg-amber-50 rounded-lg border-l-4 border-amber-500">
+            <h5 class="font-bold text-amber-800">Eat, sleep and breathe something</h5>
+            <p class="text-slate-700 text-sm mt-1">To be so enthusiastic and passionate about something that you think about it constantly.</p>
+            <p class="text-xs italic mt-2 text-slate-500">"He's an enthusiastic golfer; he eats, sleeps and breathes golf!"</p>
+        </div>
+        {# Idiom 4 #}
+        <div class="p-4 bg-amber-50 rounded-lg border-l-4 border-amber-500">
+            <h5 class="font-bold text-amber-800">(On the) edge of one's seat</h5>
+            <p class="text-slate-700 text-sm mt-1">Very interested in something, finding it both extremely exciting and nerve-wracking.</p>
+            <p class="text-xs italic mt-2 text-slate-500">"Look at Bob! He's on the edge of his seat watching that rugby match!"</p>
+        </div>
+        {# Idiom 5 #}
+        <div class="p-4 bg-amber-50 rounded-lg border-l-4 border-amber-500">
+            <h5 class="font-bold text-amber-800">Go the extra mile</h5>
+            <p class="text-slate-700 text-sm mt-1">To do more than what is expected of you.</p>
+            <p class="text-xs italic mt-2 text-slate-500">"You can count on Tom; he's always willing to go the extra mile."</p>
+        </div>
+        {# Idiom 6 #}
+        <div class="p-4 bg-amber-50 rounded-lg border-l-4 border-amber-500">
+            <h5 class="font-bold text-amber-800">Hold your horses</h5>
+            <p class="text-slate-700 text-sm mt-1">To tell someone to slow down and not rush into action.</p>
+            <p class="text-xs italic mt-2 text-slate-500">"Hold your horses! We need to get the customer's approval first!"</p>
+        </div>
+        {# Idiom 7 #}
+        <div class="p-4 bg-amber-50 rounded-lg border-l-4 border-amber-500">
+            <h5 class="font-bold text-amber-800">Put your heart (and soul) into something</h5>
+            <p class="text-slate-700 text-sm mt-1">To be very enthusiastic and invest a lot of energy and hard work.</p>
+            <p class="text-xs italic mt-2 text-slate-500">"Paul was determined to make a success of the project. He put his heart and soul into it."</p>
+        </div>
+        {# Idiom 8 #}
+        <div class="p-4 bg-amber-50 rounded-lg border-l-4 border-amber-500">
+            <h5 class="font-bold text-amber-800">Run out of steam</h5>
+            <p class="text-slate-700 text-sm mt-1">To lose impetus, energy, or enthusiasm.</p>
+            <p class="text-xs italic mt-2 text-slate-500">"The anti-immigrant movement seems to be running out of steam."</p>
+        </div>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('quotes', '4. Motivational Quotes', initial_state='show') %}
+    <p class="mb-6 text-slate-600">Click the button below to generate a random motivational quote and inspire your next step!</p>
+    {{ random_item_generator('quote-gen', 'Generate Quote', 'quote-list', motivational_quotes) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('discussion', '5. Discussion Questions', initial_state='show') %}
+    <ul class="list-disc ml-6 space-y-2 text-slate-600">
+        <li>How do you define <strong>motivation</strong>?</li>
+        <li>Can some people <strong>destroy your motivation</strong>? How?</li>
+        <li>What do you do to <strong>maintain your motivation</strong> during difficult tasks?</li>
+        <li>What are some of the <strong>factors of motivation</strong> (money, power, personal fulfillment)?</li>
+        <li>What are <strong>three things that motivate you</strong> right now?</li>
+        <li>What is your <strong>proudest accomplishment</strong> so far this year?</li>
+        <li>What is the difference between <strong>internal and external motivation</strong>?</li>
+        <li>Do you find that <strong>motivated people are more successful</strong> than unmotivated people?</li>
+        <li>Have you ever tried to quit smoking? (Or another hard-to-break habit)</li>
+        <li>Have you ever gone on a diet? What kept you going?</li>
+        <li>What is something a <strong>boss can do to motivate</strong> his workers?</li>
+        <li>Have you ever tried to <strong>motivate someone else</strong> to do something? How did you feel after?</li>
+        <li>Under what conditions can <strong>motivation be influenced by ambition</strong>?</li>
+        <li>Is <strong>ambition a bad personality trait</strong>? Why or why not?</li>
+        <li>Is <strong>competition good</strong> for motivation?</li>
+    </ul>
+{% endcall %}
+
+{% endblock lesson_content %}

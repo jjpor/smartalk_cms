@@ -1,0 +1,135 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "Taking Ownership" %}
+{% set lesson_subtitle = "Responsibility, Initiative, and Results" %}
+
+{% set nav_links = [{'id': 'intro', 'title': 'Intro & Vocab'}, {'id': 'define', 'title': 'Defining It'}, {'id': 'steps', 'title': '5 Action Steps'}, {'id': 'reflect', 'title': 'Discussion'}] %}
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, match_exercise, multiple_choice_exercise, random_item_generator %}
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne) --- #}
+
+{# Dati per Vocab Match (Section 1) #}
+{% set vocab_terms = [
+    {'id': '1', 'text': 'Ownership'},
+    {'id': '2', 'text': 'Accountability'},
+    {'id': '3', 'text': 'Initiative'},
+    {'id': '4', 'text': 'Follow through'},
+    {'id': '5', 'text': 'Proactive'},
+    {'id': '6', 'text': 'Reliable'}
+] %}
+
+{% set vocab_defs = [
+    {'id': '1', 'text': 'Taking responsibility for your actions and work.'},
+    {'id': '2', 'text': 'Being answerable for your actions or results.'},
+    {'id': '3', 'text': 'Doing things without being told; starting independently.'},
+    {'id': '4', 'text': 'Completing a task or promise you committed to.'},
+    {'id': '5', 'text': 'Taking action before something becomes a problem.'},
+    {'id': '6', 'text': 'Someone others can depend on to do a good job.'}
+] %}
+
+{# Dati per Scenario Quiz (Section 2) #}
+{% set scenario_quiz = [
+    {
+        'text': 'You missed a deadline because another team didn\'t send you data on time. What is the "Ownership" response?',
+        'options': [
+            {'value': 'blame', 'text': 'Explain that it\'s the other team\'s fault you are late.'},
+            {'value': 'own', 'text': 'Inform stakeholders early, take responsibility for not following up sooner, and propose a new timeline.'},
+            {'value': 'hide', 'text': 'Don\'t say anything and hope no one notices until it\'s done.'}
+        ],
+        'correct_value': 'own'
+    }
+] %}
+
+{# Dati per Steps to Example Match (Section 3) #}
+{% set step_actions = [
+    {'id': '1', 'text': 'Understand your role'},
+    {'id': '2', 'text': 'Be proactive'},
+    {'id': '3', 'text': 'Admit and fix mistakes'},
+    {'id': '4', 'text': 'Respect shared spaces'},
+    {'id': '5', 'text': 'Follow through'}
+] %}
+
+{% set step_examples = [
+    {'id': '1', 'text': 'If in charge of setup, don’t assume others will do it.'},
+    {'id': '2', 'text': 'Clean the dirty coffee machine before complaints.'},
+    {'id': '3', 'text': '"I forgot the supplies. I’ll do it now."'},
+    {'id': '4', 'text': 'Return tools, label files, clean up your desk.'},
+    {'id': '5', 'text': 'Send the client promised info by Friday.'}
+] %}
+
+{# Dati per Discussion Randomizer (Section 4) #}
+{% set discuss_questions = [
+    'What are small ways we can take better care of the workplace?',
+    'What does it look like when someone DOESN\'T take ownership?',
+    'What would you do if a coworker always leaves messes or blames others?',
+    'What is one thing you can do THIS WEEK to show more ownership?',
+    'Have you ever fixed something or taken action before being asked? How did that feel?',
+    'Can you think of a time when you successfully took ownership at work? What was the outcome?',
+    'Why is it hard for some people to admit mistakes, even small ones?',
+    'What’s the difference between taking ownership and being BLAMED?'
+] %}
+
+{# --- Fase 5: Conversione Contenuto --- #}
+
+{% call info_card('intro', '1. Introduction & Key Terms', initial_state='show') %}
+    <p class="text-slate-600 mb-6">The objective of this lesson is to understand what <span class="font-bold">taking ownership</span> truly means professionally and how to demonstrate it daily.</p>
+    
+    <h4 class="font-bold text-cyan-800 mb-4">Match the Core Vocabulary</h4>
+    {{ match_exercise('ownership-vocab-match', vocab_terms, vocab_defs) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('define', '2. Defining Ownership at Work', initial_state='show') %}
+    <div class="text-slate-600 space-y-4 mb-8">
+        <p>Taking ownership means being responsible for your tasks, behavior, and results. It means doing your best, fixing problems when they happen, and NOT blaming others.</p>
+        <p>It’s not just about doing your job—it’s about showing <span class="font-semibold">initiative, solving problems, and staying accountable</span>. This builds trust and reliability.</p>
+    </div>
+
+    <div class="bg-cyan-50 p-4 rounded-lg border-l-4 border-cyan-500 mb-8">
+        <h4 class="font-bold text-cyan-800 mb-2">Traits of Ownership:</h4>
+        <ul class="list-disc list-inside text-slate-700 space-y-1">
+            <li>Fix small problems or report them.</li>
+            <li>Arrive on time and prepared.</li>
+            <li>Tell the truth when something goes wrong.</li>
+            <li>Ask for help before a small problem becomes big.</li>
+        </ul>
+    </div>
+
+    <h4 class="font-bold text-cyan-800 mb-4">Quick Check: What would you do?</h4>
+    {{ multiple_choice_exercise('ownership-scenario-quiz', scenario_quiz) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('steps', '3. 5 Steps to Take Ownership', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Practical actions to demonstrate responsibility and initiative.</p>
+    
+    <h4 class="font-bold text-cyan-800 mb-4">Match the Step to the Example</h4>
+    {{ match_exercise('steps-example-match', step_actions, step_examples) }}
+
+    <div class="mt-8 bg-cyan-50 p-4 rounded-lg border border-cyan-100">
+        <h4 class="font-bold text-cyan-800 mb-2">Exercise: The "Now" Action</h4>
+        <p class="text-sm text-cyan-900">Identify one small task in your immediate environment that you could take <span class="font-bold">initiative</span> on right now without being asked.</p>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('reflect', '4. Reflection & Discussion', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Use these prompts to explore accountability within your team.</p>
+    {{ random_item_generator('ownership-discuss-random', 'Next Question', 'ownership-discuss-list', discuss_questions) }}
+
+    <div class="mt-8 bg-white p-4 rounded-lg border-2 border-cyan-100">
+        <h4 class="font-bold text-cyan-800 mb-2">Commitment Question:</h4>
+        <p class="text-slate-600">Look back at the 5 Steps. Which one is hardest for you personally, and what simple strategy will you use to improve it this week?</p>
+    </div>
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}

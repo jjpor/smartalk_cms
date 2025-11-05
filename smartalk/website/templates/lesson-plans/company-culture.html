@@ -1,0 +1,171 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione Semplice) --- #}
+{% set lesson_title = "The Guide to Company Culture" %}
+{% set lesson_subtitle = "Exploring values, environments, and communication in the workplace." %}
+
+{% set nav_links = [{'id': 'warm-up', 'title': 'Warm-Up'}, {'id': 'vocabulary', 'title': 'Key Vocabulary'}, {'id': 'discussion', 'title': 'Discussion'}, {'id': 'exercises', 'title': 'Role-Play Exercise'}, {'id': 'conclusion', 'title': 'Conclusion'}] %}
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, match_exercise, random_item_generator %}
+
+{# --- Fase 3: Apertura Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili Complesse (INTERNE AL BLOCCO!) --- #}
+
+{# Dati per Match Exercise (Vocabulary) #}
+{% set vocab_terms = [
+    {'id': '1', 'text': 'Company culture'},
+    {'id': '2', 'text': 'Mission statement'},
+    {'id': '3', 'text': 'Core values'},
+    {'id': '4', 'text': 'Inclusive'},
+    {'id': '5', 'text': 'Toxic environment'},
+    {'id': '6', 'text': 'Team-oriented'},
+    {'id': '7', 'text': 'Micromanagement'},
+    {'id': '8', 'text': 'Autonomy'},
+    {'id': '9', 'text': 'Feedback culture'},
+    {'id': '10', 'text': 'Work-life balance'}
+] %}
+
+{% set vocab_defs = [
+    {'id': '1', 'text': 'The shared values, beliefs, and behaviors in a workplace.'},
+    {'id': '2', 'text': 'A company’s main goal and reason for existing.'},
+    {'id': '3', 'text': 'Important beliefs that guide a company’s decisions and actions.'},
+    {'id': '4', 'text': 'Open to people of all backgrounds and differences.'},
+    {'id': '5', 'text': 'A workplace full of negativity, fear, or conflict.'},
+    {'id': '6', 'text': 'Focused on collaboration and working together.'},
+    {'id': '7', 'text': 'When a manager controls too many small details.'},
+    {'id': '8', 'text': 'The ability to work independently and make decisions.'},
+    {'id': '9', 'text': 'A workplace where giving and receiving feedback is common.'},
+    {'id': '10', 'text': 'The ability to manage work and personal life in a healthy way.'}
+] %}
+
+{# Dati per Random Generator (Discussion) #}
+{% set discussion_questions = [
+    'What aspects of company culture make you feel most supported as an employee?',
+    'Have you ever felt uncomfortable because of a company’s culture? What caused it?',
+    'What small changes would improve the culture at your current or previous job?',
+    'How important is it to have friendships at work?',
+    'Do you feel comfortable giving feedback to your manager? Why or why not?',
+    'What does "work-life balance" mean to you? Has a company ever helped you achieve it?',
+    'Do you prefer working for a company with clear rules or more flexibility? Why?',
+    'What motivates you more: team goals or individual recognition?',
+    'Do you feel like your values match your company’s values? Why or why not?',
+    'If you were starting your own company, what kind of culture would you create?'
+] %}
+
+{# --- Fase 5: Conversione Contenuto (Info Cards + Interattività) --- #}
+
+{% call info_card('warm-up', 'Warm-Up', initial_state='show') %}
+    <p class="text-slate-700 mb-4">Let's start by reflecting on your own experiences with company culture.</p>
+    <h4 class="font-bold text-slate-800 mb-2">Questions to Consider</h4>
+    <ul class="text-slate-600 space-y-2">
+        <li>What does "company culture" mean to you?</li>
+        <li>How would you describe the culture at your current or past company?</li>
+        <li>Do you think company culture matters more than salary?</li>
+    </ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('vocabulary', 'Key Vocabulary', initial_state='show') %}
+    <p class="text-slate-700 mb-6">Here are some important terms for discussing company culture, values, and environment.</p>
+    
+    {# Contenuto Statico (per riferimento/spiegazione) #}
+    <ul class="text-slate-600 space-y-3 mb-8">
+        <li><span class="font-bold text-slate-800">Company culture:</span> The shared values, beliefs, and behaviors in a workplace.</li>
+        <li><span class="font-bold text-slate-800">Mission statement:</span> A company’s main goal and reason for existing.</li>
+        <li><span class="font-bold text-slate-800">Core values:</span> Important beliefs that guide a company’s decisions and actions.</li>
+        <li><span class="font-bold text-slate-800">Inclusive:</span> Open to people of all backgrounds and differences.</li>
+        <li><span class="font-bold text-slate-800">Toxic environment:</span> A workplace full of negativity, fear, or conflict.</li>
+        <li><span class="font-bold text-slate-800">Team-oriented:</span> Focused on collaboration and working together.</li>
+        <li><span class="font-bold text-slate-800">Micromanagement:</span> When a manager controls too many small details.</li>
+        <li><span class="font-bold text-slate-800">Autonomy:</span> The ability to work independently and make decisions.</li>
+        <li><span class="font-bold text-slate-800">Feedback culture:</span> A workplace where giving and receiving feedback is common.</li>
+        <li><span class="font-bold text-slate-800">Work-life balance:</span> The ability to manage work and personal life in a healthy way.</li>
+    </ul>
+
+    {# Contenuto Interattivo (AGGIUNTO) #}
+    <h4 class="font-bold text-slate-800 mb-4 mt-8">Practice: Match the Terms</h4>
+    {{ match_exercise('culture-vocab-match', vocab_terms, vocab_defs) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('discussion', 'Discussion Questions', initial_state='show') %}
+    <p class="text-slate-700 mb-6">These questions are designed to get you thinking and talking about your experiences and preferences in the workplace.</p>
+    
+    <div class="grid md:grid-cols-2 gap-6 mb-8">
+        <div>
+            <h4 class="font-bold text-slate-800 mb-2">Your Experiences</h4>
+            <ul class="text-slate-600 space-y-2">
+                <li>What aspects of company culture make you feel most supported as an employee?</li>
+                <li>Have you ever felt uncomfortable because of a company’s culture? What caused it?</li>
+                <li>What small changes would improve the culture at your current or previous job?</li>
+                <li>How important is it to have friendships at work?</li>
+                <li>Do you feel comfortable giving feedback to your manager? Why or why not?</li>
+            </ul>
+        </div>
+        <div>
+            <h4 class="font-bold text-slate-800 mb-2">Your Values & Preferences</h4>
+            <ul class="text-slate-600 space-y-2">
+                <li>What does "work-life balance" mean to you? Has a company ever helped you achieve it?</li>
+                <li>Do you prefer working for a company with clear rules or more flexibility? Why?</li>
+                <li>What motivates you more: team goals or individual recognition?</li>
+                <li>Do you feel like your values match your company’s values? Why or why not?</li>
+                <li>If you were starting your own company, what kind of culture would you create?</li>
+            </ul>
+        </div>
+    </div>
+
+    {# Contenuto Interattivo (AGGIUNTO) #}
+    <h4 class="font-bold text-slate-800 mb-4 mt-8">Random Discussion Picker</h4>
+    {{ random_item_generator('culture-discussion-random', 'Next Question', 'culture-questions-list', discussion_questions) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('exercises', 'Collaborative Exercise: Values & Expectations', initial_state='show') %}
+    <p class="text-slate-700 mb-6">This exercise can be done with a partner or in a small group. Follow the steps below to practice discussing culture and values.</p>
+    
+    <div class="bg-slate-50 p-6 rounded-lg border border-slate-200 mb-6">
+        <h4 class="font-bold text-slate-800 mb-2">The Scenario</h4>
+        <p class="text-slate-600">Imagine you are interviewing for a new job. Your goal is to understand the company's culture and find out if their values match yours. The person you are with will be the "hiring manager."</p>
+    </div>
+
+    <h4 class="font-bold text-slate-800 mb-4">Exercise Steps</h4>
+    <div class="space-y-4">
+        <div>
+            <h5 class="font-semibold text-slate-700">Step 1: Set the Stage</h5>
+            <p class="text-slate-600">The "hiring manager" should describe a common company culture (e.g., fast-paced, very team-oriented, a lot of autonomy, etc.). The "candidate" should use the vocabulary and questions from this guide to ask for clarification and examples to see if the culture is a good fit.</p>
+        </div>
+        <div>
+            <h5 class="font-semibold text-slate-700">Step 2: The Conversation</h5>
+            <p class="text-slate-600">Role-play the conversation for 5-7 minutes. The candidate should ask about specific values, work-life balance, and feedback culture, using conditionals to ask hypothetical questions (e.g., "If I were to join the team, would I have autonomy over my projects?").</p>
+        </div>
+        <div>
+            <h5 class="font-semibold text-slate-700">Step 3: Debrief & Discuss</h5>
+            <p class="text-slate-600 mb-2">Switch roles and repeat the exercise. Afterward, discuss these questions together:</p>
+            <ul class="text-slate-600 list-disc list-inside ml-4">
+                <li>What questions were most helpful for understanding the culture?</li>
+                <li>Which values were most important to you as the candidate?</li>
+                <li>What did you learn from this role-play that you can apply in a real job interview?</li>
+            </ul>
+        </div>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('conclusion', 'Conclusion', initial_state='show') %}
+    <p class="text-slate-700 mb-4">Use these questions to summarize your learning and reflect on your own workplace values.</p>
+    <h4 class="font-bold text-slate-800 mb-2">Final Reflection</h4>
+    <ul class="text-slate-600 space-y-2">
+        <li>What is something you learned about yourself or your values from this discussion?</li>
+        <li>How can you contribute to a positive company culture in your current or future role?</li>
+        <li>What’s the most important cultural trait you look for in a company?</li>
+    </ul>
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco Contenuto --- #}
+{% endblock lesson_content %}

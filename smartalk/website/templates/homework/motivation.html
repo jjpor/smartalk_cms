@@ -1,0 +1,130 @@
+{# ================================================================== #}
+{# ZONA 1: INTESTAZIONE SICURA (SOLO DEFINIZIONI SEMPLICI)            #}
+{# ================================================================== #}
+{% set lesson_title = "Motivation Homework: Rituals, Flow, and Intrinsic Drive" %}
+{% set lesson_subtitle = "Moving beyond sheer willpower to create automated habits and peak focus." %}
+
+{# REGOLA D'ORO: nav_links SU UNA SOLA RIGA #}
+{% set nav_links = [{'id': 'video-analysis', 'title': 'TED Talk'}, {'id': 'article-analysis', 'title': 'Habit Rituals'}, {'id': 'interactive-quiz', 'title': 'Flow Analysis'}, {'id': 'flow-and-feedback', 'title': 'Peak Motivation'}, {'id': 'written-assignment', 'title': 'Assignment'}] %}
+
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, multiple_choice_exercise %}
+
+{# ================================================================== #}
+{# ZONA 2: AREA DATI & CONTENUTO (TUTTO IL RESTO QUI DENTRO)          #}
+{# ================================================================== #}
+{% block lesson_content %}
+
+{# --- DATI PER ESERCIZI INTERATTIVI --- #}
+
+{# Sezione 3: Flow State Quiz Data #}
+{% set flow_options = [{'value': 'FLOW', 'text': 'FLOW'}, {'value': 'ANXIETY', 'text': 'ANXIETY'}, {'value': 'BOREDOM', 'text': 'BOREDOM'}] %}
+{% set flow_quiz_data = [
+    {
+        'text': '<strong>Scenario 1:</strong> You are asked to write a university-level paper on a topic you studied last year. You know the material well, but the process feels tedious.<br><em class="text-sm text-slate-500">(Skill: HIGH, Challenge: LOW)</em>',
+        'options': flow_options,
+        'correct_value': 'BOREDOM'
+    },
+    {
+        'text': '<strong>Scenario 2:</strong> You\'re learning a new piece on the piano. It\'s difficult, but you can see your immediate progress after 15 minutes of focused practice.<br><em class="text-sm text-slate-500">(Skill: MEDIUM, Challenge: SLIGHTLY HIGH)</em>',
+        'options': flow_options,
+        'correct_value': 'FLOW'
+    },
+    {
+        'text': '<strong>Scenario 3:</strong> Your boss assigns you a complex coding task using a new programming language you\'ve never touched before. You feel overwhelmed.<br><em class="text-sm text-slate-500">(Skill: LOW, Challenge: VERY HIGH)</em>',
+        'options': flow_options,
+        'correct_value': 'ANXIETY'
+    },
+    {
+        'text': '<strong>Scenario 4:</strong> You are performing a task (like folding laundry) that requires minimal attention and zero learning.<br><em class="text-sm text-slate-500">(Skill: HIGH, Challenge: LOW)</em>',
+        'options': flow_options,
+        'correct_value': 'BOREDOM'
+    }
+] %}
+
+{# --- INIZIO CONTENUTO LEZIONE --- #}
+
+{% call info_card('video-analysis', '1. Video Analysis: The Puzzle of Motivation', initial_state='show') %}
+    <div class="text-slate-600">
+        <p class="mb-6">Watch the following TED talk to understand why traditional, "if-then" rewards (extrinsic motivators) often fail for complex or creative tasks, and why <span class="font-semibold text-purple-700">Autonomy, Mastery, and Purpose</span> (intrinsic motivators) are more effective.</p>
+
+        {# OFFICIAL TED EMBED (RESPONSIVE) #}
+        <div class="relative w-full h-0 pb-[56.25%] mb-6 rounded-xl overflow-hidden shadow-md bg-black">
+            <iframe src="https://embed.ted.com/talks/dan_pink_the_puzzle_of_motivation"
+                    class="absolute top-0 left-0 w-full h-full"
+                    frameborder="0" scrolling="no" allowfullscreen
+                    title="Dan Pink: The puzzle of motivation"></iframe>
+        </div>
+
+        <div class="mt-6 p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
+            <h4 class="font-bold text-purple-900 mb-2">Self-Reflection Question:</h4>
+            <p class="text-sm text-purple-800">Based on Pink's ideas, which of your current goals would benefit more from <strong>Autonomy</strong> (control over the task) rather than an external reward?</p>
+        </div>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('article-analysis', '2. Article: The Power of Rituals and Schedules', initial_state='show') %}
+    <div class="text-slate-600 space-y-4">
+        <p>The core challenge of motivation is <strong class="text-indigo-700">getting started</strong>. Professionals overcome this by automating the beginning of the process.</p>
+        
+        <blockquote class="border-l-4 border-indigo-400 pl-4 py-2 bg-indigo-50 italic text-indigo-900">
+            "If you waste resources trying to decide when or where to work, you’ll impede your capacity to do the work."
+        </blockquote>
+
+        <div>
+            <h4 class="font-bold text-slate-800">Strategy A: Setting a Schedule</h4>
+            <p>Setting a schedule means giving your goals a <strong>time and a place to live</strong>. This puts your decision-making on autopilot.</p>
+        </div>
+
+        <div>
+            <h4 class="font-bold text-slate-800">Strategy B: Building a Ritual</h4>
+            <p>A ritual is a <strong>mindless way to initiate behavior</strong>. It removes the need to make decisions about <em>how</em> to start, saving mental energy for the actual work.</p>
+        </div>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('interactive-quiz', '3. Practice: Flow State Analysis', initial_state='show') %}
+    <p class="mb-6 text-slate-600">Read each scenario and use the <strong>Goldilocks Rule</strong> to determine the resulting state of motivation.</p>
+    {{ multiple_choice_exercise('flow-state-quiz', flow_quiz_data) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('flow-and-feedback', '4. Peak Motivation: The Flow State Breakdown', initial_state='show') %}
+    <div class="text-slate-600 space-y-6">
+        <p>The "<strong class="text-green-700">Flow State</strong>" is the mental space where you are so focused on the task that the world fades away. It requires two components:</p>
+        
+        <div>
+             <h4 class="font-bold text-slate-800 mb-1">Component 1: Optimal Difficulty (The Goldilocks Rule)</h4>
+             <p class="ml-4 border-l-2 border-green-400 pl-3">The task must match your skill level—neither too hard (causing <strong>Anxiety</strong>) nor too easy (causing <strong>Boredom</strong>). When the Challenge slightly exceeds your Skill, you enter Flow.</p>
+        </div>
+
+        <div>
+             <h4 class="font-bold text-slate-800 mb-1">Component 2: Immediate Feedback</h4>
+             <p class="ml-4 border-l-2 border-green-400 pl-3">You must receive <strong>immediate feedback</strong> about how you are doing. This constant measurement keeps your focus locked on the task.</p>
+        </div>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('written-assignment', '5. Written Assignment: Reflection', initial_state='show') %}
+    <div class="text-slate-600">
+        <p class="mb-4">Reflect on the concepts of intrinsic motivation, rituals, and flow states. Write a short paragraph (100-150 words) discussing:</p>
+        <ul class="list-disc list-inside ml-4 space-y-1 mb-6">
+            <li>What motivation is for you.</li>
+            <li>For which goal(s) you find it hard staying motivated, and why.</li>
+            <li>How you keep motivated (Schedules, Rituals, or Rewards?).</li>
+            <li>Whether internal or external motivation works best for you.</li>
+        </ul>
+
+        <textarea class="w-full h-48 p-4 border-2 border-slate-200 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 resize-y font-mono text-sm" placeholder="Start writing your reflection here..."></textarea>
+        <p class="text-xs text-red-500 font-bold mt-2">⚠️ IMPORTANT: Text entered here is NOT saved automatically. Copy it to a document or email before closing this page.</p>
+    </div>
+{% endcall %}
+
+{% endblock lesson_content %}

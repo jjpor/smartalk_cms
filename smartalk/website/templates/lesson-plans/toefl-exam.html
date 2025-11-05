@@ -1,0 +1,185 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "TOEFL iBT Exam Strategy" %}
+{% set lesson_subtitle = "Structure, tasks, and strategies for B2 level success." %}
+
+{% set nav_links = [{'id': 'overview', 'title': 'Overview'}, {'id': 'reading', 'title': 'Reading'}, {'id': 'listening', 'title': 'Listening'}, {'id': 'speaking', 'title': 'Speaking'}, {'id': 'writing', 'title': 'Writing'}, {'id': 'scoring', 'title': 'Scoring'}] %}
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, multiple_choice_exercise, random_item_generator %}
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne) --- #}
+
+{# Dati per Reading Quiz #}
+{% set reading_quiz = [
+    {
+        'text': 'According to the text, why is critical thinking important today?',
+        'options': [
+            {'value': 'a', 'text': 'It helps us memorize more information quickly.'},
+            {'value': 'b', 'text': 'It enables us to analyze information and make reasoned decisions in a fast-paced world.'},
+            {'value': 'c', 'text': 'It allows us to agree with the majority opinion easily.'}
+        ],
+        'correct_value': 'b'
+    },
+    {
+        'text': 'How does critical thinking help with "fake news"?',
+        'options': [
+            {'value': 'a', 'text': 'By encouraging us to question sources and evaluate evidence.'},
+            {'value': 'b', 'text': 'By helping us create more convincing fake news.'},
+            {'value': 'c', 'text': 'It doesn\'t help; fake news is unavoidable.'}
+        ],
+        'correct_value': 'a'
+    },
+    {
+        'text': 'Why do employers value critical thinking skills?',
+        'options': [
+            {'value': 'a', 'text': 'Because critical thinkers always follow instructions without question.'},
+            {'value': 'b', 'text': 'Because they can analyze complex problems and propose effective solutions.'},
+            {'value': 'c', 'text': 'Because they prefer to work alone and not in teams.'}
+        ],
+        'correct_value': 'b'
+    }
+] %}
+
+{# Dati per Listening Quiz #}
+{% set listening_quiz = [
+    {
+        'text': 'What is the lecturer\'s opinion on social media and face-to-face interactions?',
+        'options': [
+            {'value': 'a', 'text': 'Social media has increased the quality of face-to-face interactions.'},
+            {'value': 'b', 'text': 'Excessive use can lead to a decrease in face-to-face interactions.'},
+            {'value': 'c', 'text': 'There is no correlation between the two.'}
+        ],
+        'correct_value': 'b'
+    },
+    {
+        'text': 'According to the lecture, what is a potential consequence of curated social media profiles?',
+        'options': [
+            {'value': 'a', 'text': 'Increased self-esteem and confidence.'},
+            {'value': 'b', 'text': 'More accurate self-perception.'},
+            {'value': 'c', 'text': 'Comparisons and feelings of inadequacy.'}
+        ],
+        'correct_value': 'c'
+    },
+    {
+        'text': 'Which is the best summary of the lecture excerpt?',
+        'options': [
+            {'value': 'a', 'text': 'Social media has only positive effects on communication.'},
+            {'value': 'b', 'text': 'It discusses the negative impacts of social media on relationships and self-perception.'},
+            {'value': 'c', 'text': 'It focuses mainly on the technical aspects of social media apps.'}
+        ],
+        'correct_value': 'b'
+    }
+] %}
+
+{# Dati per Speaking Randomizer #}
+{# Nota: Uso lo span font-bold per i titoli all'interno delle stringhe #}
+{% set speaking_prompts = [
+    '<span class="font-bold text-teal-800">Independent Task (Preference):</span> "Some people prefer to live in a big city, while others prefer small towns. Which do you prefer and why?"',
+    '<span class="font-bold text-teal-800">Independent Task (Experience):</span> "Describe a memorable trip you have taken. Where did you go? What did you do? Why was it memorable?"',
+    '<span class="font-bold text-teal-800">Integrated Task (Advice):</span> "Your friend is having difficulty concentrating on studying. What advice would you give to help them improve their focus?"'
+] %}
+
+{# Dati per Writing Thesis Quiz #}
+{% set writing_quiz = [
+    {
+        'text': 'Choose the BEST thesis statement for the prompt: "Small town vs. Big City preference".',
+        'options': [
+            {'value': 'weak', 'text': 'I prefer big cities because they are more fun and have more things to do than small towns.'},
+            {'value': 'strong', 'text': 'While small towns offer community, I prefer big cities because of the diverse career opportunities and vibrant cultural life.'},
+            {'value': 'off', 'text': 'Living in the countryside is the best option because it is quiet and peaceful.'}
+        ],
+        'correct_value': 'strong'
+    }
+] %}
+
+{# --- Fase 5: Conversione Contenuto --- #}
+
+{% call info_card('overview', '1. Introduction & Overview', initial_state='show') %}
+    <p class="text-slate-600 mb-4">The goal of this lesson is to familiarize you with the structure, format, and scoring of the <span class="font-bold">TOEFL iBT exam</span> for a B2 level target.</p>
+    
+    <h4 class="font-bold text-slate-800 mb-2">Exam Structure:</h4>
+    <ul class="list-disc list-inside text-slate-600 space-y-1">
+        <li><span class="font-semibold">Reading:</span> Comprehension of academic texts.</li>
+        <li><span class="font-semibold">Listening:</span> Understanding lectures and conversations.</li>
+        <li><span class="font-semibold">Speaking:</span> Expressing opinions and integrating information.</li>
+        <li><span class="font-semibold">Writing:</span> Composing integrated and independent essays.</li>
+    </ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('reading', '2. Reading Section (60-80 mins)', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Assesses comprehension of academic texts, main ideas, details, inferences, and vocabulary.</p>
+    
+    <div class="bg-slate-50 p-6 rounded-lg border border-slate-200 mb-8">
+        <h4 class="font-bold text-slate-800 mb-2">Sample Text: Critical Thinking</h4>
+        <p class="text-sm text-slate-700 mb-2">Critical thinking is a vital skill that enables individuals to analyze information, evaluate arguments, and make reasoned decisions. In today's fast-paced world, where we are bombarded with information, this ability is more important than ever.</p>
+        <p class="text-sm text-slate-700 mb-2">One aspect involves distinguishing between fact and opinion. With the proliferation of fake news, it's essential to discern credible information from biased claims. Critical thinkers question sources, evaluate evidence, and seek multiple perspectives.</p>
+        <p class="text-sm text-slate-700">Furthermore, in professional settings, these skills are highly valued. Employers seek individuals who can analyze complex problems, think independently, and propose effective solutions.</p>
+    </div>
+
+    <h4 class="font-bold text-teal-800 mb-4">Comprehension Check</h4>
+    {{ multiple_choice_exercise('reading-comprehension', reading_quiz) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('listening', '3. Listening Section (60-90 mins)', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Assesses understanding of main ideas, details, and speaker attitude in academic settings.</p>
+    
+    <div class="bg-slate-50 p-6 rounded-lg border border-slate-200 mb-8 italic">
+        <h4 class="font-bold text-slate-800 mb-2 not-italic">Audio Script Excerpt: Social Media</h4>
+        <p class="text-sm text-slate-700">"Lecturer: Good afternoon. Today, we'll discuss the impact of social media on interpersonal communication... One notable effect is its influence on the quality of relationships. Studies have shown that excessive use can lead to a decrease in face-to-face interactions... Additionally, it has altered how we perceive ourselves. The curated nature of profiles often leads to comparisons and feelings of inadequacy..."</p>
+    </div>
+
+    <h4 class="font-bold text-teal-800 mb-4">Listening Check</h4>
+    {{ multiple_choice_exercise('listening-comprehension', listening_quiz) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('speaking', '4. Speaking Section (20 mins)', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Requires expressing opinions (Independent) and synthesizing information (Integrated). Focus on fluency, organization, and vocabulary.</p>
+    
+    <h4 class="font-bold text-teal-800 mb-4">Practice: Random Question Generator</h4>
+    <p class="text-sm text-slate-600 mb-4">Click to get a random test question. Outline your response in 15 seconds, then speak for 45 seconds.</p>
+    {{ random_item_generator('toefl-speaking-random', 'Next Question', 'speaking-prompts-list', speaking_prompts) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('writing', '5. Writing Section (50 mins)', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Includes Integrated (summarize reading + lecture) and Independent (opinion essay) tasks.</p>
+    
+    <div class="mb-8">
+        <h4 class="font-bold text-slate-800 mb-2">Sample Independent Prompt:</h4>
+        <p class="text-slate-700 bg-slate-100 p-4 rounded">"Some people prefer to live in a small town where everyone knows each other, while others prefer the anonymity of a big city. Which do you prefer and why? Use specific reasons and examples."</p>
+    </div>
+
+    <h4 class="font-bold text-teal-800 mb-4">Strategy: Identifying a Strong Thesis</h4>
+    <p class="text-sm text-slate-600 mb-4">A good thesis takes a clear position AND previews your main supporting points.</p>
+    {{ multiple_choice_exercise('writing-thesis-quiz', writing_quiz) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('scoring', '6. Scoring & Next Steps', initial_state='show') %}
+    <div class="bg-teal-50 p-6 rounded-lg border-l-4 border-teal-500">
+        <h4 class="font-bold text-teal-800 mb-2">Scoring Breakdown</h4>
+        <ul class="list-disc list-inside text-slate-700 space-y-1">
+            <li>Total Score: 0-120 (30 points per section).</li>
+            <li><strong>B2 Level Target:</strong> Typically 87–109 points.</li>
+        </ul>
+    </div>
+    <div class="mt-6">
+        <h4 class="font-bold text-slate-800 mb-2">Homework:</h4>
+        <p class="text-slate-600">Begin practicing under timed conditions. Familiarize yourself with the official scoring rubrics to understand exactly what graders look for.</p>
+    </div>
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}

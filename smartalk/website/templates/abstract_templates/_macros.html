@@ -70,7 +70,7 @@ Lessons will import these macros to build their interactive content.
   {# ID stabile per questa domanda #}
   {% set qid = exercise_id ~ "-q" ~ loop.index0 %}
   <div class="quiz-question-item" data-answer="{{ q.correct_value }}">
-    <p class="font-semibold">{{ loop.index }}. {{ q.text }}</p>
+    <p class="font-semibold">{{ loop.index }}. {{ q.text | safe }}</p>
     <div class="options">
       {% for opt in q.options %}
       {% set opt_id = qid ~ "-opt" ~ loop.index0 %}
@@ -97,12 +97,12 @@ Lessons will import these macros to build their interactive content.
   <div class="flex flex-col md:flex-row justify-around gap-4">
     <div class="match-group-a flex flex-col gap-2">
       {% for item in group_a_items | shuffle %}
-      <div class="match-item" data-match-id="{{ item.id }}">{{ item.text }}</div>
+      <div class="match-item" data-match-id="{{ item.id }}">{{ item.text | safe }}</div>
       {% endfor %}
     </div>
     <div class="match-group-b flex flex-col gap-2">
       {% for item in group_b_items | shuffle %}
-      <div class="match-item" data-match-id="{{ item.id }}">{{ item.text }}</div>
+      <div class="match-item" data-match-id="{{ item.id }}">{{ item.text | safe }}</div>
       {% endfor %}
     </div>
   </div>
@@ -120,7 +120,7 @@ Lessons will import these macros to build their interactive content.
   {# The source list is hidden #}
   <ul id="{{ source_list_id }}" class="hidden">
     {% for item in items %}
-    <li>{{ item }}</li>
+    <li>{{ item | safe }}</li>
     {% endfor %}
   </ul>
 </div>

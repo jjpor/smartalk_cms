@@ -1,0 +1,119 @@
+{# ================================================================== #}
+{# ZONA 1: INTESTAZIONE SICURA (SOLO DEFINIZIONI SEMPLICI)            #}
+{# ================================================================== #}
+{% set lesson_title = "Embellishing Sentences" %}
+{% set lesson_subtitle = "Moving beyond direct translation to express tone, diplomacy, and personal style." %}
+
+{# REGOLA D'ORO: nav_links SU UNA SOLA RIGA #}
+{% set nav_links = [{'id': 'explanation', 'title': 'What is Embellishment?'}, {'id': 'personal-prompts', 'title': 'Personal Prompts'}, {'id': 'business-prompts', 'title': 'Business Prompts'}, {'id': 'decorate', 'title': 'Exercise: Decorate the Truth'}, {'id': 'discussion', 'title': 'Discussion'}] %}
+
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, random_item_generator %}
+
+{# ================================================================== #}
+{# ZONA 2: AREA DATI & CONTENUTO (TUTTO IL RESTO QUI DENTRO)          #}
+{# ================================================================== #}
+{% block lesson_content %}
+
+{# --- DATI PER MACRO INTERATTIVE --- #}
+
+{# Dati per Exercise 2 (Decorate the Truth) - Formattati per il generatore #}
+{% set decorate_data = [
+    '<div class="mb-4"><strong class="text-red-700">Plain:</strong> The meeting starts at nine.</div><div class="text-slate-600 p-3 bg-green-50 border-l-4 border-green-500 italic"><strong>Try:</strong> Just to give everyone a heads-up, the kickoff is scheduled for nine, so let\'s try to be on time.</div>',
+    '<div class="mb-4"><strong class="text-red-700">Plain:</strong> The customer is angry.</div><div class="text-slate-600 p-3 bg-green-50 border-l-4 border-green-500 italic"><strong>Try:</strong> Honestly, the client is quite upset right now, so we need to handle this situation carefully, you know what I mean?</div>',
+    '<div class="mb-4"><strong class="text-red-700">Plain:</strong> I finished the report.</div><div class="text-slate-600 p-3 bg-green-50 border-l-4 border-green-500 italic"><strong>Try:</strong> Actually, I managed to wrap up the entire report a little earlier than planned, which is good news.</div>',
+    '<div class="mb-4"><strong class="text-red-700">Plain:</strong> We need more budget.</div><div class="text-slate-600 p-3 bg-green-50 border-l-4 border-green-500 italic"><strong>Try:</strong> From my point of view, we might need a little bit more budget if we want to hit that ambitious target.</div>',
+    '<div class="mb-4"><strong class="text-red-700">Plain:</strong> He made a mistake.</div><div class="text-slate-600 p-3 bg-green-50 border-l-4 border-green-500 italic"><strong>Try:</strong> Frankly speaking, it seems like there was kind of an oversight in the process, but we can fix it.</div>',
+    '<div class="mb-4"><strong class="text-red-700">Plain:</strong> I don\'t like his plan.</div><div class="text-slate-600 p-3 bg-green-50 border-l-4 border-green-500 italic"><strong>Try:</strong> I’m not entirely sure about his approach, actually. I think we could handle this a bit differently.</div>',
+    '<div class="mb-4"><strong class="text-red-700">Plain:</strong> The project is delayed.</div><div class="text-slate-600 p-3 bg-green-50 border-l-4 border-green-500 italic"><strong>Try:</strong> Surprisingly, we’re running into a little bit of a delay on the timeline, but the point is we need a clear recovery plan.</div>',
+    '<div class="mb-4"><strong class="text-red-700">Plain:</strong> The system is slow.</div><div class="text-slate-600 p-3 bg-green-50 border-l-4 border-green-500 italic"><strong>Try:</strong> It’s been an issue all day, but the operational system is really struggling right now; it\'s quite slow.</div>',
+    '<div class="mb-4"><strong class="text-red-700">Plain:</strong> That\'s too expensive.</div><div class="text-slate-600 p-3 bg-green-50 border-l-4 border-green-500 italic"><strong>Try:</strong> I mean, that figure seems a bit too high for us right now, so we should look at other options, just to be clear.</div>',
+    '<div class="mb-4"><strong class="text-red-700">Plain:</strong> Call me later.</div><div class="text-slate-600 p-3 bg-green-50 border-l-4 border-green-500 italic"><strong>Try:</strong> I\'m in the middle of something important right now, so would you mind giving me a quick call back in, say, an hour?</div>'
+] %}
+
+{# --- INIZIO CONTENUTO LEZIONE --- #}
+
+{% call info_card('explanation', '1. What "Embellishing" Means', initial_state='show') %}
+    <div class="text-slate-600">
+        <p class="mb-4">To embellish a sentence is to make it sound more engaging, softer, more natural, or more persuasive. It moves you from simply conveying data to communicating with <strong>tone</strong>.</p>
+        
+        <h4 class="font-bold text-slate-800 mb-2">Tools for Embellishment:</h4>
+        <ul class="list-disc list-inside ml-4 space-y-1">
+            <li><strong class="text-purple-700">Adverbs:</strong> “honestly”, “actually”, “surprisingly”, “frankly”.</li>
+            <li><strong class="text-purple-700">Contextual Clauses:</strong> “you know what I mean”, “at the end of the day”, “from my point of view”.</li>
+            <li><strong class="text-purple-700">Tone Softeners/Intensifiers:</strong> “kind of”, “a bit”, “really”, “quite”.</li>
+            <li><strong class="text-purple-700">Purpose Phrases:</strong> “just to be clear”, “what I mean is”, “the point is”.</li>
+            <li><strong class="text-purple-700">Mini Stories/Examples:</strong> “like, last week it happened to me...”.</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('personal-prompts', '2. Base Sentences (Personal)', initial_state='show') %}
+    <div class="text-slate-600">
+        <p class="italic mb-4">Practice Saying the "Plain" version first, then spend 20 seconds building on it naturally.</p>
+        <ul class="list-disc list-inside ml-6 space-y-2">
+            <li>I don’t like small talk.</li>
+            <li>I’m tired today.</li>
+            <li>I don’t agree with that idea.</li>
+            <li>I’m not sure about this.</li>
+            <li>I need a break.</li>
+            <li>I think he’s wrong.</li>
+            <li>That’s not fair.</li>
+            <li>I don’t care about that.</li>
+            <li>I like spending time alone.</li>
+            <li>I hate being late.</li>
+            <li>I don’t trust people easily.</li>
+            <li>I find it hard to relax.</li>
+            <li>I don’t like showing emotions.</li>
+            <li>I prefer to work quietly.</li>
+            <li>I’m not very talkative.</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('business-prompts', '3. Base Sentences (Business)', initial_state='show') %}
+    <div class="text-slate-600">
+        <p class="italic mb-4">Focus on using softeners like "might," "could," "a bit," and "from my perspective."</p>
+        <ul class="list-disc list-inside ml-6 space-y-2">
+            <li>We should rethink this strategy.</li>
+            <li>I’m not convinced this will work.</li>
+            <li>The results are not satisfying.</li>
+            <li>We need to clarify our priorities.</li>
+            <li>I don’t think that’s sustainable.</li>
+            <li>Let’s take a step back and review.</li>
+            <li>We might need to involve the client.</li>
+            <li>That’s not aligned with our values.</li>
+            <li>We could handle this differently.</li>
+            <li>I’d rather wait before making a decision.</li>
+            <li>I’d prefer a more structured approach.</li>
+            <li>I’m concerned about the timing.</li>
+            <li>The communication could be clearer.</li>
+            <li>That’s not what I expected.</li>
+            <li>Let’s make sure we’re on the same page.</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('decorate', '4. Exercise: Decorate the Truth', initial_state='show') %}
+    <p class="mb-6 text-slate-600"><strong>Goal:</strong> Receive a plain, direct fact and rephrase it to sound more diplomatic, interesting, or empathetic, without changing the core meaning.</p>
+    {{ random_item_generator('decorate-gen', 'Get Plain Fact', 'decorate-list', decorate_data) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('discussion', '5. Discussion: Post-Practice Analysis', initial_state='show') %}
+    <ul class="list-disc list-inside ml-4 space-y-3 text-slate-600">
+        <li>Which version sounds more <strong class="text-indigo-700">credible</strong>—the plain fact or the embellished sentence? Why?</li>
+        <li>Which version feels more “you,” or more like your natural <strong class="text-indigo-700">Italian fluency</strong>?</li>
+        <li>Does using softeners like "a bit" or "kind of" make you feel less tense or <strong class="text-indigo-700">more natural</strong> when expressing disagreement?</li>
+        <li>Which types of embellishment (adverbs, softeners, context) do you find easiest to <strong class="text-indigo-700">remember and use</strong> in real-time?</li>
+    </ul>
+{% endcall %}
+
+{% endblock lesson_content %}

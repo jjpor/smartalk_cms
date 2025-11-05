@@ -1,0 +1,101 @@
+{#
+    TEMPLATE PER LA PAGINA "STUDENT HOMEWORK" (INDEX)
+    Basato sulla struttura di Content Guides, adattato per gli studenti.
+#}
+
+{# --- 1. Definizione Variabili --- #}
+{% set page_title = 'Student Homework' %}
+{% set page_subtitle = 'Independent practice to reinforce your sessions and build mastery.' %}
+
+{# Dati per la navigazione. #}
+{% set section_nav_links = [
+    {'id': 'general-english', 'title': 'General English', 'active': True}
+] %}
+
+{# 
+    Dati per tutte le sezioni e i compiti.
+    Struttura identica alle Content Guides per facile espansione futura.
+#}
+{% set homework_sections = {
+    'general-english': {
+        'title': 'General English',
+        'guides': [
+            {'url_slug': 'motivation', 'title': 'Motivation: Rituals & Flow', 'desc': 'Moving beyond willpower to create automated habits and peak focus.'}
+        ]
+    }
+} %}
+
+
+{# --- 2. Estensione Template Base --- #}
+{# Nota: Assicurati che 'base.html' sia quello corretto per la vista studenti #}
+{% extends "abstract_templates/base.html" %}
+
+
+{# --- 3. Definizione Macro Locali (PER OVERRIDE DEI LINK) --- #}
+{# 
+   Definiamo queste macro qui invece di importarle per poter cambiare 
+   l'URL di base da '/lesson-plans/' a '/homework/' 
+#}
+
+{% macro homework_card_link(guide) %}
+{# URL aggiornato per puntare alla rotta homework #}
+<a href="/auth/homework/{{ guide.url_slug }}" target="_blank" class="guide-card bg-white p-6 rounded-xl shadow-md flex flex-col items-center text-center transition hover:shadow-lg">
+    <h3 class="font-bold text-xl text-slate-800 mb-2">{{ guide.title }}</h3>
+    <p class="text-slate-600 text-sm">{{ guide.desc }}</p>
+</a>
+{% endmacro %}
+
+{% macro render_homework_section(section_id, section_data) %}
+<section id="{{ section_id }}" class="mb-12">
+    <h2 class="section-header">{{ section_data.title }}</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for guide in section_data.guides %}
+            {{ homework_card_link(guide) }}
+        {% endfor %}
+    </div>
+</section>
+{% endmacro %}
+
+
+{# --- 4. Riempimento Blocchi --- #}
+
+{% block head_links %}
+    {# Riutilizziamo il CSS dei lesson plans perché lo stile è identico #}
+    <link rel="stylesheet" href="{{ url_for('static', path='css/lesson_plan.css') }}?v={{ random() }}">
+{% endblock %}
+
+{% block content %}
+    <div class="container mx-auto p-4 md:p-8 max-w-4xl">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-900">{{ page_title }}</h1>
+            <p class="text-lg text-slate-600 mt-2">{{ page_subtitle }}</p>
+        </header>
+
+        <nav class="lesson-sticky-nav mb-8 bg-white/80 backdrop-blur-sm py-2">
+            <ul class="flex justify-center flex-wrap gap-x-4 gap-y-2">
+                {% for link in section_nav_links %}
+                    <li><a href="#{{ link.id }}" class="section-nav-link py-2 px-3 md:px-4 text-sm md:text-base text-slate-500 hover:text-slate-700 rounded-lg {% if link.active %}active{% endif %}">{{ link.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </nav>
+
+        <main>
+            {# Ciclo sulle sezioni homework #}
+            {% for section_id, section_data in homework_sections.items() %}
+                
+                {{ render_homework_section(section_id, section_data) }}
+                
+                {% if not loop.last %}
+                    <hr class="my-12 border-gray-200">
+                {% endif %}
+            
+            {% endfor %}
+        </main>
+    </div>
+{% endblock %}
+
+{% block extra_scripts %}
+    {{ super() }}
+    {# Script standard per la navigazione sticky #}
+    <script src="{{ url_for('static', path='js/active_nav.js') }}"></script>
+{% endblock %}

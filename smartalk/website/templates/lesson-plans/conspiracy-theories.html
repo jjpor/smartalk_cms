@@ -1,0 +1,148 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "Conspiracy Theories" %}
+{% set lesson_subtitle = "Mastering polite and cautious language for sensitive topics." %}
+
+{% set nav_links = [{'id': 'intro', 'title': 'What are they?'}, {'id': 'grammar', 'title': 'Grammar: Hedging'}, {'id': 'practice', 'title': 'Practice Drills'}, {'id': 'theories', 'title': 'Famous Examples'}, {'id': 'discussion', 'title': 'Discussion'}] %}
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, random_item_generator %}
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne) --- #}
+
+{# Dati per Practice 1 (Rewriting Drill) #}
+{% set hedge_drill_sentences = [
+    'Aliens built the pyramids.',
+    'The government controls everything we do.',
+    'Conspiracy theories are always wrong.',
+    'The moon landing was fake.',
+    'Social media is ruining society.',
+    'Fast food causes health problems.',
+    'The Earth is definitely flat.',
+    'All politicians lie.',
+    'The Bermuda Triangle makes ships disappear.',
+    'Climate change is a hoax.'
+] %}
+
+{# Dati per Practice 2 (Analysis Drill) #}
+{% set analysis_drill_sentences = [
+    'There is some evidence that fast food consumption might lead to health problems.',
+    'Some people believe that drinking water is good for you.',
+    'It could be said that technology has possibly changed the way we communicate.',
+    'Social media is destroying real-life relationships.',
+    'It is sometimes argued that sugar intake may contribute to obesity.',
+    'There’s a chance that seat belts reduce the risk of injury in car accidents.',
+    'It has been suggested that regular exercise could be beneficial for overall health.',
+    'Scientists claim that smoking causes lung cancer.'
+] %}
+
+{# Dati per Famous Theories Randomizer #}
+{% set conspiracy_examples = [
+    '<span class="font-bold text-slate-800">The Moon Landing Was Faked:</span> Some believe the 1969 Apollo 11 moon landing was staged by NASA and filmed in a Hollywood-style set.',
+    '<span class="font-bold text-slate-800">9/11 was an Inside Job:</span> A theory claims the government either allowed or orchestrated the attacks to justify wars.',
+    '<span class="font-bold text-slate-800">The Illuminati:</span> A secret group of elites (politicians, bankers, celebrities) is said to manipulate global events.',
+    '<span class="font-bold text-slate-800">JFK Assassination:</span> Many believe there was a cover-up, possibly involving the CIA or mafia, not just a lone gunman.',
+    '<span class="font-bold text-slate-800">Area 51 and Aliens:</span> The U.S. government is rumored to hide evidence of extraterrestrial life at this secret military base.',
+    '<span class="font-bold text-slate-800">COVID-19 Origins:</span> Some claim the virus was artificially created as a bioweapon or a tool for control.',
+    '<span class="font-bold text-slate-800">Flat Earth:</span> Despite scientific evidence, some believe the Earth is a flat disc and space agencies are lying.',
+    '<span class="font-bold text-slate-800">Big Pharma & Cancer Cures:</span> The belief that pharmaceutical companies are suppressing cures to keep making money from treatments.',
+    '<span class="font-bold text-slate-800">Paul McCartney is Dead:</span> A classic rock theory claiming he died in 1966 and was replaced by a lookalike.',
+    '<span class="font-bold text-slate-800">Titanic Swap:</span> The theory that the ship that sank was actually its damaged sister ship, the <em>Olympic</em>, sunk for insurance fraud.'
+] %}
+
+{# Dati per Discussion #}
+{% set discussion_questions = [
+    'Why do you think people believe in conspiracy theories?',
+    'Do you think social media has increased or decreased belief in these theories?',
+    'Are some conspiracy theories harmless, while others are dangerous? Why?',
+    'How can we tell the difference between a real event and misinformation?',
+    'If you could invent a conspiracy theory just for fun, what would it be?',
+    'What’s the most ridiculous conspiracy theory you’ve ever heard?'
+] %}
+
+{# --- Fase 5: Conversione Contenuto --- #}
+
+{% call info_card('intro', '1. What are Conspiracy Theories?', initial_state='show') %}
+    <div class="text-slate-600 space-y-4">
+        <p>A <span class="font-bold">conspiracy theory</span> is a belief that a secret group of people is controlling or manipulating events for their own benefit, often in a way that the general public is unaware of.</p>
+        
+        <div>
+            <h4 class="font-semibold text-slate-800 mb-2">Key Characteristics</h4>
+            <ul class="space-y-2">
+                <li class="flex items-start"><span class="mr-2">✅</span> <span class="font-semibold">A Secret Plan</span> – A powerful group working in shadows.</li>
+                <li class="flex items-start"><span class="mr-2">✅</span> <span class="font-semibold">Manipulation</span> – Events are thought to be staged or covered up.</li>
+                <li class="flex items-start"><span class="mr-2">✅</span> <span class="font-semibold">Lack of Solid Evidence</span> – Reliance on speculation or coincidence.</li>
+                <li class="flex items-start"><span class="mr-2">✅</span> <span class="font-semibold">"Us vs. Them"</span> – Believers think they have "insider knowledge".</li>
+            </ul>
+        </div>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('grammar', '2. Grammar: Hedging Language', initial_state='show') %}
+    <div class="text-slate-600 mb-8">
+        <p><span class="font-bold">Hedging language</span> is a way of making statements less direct, more cautious, or polite. It adds "softeners" to avoid absolute claims.</p>
+        <p class="italic text-sm text-blue-700 mt-2">Useful when you are unsure, discussing sensitive topics, or writing professionally.</p>
+    </div>
+
+    <h4 class="font-bold text-slate-800 mb-4">How to use it</h4>
+    <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <h5 class="font-semibold text-blue-800">Modal Verbs</h5>
+            <p class="text-sm text-slate-600 mb-1">might, could, may</p>
+            <p class="italic text-slate-700">"The government <span class="font-bold">might have</span> hidden it."</p>
+        </div>
+        <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <h5 class="font-semibold text-blue-800">Cautious Adverbs</h5>
+            <p class="text-sm text-slate-600 mb-1">possibly, probably, generally</p>
+            <p class="italic text-slate-700">"This theory is <span class="font-bold">possibly</span> true."</p>
+        </div>
+        <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <h5 class="font-semibold text-blue-800">Passive/Impersonal</h5>
+            <p class="text-sm text-slate-600 mb-1">It is claimed that...</p>
+            <p class="italic text-slate-700">"<span class="font-bold">It is believed that</span> aliens built it."</p>
+        </div>
+        <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <h5 class="font-semibold text-blue-800">Distancing Phrases</h5>
+            <p class="text-sm text-slate-600 mb-1">Many people believe...</p>
+            <p class="italic text-slate-700">"<span class="font-bold">Some argue that</span> the earth is flat."</p>
+        </div>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('practice', '3. Practice Drills', initial_state='show') %}
+    <div class="mb-12">
+        <h4 class="font-bold text-slate-800 mb-4">Drill 1: Rewrite with Hedging</h4>
+        <p class="text-slate-600 mb-4">These statements are too strong. Use hedging to make them more cautious or polite.</p>
+        {{ random_item_generator('hedge-drill-random', 'Next Statement', 'hedge-drill-list', hedge_drill_sentences) }}
+    </div>
+
+    <div>
+        <h4 class="font-bold text-slate-800 mb-4">Drill 2: Soften or Strengthen?</h4>
+        <p class="text-slate-600 mb-4">Decide if these sentences need to be <span class="font-bold">softened</span> (needs more hedging) or <span class="font-bold">strengthened</span> (has too much hedging).</p>
+        {{ random_item_generator('analysis-drill-random', 'Next Sentence', 'analysis-drill-list', analysis_drill_sentences) }}
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('theories', '4. Famous Conspiracy Theories', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Explore common theories. Practice using hedging language to describe them (e.g., "It is often said that...").</p>
+    {{ random_item_generator('theory-random', 'Next Theory', 'theory-list', conspiracy_examples) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('discussion', '5. Discussion', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Use polite, hedged language to discuss these questions.</p>
+    {{ random_item_generator('conspiracy-discuss-random', 'Next Question', 'conspiracy-discuss-list', discussion_questions) }}
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}
