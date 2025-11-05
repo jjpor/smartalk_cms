@@ -1,0 +1,154 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "Places to Stay" %}
+{% set lesson_subtitle = "Discussing accommodations and travel preferences." %}
+
+{% set nav_links = [
+    {'id': 'warmup', 'title': 'Warm-Up'},
+    {'id': 'vocabulary', 'title': 'Vocabulary'},
+    {'id': 'discussion', 'title': 'Discussion'},
+    {'id': 'scenarios', 'title': 'Scenarios'}
+] %}
+
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, classify_exercise, random_item_generator %}
+
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne - REGOLA CRITICA) --- #}
+
+{# Dati per Sezione 2 (Vocabulary Classification) #}
+{% set vocab_categories = ['Accommodation Type', 'People & Services', 'Booking Terms'] %}
+{% set vocab_items = [
+    {'text': 'Hotel chain', 'category': 'Accommodation Type'},
+    {'text': 'Boutique hotel', 'category': 'Accommodation Type'},
+    {'text': 'Hostel', 'category': 'Accommodation Type'},
+    {'text': 'Bed and breakfast (B&B)', 'category': 'Accommodation Type'},
+    {'text': 'Vacation rental', 'category': 'Accommodation Type'},
+    {'text': 'Concierge', 'category': 'People & Services'},
+    {'text': 'Housekeeping', 'category': 'People & Services'},
+    {'text': 'Amenities', 'category': 'People & Services'},
+    {'text': 'Check-in / Check-out', 'category': 'Booking Terms'},
+    {'text': 'All-inclusive', 'category': 'Booking Terms'},
+    {'text': 'Cancellation policy', 'category': 'Booking Terms'}
+] %}
+
+{# Dati per Sezione 4 (Scenarios Random Generator) #}
+{% set scenario_list = [
+    'Hotel: You arrive at your hotel, but your room isn’t ready, and check-in is still two hours away. What do you do?',
+    'Hotel: You lose your room key while you are out sightseeing. How do you handle the situation at reception?',
+    'Hotel: The air conditioning in your room doesn’t work, and it’s very hot. What steps would you take?',
+    'Hotel: You find that the room doesn’t look like the photos online. Do you complain, ask for a new room, or accept it?',
+    'Airbnb: You arrive at your Airbnb, but the host isn’t answering and you can’t get inside. What would you do?',
+    'Airbnb: During your stay, you accidentally break a lamp. How would you handle this with the host?',
+    'Airbnb: You realize the Airbnb has no Wi-Fi, but the listing said it did. How would you respond?',
+    'General: You booked the wrong dates for your stay by mistake. What can you do to solve the problem?',
+    'General: You need to check out early in the morning to catch a flight, but the reception desk will be closed. How do you prepare?'
+] %}
+
+
+{# --- Fase 5: Conversione Contenuto (Modello Semplice) --- #}
+
+{% call info_card('warmup', '1. Warm-Up (5 minutes)', initial_state='show') %}
+    <ul class="text-slate-600">
+        <li>When you travel, do you prefer staying in hotels, Airbnbs, or another type of accommodation? Why?</li>
+        <li>What's the best place you've ever stayed in? What made it special?</li>
+        <li>Have you ever had a negative experience with accommodation while traveling?</li>
+    </ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# --- SEZIONE 2 (VOCAB) AGGIORNATA --- #}
+{% call info_card('vocabulary', '2. Vocabulary (8 minutes)', initial_state='show') %}
+    <p class="mt-4 text-slate-600">Review quickly with examples:</p>
+    
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Types of Accommodation</h4>
+        <ul class="text-slate-600">
+            <li><strong>Hotel chain</strong> - a large group of hotels under the same brand</li>
+            <li><strong>Boutique hotel</strong> - a small, stylish, often luxury hotel</li>
+            <li><strong>Hostel</strong> - budget accommodation with shared rooms</li>
+            <li><strong>Bed and breakfast (B&B)</strong> - small lodging with breakfast included</li>
+            <li><strong>Vacation rental</strong> - a rented house/apartment (Airbnb, Vrbo)</li>
+        </ul>
+    </div>
+    
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Useful Terms & Phrases</h4>
+        <ul class="text-slate-600">
+            <li><strong>Check-in / Check-out</strong> - when you arrive/leave and register at reception</li>
+            <li><strong>Concierge</strong> - hotel staff member who helps with services like booking tours</li>
+            <li><strong>Housekeeping</strong> - cleaning service at a hotel</li>
+            <li><strong>Amenities</strong> - extra services or facilities (pool, Wi-Fi, gym, etc.)</li>
+            <li><strong>All-inclusive</strong> - meals, drinks, and services included in the price</li>
+            <li><strong>Cancellation policy</strong> - rules about refunds if you cancel your stay</li>
+        </ul>
+    </div>
+    
+    {# --- NUOVO ESERCIZIO DI CLASSIFICAZIONE --- #}
+    <div class="mt-8">
+        <h4 class="font-semibold text-slate-800 mb-4">Vocabulary Sort:</h4>
+        <p class="mb-4 text-slate-600">Drag the terms into the correct category.</p>
+        {{ classify_exercise('accommodation-vocab-sort', vocab_categories, vocab_items) }}
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('discussion', '3. Discussion Questions (17 minutes)', initial_state='show') %}
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Types of Stays</h4>
+        <ul class="text-slate-600">
+            <li>Do you think hotels or vacation rentals give better value for money? Why?</li>
+            <li>How do boutique hotels and chain hotels differ in atmosphere and service?</li>
+            <li>Would you rather stay in the city center or outside the city to save money?</li>
+        </ul>
+    </div>
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Hotel Experience</h4>
+        <ul class="text-slate-600">
+            <li>What amenities are most important to you when choosing a hotel?</li>
+            <li>Have you ever been upgraded to a better room? How did you feel?</li>
+            <li>Do you think hotel staff should always speak English in tourist areas?</li>
+        </ul>
+    </div>
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Airbnb / Vacation Rentals</h4>
+        <ul class="text-slate-600">
+            <li>What are the advantages and disadvantages of using Airbnb compared to hotels?</li>
+            <li>Do you think Airbnbs are better for families with children? Why or why not?</li>
+            <li>Some cities have banned or restricted Airbnb. Do you think that's a good idea?</li>
+        </ul>
+    </div>
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Travel with Others</h4>
+        <ul class="text-slate-600">
+            <li>How do your accommodation choices change when you travel alone, with friends, or with kids?</li>
+            <li>What's the biggest conflict you've had with a travel partner over where to stay?</li>
+            <li>Should children pay reduced rates, or should families get discounts?</li>
+        </ul>
+    </div>
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Future & Culture</h4>
+        <ul class="text-slate-600">
+            <li>How do hotels reflect the culture of the country you're visiting?</li>
+            <li>Do you think technology (self-check-in, robot staff, smart rooms) improves or reduces the guest experience?</li>
+            <li>If you could design your perfect accommodation, what would it include?</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# --- SEZIONE 4 (SCENARIOS) AGGIORNATA --- #}
+{% call info_card('scenarios', '4. Scenarios: What Would You Do? (5-7 minutes)', initial_state='show') %}
+    <p class="mb-4 text-slate-600">Click to get a random travel problem. Explain what you would do and say to solve it.</p>
+    {{ random_item_generator('accommodation-scenarios', 'Get a Scenario', 'scenario-list', scenario_list) }}
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}

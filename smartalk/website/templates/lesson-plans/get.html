@@ -1,0 +1,275 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "The Ultimate Guide to “Get”" %}
+{% set lesson_subtitle = "Mastering the most versatile verb in the English language." %}
+
+{% set nav_links = [
+    {'id': 'warmup', 'title': 'Warm-Up'},
+    {'id': 'meanings', 'title': 'Core Meanings'},
+    {'id': 'business', 'title': '“Get” in Business'},
+    {'id': 'phrasal', 'title': 'Phrasal Verbs'},
+    {'id': 'patterns', 'title': 'Grammar Patterns'},
+    {'id': 'discussion', 'title': 'Discussion'},
+    {'id': 'wrapup', 'title': 'Wrap-Up'}
+] %}
+
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, classify_exercise, match_exercise, dropdown_fill_in_exercise, multiple_choice_exercise, random_item_generator %}
+
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne) --- #}
+
+{# Dati per Sezione 2 (Core Meanings Classify) #}
+{% set meanings_categories = ['Obtain / Receive', 'Become (Change State)', 'Arrive / Move', 'Understand'] %}
+{% set meanings_items = [
+    {'text': 'Did you <strong>get</strong> my email?', 'category': 'Obtain / Receive'},
+    {'text': 'I need to <strong>get</strong> a new phone.', 'category': 'Obtain / Receive'},
+    {'text': 'It’s <strong>getting</strong> late, let’s go.', 'category': 'Become (Change State)'},
+    {'text': 'Don\'t <strong>get</strong> angry with me.', 'category': 'Become (Change State)'},
+    {'text': 'What time will you <strong>get</strong> here?', 'category': 'Arrive / Move'},
+    {'text': 'I <strong>got</strong> into the car and drove off.', 'category': 'Arrive / Move'},
+    {'text': 'Ah, I <strong>get</strong> it now! Thanks for explaining.', 'category': 'Understand'},
+    {'text': 'Sorry, I didn\'t <strong>get</strong> that joke.', 'category': 'Understand'}
+] %}
+
+{# Dati per Sezione 3 (Business Match) #}
+{% set business_match_terms = [
+    {'id': '1', 'text': 'get down to business'},
+    {'id': '2', 'text': 'get ahead'},
+    {'id': '3', 'text': 'get the sack / get fired'},
+    {'id': '4', 'text': 'get something across'},
+    {'id': '5', 'text': 'get nowhere'},
+    {'id': '6', 'text': 'get hold of someone'}
+] %}
+{% set business_match_defs = [
+    {'id': '1', 'text': 'start focusing on the main task seriously'},
+    {'id': '2', 'text': 'make progress in your career; be successful'},
+    {'id': '3', 'text': 'lose your job'},
+    {'id': '4', 'text': 'successfully communicate an idea'},
+    {'id': '5', 'text': 'make no progress at all'},
+    {'id': '6', 'text': 'manage to contact someone (usually by phone)'}
+] %}
+
+{# Dati per Sezione 4 (Phrasal Verbs Dropdown) #}
+{% set pv_options = ['get around to', 'get away with', 'get back to', 'get through', 'get along with'] %}
+{% set pv_data = [
+    {'prefix': 'I have been so busy, I didn\'t', 'options': pv_options, 'answer': 'get around to', 'suffix': 'finishing the report.'},
+    {'prefix': 'He always arrives late and seems to', 'options': pv_options, 'answer': 'get away with', 'suffix': 'it. The boss never says anything!'},
+    {'prefix': 'Can I', 'options': pv_options, 'answer': 'get back to', 'suffix': 'you on that later? I need to check some numbers.'},
+    {'prefix': 'It’s vital to', 'options': pv_options, 'answer': 'get along with', 'suffix': 'your stakeholders.'},
+    {'prefix': 'I tried calling customer service but I couldn\'t', 'options': pv_options, 'answer': 'get through', 'suffix': '.'}
+] %}
+
+{# Dati per Sezione 5 (Grammar Patterns Quiz) #}
+{% set patterns_quiz = [
+    {
+        'text': 'We need to get this project ___ by Friday. (Causative: completed by someone)',
+        'options': [{'value': 'finish', 'text': 'finish'}, {'value': 'finishing', 'text': 'finishing'}, {'value': 'finished', 'text': 'finished'}],
+        'correct_value': 'finished'
+    },
+    {
+        'text': 'I can\'t get him ___ to my proposal. (Persuade)',
+        'options': [{'value': 'agree', 'text': 'agree'}, {'value': 'to agree', 'text': 'to agree'}, {'value': 'agreed', 'text': 'agreed'}],
+        'correct_value': 'to agree'
+    },
+    {
+        'text': 'Let\'s get ___! We have a lot to do. (Start an action)',
+        'options': [{'value': 'started', 'text': 'started'}, {'value': 'start', 'text': 'start'}, {'value': 'to start', 'text': 'to start'}],
+        'correct_value': 'started'
+    },
+    {
+        'text': 'He usually gets ___ before a big presentation. (Become + Adjective)',
+        'options': [{'value': 'nervousness', 'text': 'nervousness'}, {'value': 'nervous', 'text': 'nervous'}, {'value': 'nervously', 'text': 'nervously'}],
+        'correct_value': 'nervous'
+    }
+] %}
+
+{# Dati per Sezione 6 (Random Questions) #}
+{% set discussion_questions = [
+    'What’s something you’re trying to get done this week?',
+    'Have you ever gotten away with something you shouldn’t have?',
+    'What helps you get through a really tough workday?',
+    'Do you find it easy to get your point across in English?',
+    'What time do you usually get to work?',
+    'Have you ever gotten someone else to do a difficult task for you?',
+    'What makes you get stressed instantly?',
+    'Are you good at getting hold of people when they are busy?'
+] %}
+
+
+{# --- Fase 5: Conversione Contenuto --- #}
+
+{% call info_card('warmup', '1. Warm-Up Discussion', initial_state='show') %}
+    <ul class="text-slate-600">
+        <li>Without thinking too much, how many meanings of "get" can you list in 30 seconds?</li>
+        <li>Do you avoid using "get" in formal writing? Why or why not?</li>
+        <li>What is the most confusing "get" phrase you have encountered?</li>
+    </ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('meanings', '2. Core Meanings of "Get"', initial_state='show') %}
+    <div class="mt-4 text-slate-600">
+        <p>Native speakers use "get" constantly because it replaces more specific, formal verbs. Mastering these core meanings is the first step to sounding more natural.</p>
+        <ul class="mt-4 space-y-3">
+            <li><strong>1. To Obtain / Receive / Buy</strong> (Synonyms: buy, receive, fetch, find)
+                <br><span class="italic text-sm text-slate-500">Examples: I got an email. Where did you get those shoes? Can I get you a coffee?</span>
+            </li>
+            <li><strong>2. To Become (Changing State)</strong> (Synonyms: become, grow)
+                <br><span class="italic text-sm text-slate-500">Examples: It's getting cold. He got angry. I'm getting tired of this.</span>
+            </li>
+            <li><strong>3. To Arrive / Move</strong> (Synonyms: arrive, reach, enter, leave)
+                <br><span class="italic text-sm text-slate-500">Examples: When do you get to the office? Get in the car! Get out of here.</span>
+            </li>
+            <li><strong>4. To Understand</strong> (Synonym: understand, grasp)
+                <br><span class="italic text-sm text-slate-500">Examples: I don't get it. Did you get what he said?</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="mt-8">
+        <h4 class="font-semibold text-slate-800 mb-4">Practice: Classify the Meaning</h4>
+        <p class="mb-4 text-slate-600">Drag the sentences into the correct category based on the meaning of "get".</p>
+        {{ classify_exercise('get-core-classify', meanings_categories, meanings_items) }}
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('business', '3. "Get" in Business', initial_state='show') %}
+    <div class="mt-4 text-slate-600">
+        <p>In professional settings, "get" is used in many fixed expressions. While some are informal, many are acceptable in all but the most formal written reports.</p>
+        <div class="grid md:grid-cols-2 gap-4 mt-4">
+            <div class="bg-slate-50 p-4 rounded-lg">
+                <h5 class="font-semibold text-slate-700 mb-2">Progress & Action</h5>
+                <ul class="space-y-1 text-sm">
+                    <li><strong>get ahead</strong> - advance in career</li>
+                    <li><strong>get nowhere</strong> - make zero progress</li>
+                    <li><strong>get down to business</strong> - start working seriously</li>
+                    <li><strong>get something off the ground</strong> - start a project successfully</li>
+                </ul>
+            </div>
+            <div class="bg-slate-50 p-4 rounded-lg">
+                <h5 class="font-semibold text-slate-700 mb-2">Communication & People</h5>
+                <ul class="space-y-1 text-sm">
+                    <li><strong>get hold of (someone)</strong> - manage to contact</li>
+                    <li><strong>get (something) across</strong> - communicate clearly</li>
+                    <li><strong>get on board</strong> - agree to join an idea/project</li>
+                    <li><strong>get the sack</strong> - be fired (informal)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-8">
+        <h4 class="font-semibold text-slate-800 mb-4">Practice: Business Collocations</h4>
+        <p class="mb-4 text-slate-600">Match the business expression with its definition.</p>
+        {{ match_exercise('get-business-match', business_match_terms, business_match_defs) }}
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('phrasal', '4. Advanced Phrasal Verbs', initial_state='show') %}
+    <div class="mt-4 text-slate-600">
+        <p>There are dozens of phrasal verbs with "get". Here are some of the most useful ones for intermediate+ learners, grouped by general meaning.</p>
+        
+        <div class="mt-6 space-y-6">
+            <div>
+                <h5 class="font-semibold text-blue-700">Managing & Completing Tasks</h5>
+                <ul class="list-disc list-inside ml-4 mt-2">
+                    <li><strong>get around to (something)</strong>: finally do something you delayed.<br><em class="text-sm text-slate-500 ml-6">I finally got around to answering his email.</em></li>
+                    <li><strong>get over with</strong>: finish something unpleasant.<br><em class="text-sm text-slate-500 ml-6">Let's do the audit now just to get it over with.</em></li>
+                    <li><strong>get through</strong>: survive or finish something difficult.<br><em class="text-sm text-slate-500 ml-6">We need to get through this busy quarter.</em></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-semibold text-blue-700">Relationships & Communication</h5>
+                <ul class="list-disc list-inside ml-4 mt-2">
+                    <li><strong>get along (with)</strong>: have a good relationship.<br><em class="text-sm text-slate-500 ml-6">Do you get along with your new boss?</em></li>
+                    <li><strong>get back to (someone)</strong>: respond later with information.<br><em class="text-sm text-slate-500 ml-6">I'll check the data and get back to you.</em></li>
+                    <li><strong>get through to (someone)</strong>: successfully contact or make someone understand.<br><em class="text-sm text-slate-500 ml-6">I can't get through to the IT department; the line is busy.</em></li>
+                </ul>
+            </div>
+            <div>
+                <h5 class="font-semibold text-blue-700">Rules & Evasion</h5>
+                <ul class="list-disc list-inside ml-4 mt-2">
+                    <li><strong>get away with</strong>: do something wrong without being punished.<br><em class="text-sm text-slate-500 ml-6">He gets away with arriving late every day.</em></li>
+                    <li><strong>get out of</strong>: avoid a responsibility.<br><em class="text-sm text-slate-500 ml-6">She tried to get out of attending the meeting.</em></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <div class="mt-8">
+        <h4 class="font-semibold text-slate-800 mb-4">Practice: Complete the phrasal verbs</h4>
+        {{ dropdown_fill_in_exercise('phrasal-get-advanced', pv_data) }}
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('patterns', '5. Key Grammar Patterns', initial_state='show') %}
+    <div class="mt-4 text-slate-600">
+        <p>"Get" isn't just vocabulary; it's part of important grammar structures.</p>
+        
+        <div class="grid md:grid-cols-3 gap-6 mt-6">
+            <div class="bg-blue-50 p-4 rounded-lg border-t-4 border-blue-500">
+                <h5 class="font-bold text-slate-800">Get + Adjective</h5>
+                <p class="text-sm text-slate-600 mb-2">= Become</p>
+                <ul class="list-disc list-inside text-sm">
+                    <li>get hungry</li>
+                    <li>get tired</li>
+                    <li>get busy</li>
+                    <li>get ready / get started</li>
+                </ul>
+            </div>
+            <div class="bg-green-50 p-4 rounded-lg border-t-4 border-green-500">
+                <h5 class="font-bold text-slate-800">Get + Object + To V1</h5>
+                <p class="text-sm text-slate-600 mb-2">= Persuade/Cause someone to do something</p>
+                <ul class="list-disc list-inside text-sm">
+                    <li>I'll <strong>get him to sign</strong> it.</li>
+                    <li>How can we <strong>get them to agree</strong>?</li>
+                </ul>
+            </div>
+            <div class="bg-purple-50 p-4 rounded-lg border-t-4 border-purple-500">
+                <h5 class="font-bold text-slate-800">Get + Object + V3 (Past Part.)</h5>
+                <p class="text-sm text-slate-600 mb-2">= Causative (arrange for something to be done)</p>
+                <ul class="list-disc list-inside text-sm">
+                    <li>I need to <strong>get my car repaired</strong>.</li>
+                    <li>Let's <strong>get this done</strong>.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-8">
+        <h4 class="font-semibold text-slate-800 mb-4">Practice: Choose the correct form</h4>
+        {{ multiple_choice_exercise('get-patterns-quiz', patterns_quiz) }}
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('discussion', '6. Discussion Practice', initial_state='show') %}
+    <p class="mb-4 text-slate-600">Use the random generator to start a conversation using various forms of "get".</p>
+    {{ random_item_generator('get-mega-discussion', 'Next Topic', 'get-mega-list', discussion_questions) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('wrapup', '7. Wrap-Up', initial_state='show') %}
+    <ul class="text-slate-600">
+        <li>Don't be afraid to use "get" - it's not "lazy" English, it's natural English.</li>
+        <li>Pay attention to the grammar patterns: <em>get someone TO DO something</em> vs <em>get something DONE</em>.</li>
+        <li>Choose 2-3 new phrasal verbs from today (like 'get around to') and use them in an email tomorrow.</li>
+    </ul>
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}

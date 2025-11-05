@@ -1,0 +1,170 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "To vs. For" %}
+{% set lesson_subtitle = "A guide to using these prepositions correctly." %}
+
+{% set nav_links = [
+    {'id': 'explanation', 'title': 'Explanation'},
+    {'id': 'practice', 'title': 'Practice Quiz'},
+    {'id': 'collocations', 'title': 'Tricky Collocations'},
+    {'id': 'general-discussion', 'title': 'General Discussion'},
+    {'id': 'business-discussion', 'title': 'Business Discussion'}
+] %}
+
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, classify_exercise, dropdown_fill_in_exercise, match_exercise, random_item_generator %}
+
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne) --- #}
+
+{# Dati per Sezione 2 (Classification: Logic Check) #}
+{% set logic_categories = ['Movement / Direction (TO)', 'Purpose / Benefit / Time (FOR)'] %}
+{% set logic_items = [
+    {'text': 'Going ___ the office', 'category': 'Movement / Direction (TO)'},
+    {'text': 'Giving a report ___ the manager', 'category': 'Movement / Direction (TO)'},
+    {'text': 'Driving ten miles ___ the city', 'category': 'Movement / Direction (TO)'},
+    {'text': 'Good ___ your career', 'category': 'Purpose / Benefit / Time (FOR)'},
+    {'text': 'Working here ___ five years', 'category': 'Purpose / Benefit / Time (FOR)'},
+    {'text': 'A tool ___ scheduling meetings', 'category': 'Purpose / Benefit / Time (FOR)'},
+    {'text': 'I bought this gift ___ you', 'category': 'Purpose / Benefit / Time (FOR)'}
+] %}
+
+{# Dati per Sezione 3 (Massive Dropdown Quiz) #}
+{% set tf_options = ['to', 'for'] %}
+{% set practice_data = [
+    {'prefix': 'I gave the keys', 'options': tf_options, 'answer': 'to', 'suffix': 'my coworker.'},
+    {'prefix': 'This gift is', 'options': tf_options, 'answer': 'for', 'suffix': 'you.'},
+    {'prefix': 'We are flying', 'options': tf_options, 'answer': 'to', 'suffix': 'London tomorrow.'},
+    {'prefix': 'She prefers reading', 'options': tf_options, 'answer': 'to', 'suffix': 'watching TV.'},
+    {'prefix': 'Could you explain this', 'options': tf_options, 'answer': 'to', 'suffix': 'me?'},
+    {'prefix': 'He came here', 'options': tf_options, 'answer': 'to', 'suffix': 'meet the new client.'},
+    {'prefix': 'This presentation is important', 'options': tf_options, 'answer': 'for', 'suffix': 'our company.'},
+    {'prefix': 'It’s a quarter', 'options': tf_options, 'answer': 'to', 'suffix': 'three (2:45).'},
+    {'prefix': 'She made an appointment', 'options': tf_options, 'answer': 'for', 'suffix': 'Monday morning.'},
+    {'prefix': 'Walking is better', 'options': tf_options, 'answer': 'for', 'suffix': 'your health than driving.'},
+    {'prefix': 'I drove ten miles', 'options': tf_options, 'answer': 'to', 'suffix': 'the office.'},
+    {'prefix': 'Can you carry these boxes', 'options': tf_options, 'answer': 'for', 'suffix': 'me? (Help me)'},
+    {'prefix': 'This solution seems reasonable', 'options': tf_options, 'answer': 'to', 'suffix': 'both teams. (Opinion)'},
+    {'prefix': 'We went out', 'options': tf_options, 'answer': 'to', 'suffix': 'celebrate the deal. (Verb follows)'},
+    {'prefix': 'I’d like to speak', 'options': tf_options, 'answer': 'to', 'suffix': 'the manager, please.'},
+    {'prefix': 'They’ve worked here', 'options': tf_options, 'answer': 'for', 'suffix': 'five years.'},
+    {'prefix': 'Please send this email', 'options': tf_options, 'answer': 'to', 'suffix': 'the marketing department.'},
+    {'prefix': 'I’m very grateful', 'options': tf_options, 'answer': 'for', 'suffix': 'your help on this project.'},
+    {'prefix': 'A hammer is used', 'options': tf_options, 'answer': 'for', 'suffix': 'hitting nails. (-ing form follows)'},
+    {'prefix': 'The CEO announced new policies', 'options': tf_options, 'answer': 'to', 'suffix': 'improve employee engagement. (Verb follows)'}
+] %}
+
+{# Dati per Sezione 4 (Collocations Match) #}
+{% set colloc_terms = [
+    {'id': '1', 'text': 'apologize TO (someone)'},
+    {'id': '2', 'text': 'responsible FOR (something)'},
+    {'id': '3', 'text': 'look forward TO (something)'},
+    {'id': '4', 'text': 'famous FOR (something)'},
+    {'id': '5', 'text': 'wait FOR (someone/something)'},
+    {'id': '6', 'text': 'listen TO (someone/something)'}
+] %}
+{% set colloc_defs = [
+    {'id': '1', 'text': 'say you are sorry to a person'},
+    {'id': '2', 'text': 'be in charge of a task'},
+    {'id': '3', 'text': 'be excited about a future event'},
+    {'id': '4', 'text': 'be well-known because of a specific quality'},
+    {'id': '5', 'text': 'stay in one place until something happens'},
+    {'id': '6', 'text': 'pay attention to a sound'}
+] %}
+
+{# Dati per Sezione 5 (Random Discussion) #}
+{% set general_questions = [
+    'Who is the most important person <strong>to</strong> you in your life? Why?',
+    'What’s something that has been very good <strong>for</strong> your health?',
+    'Can you think of a time when someone explained something clearly <strong>to</strong> you?',
+    'What’s better <strong>for</strong> relaxing: reading, watching TV, or going for a walk?',
+    'Has anyone ever done something really kind <strong>for</strong> you? What happened?',
+    'What is a city you’d like to travel <strong>to</strong> someday? Why?',
+    'Do you usually prefer talking <strong>to</strong> people face-to-face or online?',
+    'Can you name something that was difficult <strong>for</strong> you to learn but you’re proud of now?',
+    'What’s a good habit that you think is beneficial <strong>for</strong> everyone?',
+    'Have you ever given advice <strong>to</strong> someone that helped them?'
+] %}
+
+
+{# --- Fase 5: Conversione Contenuto --- #}
+
+{# Sezione 1: Explanation (Static + New Classification) #}
+{% call info_card('explanation', '1. Explanation & Logic Check', initial_state='show') %}
+    <div class="mt-4 text-slate-600">
+        <p class="mb-2">The preposition <strong>TO</strong> is typically used for:</p>
+        <ul class="list-disc ml-6 mb-4 space-y-1">
+            <li><strong>Direction/Destination:</strong> I am going <em>to</em> the store.</li>
+            <li><strong>Transfer:</strong> He gave the present <em>to</em> her.</li>
+            <li><strong>Comparison:</strong> I prefer tea <em>to</em> coffee.</li>
+            <li><strong>Infinitive Verbs:</strong> I came here <em>to</em> work.</li>
+        </ul>
+        <p class="mb-2">The preposition <strong>FOR</strong> is typically used for:</p>
+        <ul class="list-disc ml-6 mb-4 space-y-1">
+            <li><strong>Benefits/Purpose (with nouns):</strong> Yogurt is good <em>for</em> your health.</li>
+            <li><strong>Duration of time:</strong> We've lived here <em>for</em> 2 years.</li>
+            <li><strong>Doing a favor:</strong> Can you carry this <em>for</em> me?</li>
+            <li><strong>Function (with -ing verbs):</strong> A pen is <em>for</em> writing.</li>
+        </ul>
+    </div>
+
+    {# NUOVO ESERCIZIO: CLASSIFICATION #}
+    <div class="mt-8">
+        <h4 class="font-semibold text-slate-800 mb-4">Logic Check: Classify the Phrase</h4>
+        <p class="mb-4 text-slate-600">Is the phrase expressing movement/transfer (TO) or purpose/benefit (FOR)?</p>
+        {{ classify_exercise('to-for-logic-classify', logic_categories, logic_items) }}
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# Sezione 2: Practice (Massive Dropdown Quiz) #}
+{% call info_card('practice', '2. Practice Quiz (20 Questions)', initial_state='show') %}
+    <p class="mb-4 text-slate-600">Choose the correct preposition for each sentence. Watch out for the tricky ones!</p>
+    {{ dropdown_fill_in_exercise('to-for-master-quiz', practice_data) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# NUOVA Sezione 3: Tricky Collocations #}
+{% call info_card('collocations', '3. Tricky Collocations', initial_state='show') %}
+    <div class="mt-4 text-slate-600">
+        <p>Some words always take "to" or "for". These are called <strong>collocations</strong>, and you just have to memorize them.</p>
+    </div>
+    <div class="mt-6">
+        <h4 class="font-semibold text-slate-800 mb-4">Match the collocation to its meaning:</h4>
+        {{ match_exercise('collocations-match', colloc_terms, colloc_defs) }}
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# Sezione 4: General Discussion (Randomized) #}
+{% call info_card('general-discussion', '4. General Discussion Roulette', initial_state='show') %}
+    <p class="mb-4 text-slate-600">Click for a random conversation starter using "to" or "for".</p>
+    {{ random_item_generator('to-for-discussion', 'Next Question', 'general-questions-list', general_questions) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# Sezione 5: Business Discussion (Static) #}
+{% call info_card('business-discussion', '5. Business Discussion Questions', initial_state='show') %}
+    <p class="text-slate-700 mb-6">Discuss these questions with your team to practice 'to' and 'for' in a professional context.</p>
+    <ul class="text-slate-600">
+        <li>Have you ever presented something important <strong>to</strong> your team? How did it go?</li>
+        <li>What's one tool that is essential <strong>for</strong> your daily work?</li>
+        <li>How do you usually give feedback <strong>to</strong> colleagues?</li>
+        <li>What's a policy that has been positive <strong>for</strong> your company?</li>
+        <li>Have you ever had to explain a project <strong>to</strong> someone from another department?</li>
+        <li>What training program was the most valuable <strong>for</strong> your career growth?</li>
+        <li>Do you find it easy to delegate tasks <strong>to</strong> other people? Why or why not?</li>
+        <li>What's the best piece of professional advice someone has ever given <strong>to</strong> you?</li>
+    </ul>
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}
