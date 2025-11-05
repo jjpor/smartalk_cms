@@ -1,0 +1,115 @@
+{% extends "abstract_templates/base.html" %}
+
+{% block content %}
+{% include "abstract_templates/coach_dashboard_header.html" %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb container">
+    <a href="/dashboard/coach/landing.html">Dashboard</a><span class="sep">/</span><span>New Contract</span>
+</div>
+
+<!-- Main form content -->
+<main class="container" style="padding:16px;">
+    <section class="section" style="max-width: 600px; margin: 0 auto;">
+        <h1 style="margin:0; font-size: 1.5rem; font-weight: 700; color: #1f2937;">Create New Contract</h1>
+        
+        <form id="createContractForm" style="display: grid; gap: 16px; margin-top: 24px;">
+            
+            <!-- Contract Type -->
+            <div>
+                <label for="contractType" class="form-label">Contract Type</label>
+                <select id="contractType" name="contractType" required class="form-input">
+                    <option value="">Select a type...</option>
+                    <option value="Individual">Individual</option>
+                    <option value="Group">Group</option>
+                    <option value="Corporate">Corporate</option>
+                </select>
+            </div>
+
+            <!-- Student (Conditional) -->
+            <div id="studentContainer" style="display: none;">
+                <label for="studentSelect" class="form-label">Student</label>
+                <select id="studentSelect" name="studentId" class="form-input">
+                    <option value="">Loading students...</option>
+                    <!-- Dynamically populated via JS -->
+                </select>
+            </div>
+
+            <!-- Product (Conditional) -->
+            <div id="productContainer" style="display: none;">
+                <label for="productSelect" class="form-label">Product</label>
+                <select id="productSelect" name="productId" class="form-input">
+                    <option value="">Loading products...</option>
+                    <!-- Dynamically populated via JS -->
+                </select>
+            </div>
+
+            <!-- Date Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+                <div>
+                    <label for="startDate" class="form-label">Start Date</label>
+                    <input type="date" id="startDate" name="startDate" required class="form-input">
+                </div>
+                <div>
+                     <label for="endDate" class="form-label">End Date (Optional)</label>
+                     <input type="date" id="endDate" name="endDate" class="form-input">
+                </div>
+            </div>
+
+            <!-- Hours and Rate Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+                <div>
+                    <label for="totalHours" class="form-label">Hour Package</label>
+                    <input type="number" id="totalHours" name="totalHours" min="1" placeholder="e.g., 10" required class="form-input">
+                </div>
+                <div>
+                    <label for="hourlyRate" class="form-label">Hourly Rate (€)</label>
+                    <input type="number" id="hourlyRate" name="hourlyRate" min="0" step="0.50" placeholder="e.g., 30.50" required class="form-input">
+                </div>
+            </div>
+
+            <!-- Value and Hours Completed Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+                <div>
+                    <label for="hoursCompleted" class="form-label">Hours Completed</label>
+                    <input type="number" id="hoursCompleted" name="hoursCompleted" value="0" min="0" required class="form-input">
+                </div>
+                <div>
+                    <label for="contractValue" class="form-label">Value (€)</label>
+                    <input type="number" id="contractValue" name="contractValue" class="form-input" placeholder="Calculated..." readonly disabled style="background: #f3f4f6; cursor: not-allowed;">
+                </div>
+            </div>
+
+            <!-- Status -->
+            <div>
+                <label for="status" class="form-label">Status</label>
+                <select id="status" name="status" required class="form-input">
+                    <option value="Active">Active</option>
+                    <option value="Finished">Finished</option>
+                    <option value="On Hold">On Hold</option>
+                </select>
+            </div>
+
+            <!-- Notes Group -->
+            <div>
+                <label for="notes" class="form-label">Notes (Optional)</label>
+                <textarea id="notes" name="notes" rows="3" class="form-input" placeholder="Contract details, billing type, etc..."></textarea>
+            </div>
+
+            <!-- Status Message -->
+            <div id="formMessage" style="margin-top: 16px; font-size: 0.9rem;"></div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="submitBtn" class="btn" style="justify-content: center; margin-top: 16px;">
+                <span>Save Contract</span>
+            </button>
+        </form>
+    </section>
+</main>
+
+{% include "abstract_templates/coach_dashboard_footer.html" %}
+
+<!-- Page-specific script -->
+<script type="module" src="/static/js/coach_dashboard/pages/create_contract.js"></script>
+
+{% endblock %}
