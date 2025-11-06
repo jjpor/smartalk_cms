@@ -87,6 +87,7 @@ async def _create_contracts_table(db, table_name) -> None:
             {"AttributeName": "status", "AttributeType": "S"},
             {"AttributeName": "report_card_cadency", "AttributeType": "N"},
             {"AttributeName": "report_card_start_month", "AttributeType": "S"},
+            {"AttributeName": "report_card_generator_id", "AttributeType": "S"},
         ],
         GlobalSecondaryIndexes=[
             {
@@ -101,9 +102,26 @@ async def _create_contracts_table(db, table_name) -> None:
                 },
             },
             {
-                "IndexName": "client-id-index",
-                "KeySchema": [{"AttributeName": "client_id", "KeyType": "HASH"}],
-                "Projection": {"ProjectionType": "KEYS_ONLY"},
+                "IndexName": "client-id-status-index",
+                "KeySchema": [
+                    {"AttributeName": "client_id", "KeyType": "HASH"},
+                    {"AttributeName": "status", "KeyType": "RANGE"},
+                ],
+                "Projection": {
+                    "ProjectionType": "INCLUDE",
+                    "NonKeyAttributes": ["product_id", "student_id"],
+                },
+            },
+            {
+                "IndexName": "client-id-product-id-index",
+                "KeySchema": [
+                    {"AttributeName": "client_id", "KeyType": "HASH"},
+                    {"AttributeName": "product_id", "KeyType": "RANGE"},
+                ],
+                "Projection": {
+                    "ProjectionType": "INCLUDE",
+                    "NonKeyAttributes": ["status", "student_id"],
+                },
             },
             {
                 "IndexName": "report-card-cadency-report-card-start-month-index",
@@ -112,6 +130,11 @@ async def _create_contracts_table(db, table_name) -> None:
                     {"AttributeName": "report_card_start_month", "KeyType": "RANGE"},
                 ],
                 "Projection": {"ProjectionType": "ALL"},
+            },
+            {
+                "IndexName": "report_card_generator_id-index",
+                "KeySchema": [{"AttributeName": "report_card_generator_id", "KeyType": "HASH"}],
+                "Projection": {"ProjectionType": "KEYS_ONLY"},
             },
         ],
     )

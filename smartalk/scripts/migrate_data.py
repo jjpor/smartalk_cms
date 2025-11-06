@@ -150,12 +150,16 @@ class Tracker(BaseModel):
     duration: Optional[int | str] = Field(None, alias="Duration")
     coach_rate: Optional[Decimal | str] = Field(None, alias="Coach Rate")
     prod_cost: Optional[Decimal | str] = Field(None, alias="Prod cost")
-    attendance: Optional[str] = Field(None, alias="Attendance")
+    attendance: bool = Field(None, alias="Attendance")
     notes: Optional[str] = Field(None, alias="Notes")
 
     @field_validator("session_date", mode="before")
     def _parse_date(cls, value):
         return parse_date_field(value)
+
+    @field_validator("attendance", mode="before")
+    def standardize_unlimited(cls, value):
+        return str(value).strip().upper() in ["YES"]
 
 
 class Invoice(BaseModel):
@@ -331,13 +335,27 @@ async def migrate_generic(db: Any, table_name: str, sheet_name: str, model_cls: 
     row_index = 2
     for row in await fetch_sheet_data(sheet_name):
         try:
-            if sheet_name == "Invoices" and row.get("Invoice ID") in ["", None] and row.get("Client ID") in ["", None]:
+            if (
+                table_name == settings.INVOICES_TABLE
+                and row.get("Invoice ID") in ["", None]
+                and row.get("Client ID") in ["", None]
+            ):
                 continue
 
-            if sheet_name == "Debriefs" and (row.get("Coach ID") in ["", None] or row.get("Student ID") in ["", None]):
+            if table_name == settings.DEBRIEFS_TABLE and (
+                row.get("Coach ID") in ["", None] or row.get("Student ID") in ["", None]
+            ):
                 continue
 
-            if sheet_name == "Report Cards":
+            if table_name == settings.CONTRACTS_TABLE:
+                if row["report_card_cadency"] not in ["", None] and isinstance(row["report_card_cadency"], int):
+                    row["report_card_generator_id"] = (
+                        f"{row['student_id']}#{row['client_id']}#{row['report_card_cadency']}"
+                    )
+                else:
+                    row["report_card_generator_id"] = ""
+
+            if table_name == settings.REPORT_CARDS_TABLE:
                 contract_id = row.get("Contract ID")
                 contract = None
                 if contract_id in ["", None]:
@@ -458,7 +476,7 @@ async def migrate_all_data(db: Any):
 # prendere tutti i contratti attivi
 # raggrupparli per report_card_generator_id (non nulli)
 # per ogni gruppo, vedere se hanno la stessa report_card_email_recipients
-#   se no sollevare ecezione
+#   se no sollevare eccezione
 #   se sì, creare il report card generator e salvarlo
 #       report_card_generator_id = student_id#client_id#report_card_cadency
 #       student_id = report_card_generator_id.split('#')[0]

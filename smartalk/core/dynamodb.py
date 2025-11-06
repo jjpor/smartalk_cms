@@ -2,7 +2,8 @@ import asyncio
 import json
 import logging
 from contextlib import asynccontextmanager
-from typing import AsyncGenerator
+from decimal import Decimal
+from typing import Any, AsyncGenerator, Dict, List, Optional
 
 from aioboto3 import Session as AioSession
 from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource, Table
@@ -17,6 +18,34 @@ logger.setLevel(logging.INFO)  # Mantenere INFO per vedere il conteggio
 # Contatore globale che stima il traffico in uscita da AWS (DB -> Server)
 AWS_EGRESS_DB_COUNTER_BYTES = 0
 lock = asyncio.Lock()
+
+
+def to_low_level_item(item: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Converte un dizionario Python (alto livello) in formato DynamoDB low-level.
+    Es.: {"a": "x", "b": 5, "c": True} → {"a": {"S": "x"}, "b": {"N": "5"}, "c": {"BOOL": True}}
+    """
+    low_level_item = {}
+
+    for k, v in item.items():
+        if isinstance(v, str):
+            low_level_item[k] = {"S": v}
+        elif isinstance(v, (int, float, Decimal)) and not isinstance(v, bool):
+            low_level_item[k] = {"N": str(v)}
+        elif isinstance(v, bool):
+            low_level_item[k] = {"BOOL": v}
+        elif v is None:
+            low_level_item[k] = {"NULL": True}
+        elif isinstance(v, dict):
+            # ricorsivo per nested map
+            low_level_item[k] = {"M": to_low_level_item(v)}
+        elif isinstance(v, (list, tuple, set)):
+            # ricorsivo per liste
+            low_level_item[k] = {"L": [to_low_level_item({"_": i})["_"] for i in v]}
+        else:
+            raise TypeError(f"Tipo non supportato per l'attributo '{k}': {type(v)}")
+
+    return low_level_item
 
 
 async def get_table(db: DynamoDBServiceResource, table_name: str) -> Table:
@@ -82,9 +111,9 @@ class DynamoDBResourceWrapper:
                 response = await original_method(*args, **kwargs)
 
                 # Misurazione: serializza la risposta per stimare i byte ricevuti
-                response_json = json.dumps(response)
+                response_json = json.dumps(response, separators=(",", ":")).encode("utf-8")
                 # Misura la dimensione (stimata)
-                received_bytes = len(response_json.encode("utf-8"))
+                received_bytes = len(response_json)
 
                 # Aggiornamento del Contatore Globale
                 global AWS_EGRESS_DB_COUNTER_BYTES
@@ -120,3 +149,91 @@ async def get_dynamodb_connection() -> AsyncGenerator:
         except Exception as e:
             logger.critical(f"Errore CRITICO durante l'inizializzazione/uso di DynamoDB: {e}")
             raise
+
+
+async def _count_db_egress_bytes(op_name: str, response: Dict) -> None:
+    """Stima i byte ricevuti serializzando la response come JSON compatto."""
+    try:
+        # JSON “compatto” per non sovrastimare con spaziature
+        payload = json.dumps(response, separators=(",", ":")).encode("utf-8")
+        received_bytes = len(payload)
+
+        global AWS_EGRESS_DB_COUNTER_BYTES
+        async with lock:
+            AWS_EGRESS_DB_COUNTER_BYTES += received_bytes
+            total = AWS_EGRESS_DB_COUNTER_BYTES
+
+        logger.info(f"-> DB {op_name} | Received: {received_bytes / 1024:.2f} KB")
+        logger.info(f"Total current received from db: {total / 1024**2:.2f} MB")
+    except Exception as e:
+        logger.warning(f"Impossibile stimare egress per {op_name}: {e}")
+
+
+# ---------------------------
+# Funzione unica
+# ---------------------------
+async def make_atomic_transaction(
+    db: DynamoDBServiceResource,
+    checks: Optional[List[Dict]] = None,
+    puts: Optional[List[Dict]] = None,
+    updates: Optional[List[Dict]] = None,
+    deletes: Optional[List[Dict]] = None,
+    gets: Optional[List[Dict]] = None,
+) -> Dict | None:
+    """
+    Esegue una transazione DynamoDB “generica”:
+      - Se passi SOLO `gets`: usa TransactGetItems.
+      - In tutti gli altri casi: TransactWriteItems (combinando checks/puts/updates/deletes).
+
+    I singoli item vanno in *wire format* DynamoDB (uguali a quelli di boto/aioboto),
+    es.: {"Update": {...}}, {"Put": {...}}, {"ConditionCheck": {...}}, {"Get": {...}}.
+
+    Lancia errori non transitori.
+    """
+    checks = checks or []
+    puts = puts or []
+    updates = updates or []
+    deletes = deletes or []
+    gets = gets or []
+
+    # Validazioni base
+    if any([checks, puts, updates, deletes]) and gets:
+        raise ValueError("TransactGetItems e TransactWriteItems non si possono mescolare nella stessa chiamata.")
+    if not any([checks, puts, updates, deletes, gets]):
+        raise ValueError("Nessuna operazione passata.")
+
+    # ----- TransactGetItems -----
+    if gets and not any([checks, puts, updates, deletes]):
+        if len(gets) > 25:
+            raise ValueError("TransactGetItems: max 25 operazioni.")
+
+        response = await get_db_client(db).transact_get_items(
+            TransactItems=[{"Get": g["Get"]} if "Get" in g else {"Get": g} for g in gets]
+        )
+
+        # Conteggio egress per le get transaction
+        await _count_db_egress_bytes("transact_get_items", response)
+        return response
+
+    # ----- TransactWriteItems -----
+    if not gets and any([checks, puts, updates, deletes]):
+        items: List[Dict] = []
+
+        for chk in checks:
+            items.append({"ConditionCheck": chk.get("ConditionCheck", chk)})
+
+        for put in puts:
+            items.append({"Put": put.get("Put", put)})
+
+        for upd in updates:
+            items.append({"Update": upd.get("Update", upd)})
+
+        for dele in deletes:
+            items.append({"Delete": dele.get("Delete", dele)})
+
+        if len(items) == 0:
+            raise ValueError("Nessun item di write (checks/puts/updates/deletes).")
+        if len(items) > 25:
+            raise ValueError("TransactWriteItems: max 25 operazioni.")
+
+        await get_db_client(db).transact_write_items(TransactItems=items)

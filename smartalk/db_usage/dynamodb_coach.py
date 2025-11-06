@@ -1,8 +1,9 @@
 # smartalk/db_usage/dynamodb_coach.py
 
 import logging
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal
+from math import ceil
 from typing import Any, Dict, List, Optional
 
 import pandas as pd
@@ -11,22 +12,12 @@ from botocore.exceptions import ClientError
 from dateutil import relativedelta
 from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource
 
-from smartalk.core.dynamodb import get_db_client, get_table
+from smartalk.core.dynamodb import get_table, make_atomic_transaction, to_low_level_item
 from smartalk.core.settings import settings
 
 logger = logging.getLogger(__name__)
 
 # --- UTILITY ---
-
-
-def to_decimal(value):
-    """Converte float/int in Decimal per DynamoDB."""
-    try:
-        if value is None:
-            return Decimal(0)
-        return Decimal(str(value))
-    except Exception:
-        return Decimal(0)
 
 
 def generate_debrief_text_ai(payload: Dict[str, Any]) -> Dict[str, Any]:
@@ -64,7 +55,7 @@ async def get_client_name(client_id: str, db: DynamoDBServiceResource) -> str:
     """Recupera gli ID degli studenti attivi (USERS Table)."""
     # HASH: user_type (index: user-type-index)
     table = await get_table(db, settings.USERS_TABLE)
-    response = await table.get_item(Key({"id": client_id}))
+    response = await table.get_item(Key={"id": client_id})
     client = response["Item"]
     if client["user_type"] == "student":
         return f"{client['name']} {client['surname']}"
@@ -79,6 +70,9 @@ async def get_student_contracts_for_individual(
     contracts_response = await contracts_table.query(
         IndexName="student-id-status-index",
         KeyConditionExpression=Key("student_id").eq(student_id) & Key("status").eq("active"),
+        FilterExpression=Attr("unlimited").eq(True)
+        | Attr("max_end_date").not_exists()
+        | Attr("max_end_date").gte(get_today_string()),
         ScanIndexForward=False,
         ProjectionExpression=", ".join(["product_id"]),
     )
@@ -105,6 +99,92 @@ async def get_student_contracts_for_individual(
     )
 
     return contracts
+
+
+async def get_student_contracts_for_group(db: DynamoDBServiceResource) -> List[Dict[str, Any]]:
+    contracts_table = await get_table(db, settings.CONTRACTS_TABLE)
+    contracts_response = await contracts_table.query(
+        IndexName="client-id-status-index",
+        KeyConditionExpression=Key("status").eq("active"),
+        FilterExpression=Attr("unlimited").eq(True)
+        | Attr("max_end_date").not_exists()
+        | Attr("max_end_date").gte(get_today_string()),
+        ScanIndexForward=False,
+        ProjectionExpression=", ".join(["product_id"]),
+    )
+    products_table = await get_table(db, settings.PRODUCTS_TABLE)
+
+    contracts = []
+    for item in contracts_response.get("Items", []):
+        product_response = await products_table.get_item(Key={"product_id": item.get("product_id")})
+        product = product_response["Item"]
+        if product["participants"] > 1:
+            client_name = await get_client_name(item["client_id"], db)
+            contracts.append(
+                {
+                    "productName": product_response["Item"]["product_name"],
+                    "product_id": item["product_id"],
+                    "clientName": client_name,
+                    "client_id": item["client_id"],
+                    "student_id": item["student_id"],
+                    "contract_id": item["contract_id"],
+                }
+            )
+
+    # validazione unicità
+    assert max(pd.DataFrame.from_dict(contracts).groupby(["client_id", "product_id", "student_id"]).size()) == 1, (
+        "Grouped contract mapping for grouped call not unique"
+    )
+
+    # grouping
+    grouped_contracts = (
+        pd.DataFrame.from_dict(contracts)[["client_id", "product_id", "clientName", "productName"]]
+        .drop_duplicates()
+        .to_dict("records")
+    )
+
+    return grouped_contracts
+
+
+async def get_students_and_contracts_by_client_and_product(
+    client_id: str, product_id: str, db: DynamoDBServiceResource
+) -> List[Dict[str, Any]]:
+    contracts_table = await get_table(db, settings.CONTRACTS_TABLE)
+    contracts_response = await contracts_table.query(
+        IndexName="client-id-product-id-index",
+        KeyConditionExpression=Key("client_id").eq(client_id) & Key("product_id").eq(product_id),
+        FilterExpression=Attr("status").eq("active")
+        & (
+            Attr("unlimited").eq(True)
+            | Attr("max_end_date").not_exists()
+            | Attr("max_end_date").gte(get_today_string())
+        ),
+        ScanIndexForward=False,
+        ProjectionExpression=", ".join(["student_id"]),
+    )
+    students_table = await get_table(db, settings.USERS_TABLE)
+
+    students = []
+    for item in contracts_response.get("Items", []):
+        student_response = await students_table.get_item(Key={"id": item.get("student_id")})
+        student = student_response["Item"]
+        students.append(
+            {
+                "student_id": student["id"],
+                "contract_id": item["contract_id"],
+                "student_fullname": f"{student['name']} {student['surname']}",
+            }
+        )
+
+    return students
+
+
+async def get_participants(product_id: str, db: DynamoDBServiceResource) -> int:
+    products_table = await get_table(db, settings.PRODUCTS_TABLE)
+    product_response = await products_table.get_item(Key={"product_id": product_id})
+    product = product_response["Item"]
+
+    return product["participants"]
 
 
 def create_student_response(student_info: dict) -> dict:
@@ -159,63 +239,291 @@ async def save_lesson_plan_content_db(db, student_id: str, content: str) -> Dict
         return {"success": False, "error": str(e)}
 
 
-# Funzioni per Tabella TRACKER
-async def log_call_to_db(data: Dict[str, Any], coach: Dict[str, Any], db: DynamoDBServiceResource) -> Dict[str, Any]:
+async def log_call_to_db(
+    group_call: dict,
+    db: DynamoDBServiceResource,
+) -> Dict[str, Any]:
     """
     Registra una riga di chiamata (TRACKER Table).
-    Se il contract della call ha una report_card_cadency,
-    verifica e abilita la coach al report card relativo (CONTRACTS, REPORT_CARD_GENERATORS e REPORT_CARDS Table)
+    Aggiorna a catena documenti correlati:
+        - contract (left_calls, used_calls, status)
+        - report card (crea se non esiste una nuova draft per coach e elimina se esiste la no show oppure aggiorna status della no show a draft)
+
     """
-
-    product_table = await get_table(db, settings.PRODUCTS_TABLE)
-    product_response = product_table.get_item(data.get("productId"))
-    product = product_response["Item"]
-
-    standard_duration = product["duration"]
-    effective_duration = data.get("callDuration", standard_duration)
-    units = to_decimal(effective_duration / standard_duration if standard_duration else 1)
-    standard_rate = to_decimal(product[f"{coach['role'].split(' ')[0].lower()}_coach_rate"])
-
-    student_list = data.get("studentIds", [data.get("studentId")])
-    assert product["participants"] == len(student_list), "Number of product participants not matching with students"
-    attendees = len(student_list)
-    coach_rate_per_student = to_decimal((standard_rate * units) / attendees) if attendees else to_decimal(0)
-
-    # TODO: attendees mal gestita da client, e anche contractId
-    # se ci possono essere contratti uguali con studenti diversi per i gruppi,
-    # allora mettere anche student_id nelle chiavi di contract
-
-    # le notes ?? dovrebbero essere una lista ognuna per ogni studente
-
-    # create if not exists dalla table settings.REPORT_CARD_GENERATORS_TABLE
-    # create if not exists dalla table settings.REPORT_CARDS_TABLE
-
-    # fare transaction da get_client(db)
-
     try:
-        with db.batch_writer() as batch:
-            for sid in student_list:
-                call_date_iso = datetime.fromisoformat(data["callDate"]).date().isoformat()
-                contract_id = data.get("contractId", "UNKNOWN")
-                coach_id = coach["id"]
+        for individual_call in group_call:
+            call = individual_call["call"]
+            contract = individual_call["contract"]
 
-                # PK: contract_id, SK: session_id (coach_id#student_id#ISO_DATE)
-                session_id = f"{coach_id}#{sid}#{call_date_iso}"
+            # data for checking
+            unlimited = contract.get("unlimited", False)
+            max_end_date = contract.get("max_end_date")
+            start_date = contract.get("start_date")
+            status = contract.get("status")
+            left_calls = contract.get("left_calls")
+            call_units = call["units"]
+            call_date = call["date"]
+            calls_per_week = call["calls_per_week"]
+            total_calls = call["total_calls"]
+            report_card_generator_id = contract.get("report_card_generator_id")
 
-                item = {
-                    "contract_id": contract_id,
-                    "session_id": session_id,
-                    "coach_id": coach["id"],
-                    "student_id": sid,
-                    "date": call_date_iso,
-                    "coach_rate": coach_rate_per_student,
-                    "attendance": data.get("attendance", "YES"),
+            # 0) A priori check
+            if status != "Active":
+                return {"error": f"contract {contract['contract_id']} not active"}
+            if not unlimited:
+                if max_end_date is not None and call_date > max_end_date:
+                    return {"error": f"contract {contract['contract_id']} is expired"}
+                if call_units > left_calls:
+                    return {"error": f"contract {contract['contract_id']} has less left calls"}
+
+        for individual_call in group_call:
+            call = individual_call["call"]
+            contract = individual_call["contract"]
+            checks: List[Dict] = []
+            puts: List[Dict] = []
+            updates: List[Dict] = []
+            deletes: List[Dict] = []
+
+            # 1) CONTRACT: Check if contract has been initialized and its real status
+
+            # status
+            checks.append(
+                {
+                    "TableName": settings.CONTRACTS_TABLE,
+                    "Key": to_low_level_item({"contract_id": call["contract_id"]}),
+                    "ConditionExpression": "#st = :active",
+                    "ExpressionAttributeNames": {
+                        "#st": "status",
+                    },
+                    "ExpressionAttributeValues": {
+                        ":active": {"S": "Active"},
+                    },
                 }
-                batch.put_item(Item=item)
+            )
+            if not unlimited:
+                if start_date is None:
+                    delta_days = int(ceil(7 * 1.7 * total_calls / calls_per_week**0.5))
+                    calculated_max_end_date = (
+                        datetime.fromisoformat(call_date).date() + timedelta(days=delta_days)
+                    ).isoformat()
+
+                    # set start_date and max_end_date
+                    updates.append(
+                        {
+                            "TableName": settings.CONTRACTS_TABLE,
+                            "Key": to_low_level_item({"contract_id": call["contract_id"]}),
+                            "ConditionExpression": "attribute_exists(contract_id) AND attribute_not_exists(start_date)",
+                            "UpdateExpression": "SET start_date = :call_date, max_end_date = :max_end",
+                            "ExpressionAttributeValues": {
+                                ":call_date": {"S": call_date},
+                                ":max_end": {"S": calculated_max_end_date},
+                            },
+                        }
+                    )
+                if max_end_date is not None:
+                    # call_date <= max_end_date
+                    checks.append(
+                        {
+                            "TableName": settings.CONTRACTS_TABLE,
+                            "Key": to_low_level_item({"contract_id": call["contract_id"]}),
+                            "ConditionExpression": ":call_date <= #max_end",
+                            "ExpressionAttributeNames": {
+                                "#max_end": "max_end_date",
+                            },
+                            "ExpressionAttributeValues": {
+                                ":call_date": {"S": call["date"]},
+                            },
+                        }
+                    )
+
+                # call_units <= left_calls
+                checks.append(
+                    {
+                        "TableName": settings.CONTRACTS_TABLE,
+                        "Key": to_low_level_item({"contract_id": call["contract_id"]}),
+                        "ConditionExpression": ":units <= #left",
+                        "ExpressionAttributeNames": {
+                            "#left": "left_calls",
+                        },
+                        "ExpressionAttributeValues": {
+                            ":units": {"N": str(call_units)},
+                        },
+                    }
+                )
+
+            # 2) TRACKER: Put con 'attribute_not_exists(session_id)'
+            puts.append(
+                {
+                    "TableName": settings.TRACKER_TABLE,
+                    "Item": to_low_level_item(call),
+                    "ConditionExpression": "attribute_not_exists(#pk_attr) AND attribute_not_exists(#sk_attr)",
+                    "ExpressionAttributeNames": {
+                        "#pk_attr": "contract_id",
+                        "#sk_attr": "session_id",
+                    },
+                }
+            )
+
+            # 3) CONTRACT: se NON unlimited, aggiorna conteggi
+            if not unlimited:
+                # Unico Update per conteggi
+                updates.append(
+                    {
+                        "TableName": settings.CONTRACTS_TABLE,
+                        "Key": to_low_level_item({"contract_id": call["contract_id"]}),
+                        "ConditionExpression": "attribute_exists(contract_id) AND attribute_exists(left_calls) AND attribute_exists(used_calls)",
+                        "UpdateExpression": "SET left_calls = left_calls - :units, used_calls = used_calls + :units",
+                        "ExpressionAttributeValues": {
+                            ":units": {"N": str(call_units)},
+                        },
+                    }
+                )
+
+                # Secondo Update condizionale **sullo stato pre-transazione**:
+                # Se left_calls == call_units → setta status = 'Inactive'
+                updates.append(
+                    {
+                        "TableName": settings.CONTRACTS_TABLE,
+                        "Key": to_low_level_item({"contract_id": call["contract_id"]}),
+                        "UpdateExpression": "SET #st = :inactive",
+                        "ConditionExpression": "attribute_exists(contract_id) AND attribute_exists(left_calls) AND left_calls = :units",
+                        "ExpressionAttributeNames": {"#st": "status"},
+                        "ExpressionAttributeValues": {
+                            ":units": {"N": str(call_units)},
+                            ":inactive": {"S": "Inactive"},
+                        },
+                    }
+                )
+
+            # 4) REPORT CARD
+
+            if report_card_generator_id is not None:
+                report_card_id = f"{call['coach_id']}#{report_card_generator_id}"
+                report_cards_table = await get_table(db, settings.REPORT_CARDS_TABLE)
+
+                report_cards_response = await report_cards_table.query(
+                    KeyConditionExpression=Key("report_card_id").eq(report_card_id) & Key("start_month").lte(call_date),
+                    FilterExpression=Attr("end_month").gt(call_date),
+                    ProjectionExpression="#report_card_id, #start_month, #status",
+                    ExpressionAttributeNames={
+                        "#report_card_id": "report_card_id",
+                        "#start_month": "start_month",
+                        "#status": "status",
+                    },
+                )
+                report_cards = report_cards_response.get("Items", [])
+                report_card = report_cards[0] if report_cards else {}
+
+                # 4a) CREAZIONE se non esiste e rimozione di eventuale no show
+                if not report_card:
+                    report_card_generators_table = await get_table(db, settings.REPORT_CARD_GENERATORS_TABLE)
+                    report_card_generator_response = await report_card_generators_table.get_item(
+                        Key={"report_card_generator_id": report_card_generator_id}
+                    )
+                    report_card_generator = report_card_generator_response.get("Item")
+                    assert (
+                        report_card_generator["current_start_month"] <= call_date
+                        and call_date < report_card_generator["next_start_month"]
+                        or report_card_generator["next_start_month"] <= call_date
+                    ), "Report card generator non aggiornato"
+
+                    # new report card
+                    report_card["report_card_id"] = report_card_id
+                    if (
+                        report_card_generator["current_start_month"] <= call_date
+                        and call_date < report_card_generator["next_start_month"]
+                    ):
+                        report_card["start_month"] = report_card_generator["current_start_month"]
+                        report_card["end_month"] = report_card_generator["next_start_month"]
+                    if report_card_generator["next_start_month"] <= call_date:
+                        report_card["start_month"] = report_card_generator["next_start_month"]
+                        report_card["end_month"] = (
+                            datetime.fromisoformat(report_card_generator["next_start_month"] + "01").date()
+                            + relativedelta(months=contract["report_card_cadency"])
+                        ).strftime("%Y-%m")
+                    report_card["coach_id"] = call["coach_id"]
+                    report_card["student_id"] = call["student_id"]
+                    report_card["status"] = "draft"
+                    report_card["report_card_generator_id"] = report_card_generator_id
+                    report_card["report_card_email_recipients"] = contract["report_card_email_recipients"]
+                    report_card["report_card_cadency"] = contract["report_card_cadency"]
+                    report_card["client_id"] = contract["client_id"]
+
+                    puts.append(
+                        {
+                            "TableName": settings.REPORT_CARDS_TABLE,
+                            "Item": to_low_level_item(report_card),
+                            "ConditionExpression": "attribute_not_exists(#pk_attr) AND attribute_not_exists(#sk_attr)",
+                            "ExpressionAttributeNames": {
+                                "#pk_attr": "report_card_id",
+                                "#sk_attr": "start_month",
+                            },
+                        }
+                    )
+                    # delete no show rc di head coach JJ
+                    deletes.append(
+                        {
+                            "TableName": settings.REPORT_CARDS_TABLE,
+                            "Key": to_low_level_item(
+                                {
+                                    "report_card_id": "#".join(["JJ"] + report_card["report_card_id"].split("#")[1:]),
+                                    "start_month": report_card["start_month"],
+                                }
+                            ),
+                            "ConditionExpression": "attribute_not_exists(report_card_id) OR #status = :no_show",
+                            "ExpressionAttributeNames": {
+                                "#status": "status",
+                            },
+                            "ExpressionAttributeValues": {
+                                ":no_show": {"S": "no_show"},
+                            },
+                        }
+                    )
+                else:
+                    # 4b) PROMOZIONE NO_SHOW -> DRAFT (se esiste)
+                    if report_card["status"] == "no_show":
+                        updates.append(
+                            {
+                                "TableName": settings.REPORT_CARDS_TABLE,
+                                "Key": to_low_level_item(
+                                    {
+                                        "report_card_id": report_card["report_card_id"],
+                                        "start_month": report_card["start_month"],
+                                    }
+                                ),
+                                "UpdateExpression": "SET #status = :draft",
+                                "ConditionExpression": "attribute_exists(report_card_id) AND attribute_exists(start_month) AND #status = :no_show",
+                                "ExpressionAttributeNames": {"#status": "status"},
+                                "ExpressionAttributeValues": to_low_level_item(
+                                    {":no_show": "no_show", ":draft": "draft"}
+                                ),
+                            }
+                        )
+
+            # 5) Debrief
+            debrief = {
+                "student_id": call["student_id"],
+                "date": call["date"],
+                "coach_id": call["coach_id"],
+                "draft": True,
+            }
+            puts.append(
+                {
+                    "TableName": settings.DEBRIEFS_TABLE,
+                    "Item": to_low_level_item(debrief),
+                    "ConditionExpression": "attribute_not_exists(#pk_attr) AND attribute_not_exists(#sk_attr)",
+                    "ExpressionAttributeNames": {
+                        "#pk_attr": "student_id",
+                        "#sk_attr": "date",
+                    },
+                }
+            )
+
+            await make_atomic_transaction(db, checks=checks, puts=puts, updates=updates, deletes=deletes)
 
         return {"success": True, "message": "Chiamata registrata correttamente."}
     except ClientError as e:
-        logger.error(f"DynamoDB Error in log_call_to_db (TRACKER table): {e}")
+        logger.error(f"DynamoDB Error in log_call_to_db (TRACKER | CONTRACT | REPORT_CARD table): {e}")
         return {"success": False, "error": str(e)}
 
 
@@ -347,7 +655,7 @@ def month_divisors(today_string: str) -> list[int]:
 
 def next_month_prefix(today_date: date) -> str:
     next_month = today_date + relativedelta(months=1)
-    return next_month.isoformat()[:7]
+    return next_month.strftime("%Y-%m")
 
 
 # Funzioni per Tabella REPORT_CARDS
@@ -471,33 +779,33 @@ async def get_flashcards(db, student_id: str) -> List[Dict[str, Any]]:
         return []
 
 
-async def update_flashcard_status(db, data: Dict[str, Any]) -> Dict[str, Any]:
-    """Aggiorna lo stato di una flashcard (Flashcards Table)."""
-    student_id = data.get("studentId")
-    cards = data.get("cards", [])
+# async def update_flashcard_status(db, data: Dict[str, Any]) -> Dict[str, Any]:
+#     """Aggiorna lo stato di una flashcard (Flashcards Table)."""
+#     student_id = data.get("studentId")
+#     cards = data.get("cards", [])
 
-    updated_count = 0
-    try:
-        with db.batch_writer() as batch:
-            for card in cards:
-                en_term = card.get("en")
-                if not en_term:
-                    continue
+#     updated_count = 0
+#     try:
+#         with db.batch_writer() as batch:
+#             for card in cards:
+#                 en_term = card.get("en")
+#                 if not en_term:
+#                     continue
 
-                # PK: student_id, SK: term
-                batch.update_item(
-                    Key={"student_id": student_id, "term": en_term},
-                    UpdateExpression="SET #s = :s ADD Attempts :incA, Correct :incC",
-                    ExpressionAttributeNames={"#s": "Status"},
-                    ExpressionAttributeValues={
-                        ":s": card.get("status"),
-                        ":incA": to_decimal(1),
-                        ":incC": to_decimal(1) if card.get("status").lower() == "known" else to_decimal(0),
-                    },
-                )
-                updated_count += 1
+#                 # PK: student_id, SK: term
+#                 batch.update_item(
+#                     Key={"student_id": student_id, "term": en_term},
+#                     UpdateExpression="SET #s = :s ADD Attempts :incA, Correct :incC",
+#                     ExpressionAttributeNames={"#s": "Status"},
+#                     ExpressionAttributeValues={
+#                         ":s": card.get("status"),
+#                         ":incA": to_decimal(1),
+#                         ":incC": to_decimal(1) if card.get("status").lower() == "known" else to_decimal(0),
+#                     },
+#                 )
+#                 updated_count += 1
 
-        return {"success": True, "updated": updated_count}
-    except ClientError as e:
-        logger.error(f"DynamoDB Error in update_flashcard_status (FLASHCARDS table): {e}")
-        return {"success": False, "error": str(e)}
+#         return {"success": True, "updated": updated_count}
+#     except ClientError as e:
+#         logger.error(f"DynamoDB Error in update_flashcard_status (FLASHCARDS table): {e}")
+#         return {"success": False, "error": str(e)}

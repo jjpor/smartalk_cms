@@ -1,19 +1,32 @@
 # smartalk/routes/coach.py
 
+from datetime import datetime
+from decimal import Decimal
 from typing import Any, Dict, List, cast
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from fastapi.responses import JSONResponse
 from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource
 
-from smartalk.core.dynamodb import get_dynamodb_connection
+from smartalk.core.dynamodb import get_dynamodb_connection, get_table
+from smartalk.core.settings import settings
 from smartalk.db_usage import dynamodb_coach
-from smartalk.routes.auth import create_jwt_token, create_token_response, get_current_user
+from smartalk.routes.auth import create_token_response, get_current_user
 
 router = APIRouter(tags=["Coach Dashboard"], prefix="/api/coach")
 
 # Uso della Dependency Injection per ottenere la connessione resiliente
 DBDependency = Depends(get_dynamodb_connection)
+
+
+def to_decimal(value):
+    """Converte float/int in Decimal per DynamoDB."""
+    try:
+        if value is None:
+            return Decimal(0)
+        return Decimal(str(value))
+    except Exception:
+        return Decimal(0)
 
 
 # ====================================================================
@@ -53,14 +66,41 @@ async def get_students_endpoint(
 async def get_student_contracts_for_individual_endpoint(
     request: Request, coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
 ) -> JSONResponse:
-    """Replica doGet(action='getStudentContracts')."""
+    """Replica doGet(action='getStudentContracts') versione individuale"""
 
     params = dict(request.query_params)
     student_contracts = await dynamodb_coach.get_student_contracts_for_individual(
-        params.get("studentId"), coach["role"], DBDependency
+        params["studentId"], coach["role"], DBDependency
     )
 
     return create_token_response({"contracts": student_contracts}, coach)
+
+
+@router.get("/getStudentContractsForGroup")
+async def get_student_contracts_for_group_endpoint(
+    coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
+) -> JSONResponse:
+    """Replica doGet(action='getStudentContracts') versione di gruppo"""
+
+    grouped_contracts = await dynamodb_coach.get_student_contracts_for_group(DBDependency)
+
+    return create_token_response({"contracts": grouped_contracts}, coach)
+
+
+@router.get("/getStudentsAndContractsByClientAndProduct")
+async def get_students_by_client_and_product_endpoint(
+    request: Request, coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
+) -> JSONResponse:
+    """Fornisce una lista di studenti attivi che hanno un contratto legato ad un determinato cliente e prodotto"""
+
+    params = dict(request.query_params)
+    students = await dynamodb_coach.get_students_and_contracts_by_client_and_product(
+        params["clientId"], params["productId"], DBDependency
+    )
+    participants = await dynamodb_coach.get_participants(params["productId"], DBDependency)
+    assert participants <= len(students)
+
+    return create_token_response({"students": students, "participants": participants}, coach)
 
 
 @router.get("/getMonthlyEarnings")
@@ -70,7 +110,7 @@ async def get_earnings_endpoint(
     """Replica doGet(action='getMonthlyEarnings')."""
 
     coach_id = coach.get("id")
-    earnings = dynamodb_coach.get_monthly_earnings(coach_id, DBDependency)
+    earnings = await dynamodb_coach.get_monthly_earnings(coach_id, DBDependency)
 
     return create_token_response({"earnings": earnings}, coach)
 
@@ -82,7 +122,7 @@ async def get_call_history_endpoint(
     """Replica doGet(action='getCallHistory')."""
 
     coach_id = coach.get("id")
-    history = dynamodb_coach.get_calls_by_coach(coach_id, DBDependency)
+    history = await dynamodb_coach.get_calls_by_coach(coach_id, DBDependency)
 
     return create_token_response({"history": history}, coach)
 
@@ -98,7 +138,7 @@ async def get_student_info_endpoint(
     if not student_info:
         raise HTTPException(status_code=404, detail="Student not found")
 
-    calls = dynamodb_coach.get_calls_by_student(params.get("studentId"), DBDependency)
+    calls = await dynamodb_coach.get_calls_by_student(params.get("studentId"), DBDependency)
     student_info["calls"] = calls
     return create_token_response({"studentInfo": student_info}, coach)
 
@@ -155,13 +195,148 @@ async def get_report_card_tasks_endpoint(
 # # ====================================================================
 
 
-@router.post("/logCall")
-async def log_call_endpoint(
+@router.post("/logCallForIndividual")
+async def log_call_for_individual_endpoint(
     data: Dict[str, Any], coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
 ) -> JSONResponse:
-    """Replica doPost(action='logCall')."""
+    """Replica doPost(action='logCall') versione individuale."""
 
-    result = dynamodb_coach.log_call_to_db(data, coach, DBDependency)
+    contract_id = data["contract_id"]
+    student_id = data["student_id"]
+    call_date = datetime.fromisoformat(data["callDate"]).date().isoformat()
+
+    contract_table = await get_table(DBDependency, settings.CONTRACTS_TABLE)
+    product_table = await get_table(DBDependency, settings.PRODUCTS_TABLE)
+    contract_response = contract_table.get_item(Key={"contract_id": contract_id})
+    contract = contract_response["Item"]
+    product_response = product_table.get_item(Key={"product_id": contract.get("product_id")})
+    product = product_response["Item"]
+
+    standard_duration = product["duration"]
+    effective_duration = data.get("callDuration", standard_duration)
+    units = to_decimal(effective_duration / standard_duration)
+    standard_rate = to_decimal(product[f"{coach['role'].split(' ')[0].lower()}_coach_rate"])
+    coach_rate = to_decimal(standard_rate * units)
+    head_rate = to_decimal(product["head_coach_rate"])
+    prod_cost = to_decimal(head_rate * units)
+    attendance = data.get("attendance", True)
+    notes = data.get("notes", "")
+
+    # PK: contract_id, SK: session_id (coach_id#student_id#ISO_DATE)
+    session_id = f"{coach['id']}#{student_id}#{call_date}"
+
+    call = {
+        "contract_id": contract_id,
+        "session_id": session_id,
+        "coach_id": coach["id"],
+        "student_id": student_id,
+        "product_id": product["product_id"],
+        "date": call_date,
+        "coach_rate": coach_rate,
+        "prod_cost": prod_cost,
+        "attendance": attendance,
+        "duration": effective_duration,
+        "units": units,
+        "notes": notes,
+    }
+
+    result = await dynamodb_coach.log_call_to_db(
+        [
+            {
+                "call": call,
+                "contract": contract,
+            }
+        ],
+        DBDependency,
+    )
+
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail=result.get("error"))
+
+    return create_token_response({"message": result.get("message", "Chiamata registrata!")}, coach)
+
+
+@router.post("/logCallForGroup")
+async def log_call_for_group_endpoint(
+    data: Dict[str, Any], coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
+) -> JSONResponse:
+    """Replica doPost(action='logCall') versione di gruppo."""
+
+    # TODO: far evolvere log_call_to_db in log_call_to_db con data_list, in cui per individuale è [{"call": call, "contract": contract}]
+    # check a priori globale e poi esegui una transazione per studente (di solito 5–7 item ciascuna)
+    group = data["group"]
+    client_id = data["client_id"]
+    product_id = data["product_id"]
+    call_date = datetime.fromisoformat(data["callDate"]).date().isoformat()
+
+    contract_table = await get_table(DBDependency, settings.CONTRACTS_TABLE)
+    product_table = await get_table(DBDependency, settings.PRODUCTS_TABLE)
+
+    product_response = product_table.get_item(Key={"product_id": product_id})
+    product = product_response["Item"]
+
+    assert product["participants"] == len(group), (
+        f"Product {product['product_id']} has a different number of participants"
+    )
+
+    standard_duration = product["duration"]
+    effective_duration = data.get("callDuration", standard_duration)
+    units = to_decimal(effective_duration / standard_duration)
+    standard_rate = to_decimal(product[f"{coach['role'].split(' ')[0].lower()}_coach_rate"])
+    splitted_unit_cost_per_student = units / product["participants"]
+    coach_rate = to_decimal(standard_rate * splitted_unit_cost_per_student)
+    head_rate = to_decimal(product["head_coach_rate"])
+    prod_cost = to_decimal(head_rate * splitted_unit_cost_per_student)
+
+    group_call = []
+    students_already_in_group = []
+
+    for participant in group:
+        contract_id = participant["contract_id"]
+        student_id = participant["student_id"]
+
+        # check no student repetitions
+        assert student_id not in students_already_in_group, f"{student_id} duplicated"
+        students_already_in_group.append(student_id)
+
+        # check right contract for student, client, product
+        contract_response = contract_table.get_item(Key={"contract_id": contract_id})
+        contract = contract_response["Item"]
+        assert contract["student_id"] == student_id, f"{student_id} has a different contract"
+        assert contract["product_id"] == product_id, f"{student_id} has a different product"
+        assert contract["client_id"] == client_id, f"{student_id} is under a different client"
+
+        attendance = participant.get("attendance", True)
+        notes = participant.get("notes", "")
+
+        # PK: contract_id, SK: session_id (coach_id#student_id#ISO_DATE)
+        session_id = f"{coach['id']}#{student_id}#{call_date}"
+
+        call = {
+            "contract_id": contract_id,
+            "session_id": session_id,
+            "coach_id": coach["id"],
+            "student_id": student_id,
+            "product_id": product_id,
+            "date": call_date,
+            "coach_rate": coach_rate,
+            "prod_cost": prod_cost,
+            "attendance": attendance,
+            "duration": effective_duration,
+            "units": units,
+            "notes": notes,
+        }
+        group_call.append(
+            {
+                "call": call,
+                "contract": contract,
+            }
+        )
+
+    result = await dynamodb_coach.log_call_to_db(
+        group_call,
+        DBDependency,
+    )
 
     if not result.get("success"):
         raise HTTPException(status_code=400, detail=result.get("error"))
