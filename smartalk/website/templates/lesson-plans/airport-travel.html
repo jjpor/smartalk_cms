@@ -1,0 +1,200 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "Airport Travel" %}
+{% set lesson_subtitle = "A guide to the journey and vocabulary of air travel." %}
+
+{# AGGIORNATO: Aggiunta la nuova sezione #}
+{% set nav_links = [
+{'id': 'warmup', 'title': 'Warm-Up'},
+{'id': 'vocabulary', 'title': 'Vocabulary'},
+{'id': 'problem-solver', 'title': 'Problem Solver'},
+{'id': 'discussion', 'title': 'Discussion'},
+{'id': 'advanced-discussion', 'title': 'Advanced'}
+] %}
+
+
+{# --- Fase 2: Estensione e Import (AGGIORNATO) --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, dropdown_fill_in_exercise, random_item_generator %}
+
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne - REGOLA CRITICA) (AGGIUNTO) --- #}
+
+{# Dati per Sezione 2 (Vocabulary Dropdown) #}
+{% set vocab_options = ['Check-in counter', 'Boarding pass', 'Gate', 'Customs', 'Carry-on luggage', 'Layover', 'Overhead
+compartment', 'Turbulence', 'Security check'] %}
+{% set vocab_dropdown_data = [
+{'prefix': 'The ticket you need to enter the plane is the', 'options': vocab_options, 'answer': 'Boarding pass',
+'suffix': '.'},
+{'prefix': 'The place where you get your boarding pass and drop luggage is the', 'options': vocab_options, 'answer':
+'Check-in counter', 'suffix': '.'},
+{'prefix': 'The waiting area before boarding is the', 'options': vocab_options, 'answer': 'Gate', 'suffix': '.'},
+{'prefix': 'The small bag you are allowed to take inside the plane is called', 'options': vocab_options, 'answer':
+'Carry-on luggage', 'suffix': '.'},
+{'prefix': 'The space above your seat for bags is the', 'options': vocab_options, 'answer': 'Overhead compartment',
+'suffix': '.'},
+{'prefix': 'When the plane shakes during the flight, it\'s called', 'options': vocab_options, 'answer': 'Turbulence',
+'suffix': '.'},
+{'prefix': 'A stop at another airport before your final destination is a', 'options': vocab_options, 'answer':
+'Layover', 'suffix': '.'},
+{'prefix': 'The place where officials check your bags and scan you is the', 'options': vocab_options, 'answer':
+'Security check', 'suffix': '.'}
+] %}
+
+{# Dati per Sezione 3 (Problem Solver) #}
+{% set problem_scenarios = [
+'Your luggage is lost.',
+'Your flight is delayed by 8 hours.',
+'You are at the wrong gate and your flight boards in 5 minutes.',
+'The passenger next to you is snoring very loudly.',
+'You spilled coffee all over the flight attendant by accident.',
+'You can\'t find your passport at the security check.',
+'You have a layover, but your connecting flight is cancelled.'
+] %}
+
+
+{# --- Fase 5: Conversione Contenuto (Modello Semplice) --- #}
+
+{% call info_card('warmup', '1. Warm-Up Discussion (5 minutes)', initial_state='show') %}
+<ul class="text-slate-600">
+    <li>Have you ever traveled by plane?</li>
+    <li>What is the best or worst experience you've had at the airport or on a plane?</li>
+    <li>If you could fly anywhere tomorrow, where would you go?</li>
+</ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# --- SEZIONE 2 (VOCAB) AGGIORNATA --- #}
+{% call info_card('vocabulary', '2. Vocabulary (8 minutes)', initial_state='show') %}
+<p class="mt-4 text-slate-600">Review quickly with examples:</p>
+<ul class="text-slate-600">
+    <li><strong>Check-in counter</strong> - where you get your boarding pass and drop your luggage</li>
+    <li><strong>Boarding pass</strong> - the ticket you need to enter the plane</li>
+    <li><strong>Gate</strong> - waiting area before boarding</li>
+    <li><strong>Customs</strong> - where officials ask questions about your trip and luggage</li>
+    <li><strong>Carry-on luggage</strong> - small bag allowed inside the plane</li>
+    <li><strong>Layover</strong> - a stop at another airport before your final destination</li>
+    <li><strong>Overhead compartment</strong> - space above your seat for bags</li>
+    <li><strong>Turbulence</strong> - when the plane shakes during the flight</li>
+    <li><strong>Security check</strong> - where you and your bags are scanned before boarding</li>
+</ul>
+
+{# --- Esercizio Aggiunto (come da Regola v4.2) --- #}
+<div class="mt-6">
+    <h4 class="font-semibold text-slate-800">Vocabulary Check:</h4>
+    <p class="mt-2 mb-4 text-slate-600">Now, test your knowledge with the definitions:</p>
+    {{ dropdown_fill_in_exercise('vocab-check', vocab_dropdown_data) }}
+</div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# --- NUOVA SEZIONE 3 (PROBLEM SOLVER) --- #}
+{% call info_card('problem-solver', '3. Travel Problem Solver (Activity)', initial_state='show') %}
+<p class="mb-4 text-slate-600">Oh no! You have a travel problem. Click the button to get a random scenario, then explain
+    (in English) what you would do or say to solve it.</p>
+{{ random_item_generator('problem-solver-random', 'Get a New Problem', 'problem-list', problem_scenarios) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# --- RINUMERATA (ora 4) --- #}
+{% call info_card('discussion', '4. Discussion Questions (17 minutes)', initial_state='show') %}
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">At the Airport</h4>
+    <ul class="text-slate-600">
+        <li>What is the most stressful part of being at the airport?</li>
+        <li>Do you arrive early or at the last minute? Why?</li>
+        <li>Have you ever missed a flight or had a delay? How did you handle it?</li>
+        <li>Do you like shopping or eating at airports, or do you find it boring?</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">On the Plane</h4>
+    <ul class="text-slate-600">
+        <li>What do you usually do during a flight (read, sleep, watch movies, work)?</li>
+        <li>How do you feel when there is turbulence?</li>
+        <li>What's the best food or drink you've had on a plane?</li>
+        <li>Do you prefer the aisle seat, middle seat, or window seat? Why?</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Customs & Security</h4>
+    <ul class="text-slate-600">
+        <li>Have you ever had problems with customs? What happened?</li>
+        <li>Do you find airport security strict or helpful?</li>
+        <li>What would you do if you didn't understand an airport announcement in English?</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Traveling with Kids</h4>
+    <ul class="text-slate-600">
+        <li>How do you think traveling with children is different from traveling alone?</li>
+        <li>What can parents do to make the flight easier for their kids?</li>
+        <li>Have you ever been on a plane with crying children? How did you feel?</li>
+        <li>Do you think airlines should provide special services for families (like play areas, family-only boarding,
+            or extra help)?</li>
+        <li>What advice would you give to a family traveling with a baby on a long flight?</li>
+    </ul>
+</div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# --- RINUMERATA (ora 5) --- #}
+{% call info_card('advanced-discussion', '5. Advanced Discussion Questions', initial_state='show') %}
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Airport & Security</h4>
+    <ul class="text-slate-600">
+        <li>Do you think airport security today is more about <strong>actual safety</strong> or <strong>creating a sense
+                of safety</strong>?</li>
+        <li>How should airports balance efficiency with thorough security checks?</li>
+        <li>In what ways has technology changed the passenger experience, for better or worse?</li>
+        <li>Do you think "fast-track" security lanes for business or first-class passengers are fair? Why or why not?
+        </li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Customs & Immigration</h4>
+    <ul class="text-slate-600">
+        <li>What challenges do travelers face at customs when entering a new country?</li>
+        <li>Do you think customs officials should have the power to search devices (phones, laptops)? Why or why not?
+        </li>
+        <li>How can cultural misunderstandings make customs interactions more stressful?</li>
+        <li>In your opinion, should countries make entry easier for tourists, or maintain strict controls?</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">On the Plane</h4>
+    <ul class="text-slate-600">
+        <li>Some people describe long flights as exhausting, others as relaxing. What factors make the difference?</li>
+        <li>How do airlines manage customer expectations when it comes to comfort, food, and service?</li>
+        <li>What is your view on budget airlines vs. full-service carriers? What trade-offs do travelers accept?</li>
+        <li>How might turbulence affect passengers differently, depending on their personality or travel habits?</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Traveling with Children</h4>
+    <ul class="text-slate-600">
+        <li>What strategies could parents use to minimize stress when flying with children?</li>
+        <li>Should airlines create child-free sections on planes, or would that be discriminatory?</li>
+        <li>How do children's needs highlight weaknesses in the way airports and planes are designed?</li>
+        <li>In your experience, how do passengers usually react to families traveling with young kids?</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Broader Perspectives</h4>
+    <ul class="text-slate-600">
+        <li>How do airports reflect the culture and values of a country?</li>
+        <li>Do you think frequent flying is becoming less socially acceptable due to climate change?</li>
+        <li>In 20 years, how might airports and air travel be different from today?</li>
+        <li>If you could redesign the airport experience, what would you change first?</li>
+    </ul>
+</div>
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}

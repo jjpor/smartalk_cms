@@ -1,0 +1,162 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "Cross-Cultural Communication" %}
+{% set lesson_subtitle = "A lesson on communicating effectively across different cultures." %}
+
+{# AGGIORNATO: 'highlowcontext' rimosso #}
+{% set nav_links = [
+{'id': 'warmup', 'title': 'Warm-Up'},
+{'id': 'vocabulary', 'title': 'Vocabulary'},
+{'id': 'professional', 'title': 'Professional or Not?'},
+{'id': 'steps', 'title': 'Effective Steps'},
+{'id': 'scenarios', 'title': 'Scenarios'},
+{'id': 'wrapup', 'title': 'Wrap-Up'}
+] %}
+
+
+{# --- Fase 2: Estensione e Import (AGGIORNATO) --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, match_exercise, multiple_choice_exercise %}
+
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne - REGOLA CRITICA) (AGGIUNTO) --- #}
+
+{# Dati per Sezione 2 (Vocabulary Match) #}
+{% set vocab_terms = [
+{'id': '1', 'text': 'Cultural norms'},
+{'id': '2', 'text': 'Formality'},
+{'id': '3', 'text': 'Indirect communication'},
+{'id': '4', 'text': 'Hierarchy'},
+{'id': '5', 'text': 'Stereotype'},
+{'id': '6', 'text': 'Cultural intelligence (CQ)'}
+] %}
+{% set vocab_defs = [
+{'id': '1', 'text': 'Shared rules or expectations in a society.'},
+{'id': '2', 'text': 'Level of politeness or respect shown in communication.'},
+{'id': '3', 'text': 'Expressing ideas subtly or politely rather than directly.'},
+{'id': '4', 'text': 'Power structure that determines how people interact.'},
+{'id': '5', 'text': 'An oversimplified idea about a group of people.'},
+{'id': '6', 'text': 'Ability to adapt and work effectively across cultures.'}
+] %}
+
+{# Dati per Sezione 3 (Professional or Not? Quiz) #}
+{% set prof_questions = [
+{
+'text': 'Using first names with your manager in a very formal culture.',
+'options': [{'value': 'prof', 'text': 'Professional'}, {'value': 'not_prof', 'text': 'Not Professional'}, {'value':
+'depends', 'text': 'Depends'}],
+'correct_value': 'not_prof'
+},
+{
+'text': 'Pausing before answering to show respect in some Asian cultures.',
+'options': [{'value': 'prof', 'text': 'Professional'}, {'value': 'not_prof', 'text': 'Not Professional'}, {'value':
+'depends', 'text': 'Depends'}],
+'correct_value': 'prof'
+},
+{
+'text': 'Speaking very directly about problems in a culture that values harmony.',
+'options': [{'value': 'prof', 'text': 'Professional'}, {'value': 'not_prof', 'text': 'Not Professional'}, {'value':
+'depends', 'text': 'Depends'}],
+'correct_value': 'not_prof'
+},
+{
+'text': 'Being aware of time zones and adjusting your schedule for global calls.',
+'options': [{'value': 'prof', 'text': 'Professional'}, {'value': 'not_prof', 'text': 'Not Professional'}, {'value':
+'depends', 'text': 'Depends'}],
+'correct_value': 'prof'
+},
+{
+'text': 'Assuming your way of doing business is the "normal" way.',
+'options': [{'value': 'prof', 'text': 'Professional'}, {'value': 'not_prof', 'text': 'Not Professional'}, {'value':
+'depends', 'text': 'Depends'}],
+'correct_value': 'not_prof'
+},
+{
+'text': 'Asking questions to clarify if you\'re not sure about cultural expectations.',
+'options': [{'value': 'prof', 'text': 'Professional'}, {'value': 'not_prof', 'text': 'Not Professional'}, {'value':
+'depends', 'text': 'Depends'}],
+'correct_value': 'prof'
+}
+] %}
+
+
+{# --- Fase 5: Conversione Contenuto (Modello Semplice) --- #}
+
+{% call info_card('warmup', '1. Warm-Up Discussion', initial_state='show') %}
+<ul class="text-slate-600">
+    <li>Have you ever worked or studied with people from another culture? What was it like?</li>
+    <li>What's one cultural difference that surprised you?</li>
+    <li>Do you think miscommunication happens more often in international teams? Why or why not?</li>
+    <li>Which is harder: language differences or cultural differences?</li>
+</ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# --- SEZIONE 2 AGGIORNATA --- #}
+{% call info_card('vocabulary', '2. Vocabulary (Matching)', initial_state='show') %}
+<p class="mb-4 text-slate-600">Match the vocabulary term on the left with its correct definition on the right.</p>
+{{ match_exercise('vocab-match', vocab_terms, vocab_defs) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# --- SEZIONE 3 AGGIORNATA --- #}
+{% call info_card('professional', '3. Professional or Not? (Quiz)', initial_state='show') %}
+<p class="mb-4 text-slate-600">Decide if these behaviors are generally professional in an international setting.</p>
+{{ multiple_choice_exercise('prof-quiz', prof_questions) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# --- SEZIONE 4 (High/Low Context) RIMOSSA --- #}
+
+
+{# --- SEZIONE 5 (ora 4) RINUMERATA --- #}
+{% call info_card('steps', '4. Steps for Effective Cross-Cultural Communication', initial_state='show') %}
+<ul class="text-slate-600">
+    <li><strong>Step 1: Be Aware of Differences</strong> - Recognize that your way is not the only way.</li>
+    <li><strong>Step 2: Listen and Observe</strong> - Notice body language, tone, and timing.</li>
+    <li><strong>Step 3: Clarify and Confirm</strong> - Ask polite questions to avoid miscommunication.</li>
+    <li><strong>Step 4: Adapt Your Style</strong> - Adjust formality, directness, or tone depending on the culture.</li>
+    <li><strong>Step 5: Find Common Ground</strong> - Focus on shared goals rather than differences.</li>
+    <li><strong>Step 6: Reflect and Learn</strong> - Think about what worked, what didn't, and apply it next time.</li>
+</ul>
+<p class="mt-4 text-slate-600"><strong>Activity:</strong> Students apply these steps to one of the scenarios (below).
+</p>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# --- SEZIONE 6 (ora 5) RINUMERATA --- #}
+{% call info_card('scenarios', '5. Scenarios (Speaking Practice)', initial_state='show') %}
+<ul class="text-slate-600">
+    <li>You're working with a colleague from a culture where saying "no" directly is impolite. How do you understand
+        what they mean?</li>
+    <li>You're giving feedback to a team member from a more formal culture. How should you adjust your style?</li>
+    <li>You are in a meeting with people from high-context and low-context cultures. How do you make sure everyone
+        understands?</li>
+    <li>Your international client prefers long relationship-building conversations before doing business. How do you
+        handle it if you prefer directness?</li>
+    <li>A global team is confused because some people arrive late to meetings (cultural differences in time). How do you
+        resolve it?</li>
+</ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# --- SEZIONE 7 (ora 6) RINUMERATA --- #}
+{% call info_card('wrapup', '6. Reflection & Wrap-Up', initial_state='show') %}
+<ul class="text-slate-600">
+    <li>Which communication style (direct or indirect) do you prefer? Why?</li>
+    <li>Do you think professionalism looks the same in every culture?</li>
+    <li>What's one strategy you can use this week to improve cross-cultural communication?</li>
+    <li>How can cultural intelligence (CQ) help your career?</li>
+</ul>
+{% endcall %}
+
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}

@@ -1,0 +1,190 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "Professionalism" %}
+{% set lesson_subtitle = "A guide to professional behavior in the workplace." %}
+
+{% set nav_links = [
+    {'id': 'warmup', 'title': 'Warm-Up'},
+    {'id': 'vocabulary', 'title': 'Vocabulary'},
+    {'id': 'professional_activity', 'title': 'Professional or Not?'},
+    {'id': 'discussion', 'title': 'Discussion'},
+    {'id': 'clients', 'title': 'In-Office vs. Clients'},
+    {'id': 'wrapup', 'title': 'Wrap-Up'}
+] %}
+
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, match_exercise, classify_exercise %}
+
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne) --- #}
+
+{# Dati per Sezione 2 (Idioms Match) #}
+{% set idiom_terms = [
+    {'id': '1', 'text': 'Dress for success'},
+    {'id': '2', 'text': 'Keep your cool'},
+    {'id': '3', 'text': 'Go the extra mile'},
+    {'id': '4', 'text': 'By the book'},
+    {'id': '5', 'text': 'On the ball'},
+    {'id': '6', 'text': 'Think outside the box'}
+] %}
+{% set idiom_defs = [
+    {'id': '1', 'text': 'Wear clothes that help you make a good impression'},
+    {'id': '2', 'text': 'Stay calm in stressful situations'},
+    {'id': '3', 'text': 'Do more than is expected of you'},
+    {'id': '4', 'text': 'Follow the rules exactly'},
+    {'id': '5', 'text': 'Be alert, focused, and quick to understand'},
+    {'id': '6', 'text': 'Be creative and innovative'}
+] %}
+
+{# Dati per Sezione 3 (Classification) #}
+{% set prof_categories = ['Professional Behavior', 'Unprofessional Behavior'] %}
+{% set prof_items = [
+    {'text': 'Arriving to a meeting 5 minutes early', 'category': 'Professional Behavior'},
+    {'text': 'Meeting deadlines consistently', 'category': 'Professional Behavior'},
+    {'text': 'Listening actively without interrupting', 'category': 'Professional Behavior'},
+    {'text': 'Checking your phone while someone is speaking', 'category': 'Unprofessional Behavior'},
+    {'text': 'Gossiping about colleagues', 'category': 'Unprofessional Behavior'},
+    {'text': 'Interrupting others during a presentation', 'category': 'Unprofessional Behavior'}
+] %}
+
+
+{# --- Fase 5: Conversione Contenuto --- #}
+
+{% call info_card('warmup', '1. Warm-Up Discussion', initial_state='show') %}
+    <ul class="text-slate-600">
+        <li>How would you define professionalism in your own words?</li>
+        <li>Who is the most professional person you've worked with? Why?</li>
+        <li>Can someone be skilled but not professional? Give an example.</li>
+    </ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('vocabulary', '2. Vocabulary: Idioms for Professionalism', initial_state='show') %}
+    <p class="mt-4 text-slate-600">(Teacher explains, students use in sentences or roleplays.)</p>
+    <ul class="text-slate-600">
+        <li><strong>Dress for success</strong> - Dress in a way that will help you succeed.</li>
+        <li><strong>Put your best foot forward</strong> - Make the best possible impression.</li>
+        <li><strong>Keep your cool</strong> - Stay calm in stressful situations.</li>
+        <li><strong>Go the extra mile</strong> - Do more than is expected.</li>
+        <li><strong>By the book</strong> - Follow the rules exactly.</li>
+        <li><strong>On the ball</strong> - Be alert and quick to understand.</li>
+        <li><strong>Lead by example</strong> - Show others how to behave through your actions.</li>
+        <li><strong>Think outside the box</strong> - Be creative and innovative.</li>
+        <li><strong>Uphold standards</strong> - Maintain high quality and ethics.</li>
+        <li><strong>Keep it professional</strong> - Avoid letting emotions or personal issues affect work.</li>
+    </ul>
+    
+    {# NUOVO ESERCIZIO DI MATCHING #}
+    <div class="mt-8">
+        <h4 class="font-semibold text-slate-800 mb-4">Quick Check: Match the idioms</h4>
+        {{ match_exercise('idiom-match', idiom_terms, idiom_defs) }}
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('professional_activity', '3. Activity: Professional or Not?', initial_state='show') %}
+    <p class="mt-4 mb-6 text-slate-600">Decide if these actions are generally considered professional or unprofessional in a typical workplace.</p>
+    
+    {# NUOVO ESERCIZIO DI CLASSIFICAZIONE #}
+    {{ classify_exercise('prof-classify', prof_categories, prof_items) }}
+
+    <div class="mt-6">
+        <h4 class="font-semibold text-slate-800">Follow-up Questions:</h4>
+        <ul class="text-slate-600">
+            <li>Which unprofessional behaviors do you think are most common in offices?</li>
+            <li>Which behaviors are "deal-breakers" in client situations?</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('discussion', '4. Guided Discussion', initial_state='show') %}
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">General Workplace</h4>
+        <ul class="text-slate-600">
+            <li>Describe a time you saw excellent professionalism at work.</li>
+            <li>How can someone show professionalism without saying a word?</li>
+            <li>What's more important for professionalism-skills or attitude?</li>
+            <li>How can a team recover if someone acts unprofessionally?</li>
+        </ul>
+    </div>
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Cultural Perspectives</h4>
+        <ul class="text-slate-600">
+            <li>Are expectations for professionalism different in your country vs. others?</li>
+            <li>In your culture, is "dressing for success" common or is casual clothing accepted?</li>
+            <li>How do people in your country usually handle disagreements at work?</li>
+        </ul>
+    </div>
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Ethics & Standards</h4>
+        <ul class="text-slate-600">
+            <li>When is it okay to bend the rules at work? When is it not okay?</li>
+            <li>Is "going the extra mile" always positive, or can it be harmful?</li>
+            <li>Have you ever had to "keep your cool" in a stressful meeting? What happened?</li>
+        </ul>
+    </div>
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Leadership & Growth</h4>
+        <ul class="text-slate-600">
+            <li>Do good leaders always "lead by example"?</li>
+            <li>How can managers encourage employees to "think outside the box"?</li>
+            <li>Is following everything "by the book" always the best choice?</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('clients', '5. In-Office vs. Clients', initial_state='show') %}
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">A. In the Office</h4>
+        <ul class="text-slate-600">
+            <li>How should you greet colleagues in the morning?</li>
+            <li>Is it okay to share personal problems at work?</li>
+            <li>How do you respectfully disagree with a co-worker?</li>
+            <li>What is the right way to give feedback to a colleague?</li>
+            <li>How do you "keep it professional" when office gossip starts?</li>
+        </ul>
+    </div>
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">B. With Clients</h4>
+        <ul class="text-slate-600">
+            <li>How is your communication style different with clients compared to co-workers?</li>
+            <li>What are polite ways to say "no" to a client?</li>
+            <li>How important is first impression? What role does appearance play?</li>
+            <li>How should you handle a client who is upset or complaining?</li>
+            <li>Should you always follow rules "by the book" with clients, or sometimes bend them?</li>
+        </ul>
+    </div>
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">C. Comparison Questions</h4>
+        <ul class="text-slate-600">
+            <li>Is professionalism more important inside the office or with clients? Why?</li>
+            <li>Are you more relaxed with colleagues than clients? Should you be?</li>
+            <li>Which situations require you to "lead by example" more-in front of your team or with clients?</li>
+            <li>Is "thinking outside the box" more acceptable in internal meetings or client presentations? Why?</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('wrapup', '6. Wrap-Up', initial_state='show') %}
+    <ul class="text-slate-600">
+        <li>Which idiom about professionalism do you like most? Why?</li>
+        <li>What's one unprofessional behavior you want to avoid in your workplace?</li>
+        <li>Do you think professionalism is more about appearance, communication, or behavior?</li>
+        <li>How can practicing professionalism in English help you in your career?</li>
+    </ul>
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}

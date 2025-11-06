@@ -1,13 +1,11 @@
-{# --- 1. Definizione delle Variabili della Lezione --- #}
 {% set lesson_title = "The Guide to Actionable Feedback" %}
 {% set lesson_subtitle = "A toolkit for giving and receiving constructive feedback." %}
-
 {% set nav_links = [
-    {'id': 'introduction', 'title': 'Introduction'},
-    {'id': 'vocabulary', 'title': 'Vocabulary'},
-    {'id': 'discussions', 'title': 'Discussions'},
-    {'id': 'exercises', 'title': 'Exercises'},
-    {'id': 'closing-thoughts', 'title': 'Closing Thoughts'}
+{'id': 'introduction', 'title': 'Introduction'},
+{'id': 'vocabulary', 'title': 'Vocabulary'},
+{'id': 'discussions', 'title': 'Discussions'},
+{'id': 'exercises', 'title': 'Exercises'},
+{'id': 'closing-thoughts', 'title': 'Closing Thoughts'}
 ] %}
 
 
@@ -19,203 +17,233 @@
 {# --- 3. Contenuto Specifico della Lezione --- #}
 {% block lesson_content %}
 
-    {# Sezione 1: Introduction #}
-    {# L'ID 'introduction' qui corrisponde a nav_links. #}
-    {# 'initial_state="show"' fa partire questa prima sezione aperta. #}
-    {% call info_card('introduction', 'Introduction', initial_state='show') %}
-        <p class="text-slate-700 mb-6">Feedback is a powerful tool for growth, but it's not always easy to give or receive. This guide will help you navigate workplace feedback by providing a framework, key vocabulary, and practical exercises to turn vague comments into clear, actionable steps.</p>
-        
-        <div class="space-y-4">
-            {# Questa è la "tendina" interna. Parte chiusa perché .card-content non ha .show #}
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Questions to Consider</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-                        <li>When was the last time you received feedback at work? What was it about?</li>
-                        <li>Do you usually feel that feedback at your job is helpful? Why or why not?</li>
-                        <li>What makes feedback difficult to give or receive?</li>
-                        <li>In your language, is feedback typically direct or indirect? How is that different from English-speaking workplaces?</li>
-                    </ul>
-                </div>
+{# Sezione 1: Introduction #}
+{# L'ID 'introduction' qui corrisponde a nav_links. #}
+{# 'initial_state="show"' fa partire questa prima sezione aperta. #}
+{% call info_card('introduction', 'Introduction', initial_state='show') %}
+<p class="text-slate-700 mb-6">Feedback is a powerful tool for growth, but it's not always easy to give or receive. This
+    guide will help you navigate workplace feedback by providing a framework, key vocabulary, and practical exercises to
+    turn vague comments into clear, actionable steps.</p>
+
+<div class="space-y-4">
+    {# Questa è la "tendina" interna. Parte chiusa perché .card-content non ha .show #}
+    <div class="lesson-card">
+        <div class="card-header flex justify-between items-center">
+            <h3 class="font-bold text-slate-800">Questions to Consider</h3>
+            <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+        </div>
+        <div class="card-content">
+            <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                <li>When was the last time you received feedback at work? What was it about?</li>
+                <li>Do you usually feel that feedback at your job is helpful? Why or why not?</li>
+                <li>What makes feedback difficult to give or receive?</li>
+                <li>In your language, is feedback typically direct or indirect? How is that different from
+                    English-speaking workplaces?</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endcall %}
+
+
+{# Sezione 2: Vocabulary #}
+{# L'ID 'vocabulary' qui corrisponde a nav_links. #}
+{% call info_card('vocabulary', 'Key Vocabulary') %}
+<p class="text-slate-700 mb-6">Understanding the language of feedback is the first step toward mastering it. Let's
+    clarify a few key terms.</p>
+<div class="space-y-4">
+
+    {# Tendina interna 1 (chiusa) #}
+    <div class="lesson-card">
+        <div class="card-header flex justify-between items-center">
+            <h3 class="font-bold text-slate-800">Clear vs. Ambiguous</h3>
+            <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+        </div>
+        <div class="card-content">
+            <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                <li>Can you give an example of ambiguous vs. clear feedback?</li>
+                <li>Example: "Be more strategic" (Ambiguous) vs. "Next time, include market trends and competitor
+                    analysis in your report to show a strategic perspective" (Clear).</li>
+            </ul>
+        </div>
+    </div>
+
+    {# Tendina interna 2 (chiusa) #}
+    <div class="lesson-card">
+        <div class="card-header flex justify-between items-center">
+            <h3 class="font-bold text-slate-800">Self-Awareness</h3>
+            <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+        </div>
+        <div class="card-content">
+            <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                <li>Why is self-awareness important when receiving feedback?</li>
+                <li>Self-awareness allows you to understand your own strengths and weaknesses, so you can receive
+                    feedback without defensiveness.</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endcall %}
+
+
+{# Sezione 3: Discussions #}
+{% call info_card('discussions', 'Read & Discuss') %}
+<p class="text-slate-700 mb-6">Reading through these short passages and discussing the questions can help you
+    internalize key strategies for getting better feedback.</p>
+<div class="space-y-4">
+
+    {# Tendina interna 1 (chiusa) #}
+    <div class="lesson-card">
+        <div class="card-header flex justify-between items-center">
+            <h3 class="font-bold text-slate-800">Topic 1: Vague Feedback</h3>
+            <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+        </div>
+        <div class="card-content">
+            <p class="mt-4 text-slate-600">When feedback is vague, it can feel frustrating. You know you need to
+                improve, but you don't know exactly how. Without specific examples, it's hard to know what success looks
+                like. Vague feedback happens more often as you move up in a company. Leaders are busy, and feedback
+                becomes softer, talking about things like "vision" or "alignment." Sometimes bosses are too overwhelmed
+                or not trained to give clear feedback.</p>
+            <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                <li>Have you ever been given vague feedback, like “be more strategic” or “do better”? How did you try to
+                    figure out what to do?</li>
+                <li>Why do you think managers sometimes give unclear advice?</li>
+            </ul>
+        </div>
+    </div>
+
+    {# Tendina interna 2 (chiusa) #}
+    <div class="lesson-card">
+        <div class="card-header flex justify-between items-center">
+            <h3 class="font-bold text-slate-800">Topic 2: Asking Better Questions</h3>
+            <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+        </div>
+        <div class="card-content">
+            <p class="mt-4 text-slate-600">To get better feedback, ask more specific questions. Instead of asking “How
+                did I do?” you can ask “What's one thing I could have improved in my presentation?” Narrowing the focus
+                helps your manager give you useful answers. Presenting two clear options (forced choice) can help
+                managers give faster and clearer feedback. Instead of asking open questions, offer choices like “Is the
+                issue the message or the audience?”</p>
+            <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                <li>Why do specific questions lead to better feedback? Can you think of examples of “bad” and “good”
+                    feedback questions?</li>
+                <li>Why does giving two options make decision-making easier?</li>
+            </ul>
+        </div>
+    </div>
+
+    {# Tendina interna 3 (chiusa) #}
+    <div class="lesson-card">
+        <div class="card-header flex justify-between items-center">
+            <h3 class="font-bold text-slate-800">Topic 3: Non-Verbal Clues</h3>
+            <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+        </div>
+        <div class="card-content">
+            <p class="mt-4 text-slate-600">Sometimes your boss's body language (non-verbal signals) can show you their
+                real feelings, even when their words are polite. Pay attention to facial expressions, tone, and where
+                they focus their attention. It's OK to politely explain that you need more detailed feedback. You can
+                say you learn better with examples or explain how a lack of clear feedback slows down your work. Leaders
+                often don't realize the problem unless you tell them.</p>
+            <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                <li>Why is it important to notice non-verbal signals? What body language have you noticed from bosses or
+                    coworkers before?</li>
+                <li>How can you politely ask for better feedback? Why might leaders not realize they are being unclear?
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endcall %}
+
+
+{# Sezione 4: Exercises #}
+{% call info_card('exercises', 'Collaborative Exercise: The Feedback Session') %}
+<p class="text-slate-700 mb-6">This exercise can be done with a partner or in a small group. Follow the steps below to
+    practice giving and receiving feedback.</p>
+<div class="space-y-4">
+
+    {# Tendina interna 1 (chiusa) #}
+    <div class="lesson-card">
+        <div class="card-header flex justify-between items-center">
+            <h3 class="font-bold text-slate-800">The Scenario</h3>
+            <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+        </div>
+        <div class="card-content">
+            <p class="mt-4 text-slate-600">Imagine you have just finished a project with a colleague. You are now having
+                a meeting to discuss how the project went and to give each other feedback.</p>
+        </div>
+    </div>
+
+    {# Tendina interna 2 (chiusa) #}
+    <div class="lesson-card">
+        <div class="card-header flex justify-between items-center">
+            <h3 class="font-bold text-slate-800">Exercise Steps</h3>
+            <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+        </div>
+        <div class="card-content">
+            {# Uso la classe .exercise-step dal CSS master, come nella "legenda" #}
+            <div class="exercise-step mt-4">
+                <p class="font-semibold">Step 1: Set the Stage</p>
+                <p class="text-slate-600 mb-4">One person is the "Manager," and the other is the "Employee." The Manager
+                    has to give vague feedback (e.g., "be more confident," "improve your communication"). The Employee's
+                    goal is to ask clarifying questions to get actionable advice.</p>
+            </div>
+
+            <div class="exercise-step mt-4">
+                <p class="font-semibold">Step 2: The Conversation</p>
+                <p class="text-slate-600 mb-4">Role-play the conversation for 3-5 minutes. The Employee should use the
+                    techniques discussed earlier, such as asking specific questions or presenting forced choices.</p>
+            </div>
+
+            <div class="exercise-step mt-4">
+                <p class="font-semibold">Step 3: Debrief & Discuss</p>
+                <p class="text-slate-600 mb-4">Switch roles and repeat the exercise. Afterward, discuss these questions
+                    together:</p>
+                <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+                    <li>What was most challenging about giving or receiving vague feedback?</li>
+                    <li>Did asking specific questions make it easier to get clear answers?</li>
+                    <li>What did you learn from this role-play that you can apply at work?</li>
+                </ul>
             </div>
         </div>
-    {% endcall %}
+    </div>
+</div>
+{% endcall %}
 
 
-    {# Sezione 2: Vocabulary #}
-    {# L'ID 'vocabulary' qui corrisponde a nav_links. #}
-    {% call info_card('vocabulary', 'Key Vocabulary') %}
-        <p class="text-slate-700 mb-6">Understanding the language of feedback is the first step toward mastering it. Let's clarify a few key terms.</p>
-        <div class="space-y-4">
-            
-            {# Tendina interna 1 (chiusa) #}
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Clear vs. Ambiguous</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-                        <li>Can you give an example of ambiguous vs. clear feedback?</li>
-                        <li>Example: "Be more strategic" (Ambiguous) vs. "Next time, include market trends and competitor analysis in your report to show a strategic perspective" (Clear).</li>
-                    </ul>
-                </div>
-            </div>
-            
-            {# Tendina interna 2 (chiusa) #}
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Self-Awareness</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-                        <li>Why is self-awareness important when receiving feedback?</li>
-                        <li>Self-awareness allows you to understand your own strengths and weaknesses, so you can receive feedback without defensiveness.</li>
-                    </ul>
-                </div>
-            </div>
+{# Sezione 5: Closing Thoughts #}
+{% call info_card('closing-thoughts', 'Closing Thoughts') %}
+<p class="text-slate-700 mb-6">Use these questions to summarize your learning and commit to a change.</p>
+<div class="space-y-4">
+
+    {# Tendina interna 1 (chiusa) #}
+    <div class="lesson-card">
+        <div class="card-header flex justify-between items-center">
+            <h3 class="font-bold text-slate-800">Final Reflection</h3>
+            <span class="text-2xl text-slate-500 arrow-icon">▾</span>
         </div>
-    {% endcall %}
-
-
-    {# Sezione 3: Discussions #}
-    {% call info_card('discussions', 'Read & Discuss') %}
-        <p class="text-slate-700 mb-6">Reading through these short passages and discussing the questions can help you internalize key strategies for getting better feedback.</p>
-        <div class="space-y-4">
-            
-            {# Tendina interna 1 (chiusa) #}
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Topic 1: Vague Feedback</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <p class="mt-4 text-slate-600">When feedback is vague, it can feel frustrating. You know you need to improve, but you don't know exactly how. Without specific examples, it's hard to know what success looks like. Vague feedback happens more often as you move up in a company. Leaders are busy, and feedback becomes softer, talking about things like "vision" or "alignment." Sometimes bosses are too overwhelmed or not trained to give clear feedback.</p>
-                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-                        <li>Have you ever been given vague feedback, like “be more strategic” or “do better”? How did you try to figure out what to do?</li>
-                        <li>Why do you think managers sometimes give unclear advice?</li>
-                    </ul>
-                </div>
-            </div>
-            
-            {# Tendina interna 2 (chiusa) #}
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Topic 2: Asking Better Questions</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <p class="mt-4 text-slate-600">To get better feedback, ask more specific questions. Instead of asking “How did I do?” you can ask “What's one thing I could have improved in my presentation?” Narrowing the focus helps your manager give you useful answers. Presenting two clear options (forced choice) can help managers give faster and clearer feedback. Instead of asking open questions, offer choices like “Is the issue the message or the audience?”</p>
-                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-                        <li>Why do specific questions lead to better feedback? Can you think of examples of “bad” and “good” feedback questions?</li>
-                        <li>Why does giving two options make decision-making easier?</li>
-                    </ul>
-                </div>
-            </div>
-
-            {# Tendina interna 3 (chiusa) #}
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Topic 3: Non-Verbal Clues</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <p class="mt-4 text-slate-600">Sometimes your boss's body language (non-verbal signals) can show you their real feelings, even when their words are polite. Pay attention to facial expressions, tone, and where they focus their attention. It's OK to politely explain that you need more detailed feedback. You can say you learn better with examples or explain how a lack of clear feedback slows down your work. Leaders often don't realize the problem unless you tell them.</p>
-                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-                        <li>Why is it important to notice non-verbal signals? What body language have you noticed from bosses or coworkers before?</li>
-                        <li>How can you politely ask for better feedback? Why might leaders not realize they are being unclear?</li>
-                    </ul>
-                </div>
-            </div>
+        <div class="card-content">
+            <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+                <li>What's one thing you'll do differently this week based on today's discussion?</li>
+                <li>How can you give better feedback to colleagues or team members starting today?</li>
+                <li>What's the best feedback you've ever received? What made it helpful?</li>
+            </ul>
         </div>
-    {% endcall %}
+    </div>
 
-
-    {# Sezione 4: Exercises #}
-    {% call info_card('exercises', 'Collaborative Exercise: The Feedback Session') %}
-        <p class="text-slate-700 mb-6">This exercise can be done with a partner or in a small group. Follow the steps below to practice giving and receiving feedback.</p>
-        <div class="space-y-4">
-            
-            {# Tendina interna 1 (chiusa) #}
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">The Scenario</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <p class="mt-4 text-slate-600">Imagine you have just finished a project with a colleague. You are now having a meeting to discuss how the project went and to give each other feedback.</p>
-                </div>
-            </div>
-            
-            {# Tendina interna 2 (chiusa) #}
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Exercise Steps</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    {# Uso la classe .exercise-step dal CSS master, come nella "legenda" #}
-                    <div class="exercise-step mt-4">
-                        <p class="font-semibold">Step 1: Set the Stage</p>
-                        <p class="text-slate-600 mb-4">One person is the "Manager," and the other is the "Employee." The Manager has to give vague feedback (e.g., "be more confident," "improve your communication"). The Employee's goal is to ask clarifying questions to get actionable advice.</p>
-                    </div>
-
-                    <div class="exercise-step mt-4">
-                        <p class="font-semibold">Step 2: The Conversation</p>
-                        <p class="text-slate-600 mb-4">Role-play the conversation for 3-5 minutes. The Employee should use the techniques discussed earlier, such as asking specific questions or presenting forced choices.</p>
-                    </div>
-
-                    <div class="exercise-step mt-4">
-                        <p class="font-semibold">Step 3: Debrief & Discuss</p>
-                        <p class="text-slate-600 mb-4">Switch roles and repeat the exercise. Afterward, discuss these questions together:</p>
-                        <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
-                            <li>What was most challenging about giving or receiving vague feedback?</li>
-                            <li>Did asking specific questions make it easier to get clear answers?</li>
-                            <li>What did you learn from this role-play that you can apply at work?</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+    {# Tendina interna 2 (chiusa) #}
+    <div class="lesson-card">
+        <div class="card-header flex justify-between items-center">
+            <h3 class="font-bold text-slate-800">Additional Reading</h3>
+            <span class="text-2xl text-slate-500 arrow-icon">▾</span>
         </div>
-    {% endcall %}
-
-
-    {# Sezione 5: Closing Thoughts #}
-    {% call info_card('closing-thoughts', 'Closing Thoughts') %}
-        <p class="text-slate-700 mb-6">Use these questions to summarize your learning and commit to a change.</p>
-        <div class="space-y-4">
-            
-            {# Tendina interna 1 (chiusa) #}
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Final Reflection</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-                        <li>What's one thing you'll do differently this week based on today's discussion?</li>
-                        <li>How can you give better feedback to colleagues or team members starting today?</li>
-                        <li>What's the best feedback you've ever received? What made it helpful?</li>
-                    </ul>
-                </div>
-            </div>
-
-            {# Tendina interna 2 (chiusa) #}
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Additional Reading</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <p class="mt-4 text-slate-600">You can find more ideas and examples in this article:</p>
-                    <a href="https://hbr.org/2025/04/get-clearer-more-actionable-feedback" target="_blank" class="text-blue-500 hover:text-blue-700 underline mt-2 inline-block">https://hbr.org/2025/04/get-clearer-more-actionable-feedback</a>
-                </div>
-            </div>
+        <div class="card-content">
+            <p class="mt-4 text-slate-600">You can find more ideas and examples in this article:</p>
+            <a href="https://hbr.org/2025/04/get-clearer-more-actionable-feedback" target="_blank"
+                class="text-blue-500 hover:text-blue-700 underline mt-2 inline-block">https://hbr.org/2025/04/get-clearer-more-actionable-feedback</a>
         </div>
-    {% endcall %}
+    </div>
+</div>
+{% endcall %}
 
 {% endblock lesson_content %}

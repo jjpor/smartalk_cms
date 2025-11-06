@@ -1,0 +1,202 @@
+{# --- Fase 1: Intestazione (Variabili Semplici & Navigazione) --- #}
+{% set lesson_title = "Grammar Lesson: Still, Yet, and Already" %}
+{% set lesson_subtitle = "Mastering three common adverbs used to discuss time and expectation." %}
+
+{# CRITICO: nav_links DEVE essere su una sola riga per evitare crash del parser #}
+{% set nav_links = [{'id': 'intro', 'title': 'Overview'}, {'id': 'still', 'title': 'Still'}, {'id': 'yet', 'title': 'Yet'}, {'id': 'already', 'title': 'Already'}, {'id': 'compare', 'title': 'Comparison'}] %}
+
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, fill_in_the_gap_exercise, dropdown_fill_in_exercise %}
+
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Dati Esercizi (Definiti INTERNAMENTE per sicurezza) --- #}
+
+{# Dati per Sezione 2 (Still Quiz) #}
+{% set still_quiz_data = [
+    {'prefix': 'The train has been delayed; we are', 'answer': 'still', 'suffix': 'waiting for it.'},
+    {'prefix': 'It is 11 p.m., and my neighbor', 'answer': 'still', 'suffix': 'plays loud music.'},
+    {'prefix': 'Are your parents', 'answer': 'still', 'suffix': 'living in Paris?'}
+] %}
+
+{# Dati per Sezione 3 (Yet Quiz) - Adattato per focus sul posizionamento #}
+{% set yet_quiz_data = [
+    {'prefix': 'The mail carrier has not delivered the letters', 'answer': 'yet', 'suffix': '.'},
+    {'prefix': 'Have you talked to the manager about the meeting', 'answer': 'yet', 'suffix': '?'},
+    {'prefix': 'We haven\'t signed the contract', 'answer': 'yet', 'suffix': '.'}
+] %}
+
+{# Dati per Sezione 4 (Already Quiz) #}
+{% set already_quiz_data = [
+    {'prefix': 'I can\'t believe they', 'answer': 'already', 'suffix': 'painted the entire room. (Surprise)'},
+    {'prefix': 'You just started studying—have you solved all the math problems', 'answer': 'already', 'suffix': '? (Surprise in question)'},
+    {'prefix': 'The sun has', 'answer': 'already', 'suffix': 'risen. (Early completion)'}
+] %}
+
+{# Dati per Sezione 5 (Comparison Dropdown Quiz) #}
+{% set compare_options = ['still', 'yet', 'already'] %}
+{% set compare_quiz_data = [
+    {'prefix': 'A: I heard you were building a new desk. Have you finished it', 'options': compare_options, 'answer': 'yet', 'suffix': '?'},
+    {'prefix': 'B: No, I haven\'t bought the wood', 'options': compare_options, 'answer': 'yet', 'suffix': '. I am'},
+    {'prefix': '', 'options': compare_options, 'answer': 'still', 'suffix': 'saving money for it.'},
+    {'prefix': 'A: What?! You\'re kidding! I thought you had', 'options': compare_options, 'answer': 'already', 'suffix': 'done that last week!'}
+] %}
+
+
+{# --- Fase 5: Conversione Contenuto --- #}
+
+{% call info_card('intro', '1. Adverb Overview', initial_state='show') %}
+    <div class="mt-4 text-slate-600 space-y-4">
+        <p>These three adverbs—Still, Yet, and Already—are crucial for discussing actions in relation to time, continuity, and expectation. Understanding their placement and meaning will make your English sound much more natural and precise.</p>
+        
+        <p class="font-bold text-slate-700 mt-6 mb-2">Quick Comparison Chart</p>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse border border-slate-200">
+                <thead class="bg-slate-50 text-slate-700">
+                    <tr>
+                        <th class="p-3 border border-slate-200">Word</th>
+                        <th class="p-3 border border-slate-200">Meaning</th>
+                        <th class="p-3 border border-slate-200">Placement</th>
+                        <th class="p-3 border border-slate-200">Example</th>
+                    </tr>
+                </thead>
+                <tbody class="text-slate-600">
+                    <tr>
+                        <td class="p-3 border border-slate-200 font-semibold">Still</td>
+                        <td class="p-3 border border-slate-200">Ongoing action (continuity)</td>
+                        <td class="p-3 border border-slate-200">Before main verb (after 'to be')</td>
+                        <td class="p-3 border border-slate-200 italic">I’m still waiting for the bus.</td>
+                    </tr>
+                    <tr>
+                        <td class="p-3 border border-slate-200 font-semibold">Yet</td>
+                        <td class="p-3 border border-slate-200">Expected action hasn’t happened</td>
+                        <td class="p-3 border border-slate-200">End of sentence (usually negative/questions)</td>
+                        <td class="p-3 border border-slate-200 italic">Have you called him yet?</td>
+                    </tr>
+                    <tr>
+                        <td class="p-3 border border-slate-200 font-semibold">Already</td>
+                        <td class="p-3 border border-slate-200">Action completed earlier than expected</td>
+                        <td class="p-3 border border-slate-200">Before main verb or end of sentence</td>
+                        <td class="p-3 border border-slate-200 italic">I’ve already seen this movie.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('still', '2. The Adverb Still', initial_state='show') %}
+    <div class="mt-4 text-slate-700 space-y-4">
+        <div>
+            <h4 class="font-bold text-cyan-700 mb-1">Meaning</h4>
+            <p>Still refers to something that is <strong>continuing</strong> and has not stopped, often when it's expected to stop or change.</p>
+        </div>
+        <div>
+            <h4 class="font-bold text-cyan-700 mb-1">Placement</h4>
+            <p>Usually before the main verb, but after the verb "to be."</p>
+        </div>
+        <div>
+            <h4 class="font-bold text-cyan-700 mb-1">Usage</h4>
+            <ul class="ml-4">
+                <li><strong>Positive sentences:</strong> To emphasize that something is ongoing.<br><em class="text-sm text-slate-500">She is still working at the same company.</em></li>
+                <li><strong>Negative sentences:</strong> To show that something expected to stop hasn't stopped.<br><em class="text-sm text-slate-500">He still hasn’t finished his homework.</em></li>
+                <li><strong>Questions:</strong> To ask if something is continuing.<br><em class="text-sm text-slate-500">Are you still watching TV?</em></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="mt-8 p-4 bg-cyan-50 rounded-lg border-l-4 border-cyan-500">
+        <h4 class="font-bold text-cyan-800 mb-4">Practice: Using Still</h4>
+        <p class="text-sm text-slate-600 mb-4">Complete the following sentences using <strong>still</strong> in the correct position:</p>
+        {{ fill_in_the_gap_exercise('still-quiz', still_quiz_data) }}
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('yet', '3. The Adverb Yet', initial_state='show') %}
+    <div class="mt-4 text-slate-700 space-y-4">
+        <div>
+            <h4 class="font-bold text-cyan-700 mb-1">Meaning</h4>
+            <p>Yet refers to something <strong>expected to happen</strong> in the future but hasn’t happened up to now. It often implies a delay or an incomplete action.</p>
+        </div>
+        <div>
+            <h4 class="font-bold text-cyan-700 mb-1">Placement</h4>
+            <p>Usually at the end of a sentence.</p>
+        </div>
+        <div>
+            <h4 class="font-bold text-cyan-700 mb-1">Usage</h4>
+            <ul class="ml-4">
+                <li><strong>Negative sentences:</strong> To indicate that something hasn’t happened but is expected.<br><em class="text-sm text-slate-500">I haven’t finished my book yet.</em></li>
+                <li><strong>Questions:</strong> To ask if something expected has happened.<br><em class="text-sm text-slate-500">Have they arrived yet?</em></li>
+                <li><strong>Positive sentences:</strong> (Formal) Can mean "so far" or "even so".<br><em class="text-sm text-slate-500">Yet it was worth the risk.</em></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="mt-8 p-4 bg-cyan-50 rounded-lg border-l-4 border-cyan-500">
+        <h4 class="font-bold text-cyan-800 mb-4">Practice: Using Yet</h4>
+        <p class="text-sm text-slate-600 mb-4">Complete these sentences by adding <strong>yet</strong> in the correct position:</p>
+        {{ fill_in_the_gap_exercise('yet-quiz', yet_quiz_data) }}
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('already', '4. The Adverb Already', initial_state='show') %}
+    <div class="mt-4 text-slate-700 space-y-4">
+        <div>
+            <h4 class="font-bold text-cyan-700 mb-1">Meaning</h4>
+            <p>Already refers to something that has happened <strong>earlier than expected</strong> or sooner than anticipated.</p>
+        </div>
+        <div>
+            <h4 class="font-bold text-cyan-700 mb-1">Placement</h4>
+            <p>Usually before the main verb, or at the end of a sentence for emphasis.</p>
+        </div>
+        <div>
+            <h4 class="font-bold text-cyan-700 mb-1">Usage</h4>
+            <ul class="ml-4">
+                <li><strong>Positive sentences:</strong> To indicate completion.<br><em class="text-sm text-slate-500">She has already eaten lunch.</em></li>
+                <li><strong>Questions:</strong> To express surprise at early completion.<br><em class="text-sm text-slate-500">Have you finished your work already?</em></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="mt-8 p-4 bg-cyan-50 rounded-lg border-l-4 border-cyan-500">
+        <h4 class="font-bold text-cyan-800 mb-4">Practice: Using Already</h4>
+        <p class="text-sm text-slate-600 mb-4">Insert <strong>already</strong> to express surprise or early completion:</p>
+        {{ fill_in_the_gap_exercise('already-quiz', already_quiz_data) }}
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('compare', '5. Comparison and Application', initial_state='show') %}
+    <div class="mt-4 text-slate-700 space-y-4">
+        <p>Remember the main difference:</p>
+        <ul class="ml-4 space-y-2">
+            <li><strong>STILL</strong> focuses on continuity:<br><em>She is still studying. (She hasn’t stopped.)</em></li>
+            <li><strong>YET</strong> focuses on expectation:<br><em>She hasn’t started studying yet. (But she will.)</em></li>
+            <li><strong>ALREADY</strong> focuses on early completion:<br><em>She has already finished studying. (Happened sooner than expected.)</em></li>
+        </ul>
+        
+        <div class="mt-8">
+            <h4 class="font-bold text-slate-800 mb-4">Mixed Application Quiz</h4>
+            <p class="text-sm text-slate-600 mb-4">Choose the correct word to complete the conversation:</p>
+            {{ dropdown_fill_in_exercise('compare-quiz', compare_quiz_data) }}
+        </div>
+        
+        <div class="mt-8 p-6 bg-slate-50 rounded-xl">
+            <h4 class="font-bold text-slate-800 mb-2">Reflection</h4>
+            <p class="text-slate-600">Write one sentence about something you are <strong>still</strong> doing, one about something you haven't done <strong>yet</strong>, and one about something you have <strong>already</strong> accomplished today.</p>
+        </div>
+    </div>
+{% endcall %}
+
+{% endblock lesson_content %}

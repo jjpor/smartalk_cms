@@ -1,0 +1,248 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "Restaurants & Eating Out" %}
+{% set lesson_subtitle = "Discussing food, service, and dining experiences with confidence." %}
+
+{% set nav_links = [{'id': 'warmup', 'title': 'Warm-Up'}, {'id': 'vocabulary', 'title': 'Vocabulary'}, {'id': 'discussion', 'title': 'Discussion'}, {'id': 'scenarios', 'title': 'Scenarios'}, {'id': 'menu-practice', 'title': 'Menu Practice'}] %}
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, match_exercise, random_item_generator, multiple_choice_exercise %}
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne) --- #}
+
+{# Dati per Vocab Match #}
+{% set vocab_terms = [
+    {'id': '1', 'text': 'Fine dining'},
+    {'id': '2', 'text': 'Reservation'},
+    {'id': '3', 'text': 'Bill / Check'},
+    {'id': '4', 'text': 'Gratuity / Tip'},
+    {'id': '5', 'text': 'Dietary restrictions'}
+] %}
+
+{% set vocab_defs = [
+    {'id': '1', 'text': 'Expensive, formal restaurant with high-quality service'},
+    {'id': '2', 'text': 'Booking a table in advance'},
+    {'id': '3', 'text': 'The paper showing what you need to pay'},
+    {'id': '4', 'text': 'Extra money given for good service'},
+    {'id': '5', 'text': 'Limits on what someone can eat (allergies, etc.)'}
+] %}
+
+{# Dati per Discussion Randomizer #}
+{% set restaurant_questions = [
+    'How do you usually choose a restaurant when you’re in a new city?',
+    'Do you prefer local, authentic restaurants or international chains when traveling? Why?',
+    'What role does the atmosphere (music, lighting, décor) play in your dining experience?',
+    'How do restaurants reflect the culture of a country?',
+    'Do you think tipping should be required, optional, or eliminated?',
+    'In your country, what are some common restaurant customs that foreigners might find surprising?',
+    'Do you like to try new dishes, or do you usually stick to familiar food?',
+    'If you could open your own restaurant, what kind of food and atmosphere would you create?'
+] %}
+
+{# Dati per Menu Quiz #}
+{% set menu_quiz = [
+    {
+        'text': 'You are a vegetarian. What can you order from the Main Courses?',
+        'options': [
+            {'value': 'steak', 'text': 'Grilled Salmon'},
+            {'value': 'pasta', 'text': 'Mushroom Risotto'},
+            {'value': 'chicken', 'text': 'Roast Chicken'}
+        ],
+        'correct_value': 'pasta'
+    },
+    {
+        'text': 'How much does the cheapest appetizer cost?',
+        'options': [
+            {'value': '6', 'text': '$6 (Garlic Bread)'},
+            {'value': '8', 'text': '$8 (Soup of the Day)'},
+            {'value': '10', 'text': '$12 (Calamari)'}
+        ],
+        'correct_value': '6'
+    },
+    {
+        'text': 'You want a 3-course meal: Soup, Salmon, and Cheesecake. How much will it cost (before tax/tip)?',
+        'options': [
+            {'value': '38', 'text': '$38'},
+            {'value': '40', 'text': '$40'},
+            {'value': '42', 'text': '$42'}
+        ],
+        'correct_value': '40'
+    }
+] %}
+
+{# --- Fase 5: Conversione Contenuto --- #}
+
+{% call info_card('warmup', '1. Warm-Up', initial_state='show') %}
+    <h4 class="font-bold text-slate-800 mb-4">Setting the Stage</h4>
+    <ul class="text-slate-600 list-disc list-inside space-y-2">
+        <li>Do you enjoy trying new restaurants when you travel? Why or why not?</li>
+        <li>What’s the best meal you’ve ever had in a restaurant?</li>
+        <li>Have you ever had a bad dining experience? What happened?</li>
+    </ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('vocabulary', '2. Vocabulary', initial_state='show') %}
+    <div class="grid md:grid-cols-2 gap-8 mb-8">
+        <div>
+            <h4 class="font-bold text-slate-800 mb-2">Restaurant Types</h4>
+            <ul class="text-slate-600 space-y-2">
+                <li><span class="font-semibold">Fine dining</span> – expensive, formal restaurant with high-quality service</li>
+                <li><span class="font-semibold">Casual dining</span> – mid-range, comfortable restaurant</li>
+                <li><span class="font-semibold">Street food</span> – food sold in public places, often from stalls or trucks</li>
+                <li><span class="font-semibold">Chain restaurant</span> – part of a large company with the same menu everywhere</li>
+                <li><span class="font-semibold">Local specialty</span> – a dish typical of the region or culture</li>
+            </ul>
+        </div>
+        <div>
+            <h4 class="font-bold text-slate-800 mb-2">Useful Terms & Phrases</h4>
+            <ul class="text-slate-600 space-y-2">
+                <li><span class="font-semibold">Reservation</span> – booking a table in advance</li>
+                <li><span class="font-semibold">Waiter/Waitress / Server</span> – the person who takes your order</li>
+                <li><span class="font-semibold">Bill / Check</span> – the paper showing what you need to pay</li>
+                <li><span class="font-semibold">Tip / Gratuity</span> – extra money given for good service</li>
+                <li><span class="font-semibold">Dietary restrictions</span> – limits on what someone can eat (vegetarian, allergies, etc.)</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="bg-slate-50 p-4 rounded-lg mb-8">
+        <p class="text-slate-700"><span class="font-bold">Quick check:</span> If you can’t eat gluten, what should you ask about? → <span class="italic">Dietary restrictions</span></p>
+    </div>
+
+    <h4 class="font-bold text-slate-800 mb-4">Practice: Match the Definitions</h4>
+    {{ match_exercise('restaurant-vocab-match', vocab_terms, vocab_defs) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('discussion', '3. Discussion Questions', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Explore these topics to practice your new vocabulary.</p>
+    
+    <div class="grid md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white p-4 rounded border border-slate-200">
+            <h5 class="font-bold text-slate-700 mb-2">At the Restaurant</h5>
+            <ul class="text-sm text-slate-600 list-disc list-inside space-y-1">
+                <li>Choosing a restaurant in a new city.</li>
+                <li>Local vs. international chains.</li>
+                <li>Importance of atmosphere.</li>
+            </ul>
+        </div>
+        <div class="bg-white p-4 rounded border border-slate-200">
+            <h5 class="font-bold text-slate-700 mb-2">Food & Culture</h5>
+            <ul class="text-sm text-slate-600 list-disc list-inside space-y-1">
+                <li>Restaurants reflecting culture.</li>
+                <li>Opinions on tipping.</li>
+                <li>Surprising customs for foreigners.</li>
+            </ul>
+        </div>
+        <div class="bg-white p-4 rounded border border-slate-200">
+            <h5 class="font-bold text-slate-700 mb-2">Personal Preferences</h5>
+            <ul class="text-sm text-slate-600 list-disc list-inside space-y-1">
+                <li>Trying new dishes vs. familiar food.</li>
+                <li>Street food vs. fine dining.</li>
+                <li>Your dream restaurant.</li>
+            </ul>
+        </div>
+    </div>
+
+    <h4 class="font-bold text-slate-800 mb-4">Random Discussion Picker</h4>
+    {{ random_item_generator('restaurant-discussion-random', 'Next Topic', 'restaurant-questions-list', restaurant_questions) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('scenarios', '4. Scenarios: What Would You Do?', initial_state='show') %}
+    <h4 class="font-bold text-slate-800 mb-4">Restaurant Situations</h4>
+    <ul class="text-slate-600 list-disc list-inside space-y-3 mb-6">
+        <li>You arrive at a restaurant, but your reservation isn’t in the system and the place is full. What do you do?</li>
+        <li>You receive the wrong meal after waiting a long time. How would you handle it politely?</li>
+        <li>The service is very slow, and you have a plane/train to catch soon. What would you say?</li>
+        <li>You find something unexpected (like a hair) in your food. How would you react?</li>
+        <li>You are in a new country and can’t understand the menu. How would you decide what to order?</li>
+    </ul>
+    <h4 class="font-bold text-slate-800 mb-4">Traveling with Kids</h4>
+    <ul class="text-slate-600 list-disc list-inside space-y-3">
+        <li>You’re eating with children, and they don’t like anything on the menu. What would you do?</li>
+        <li>The kids are making noise, and other diners are annoyed. How do you handle it?</li>
+    </ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# --- NUOVA SEZIONE: Menu Practice (al posto dell'immagine stock) --- #}
+{% call info_card('menu-practice', '5. Menu Practice', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Read the menu below and answer the questions. This is better than a photo because you can translate it if needed!</p>
+
+    {# MENU SIMULATO IN HTML/TAILWIND #}
+    <div class="max-w-2xl mx-auto bg-orange-50 p-8 rounded-xl shadow-sm border border-orange-200 mb-8 font-serif">
+        <h3 class="text-3xl text-center font-bold text-orange-900 mb-2">The Golden Spoon</h3>
+        <p class="text-center text-orange-700 italic mb-8 border-b border-orange-200 pb-4">Authentic Local Cuisine</p>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <div>
+                <h4 class="text-xl font-bold text-orange-800 mb-4 uppercase tracking-wider">Appetizers</h4>
+                <ul class="space-y-4">
+                    <li class="flex justify-between">
+                        <span>Soup of the Day</span>
+                        <span class="font-bold">$8</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Garlic Bread</span>
+                        <span class="font-bold">$6</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <span>Crispy Calamari</span>
+                        <span class="font-bold">$12</span>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-xl font-bold text-orange-800 mb-4 uppercase tracking-wider">Main Courses</h4>
+                <ul class="space-y-4">
+                    <li class="flex justify-between">
+                        <div>
+                            <span>Grilled Salmon</span>
+                            <p class="text-xs text-orange-700 italic">Served with asparagus</p>
+                        </div>
+                        <span class="font-bold">$24</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <div>
+                            <span>Roast Chicken</span>
+                            <p class="text-xs text-orange-700 italic">With mashed potatoes</p>
+                        </div>
+                        <span class="font-bold">$20</span>
+                    </li>
+                    <li class="flex justify-between">
+                        <div>
+                            <span>Mushroom Risotto (V)</span>
+                            <p class="text-xs text-orange-700 italic">Creamy rice with herbs</p>
+                        </div>
+                        <span class="font-bold">$18</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="mt-8 pt-4 border-t border-orange-200">
+             <h4 class="text-xl font-bold text-orange-800 mb-4 uppercase tracking-wider text-center">Desserts</h4>
+             <ul class="flex justify-around">
+                 <li>Cheesecake - <span class="font-bold">$8</span></li>
+                 <li>Chocolate Lava Cake - <span class="font-bold">$10</span></li>
+                 <li>Fruit Salad - <span class="font-bold">$7</span></li>
+             </ul>
+        </div>
+        <p class="text-center text-xs text-orange-900 mt-8">(V) = Vegetarian. Please inform your server of any allergies.</p>
+    </div>
+
+    <h4 class="font-bold text-slate-800 mb-4">Comprehension Check</h4>
+    {{ multiple_choice_exercise('menu-quiz', menu_quiz) }}
+
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}

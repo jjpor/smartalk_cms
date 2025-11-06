@@ -1,0 +1,105 @@
+{# ================================================================== #}
+{# ZONA 1: INTESTAZIONE SICURA (SOLO DEFINIZIONI SEMPLICI)            #}
+{# ================================================================== #}
+{% set lesson_title = "Decoding Figures: Reading Large Numbers" %}
+{% set lesson_subtitle = "Breaking down millions and thousands for clear, confident communication." %}
+
+{# REGOLA D'ORO: nav_links SU UNA SOLA RIGA #}
+{% set nav_links = [{'id': 'tips', 'title': 'Reading Tips'}, {'id': 'matching', 'title': 'Matching Practice'}, {'id': 'writing', 'title': 'Writing Practice'}] %}
+
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, match_exercise, fill_in_the_gap_exercise %}
+
+{# ================================================================== #}
+{# ZONA 2: AREA DATI & CONTENUTO (TUTTO IL RESTO QUI DENTRO)          #}
+{# ================================================================== #}
+{% block lesson_content %}
+
+{# --- DATI PER ESERCIZI INTERATTIVI --- #}
+
+{# Sezione 2: Matching Data #}
+{% set match_words = [
+    {'id': 'm1', 'text': 'Three hundred thousand'},
+    {'id': 'm2', 'text': 'Two million five hundred thousand'},
+    {'id': 'm3', 'text': 'Four million three hundred thousand'},
+    {'id': 'm4', 'text': 'Nine hundred fifty thousand'},
+    {'id': 'm5', 'text': 'Five hundred thousand'}
+] %}
+{% set match_digits = [
+    {'id': 'm1', 'text': '300,000'},
+    {'id': 'm2', 'text': '2,500,000'},
+    {'id': 'm3', 'text': '4,300,000'},
+    {'id': 'm4', 'text': '950,000'},
+    {'id': 'm5', 'text': '500,000'}
+] %}
+
+{# Sezione 3: Writing Data (Converted to Fill-in-the-gap) #}
+{% set writing_data = [
+    {'prefix': '1. 650,000 = ', 'answer': 'six hundred fifty thousand', 'suffix': ''},
+    {'prefix': '2. 1,200,000 = ', 'answer': 'one million two hundred thousand', 'suffix': ''},
+    {'prefix': '3. 3,450,000 = ', 'answer': 'three million four hundred fifty thousand', 'suffix': ''},
+    {'prefix': '4. 5,800,000 = ', 'answer': 'five million eight hundred thousand', 'suffix': ''},
+    {'prefix': '5. 750,000 = ', 'answer': 'seven hundred fifty thousand', 'suffix': ''},
+    {'prefix': '6. 123,456 = ', 'answer': 'one hundred twenty-three thousand four hundred fifty-six', 'suffix': ''},
+    {'prefix': '7. 75,432 = ', 'answer': 'seventy-five thousand four hundred thirty-two', 'suffix': ''},
+    {'prefix': '8. 6,000,001 = ', 'answer': 'six million one', 'suffix': ''},
+    {'prefix': '9. 3,014,250 = ', 'answer': 'three million fourteen thousand two hundred fifty', 'suffix': ''},
+    {'prefix': '10. 8,900,567 = ', 'answer': 'eight million nine hundred thousand five hundred sixty-seven', 'suffix': ''}
+] %}
+
+{# --- INIZIO CONTENUTO LEZIONE --- #}
+
+{% call info_card('tips', '1. Tips for Reading Numbers', initial_state='show') %}
+    <div class="text-slate-600">
+        <p class="mb-4">Reading large numbers in English can be broken down into manageable parts. Here is a simple explanation for reading numbers up to the millions:</p>
+
+        <div class="space-y-6">
+            <div>
+                <h4 class="font-bold text-slate-800 mb-2">1. Three Main Sections</h4>
+                <p class="mb-2">Large numbers are generally grouped into three-digit sections, separated by commas, starting from the right:</p>
+                <ul class="list-disc list-inside ml-4 space-y-1">
+                    <li><strong>Units</strong> (up to 999): e.g., 123 is read as "one hundred twenty-three."</li>
+                    <li><strong>Thousands</strong> (1,000 - 999,999): e.g., 5,432 is read as "five thousand four hundred thirty-two."</li>
+                    <li><strong>Millions</strong> (1,000,000+): e.g., 8,765,432 is read as "eight million seven hundred sixty-five thousand four hundred thirty-two."</li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-bold text-slate-800 mb-2">2. Reading Each Section</h4>
+                <p class="mb-2">Read each section as a regular number, then add the section name (thousand, million).</p>
+                <div class="bg-blue-50 p-3 border-l-4 border-blue-500 text-sm italic">
+                    Example: 6,045,745 is read as "<span class="font-semibold not-italic">six million forty-five thousand seven hundred forty-five</span>."
+                </div>
+            </div>
+
+            <div>
+                <h4 class="font-bold text-slate-800 mb-2">3. Zero Rules</h4>
+                <ul class="list-disc list-inside ml-4 space-y-1">
+                    <li>Skip zeros in the hundreds or tens place (e.g., 204,000 = "two hundred four thousand").</li>
+                    <li>Stop reading if the number only has zeros after a section (e.g., 3,000,000 = "three million").</li>
+                </ul>
+            </div>
+
+            <div>
+                <h4 class="font-bold text-slate-800 mb-2">4. Hyphens for Tens</h4>
+                <p>Use a hyphen between tens and ones for numbers between 21 and 99 (e.g., 42 = "forty-two").</p>
+            </div>
+        </div>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('matching', '2. Interactive Matching: Words to Digits', initial_state='show') %}
+    <p class="mb-6 text-slate-600">Click a <strong>Word</strong> phrase, then click its matching <strong>Digit</strong> to make a pair.</p>
+    {{ match_exercise('num-match-1', match_words, match_digits) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('writing', '3. Writing Practice: Digits to Words', initial_state='show') %}
+    <p class="mb-6 text-slate-600">Type the correct way to read each number below. Remember to use hyphens correctly (e.g., forty-two).</p>
+    {{ fill_in_the_gap_exercise('num-writing-1', writing_data) }}
+{% endcall %}
+
+{% endblock lesson_content %}

@@ -1,205 +1,195 @@
-{# --- 2. Template Extension (must be first) --- #}
-{% extends "abstract_templates/lesson_base.html" %}
-
-{# --- 1. Variable Definitions --- #}
 {% set lesson_title = 'Prepositions of Time & Place' %}
 {% set lesson_subtitle = "A guide to using 'In', 'On', and 'At' correctly." %}
 {% set nav_links = [
-    {'id': 'introduction', 'title': 'Introduction'},
-    {'id': 'time', 'title': 'Time'},
-    {'id': 'place', 'title': 'Place'},
-    {'id': 'practice', 'title': 'Practice'},
-    {'id': 'discussion', 'title': 'Discussion'}
+{'id': 'introduction', 'title': 'Introduction'},
+{'id': 'time', 'title': 'Time'},
+{'id': 'place', 'title': 'Place'},
+{'id': 'practice', 'title': 'Practice'},
+{'id': 'discussion', 'title': 'Discussion'}
 ] %}
 
-{# Data for the interactive fill-in-the-gap exercise (no inline # comments inside the list) #}
-{% set practice_sentences = [
-    {'prefix': 'We have a meeting', 'answer': 'on', 'suffix': 'Monday morning.'},
-    {'prefix': 'The conference starts', 'answer': 'at', 'suffix': '9:00 am.'},
-    {'prefix': 'She was born', 'answer': 'in', 'suffix': '1995.'},
-    {'prefix': 'Our company was founded', 'answer': 'in', 'suffix': 'the 20th century.'},
-    {'prefix': 'The seminar will be held', 'answer': 'on', 'suffix': 'July 15.'},
-    {'prefix': 'They usually go skiing', 'answer': 'in', 'suffix': 'winter.'},
-    {'prefix': 'I saw him', 'answer': 'on', 'suffix': 'Christmas Eve.'},
-    {'prefix': 'Let's have lunch', 'answer': 'at', 'suffix': 'noon.'},
-    {'prefix': 'She is traveling to Italy', 'answer': 'in', 'suffix': 'April.'},
-    {'prefix': 'We always celebrate New Year's', 'answer': 'on', 'suffix': 'January 1st.'},
-    {'prefix': 'The office is located', 'answer': 'in', 'suffix': 'Milan.'},
-    {'prefix': 'Their headquarters are', 'answer': 'on', 'suffix': 'Fifth Avenue.'},
-    {'prefix': 'I live', 'answer': 'in', 'suffix': 'a small neighborhood near the city center.'},
-    {'prefix': 'He is', 'answer': 'on', 'suffix': 'the bus right now.'},
-    {'prefix': 'Let's meet', 'answer': 'at', 'suffix': 'the corner of the street.'},
-    {'prefix': 'She stayed', 'answer': 'in', 'suffix': 'a hotel during the conference.'},
-    {'prefix': 'They arrived', 'answer': 'at', 'suffix': 'the airport early.'},
-    {'prefix': 'My colleagues are waiting', 'answer': 'in', 'suffix': 'the lobby.'},
-    {'prefix': 'He was sitting', 'answer': 'on', 'suffix': 'the chair next to me.'},
-    {'prefix': 'The company is expanding', 'answer': 'in', 'suffix': 'Europe.'}
-] %}
+{# --- 2. Estensione Template --- #}
+{% extends "abstract_templates/lesson_base.html" %}
 
-{# --- 3. Macro Import --- #}
+{# --- 3. Importazione Macro --- #}
 {% from "abstract_templates/_macros.html" import info_card, fill_in_the_gap_exercise %}
 
-{# --- 4. Lesson Content --- #}
+{# --- 4. Contenuto Lezione --- #}
 {% block lesson_content %}
 
-    {# Section 1: Introduction #}
-    {% call info_card('introduction', 'Introduction') %}
-        <p class="text-slate-700 mb-6">Today we will review two important types of prepositions: <strong>Prepositions of Time</strong> and <strong>Prepositions of Place</strong>. These prepositions help us describe when and where something happens. We'll focus on the common prepositions: <strong>in, on, and at.</strong></p>
-        <div class="space-y-4">
-            <div class="lesson-card">
-                <div class="card-header flex justify-between items-center">
-                    <h3 class="font-bold text-slate-800">Why are Prepositions Important?</h3>
-                    <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-                </div>
-                <div class="card-content">
-                    <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-                        <li>They provide crucial context for when and where an action occurs.</li>
-                        <li>Using them correctly makes your communication clearer and more precise.</li>
-                        <li>They are fundamental building blocks of English grammar.</li>
+{# Dati per l'esercizio (spostati qui per evitare errore parser) #}
+{% set practice_sentences = [
+{'prefix': 'We have a meeting', 'answer': 'on', 'suffix': 'Monday morning.'},
+{'prefix': 'The conference starts', 'answer': 'at', 'suffix': '9:00 am.'},
+{'prefix': 'She was born', 'answer': 'in', 'suffix': '1995.'},
+{'prefix': 'Our company was founded', 'answer': 'in', 'suffix': 'the 20th century.'},
+{'prefix': 'The seminar will be held', 'answer': 'on', 'suffix': 'July 15.'},
+{'prefix': 'They usually go skiing', 'answer': 'in', 'suffix': 'winter.'},
+{'prefix': 'I saw him', 'answer': 'on', 'suffix': 'Christmas Eve.'},
+{'prefix': 'Let\'s have lunch', 'answer': 'at', 'suffix': 'noon.'},
+{'prefix': 'She is traveling to Italy', 'answer': 'in', 'suffix': 'April.'},
+{'prefix': 'We always celebrate New Year\'s', 'answer': 'on', 'suffix': 'January 1st.'},
+{'prefix': 'The office is located', 'answer': 'in', 'suffix': 'Milan.'},
+{'prefix': 'Their headquarters are', 'answer': 'on', 'suffix': 'Fifth Avenue.'},
+{'prefix': 'I live', 'answer': 'in', 'suffix': 'a small neighborhood near the city center.'},
+{'prefix': 'He is', 'answer': 'on', 'suffix': 'the bus right now.'},
+{'prefix': 'Let\'s meet', 'answer': 'at', 'suffix': 'the corner of the street.'},
+{'prefix': 'She stayed', 'answer': 'in', 'suffix': 'a hotel during the conference.'},
+{'prefix': 'They arrived', 'answer': 'at', 'suffix': 'the airport early.'},
+{'prefix': 'My colleagues are waiting', 'answer': 'in', 'suffix': 'the lobby.'},
+{'prefix': 'He was sitting', 'answer': 'on', 'suffix': 'the chair next to me.'},
+{'prefix': 'The company is expanding', 'answer': 'in', 'suffix': 'Europe.'}
+] %}
+
+{# Sezione 1: Introduction #}
+{% call info_card('introduction', '1. Introduction', initial_state='show') %}
+<p class="text-slate-700 mb-6">Today we will review two important types of prepositions: <strong>Prepositions of
+        Time</strong> and <strong>Prepositions of Place</strong>. These prepositions help us describe when and where
+    something happens. We'll focus on the common prepositions: <strong>in, on, and at.</strong></p>
+
+<h4 class="font-bold text-slate-800 mt-4">Why are Prepositions Important?</h4>
+<ul class="text-slate-600">
+    <li>They provide crucial context for when and where an action occurs.</li>
+    <li>Using them correctly makes your communication clearer and more precise.</li>
+    <li>They are fundamental building blocks of English grammar.</li>
+</ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# Sezione 2: Time #}
+{% call info_card('time', '2. Prepositions of Time', initial_state='show') %}
+<p class="text-slate-700 mb-6">Think of these prepositions as moving from a general time to a specific time. We use 'in'
+    for the largest periods, 'on' for days, and 'at' for the most precise moments.</p>
+
+<h4 class="font-bold text-slate-800 mt-4">General ⟶ Specific</h4>
+<div class="table-wrapper mt-4">
+    <table class="lesson-table">
+        <thead>
+            <tr>
+                <th>IN (General)</th>
+                <th>ON (Specific)</th>
+                <th>AT (Very Specific)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Parts of days (the morning, the afternoon)</li>
+                        <li>Months (April, May)</li>
+                        <li>Seasons (summer, winter)</li>
+                        <li>Years (1995)</li>
+                        <li>Centuries (the 20th century)</li>
                     </ul>
-                </div>
-            </div>
-        </div>
-    {% endcall %}
+                </td>
+                <td>
+                    <ul>
+                        <li>Holidays (Christmas Day)</li>
+                        <li>Days of the week (Monday)</li>
+                        <li>Days of the month (the Fourth of July)</li>
+                        <li>Dates (April 15; my birthday is on…)</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        <li>Specific time (noon, midnight, 6:00 pm)</li>
+                        <li>Holidays (Christmas, Halloween)</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endcall %}
 
-    {# Section 2: Time #}
-    {% call info_card('time', 'Prepositions of Time') %}
-        <p class="text-slate-700 mb-6">Think of these prepositions as moving from a general time to a specific time. We use 'in' for the largest periods, 'on' for days, and 'at' for the most precise moments.</p>
-        <div class="lesson-card">
-             <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">General ⟶ Specific</h3>
-                <span class="text-2xl text-slate-500 arrow-icon static"></span>
-            </div>
-             <div class="card-content show" style="margin-top: 1rem;">
-                 <div class="table-wrapper">
-                    <table class="lesson-table">
-                        <thead>
-                            <tr>
-                                <th>IN</th>
-                                <th>ON</th>
-                                <th>AT</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <ul>
-                                        <li>Parts of days (the morning, the afternoon)</li>
-                                        <li>Months (April, May)</li>
-                                        <li>Seasons (summer, winter)</li>
-                                        <li>Years (1995)</li>
-                                        <li>Centuries (the 20th century)</li>
-                                    </ul>
-                                </td>
-                                <td>
-                                    <ul>
-                                        <li>Holidays (Christmas Day)</li>
-                                        <li>Days of the week (Monday)</li>
-                                        <li>Days of the month (the Fourth of July)</li>
-                                        <li>Dates (April 15; my birthday is on…)</li>
-                                    </ul>
-                                </td>
-                                <td>
-                                    <ul>
-                                        <li>Specific time (noon, midnight, 6:00 pm)</li>
-                                        <li>Holidays (Christmas, Halloween)</li>
-                                    </ul>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                 </div>
-            </div>
-        </div>
-    {% endcall %}
+<hr class="my-12 border-gray-200">
 
-    {# Section 3: Place #}
-    {% call info_card('place', 'Prepositions of Place') %}
-        <p class="text-slate-700 mb-6">Similar to time, these prepositions move from a general location to a specific one. 'In' for large areas, 'On' for surfaces and lines, and 'At' for specific points.</p>
-        <div class="lesson-card">
-             <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">General ⟶ Specific</h3>
-                <span class="text-2xl text-slate-500 arrow-icon static"></span>
-            </div>
-             <div class="card-content show" style="margin-top: 1rem;">
-                 <div class="table-wrapper">
-                    <table class="lesson-table">
-                        <thead>
-                            <tr>
-                                <th>IN</th>
-                                <th>ON</th>
-                                <th>AT</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <ul>
-                                        <li>Neighborhoods (Chinatown)</li>
-                                        <li>Cities (Milan)</li>
-                                        <li>Countries (Italy)</li>
-                                        <li>In the car/taxi/Uber</li>
-                                        <li>Places with a boundary (a box, a room)</li>
-                                    </ul>
-                                </td>
-                                <td>
-                                    <ul>
-                                        <li>Streets, avenues (1st Ave.)</li>
-                                        <li>Islands (Fiji)</li>
-                                        <li>Large vehicles (train, bus, ship, plane) and bike</li>
-                                        <li>Surfaces (the table, the wall)</li>
-                                    </ul>
-                                </td>
-                                <td>
-                                    <ul>
-                                        <li>Specific addresses (160 5th Ave.)</li>
-                                        <li>Specific locations (home, the corner, the beach)</li>
-                                    </ul>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                 </div>
-            </div>
-        </div>
-    {% endcall %}
+{# Sezione 3: Place #}
+{% call info_card('place', '3. Prepositions of Place', initial_state='show') %}
+<p class="text-slate-700 mb-6">Similar to time, these prepositions move from a general location to a specific one. 'In'
+    for large areas, 'On' for surfaces and lines, and 'At' for specific points.</p>
 
-    {# Section 4: Practice #}
-    {% call info_card('practice', 'Practice: Fill in the Blanks') %}
-        <p class="text-slate-700 mb-6">Fill in the blanks with the correct preposition: <strong>in, on, or at.</strong></p>
+<h4 class="font-bold text-slate-800 mt-4">General ⟶ Specific</h4>
+<div class="table-wrapper mt-4">
+    <table class="lesson-table">
+        <thead>
+            <tr>
+                <th>IN (General / Inside)</th>
+                <th>ON (Surface / Line)</th>
+                <th>AT (Specific Point)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <ul>
+                        <li>Neighborhoods (Chinatown)</li>
+                        <li>Cities (Milan)</li>
+                        <li>Countries (Italy)</li>
+                        <li>In the car/taxi/Uber</li>
+                        <li>Places with a boundary (a box, a room)</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        <li>Streets, avenues (1st Ave.)</li>
+                        <li>Islands (Fiji)</li>
+                        <li>Large vehicles (train, bus, ship, plane) and bike</li>
+                        <li>Surfaces (the table, the wall)</li>
+                    </ul>
+                </td>
+                <td>
+                    <ul>
+                        <li>Specific addresses (160 5th Ave.)</li>
+                        <li>Specific locations (home, the corner, the beach)</li>
+                    </ul>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endcall %}
 
-        {{ fill_in_the_gap_exercise(
-            exercise_id='prepositions-fill-in',
-            sentences=practice_sentences
-        ) }}
+<hr class="my-12 border-gray-200">
 
-    {% endcall %}
+{# Sezione 4: Practice #}
+{% call info_card('practice', '4. Practice: Fill in the Blanks', initial_state='show') %}
+<p class="text-slate-700 mb-6">Fill in the blanks with the correct preposition: <strong>in, on, or at.</strong></p>
 
-    {# Section 5: Discussion #}
-    {% call info_card('discussion', 'Business Discussion Questions') %}
-        <p class="text-slate-700 mb-6">Apply what you've learned to a business context with these questions. Discussing them can help reinforce your understanding of prepositions in real-world scenarios.</p>
-        <div class="lesson-card">
-            <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">Applying Prepositions to Work</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-                    <li>What time do you usually have the most energy <strong>in</strong> the day?</li>
-                    <li>Do you prefer to schedule important meetings <strong>in</strong> the morning or <strong>in</strong> the afternoon? Why?</li>
-                    <li>Have you ever had to attend a meeting <strong>at</strong> midnight because of time zones? How did it go?</li>
-                    <li>What's the busiest season <strong>in</strong> your industry? Why?</li>
-                    <li>Can you describe an important event in your career that happened <strong>on</strong> a specific date?</li>
-                    <li>Where is your company located? Is it <strong>in</strong> a city center, <strong>on</strong> a main street, or <strong>at</strong> a specific address?</li>
-                    <li>Do you prefer to work <strong>in</strong> the office, <strong>on</strong>-site with clients, or <strong>at</strong> home? Why?</li>
-                    <li>What's the most memorable business trip you've taken <strong>in</strong> another country?</li>
-                    <li>Do you usually take notes <strong>on</strong> paper or <strong>on</strong> a computer during meetings?</li>
-                    <li>Where do you usually feel most productive—<strong>in</strong> a quiet office, <strong>on</strong> the go, or <strong>at</strong> a café?</li>
-                </ul>
-            </div>
-        </div>
-    {% endcall %}
+{{ fill_in_the_gap_exercise(
+exercise_id='prepositions-fill-in',
+sentences=practice_sentences
+) }}
+{% endcall %}
 
-{% endblock %}
+<hr class="my-12 border-gray-200">
 
-{# No extra_scripts block needed: the interactive JS is already loaded by lesson_base.html. #}
+{# Sezione 5: Discussion #}
+{% call info_card('discussion', '5. Business Discussion Questions', initial_state='show') %}
+<p class="text-slate-700 mb-6">Apply what you've learned to a business context with these questions. Discussing them can
+    help reinforce your understanding of prepositions in real-world scenarios.</p>
+
+<h4 class="font-bold text-slate-800 mt-4">Applying Prepositions to Work</h4>
+<ul class="text-slate-600">
+    <li>What time do you usually have the most energy <strong>in</strong> the day?</li>
+    <li>Do you prefer to schedule important meetings <strong>in</strong> the morning or <strong>in</strong> the
+        afternoon? Why?</li>
+    <li>Have you ever had to attend a meeting <strong>at</strong> midnight because of time zones? How did it go?</li>
+    <li>What's the busiest season <strong>in</strong> your industry? Why?</li>
+    <li>Can you describe an important event in your career that happened <strong>on</strong> a specific date?</li>
+    <li>Where is your company located? Is it <strong>in</strong> a city center, <strong>on</strong> a main street, or
+        <strong>at</strong> a specific address?
+    </li>
+    <li>Do you prefer to work <strong>in</strong> the office, <strong>on</strong>-site with clients, or
+        <strong>at</strong> home? Why?
+    </li>
+    <li>What's the most memorable business trip you've taken <strong>in</strong> another country?</li>
+    <li>Do you usually take notes <strong>on</strong> paper or <strong>on</strong> a computer during meetings?</li>
+    <li>Where do you usually feel most productive—<strong>in</strong> a quiet office, <strong>on</strong> the go, or
+        <strong>at</strong> a café?
+    </li>
+</ul>
+{% endcall %}
+
+{% endblock lesson_content %}

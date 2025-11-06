@@ -1,0 +1,108 @@
+{% extends "abstract_templates/base.html" %}
+
+{% block content %}
+{% include "abstract_templates/coach_dashboard_header.html" %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb container">
+    <a href="/dashboard/coach/landing.html">Dashboard</a><span class="sep">/</span><span>Create User</span>
+</div>
+
+<!-- Main form content -->
+<main class="container" style="padding:16px;">
+    <section class="section" style="max-width: 600px; margin: 0 auto;">
+        
+        <h1 style="margin:0; font-size: 1.5rem; font-weight: 700; color: #1f2937;">Create New User / Company</h1>
+        
+        <form id="createForm" style="display: grid; gap: 16px; margin-top: 24px;">
+            
+            <!-- Step 1: Picker -->
+            <div>
+                <label for="entityTypeSelect" class="form-label">What do you want to create?</label>
+                <select id="entityTypeSelect" name="entityType" required class="form-input">
+                    <option value="">Select an option...</option>
+                    <option value="Student">Student</option>
+                    <option value="Company">Company</option>
+                </select>
+            </div>
+
+            <!-- ===== STUDENT FORM (HIDDEN BY DEFAULT) ===== -->
+            <div id="studentFormContainer" style="display: none; display: grid; gap: 16px; margin-top: 16px; border-top: 1px solid #e5e7eb; padding-top: 24px;">
+                <h2 style="font-size: 1.2rem; font-weight: 600; color: #111827;">New Student Details</h2>
+                
+                <!-- Student Name Grid -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+                    <div>
+                        <label for="studentFirstName" class="form-label">First Name</label>
+                        <input type="text" id="studentFirstName" name="studentFirstName" class="form-input" placeholder="e.g., Mario">
+                    </div>
+                    <div>
+                        <label for="studentLastName" class="form-label">Last Name</label>
+                        <input type="text" id="studentLastName" name="studentLastName" class="form-input" placeholder="e.g., Rossi">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="studentEmail" class="form-label">Email Address</label>
+                    <input type="email" id="studentEmail" name="studentEmail" class="form-input" placeholder="e.g., m.rossi@email.com">
+                </div>
+
+                <div>
+                    <label for="studentPassword" class="form-label">Set Password</label>
+                    <input type="password" id="studentPassword" name="studentPassword" class="form-input" placeholder="Min. 8 characters">
+                </div>
+                
+                <div>
+                    <label for="studentStatus" class="form-label">Status</label>
+                    <select id="studentStatus" name="studentStatus" class="form-input">
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- ===== COMPANY FORM (HIDDEN BY DEFAULT) ===== -->
+            <div id="companyFormContainer" style="display: none; display: grid; gap: 16px; margin-top: 16px; border-top: 1px solid #e5e7eb; padding-top: 24px;">
+                <h2 style="font-size: 1.2rem; font-weight: 600; color: #111827;">New Company Details</h2>
+                
+                <div>
+                    <label for="companyName" class="form-label">Company Name</label>
+                    <input type="text" id="companyName" name="companyName" class="form-input" placeholder="e.g., XYZ Corporation">
+                </div>
+                
+                <div>
+                    <label for="companyContactPerson" class="form-label">Contact Person</label>
+                    <input type="text" id="companyContactPerson" name="companyContactPerson" class="form-input" placeholder="e.g., Anna Bianchi">
+                </div>
+
+                <div>
+                    <label for="companyEmail" class="form-label">Contact Email</label>
+                    <input type="email" id="companyEmail" name="companyEmail" class="form-input" placeholder="e.g., anna.bianchi@xyz.com">
+                </div>
+
+                <div>
+                    <label for="companyStatus" class="form-label">Status</label>
+                    <select id="companyStatus" name="companyStatus" class="form-input">
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Status Message -->
+            <div id="formMessage" style="margin-top: 16px; font-size: 0.9rem;"></div>
+
+            <!-- Submit Button (hidden until a type is selected) -->
+            <button type="submit" id="submitBtn" class="btn" style="justify-content: center; margin-top: 16px; display: none;">
+                <span>Save</span>
+            </button>
+        </form>
+    </section>
+</main>
+
+{% include "abstract_templates/coach_dashboard_footer.html" %}
+
+<!-- Page-specific script -->
+<script type="module" src="/static/js/coach_dashboard/pages/create_user.js"></script>
+
+{% endblock %}

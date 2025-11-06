@@ -1,0 +1,131 @@
+{# ================================================================== #}
+{# ZONA 1: INTESTAZIONE SICURA (SOLO DEFINIZIONI SEMPLICI)            #}
+{# ================================================================== #}
+{% set lesson_title = "Tongue Twisters for Pronunciation Practice" %}
+{% set lesson_subtitle = "Targeting tricky sounds to build fluency and articulation." %}
+
+{# REGOLA D'ORO: nav_links SU UNA SOLA RIGA #}
+{% set nav_links = [{'id': 'concept', 'title': 'Concept'}, {'id': 'practice', 'title': 'Practice Mode'}, {'id': 'general', 'title': 'General Twisters'}, {'id': 'business', 'title': 'Business Twisters'}, {'id': 'difficult', 'title': 'Difficult Twisters'}] %}
+
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, random_item_generator %}
+
+{# ================================================================== #}
+{# ZONA 2: AREA DATI & CONTENUTO (TUTTO IL RESTO QUI DENTRO)          #}
+{# ================================================================== #}
+{% block lesson_content %}
+
+{# --- DATI PER MACRO INTERATTIVE --- #}
+
+{# Lista master pre-formattata per il generatore casuale #}
+{% set all_twisters_formatted = [
+    '<strong>Focus: \'S\' vs \'Sh\' sounds</strong><br>She sells seashells by the seashore.',
+    '<strong>Focus: \'P\' and \'K\' sounds</strong><br>Peter Piper picked a peck of pickled peppers.',
+    '<strong>Focus: \'B\' and \'G\' consonant blends</strong><br>A big black bug bit a big black dog.',
+    '<strong>Focus: \'L\' and \'R\' sounds</strong><br>Red lorry, yellow lorry.',
+    '<strong>Focus: \'W\' and \'Z\' sounds</strong><br>Fuzzy Wuzzy was a bear. Fuzzy Wuzzy had no hair.',
+    '<strong>Focus: \'S\' and \'Sh\' sounds</strong><br>I saw Susie sitting in a shoeshine shop.',
+    '<strong>Focus: \'S\' and \'T\' clusters</strong><br>Six sticky skeletons.',
+    '<strong>Focus: \'B\' and \'T\' sounds</strong><br>Betty Botter bought some butter.',
+    '<strong>Focus: Vowel and consonant clusters</strong><br>The sixth sick sheik\'s sheep is sick.',
+    '<strong>Focus: \'F\' and \'R\' sounds</strong><br>Four furious friends fought for the phone.',
+    '<strong>Focus: \'P\' and \'R\' blends</strong><br>A proper copper coffee pot.',
+    '<strong>Focus: \'S\' and \'T\' clusters (Data talk)</strong><br>Strict statistics stick to standard systems.',
+    '<strong>Focus: \'Cl\' and \'T\' blends (Strategy talk)</strong><br>The client climbed clear of the clutter.',
+    '<strong>Focus: \'C\' and \'K\' sounds (Finance talk)</strong><br>The complex contract costs correct cash.',
+    '<strong>Focus: \'F\' and \'R\' blends (Market talk)</strong><br>Real financial free fresh fried fish.',
+    '<strong>Focus: \'S\' and \'P\' sounds (Presentation talk)</strong><br>Specific speakers need specific speech.',
+    '<strong>Focus: \'Sh\' and \'S\' sounds (Leadership)</strong><br>The shrewd CEO surely showed strong sales.',
+    '<strong>Focus: \'W\' and \'Sw\' blends (Products)</strong><br>Which wrist watches are Swiss wrist watches?',
+    '<strong>Focus: \'R\' and \'L\' contrast</strong><br>Truly rural traders rarely reported trouble.',
+    '<strong>Focus: The \'Yoo\' and \'Aw\' vowel sounds</strong><br>Unique New York, unique New York.',
+    '<strong>Focus: \'Th\' and \'S\' sounds</strong><br>The seething sea ceaseth and thus the seething sea sufficeth us.',
+    '<strong>Focus: \'Th\' and \'R\' sounds</strong><br>Three free thorns thrill through the throat.',
+    '<strong>Focus: \'M\' and \'N\' sounds</strong><br>Imagine an imaginary menagerie manager managing an imaginary menagerie.',
+    '<strong>Focus: \'S\' and \'W\' sounds</strong><br>Six sleek swans swam swiftly southwards.',
+    '<strong>Focus: Vowel shifts (\'Ah\', \'Er\', \'Oo\')</strong><br>Pad kid poured curd pulled cold.',
+    '<strong>Focus: \'O\' vowel contrast</strong><br>Good blood, bad blood.',
+    '<strong>Focus: \'F\' and \'L\' blends</strong><br>Of all the felt I ever felt, I never felt a piece of felt which felt as fine as that felt felt.',
+    '<strong>Focus: \'L\', \'Th\', and \'W\' blends</strong><br>Lesser leather never weathered lesser clever writers.',
+    '<strong>Focus: \'Th\' and \'T\' sounds</strong><br>Thirty-three thousand thirsty throats.',
+    '<strong>Focus: \'W\' and \'Wh\' sounds</strong><br>If two witches were watching two watches, which witch would watch which watch?'
+] %}
+
+{# --- INIZIO CONTENUTO LEZIONE --- #}
+
+{% call info_card('concept', '1. Concept Breakdown: Why Use Twisters?', initial_state='show') %}
+    <div class="text-slate-600">
+        <ul class="list-disc list-inside ml-4 space-y-3">
+            <li>Tongue twisters are excellent for developing <strong>articulatory muscle memory</strong>. They force your mouth to switch between similar, difficult sounds quickly.</li>
+            <li><strong>The Goal is Clarity, not Speed:</strong> Always start very slowly. Focus on pronouncing every single sound correctly, especially the consonant blends.</li>
+            <li><strong>Identify the Challenge:</strong> Before saying it, identify which sounds (e.g., 'S' vs 'Sh', 'L' vs 'R', 'Th') are being targeted.</li>
+            <li><strong>Practice Cycle:</strong> 1) Slowly and carefully. 2) Repeat three times, slightly faster. 3) Push for full speed on the final attempt.</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('practice', '2. Interactive Practice Mode', initial_state='show') %}
+    <p class="mb-6 text-slate-600">Click the button to get a random twister. Say it three times, increasing speed each time!</p>
+    {{ random_item_generator('twister-gen', 'Generate Challenge', 'twister-list', all_twisters_formatted) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('general', '3. 10 General English Twisters (Phonetic Focus)', initial_state='show') %}
+    <div class="text-slate-700">
+        <ul class="space-y-2">
+             <li class="p-2 border-b border-pink-100"><strong class="text-pink-700">'S' vs 'Sh':</strong> She sells seashells by the seashore.</li>
+             <li class="p-2 border-b border-pink-100"><strong class="text-pink-700">'P' & 'K':</strong> Peter Piper picked a peck of pickled peppers.</li>
+             <li class="p-2 border-b border-pink-100"><strong class="text-pink-700">'B' & 'G' blends:</strong> A big black bug bit a big black dog.</li>
+             <li class="p-2 border-b border-pink-100"><strong class="text-pink-700">'L' & 'R':</strong> Red lorry, yellow lorry.</li>
+             <li class="p-2 border-b border-pink-100"><strong class="text-pink-700">'W' & 'Z':</strong> Fuzzy Wuzzy was a bear. Fuzzy Wuzzy had no hair.</li>
+             <li class="p-2 border-b border-pink-100"><strong class="text-pink-700">'S' & 'Sh':</strong> I saw Susie sitting in a shoeshine shop.</li>
+             <li class="p-2 border-b border-pink-100"><strong class="text-pink-700">'S' & 'T' clusters:</strong> Six sticky skeletons.</li>
+             <li class="p-2 border-b border-pink-100"><strong class="text-pink-700">'B' & 'T':</strong> Betty Botter bought some butter.</li>
+             <li class="p-2 border-b border-pink-100"><strong class="text-pink-700">Complex Clusters:</strong> The sixth sick sheik's sheep is sick.</li>
+             <li class="p-2 border-b border-pink-100"><strong class="text-pink-700">'F' & 'R':</strong> Four furious friends fought for the phone.</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('business', '4. 10 Business English Twisters', initial_state='show') %}
+    <div class="text-slate-700">
+        <ul class="space-y-2">
+             <li class="p-2 border-b border-blue-100"><strong class="text-blue-700">'P' & 'R' blends:</strong> A proper copper coffee pot.</li>
+             <li class="p-2 border-b border-blue-100"><strong class="text-blue-700">'S' & 'T' (Data):</strong> Strict statistics stick to standard systems.</li>
+             <li class="p-2 border-b border-blue-100"><strong class="text-blue-700">'Cl' & 'T' (Strategy):</strong> The client climbed clear of the clutter.</li>
+             <li class="p-2 border-b border-blue-100"><strong class="text-blue-700">'C' & 'K' (Finance):</strong> The complex contract costs correct cash.</li>
+             <li class="p-2 border-b border-blue-100"><strong class="text-blue-700">'F' & 'R' (Market):</strong> Real financial free fresh fried fish.</li>
+             <li class="p-2 border-b border-blue-100"><strong class="text-blue-700">'S' & 'P' (Presentation):</strong> Specific speakers need specific speech.</li>
+             <li class="p-2 border-b border-blue-100"><strong class="text-blue-700">'Sh' & 'S' (Leadership):</strong> The shrewd CEO surely showed strong sales.</li>
+             <li class="p-2 border-b border-blue-100"><strong class="text-blue-700">'W' & 'Sw' (Products):</strong> Which wrist watches are Swiss wrist watches?</li>
+             <li class="p-2 border-b border-blue-100"><strong class="text-blue-700">'R' & 'L':</strong> Truly rural traders rarely reported trouble.</li>
+             <li class="p-2 border-b border-blue-100"><strong class="text-blue-700">'Yoo' & 'Aw' vowels:</strong> Unique New York, unique New York.</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('difficult', '5. 10 Most Difficult Twisters', initial_state='show') %}
+    <div class="text-slate-700">
+        <ul class="space-y-2">
+             <li class="p-2 border-b border-red-100"><strong class="text-red-700">'Th' & 'S':</strong> The seething sea ceaseth and thus the seething sea sufficeth us.</li>
+             <li class="p-2 border-b border-red-100"><strong class="text-red-700">'Th' & 'R':</strong> Three free thorns thrill through the throat.</li>
+             <li class="p-2 border-b border-red-100"><strong class="text-red-700">'M' & 'N':</strong> Imagine an imaginary menagerie manager managing an imaginary menagerie.</li>
+             <li class="p-2 border-b border-red-100"><strong class="text-red-700">'S' & 'W':</strong> Six sleek swans swam swiftly southwards.</li>
+             <li class="p-2 border-b border-red-100"><strong class="text-red-700">Vowel shifts:</strong> Pad kid poured curd pulled cold.</li>
+             <li class="p-2 border-b border-red-100"><strong class="text-red-700">'O' contrast:</strong> Good blood, bad blood.</li>
+             <li class="p-2 border-b border-red-100"><strong class="text-red-700">'F' & 'L':</strong> Of all the felt I ever felt, I never felt a piece of felt which felt as fine as that felt felt.</li>
+             <li class="p-2 border-b border-red-100"><strong class="text-red-700">'L', 'Th', 'W':</strong> Lesser leather never weathered lesser clever writers.</li>
+             <li class="p-2 border-b border-red-100"><strong class="text-red-700">'Th' & 'T':</strong> Thirty-three thousand thirsty throats.</li>
+             <li class="p-2 border-b border-red-100"><strong class="text-red-700">'W' & 'Wh':</strong> If two witches were watching two watches, which witch would watch which watch?</li>
+        </ul>
+    </div>
+{% endcall %}
+
+{% endblock lesson_content %}

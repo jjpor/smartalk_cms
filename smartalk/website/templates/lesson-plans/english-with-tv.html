@@ -1,0 +1,188 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "English with Media: Active Learning Plan" %}
+{% set lesson_subtitle = "A structured plan for moving from passive viewing to active linguistic practice." %}
+
+{% set nav_links = [{'id': 'goal', 'title': 'Goal'}, {'id': 'phase1', 'title': 'Phase 1: Input'}, {'id': 'phase2', 'title': 'Phase 2: Practice'}, {'id': 'phase3', 'title': 'Phase 3: Output'}, {'id': 'challenge', 'title': 'Mastery Challenge'}] %}
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, multiple_choice_exercise, match_exercise %}
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne) --- #}
+
+{# Dati per Subtitle Strategy Quiz (Phase 1) #}
+{% set subtitle_quiz = [
+    {
+        'text': 'What is the recommended strategy for your <strong>First Watch</strong>?',
+        'options': [
+            {'value': 'native', 'text': 'Watch with subtitles in your native language.'},
+            {'value': 'english', 'text': 'Watch with English subtitles to connect reading and listening.'},
+            {'value': 'none', 'text': 'Watch with no subtitles at all.'}
+        ],
+        'correct_value': 'english'
+    },
+    {
+        'text': 'What is the main goal of the <strong>Second Watch</strong>?',
+        'options': [
+            {'value': 'listen', 'text': 'To focus purely on listening skills without text support.'},
+            {'value': 'read', 'text': 'To read as fast as possible.'},
+            {'value': 'relax', 'text': 'To just enjoy the show passively.'}
+        ],
+        'correct_value': 'listen'
+    },
+    {
+        'text': 'Why should you avoid relying on native language subtitles?',
+        'options': [
+            {'value': 'hard', 'text': 'They are too hard to read.'},
+            {'value': 'brain', 'text': 'They stop your brain from thinking in English.'},
+            {'value': 'boring', 'text': 'They are boring.'}
+        ],
+        'correct_value': 'brain'
+    }
+] %}
+
+{# Dati per Technique Matching (Phase 2) #}
+{% set tech_terms = [
+    {'id': '1', 'text': 'Shadowing'},
+    {'id': '2', 'text': 'Active Vocabulary'},
+    {'id': '3', 'text': 'Third Watch'},
+    {'id': '4', 'text': 'Content Selection'}
+] %}
+
+{% set tech_defs = [
+    {'id': '1', 'text': 'Speaking at the same time as the actor to improve rhythm.'},
+    {'id': '2', 'text': 'Writing down new words and using them within 24 hours.'},
+    {'id': '3', 'text': 'Pausing and repeating key scenes for deeper comprehension.'},
+    {'id': '4', 'text': 'Choosing material that is interesting and at the right level.'}
+] %}
+
+{# --- Fase 5: Conversione Contenuto --- #}
+
+{% call info_card('goal', '1. Lesson Goal: Active Viewing', initial_state='show') %}
+    <h4 class="font-bold text-slate-800 mb-4">The Difference Between Watching & Learning</h4>
+    <p class="text-slate-600 mb-4">This plan is designed to turn your screen time into a structured language lesson. Simply watching English media is passive; this process ensures you actively engage with <span class="font-semibold">pronunciation, vocabulary, and natural conversational flow</span>.</p>
+    <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+        <p class="italic font-medium text-blue-800">The focus is on the <span class="font-bold">repetition cycle</span>: Listen > Read > Repeat > Use.</p>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('phase1', '2. Phase 1: Preparation & Input', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Choosing the right resource and maximizing comprehension during your first two watches.</p>
+    
+    <div class="space-y-6">
+        <div>
+            <h4 class="font-bold text-slate-800 mb-2">1. Choose the Right Content</h4>
+            <ul class="list-disc list-inside text-slate-600 space-y-1">
+                <li>Pick a show or movie that matches your level.</li>
+                <li>Start with family-friendly shows or sitcoms with clear dialogue.</li>
+                <li>Avoid action-heavy films with too much slang initially.</li>
+                <li><em>Great choices: Friends, The Office, Modern Family, Toy Story.</em></li>
+            </ul>
+        </div>
+        <div>
+            <h4 class="font-bold text-slate-800 mb-2">2. Use Subtitles Wisely (The Triple-Watch)</h4>
+            <ol class="list-decimal list-inside text-slate-600 space-y-2">
+                <li><span class="font-semibold">First Watch:</span> Use <span class="font-bold">English subtitles</span> to understand context and connect sound to spelling.</li>
+                <li><span class="font-semibold">Second Watch:</span> Turn OFF subtitles. Focus on <span class="font-bold">listening</span> and body language.</li>
+                <li><span class="font-semibold">Third Watch:</span> Pause and repeat key parts. Turn subtitles on briefly only if stuck.</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="mt-8 space-y-4">
+        <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <h5 class="font-bold text-blue-800">Reflection: Content Level Check</h5>
+            <p class="text-sm text-slate-700">Name one English show you currently enjoy. Is it <span class="font-semibold">too challenging</span> (e.g., complex medical slang) or <span class="font-semibold">just right</span>? Why?</p>
+        </div>
+    </div>
+
+    <div class="mt-8">
+        <h4 class="font-bold text-slate-800 mb-4">Quick Check: Subtitle Strategy</h4>
+        {{ multiple_choice_exercise('subtitle-quiz', subtitle_quiz) }}
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('phase2', '3. Phase 2: Active Practice & Retention', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Techniques for improving speaking fluency and growing active vocabulary.</p>
+    
+    <div class="space-y-6 mb-8">
+        <div>
+            <h4 class="font-bold text-slate-800 mb-2">3. Listen and Repeat (Shadowing)</h4>
+            <ul class="list-disc list-inside text-slate-600 space-y-1">
+                <li>Imitate actors' pronunciation and intonation precisely.</li>
+                <li><strong>Shadowing:</strong> Play a scene and say the lines <em>at the same time</em> as the characters to build rhythm.</li>
+            </ul>
+        </div>
+        <div>
+            <h4 class="font-bold text-slate-800 mb-2">4. Active Vocabulary</h4>
+            <ul class="list-disc list-inside text-slate-600 space-y-1">
+                <li>Keep a notebook for new words. Look up meanings immediately.</li>
+                <li><strong>Golden Rule:</strong> Use new words in conversation or writing within 24 hours.</li>
+            </ul>
+        </div>
+        <div>
+            <h4 class="font-bold text-slate-800 mb-2">5. Common Expressions</h4>
+            <ul class="list-disc list-inside text-slate-600 space-y-1">
+                <li>Notice natural responses (e.g., "I'm in!" instead of just "I want to participate").</li>
+            </ul>
+        </div>
+    </div>
+
+    <h4 class="font-bold text-slate-800 mb-4">Match the Technique to the Goal</h4>
+    {{ match_exercise('media-tech-match', tech_terms, tech_defs) }}
+
+    <div class="mt-8 bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+        <h5 class="font-bold text-blue-800">Exercise: The New Dialogue</h5>
+        <p class="text-sm text-slate-700">Create a short, 4-line dialogue incorporating one new piece of vocabulary and one common expression you learned recently. Practice saying it aloud three times.</p>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('phase3', '4. Phase 3: Reflection & Output', initial_state='show') %}
+    <p class="text-slate-600 mb-6">The final step: producing language to solidify learning.</p>
+    
+    <h4 class="font-bold text-slate-800 mb-2">6. Pause & Reflect</h4>
+    <ul class="list-disc list-inside text-slate-600 space-y-2 mb-6">
+        <li>Stop and think about what’s happening in the scene.</li>
+        <li>Try <span class="font-semibold">predicting</span> what will happen next before you watch.</li>
+        <li>Summarize the scene aloud to yourself.</li>
+    </ul>
+
+    <div class="space-y-4">
+        <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <h5 class="font-bold text-blue-800">Exercise: Scene Summary</h5>
+            <p class="text-sm text-slate-700">Watch a 3-minute scene. Pause, then spend 60 seconds speaking a summary of the events. Write a one-sentence prediction for the next scene using a new word.</p>
+        </div>
+        <div class="bg-blue-50 p-4 rounded-lg border-l-4 border-blue-500">
+            <h5 class="font-bold text-blue-800">Reflection: The Cultural Gap</h5>
+            <p class="text-sm text-slate-700">Did you encounter any jokes or cultural references you didn't understand? How can you use Google (in English) to fill that knowledge gap?</p>
+        </div>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('challenge', '5. Mastery Challenge', initial_state='show') %}
+    <div class="bg-green-50 p-6 rounded-xl border-2 border-green-200">
+        <h3 class="text-green-800 font-bold text-lg mb-4">The 10-Minute Monologue</h3>
+        <p class="text-slate-700 mb-4"><span class="font-bold">Goal:</span> Watch 10 minutes of a familiar show <span class="font-semibold">without subtitles</span>. Immediately after, record yourself speaking for two minutes on one of these topics:</p>
+        <ol class="list-decimal list-inside text-slate-700 space-y-2 mb-6">
+            <li>Explain the plot to a friend who missed it.</li>
+            <li>Analyze the main conflict or emotion.</li>
+            <li>Critique the fashion, music, or setting.</li>
+        </ol>
+        <p class="font-bold text-green-800">Self-Correction:</p>
+        <p class="text-slate-700 text-sm">Listen back to your recording. Identify two mispronounced words and two grammar mistakes. These are your focus for next time.</p>
+    </div>
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}

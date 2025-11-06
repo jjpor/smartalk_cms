@@ -1,0 +1,222 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "Tough Conversations" %}
+{% set lesson_subtitle = "A guide to navigating difficult discussions with confidence." %}
+
+{% set nav_links = [
+    {'id': 'warmup', 'title': 'Warm-Up'},
+    {'id': 'vocabulary', 'title': 'Vocabulary'},
+    {'id': 'cases', 'title': 'Case Discussions'},
+    {'id': 'discussion', 'title': 'Guided Discussion'},
+    {'id': 'scenarios', 'title': 'Scenarios'},
+    {'id': 'adv_vocab', 'title': 'Adv. Vocab'},
+    {'id': 'wrapup', 'title': 'Wrap-Up'}
+] %}
+
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, match_exercise, random_item_generator, dropdown_fill_in_exercise %}
+
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne) --- #}
+
+{# Dati per Sezione 2 (Idioms Match) #}
+{% set idiom_terms = [
+    {'id': '1', 'text': 'Break the ice'},
+    {'id': '2', 'text': 'Get something off your chest'},
+    {'id': '3', 'text': 'Beat around the bush'},
+    {'id': '4', 'text': 'Come clean'},
+    {'id': '5', 'text': 'Tread carefully'}
+] %}
+{% set idiom_defs = [
+    {'id': '1', 'text': 'Start a conversation in an awkward situation'},
+    {'id': '2', 'text': 'Say something that has been bothering you'},
+    {'id': '3', 'text': 'Avoid saying something directly'},
+    {'id': '4', 'text': 'Be honest about something (confess)'},
+    {'id': '5', 'text': 'Be cautious with words or actions'}
+] %}
+
+{# Dati per Sezione 3 (Random Cases) #}
+{% set case_list = [
+    'Quitting your job',
+    'Admitting failure to your boss',
+    'Firing an employee',
+    'Dealing with an angry client',
+    'Refusing to lend money to a friend',
+    'Negotiating strict contract terms',
+    'Confronting a colleague about their behavior'
+] %}
+
+{# Dati per Sezione 5 (Random Scenarios) #}
+{% set roleplay_list = [
+    'You need to tell your coworker they interrupt too much in meetings.',
+    'You’re a client unhappy with a service—you want a refund.',
+    'Your friend is always late and it’s affecting your plans.',
+    'You’re a manager and must tell someone they didn’t get the promotion.'
+] %}
+
+{# Dati per Sezione 6 (Advanced Vocab Dropdown - 12 items for double meanings) #}
+{% set adv_vocab_options = ['untangle', 'defuse', 'hijacked', 'validate', 'wrench', 'stabilize'] %}
+{% set adv_vocab_quiz = [
+    {'prefix': 'You need to', 'options': adv_vocab_options, 'answer': 'untangle', 'suffix': 'your emotions from the facts. (Figurative)'},
+    {'prefix': 'I tried to', 'options': adv_vocab_options, 'answer': 'untangle', 'suffix': 'the cables on the floor. (Literal)'},
+    {'prefix': 'She cracked a joke to', 'options': adv_vocab_options, 'answer': 'defuse', 'suffix': 'the tension. (Figurative)'},
+    {'prefix': 'The police worked to', 'options': adv_vocab_options, 'answer': 'defuse', 'suffix': 'the bomb. (Literal)'},
+    {'prefix': 'I got', 'options': adv_vocab_options, 'answer': 'hijacked', 'suffix': 'by my emotions and overreacted. (Figurative)'},
+    {'prefix': 'The plane was', 'options': adv_vocab_options, 'answer': 'hijacked', 'suffix': 'by armed men. (Literal)'},
+    {'prefix': 'She didn’t feel', 'options': adv_vocab_options, 'answer': 'validate', 'suffix': 'd by her boss (he ignored her work). (Figurative)'},
+    {'prefix': 'The theory was later', 'options': adv_vocab_options, 'answer': 'validate', 'suffix': 'd by experimental results. (Literal)'},
+    {'prefix': 'It was a gut-', 'options': adv_vocab_options, 'answer': 'wrench', 'suffix': 'ing experience to deliver that bad news. (Figurative)'},
+    {'prefix': 'They tried to', 'options': adv_vocab_options, 'answer': 'wrench', 'suffix': 'the bag from him, but he held on. (Literal)'},
+    {'prefix': 'I’m having trouble', 'options': adv_vocab_options, 'answer': 'stabilize', 'suffix': 'ing my thoughts after the call. (Figurative)'},
+    {'prefix': 'Doctors worked to', 'options': adv_vocab_options, 'answer': 'stabilize', 'suffix': 'the patient’s breathing. (Literal)'}
+] %}
+
+
+{# --- Fase 5: Conversione Contenuto --- #}
+
+{% call info_card('warmup', '1. Warm-Up Discussion', initial_state='show') %}
+    <ul class="text-slate-600">
+        <li>What's a tough conversation you've had recently (no need for too many details)?</li>
+        <li>Why do you think some conversations are difficult?</li>
+        <li>Which is the hardest for you? Why? (e.g., giving feedback, asking for a raise, breaking bad news, apologizing, confronting someone)</li>
+    </ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('vocabulary', '2. Vocabulary', initial_state='show') %}
+    <p class="mt-4 text-slate-600">(Teacher explains, students create their own examples or short dialogues.)</p>
+    <ul class="text-slate-600">
+        <li><strong>Break the ice</strong> - Start a conversation in an awkward situation.</li>
+        <li><strong>Get something off your chest</strong> - Say something that's been bothering you.</li>
+        <li><strong>Beat around the bush</strong> - Avoid saying something directly.</li>
+        <li><strong>Come clean</strong> - Be honest about something.</li>
+        <li><strong>Tread carefully</strong> - Be cautious with words or actions.</li>
+    </ul>
+    
+    {# NUOVO ESERCIZIO DI MATCHING #}
+    <div class="mt-8">
+        <h4 class="font-semibold text-slate-800 mb-4">Quick Check: Match the idioms</h4>
+        {{ match_exercise('tough-idioms-match', idiom_terms, idiom_defs) }}
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('cases', '3. Workplace Case Discussions', initial_state='show') %}
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Common Tough Scenarios</h4>
+        <p class="mt-2 text-slate-600">Which of these would you find most difficult? Why?</p>
+        <ul class="text-slate-600">
+            <li>Quitting your job</li>
+            <li>Admitting failure</li>
+            <li>Firing someone</li>
+            <li>Dealing with an upset client</li>
+            <li>Refusing to lend money to someone</li>
+            <li>Negotiating terms of a contract</li>
+            <li>Confronting a friend about their behavior</li>
+        </ul>
+    </div>
+
+    {# NUOVO RANDOM GENERATOR per discussione rapida #}
+    <div class="mt-8">
+        <h4 class="font-semibold text-slate-800">Case Roulette</h4>
+        <p class="mb-2 text-slate-600">Click to get a random tough case to discuss instantly:</p>
+        {{ random_item_generator('case-roulette', 'Spin the Wheel', 'case-list', case_list) }}
+    </div>
+
+    <div class="mt-6">
+        <h4 class="font-semibold text-slate-800">Follow-up Questions:</h4>
+        <ul class="text-slate-600">
+            <li>Would it be easier to have these conversations in your first language or in English? Why?</li>
+            <li>What advice would you give to someone who struggles with these kinds of conversations?</li>
+            <li>Which of these conversations have you had before? How did it go?</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('discussion', '4. Guided Discussion', initial_state='show') %}
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Personal but professional</h4>
+        <ul class="text-slate-600">
+            <li>How do you usually prepare for a tough conversation?</li>
+            <li>Is it better to speak directly or gently? Why?</li>
+            <li>Have you ever regretted avoiding a tough conversation?</li>
+            <li>What makes you feel more confident in tough conversations?</li>
+        </ul>
+    </div>
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Workplace-focused</h4>
+        <ul class="text-slate-600">
+            <li>How should a manager tell someone they're underperforming?</li>
+            <li>How can you ask for a raise without sounding pushy?</li>
+            <li>How can you disagree with a client or boss respectfully?</li>
+        </ul>
+    </div>
+    <div class="mt-4">
+        <h4 class="font-semibold text-slate-800">Moral or general</h4>
+        <ul class="text-slate-600">
+            <li>Should honesty always come before kindness?</li>
+            <li>Is it okay to avoid a conversation if it might hurt someone's feelings?</li>
+            <li>What's more important in conflict: being right or being kind?</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('scenarios', '5. Scenarios (Speaking Practice)', initial_state='show') %}
+    <p class="mb-4 text-slate-600">Click to get a random scenario to roleplay with your coach.</p>
+    {# NUOVO RANDOM GENERATOR per roleplay #}
+    {{ random_item_generator('roleplay-roulette', 'Get Scenario', 'roleplay-list', roleplay_list) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('adv_vocab', '6. Advanced Vocabulary', initial_state='show') %}
+    <ul class="text-slate-600 mt-4">
+        <li><strong>Untangle</strong> - To separate something that is twisted / clarify complexity.</li>
+        <li><strong>Defuse</strong> - To calm a tense situation.</li>
+        <li><strong>Hijack</strong> - To take control of something by force / emotionally take over.</li>
+        <li><strong>Validate</strong> - To confirm, recognize, or prove legitimate.</li>
+        <li><strong>Wrench</strong> - To twist or pull strongly / a painful emotional experience.</li>
+        <li><strong>Stabilize</strong> - To bring balance or steadiness.</li>
+    </ul>
+    
+    {# NUOVO DROPDOWN QUIZ (Literal vs Figurative) #}
+    <div class="mt-8">
+        <h4 class="font-semibold text-slate-800 mb-4">Literal vs. Figurative Quiz</h4>
+        <p class="mb-4 text-slate-600">Choose the correct word for each context.</p>
+        {{ dropdown_fill_in_exercise('adv-vocab-quiz', adv_vocab_quiz) }}
+    </div>
+
+    <div class="mt-8">
+        <h4 class="font-semibold text-slate-800">Reflection ("Let's Ponder")</h4>
+        <p class="mt-2 text-slate-600">Think of two ways to:</p>
+        <ul class="text-slate-600">
+            <li>Stabilize your thoughts in a difficult conversation.</li>
+            <li>Defuse tension.</li>
+            <li>Validate the other person's emotions.</li>
+            <li>Avoid being hijacked by your emotions.</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('wrapup', '7. Wrap-Up', initial_state='show') %}
+    <ul class="text-slate-600">
+        <li>What strategies from today's lesson do you want to try in your next difficult conversation?</li>
+        <li>Which is more important for you personally: clarity or kindness?</li>
+        <li>How can practicing in English help you handle tough conversations better at work?</li>
+    </ul>
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}

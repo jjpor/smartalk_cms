@@ -1,0 +1,114 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "Advanced Professional Communication" %}
+{% set lesson_subtitle = "How to Describe Your Job with high-impact, persuasive language." %}
+
+{% set nav_links = [{'id': 'goal', 'title': 'Goal'}, {'id': 'phase1', 'title': 'Phase 1: Company DNA'}, {'id': 'phase2', 'title': 'Phase 2: Role Deep Dive'}, {'id': 'phase3', 'title': 'Phase 3: The Pitch'}, {'id': 'bonus', 'title': 'Bonus Exercise'}] %}
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, random_item_generator, match_exercise, dropdown_fill_in_exercise %}
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne) --- #}
+
+{# Dati per Phase 1 Randomizer #}
+{% set dna_topics = [
+    '<h4 class="font-bold text-slate-800 mb-2">The Why (Mission & Vision)</h4><p class="text-slate-600 mb-4">Key Question: "What is the fundamental problem your company solves, and what is its ultimate mission?"</p><div class="bg-blue-50 p-3 rounded border-l-4 border-blue-500 text-sm"><span class="font-bold text-blue-800">Try using:</span> disruptive, proprietary, scalable, market share, stakeholder, value proposition</div>',
+    '<h4 class="font-bold text-slate-800 mb-2">Culture & Vibe</h4><p class="text-slate-600 mb-4">Key Question: "Describe the daily vibe. If a new person walked in, what feeling would they get?"</p><div class="bg-blue-50 p-3 rounded border-l-4 border-blue-500 text-sm"><span class="font-bold text-blue-800">Try using:</span> fast-paced, collaborative, siloed, meritocracy, low bureaucracy, autonomy</div>',
+    '<h4 class="font-bold text-slate-800 mb-2">Differentiation</h4><p class="text-slate-600 mb-4">Key Question: "What makes your company irresistibly different? What\'s your unique selling point?"</p><div class="bg-blue-50 p-3 rounded border-l-4 border-blue-500 text-sm"><span class="font-bold text-blue-800">Try using:</span> competitive edge, forward-thinking, industry leader, early adopter, cutting-edge</div>',
+    '<h4 class="font-bold text-slate-800 mb-2">Values in Action</h4><p class="text-slate-600 mb-4">Key Question: "Give a concrete example of when a core value directly impacted a business decision."</p><div class="bg-blue-50 p-3 rounded border-l-4 border-blue-500 text-sm"><span class="font-bold text-blue-800">Try using:</span> embody, uphold, transparency, accountability, ethical framework</div>'
+] %}
+
+{# Dati per Phase 2 Vocab Match #}
+{% set role_vocab_terms = [
+    {'id': '1', 'text': 'Liaise'},
+    {'id': '2', 'text': 'Spearhead'},
+    {'id': '3', 'text': 'Synthesize'},
+    {'id': '4', 'text': 'Oversight'},
+    {'id': '5', 'text': 'KPIs (Key Performance Indicators)'},
+    {'id': '6', 'text': 'Stakeholder management'}
+] %}
+
+{% set role_vocab_defs = [
+    {'id': '1', 'text': 'To communicate and cooperate between different groups.'},
+    {'id': '2', 'text': 'To lead an initiative or attack.'},
+    {'id': '3', 'text': 'To combine different ideas or data into a coherent whole.'},
+    {'id': '4', 'text': 'The action of overseeing or supervising something.'},
+    {'id': '5', 'text': 'Measurable values that demonstrate effectiveness.'},
+    {'id': '6', 'text': 'Managing the expectations of everyone invested in a project.'}
+] %}
+
+{# Dati per Phase 3 Dropdown Upgrade Quiz #}
+{% set upgrade_options = ['triaging', 'fostering', 'spearheading', 'comprehensive', 'leveraging'] %}
+{% set upgrade_sentences = [
+    {'prefix': 'Instead of just "checking emails", I am', 'options': upgrade_options, 'answer': 'triaging', 'suffix': 'critical information based on urgency.'},
+    {'prefix': 'I don\'t just "help the team get along", I am', 'options': upgrade_options, 'answer': 'fostering', 'suffix': 'internal alignment and collaboration.'},
+    {'prefix': 'We offer more than just a good salary; we provide a', 'options': upgrade_options, 'answer': 'comprehensive', 'suffix': 'compensation package including vested stock options.'},
+    {'prefix': 'Currently, I am', 'options': upgrade_options, 'answer': 'spearheading', 'suffix': 'a new initiative to reduce redundancy in our workflow.'},
+    {'prefix': 'By', 'options': upgrade_options, 'answer': 'leveraging', 'suffix': 'my background in data analysis, I was able to identify key growth areas.'}
+] %}
+
+{# --- Fase 5: Conversione Contenuto --- #}
+
+{% call info_card('goal', '1. Lesson Goal', initial_state='show') %}
+    <h4 class="font-bold text-slate-800 mb-4">Why Use High-Impact Language?</h4>
+    <p class="text-slate-600 mb-4">This guide focuses on drawing out <span class="font-semibold">nuanced vocabulary</span> related to corporate culture and personal impact. The aim is to move beyond simple descriptions and elevate your professional narrative.</p>
+    <p class="italic font-medium text-slate-700 bg-slate-100 p-4 rounded-lg text-center">Focus: Using language that shows you are a strategic contributor, not just a task completer.</p>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('phase1', '2. Phase 1: The Company DNA', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Use these prompts to practice describing your company's vision and culture with persuasive language.</p>
+    {{ random_item_generator('dna-randomizer', 'Next Topic', 'dna-topic-list', dna_topics) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('phase2', '3. Phase 2: Role Deep Dive', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Before describing your role, master the high-impact vocabulary.</p>
+    <h4 class="font-bold text-slate-800 mb-4">Match the Professional Term to its Definition</h4>
+    {{ match_exercise('role-vocab-match', role_vocab_terms, role_vocab_defs) }}
+
+    <div class="mt-8 space-y-6">
+        <div>
+            <h5 class="font-bold text-slate-700">Discussion Prompts:</h5>
+            <ul class="list-disc list-inside text-slate-600 mt-2 space-y-2">
+                <li>What is the single most valuable thing you bring to the table? (Try using: <span class="italic">subject matter expert, leverage skills</span>)</li>
+                <li>If you had to describe your job in three high-level areas, what would they be? (Try using: <span class="italic">implementation, optimization, strategic planning</span>)</li>
+                <li>How is your success quantified? (Try using: <span class="italic">metrics, benchmarks, ROI</span>)</li>
+            </ul>
+        </div>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('phase3', '4. Phase 3: The Pitch & The Upgrade', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Don't just list tasks. Upgrade your language to show strategic value.</p>
+    
+    <h4 class="font-bold text-slate-800 mb-4">Practice: The Language Upgrade</h4>
+    <p class="text-sm text-slate-500 mb-4">Choose the high-impact word that best upgrades the sentence.</p>
+    {{ dropdown_fill_in_exercise('pitch-upgrade-quiz', upgrade_sentences) }}
+
+    <div class="mt-8 bg-slate-50 p-6 rounded-lg border border-slate-200">
+        <h4 class="font-bold text-slate-800 mb-2">Closing the Sale</h4>
+        <p class="text-slate-600">If you had 30 seconds to convince a potential candidate, what are the three keywords you would emphasize? Try to be <span class="font-semibold">compelling</span> and <span class="font-semibold">hook</span> the listener.</p>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('bonus', '5. Bonus: Mock Negotiation', initial_state='show') %}
+    <div class="bg-red-50 p-6 rounded-xl border-2 border-red-200">
+        <h3 class="text-red-800 font-bold text-lg mb-2">Role-Play Challenge</h3>
+        <p class="text-slate-700 mb-4"><span class="font-bold">Coach Role:</span> Hiring Manager / Recruiter</p>
+        <p class="font-bold text-red-800 mb-2">Prompt:</p>
+        <p class="text-slate-700 italic">"Okay, I've read your job description. I have a concern: your salary expectations seem high given the level of supervision required. <span class="font-bold">Convince me why your unique value merits this compensation.</span>"</p>
+    </div>
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}

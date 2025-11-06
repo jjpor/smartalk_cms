@@ -1,0 +1,88 @@
+{% extends "abstract_templates/base.html" %}
+
+{% block content %}
+{% include "abstract_templates/coach_dashboard_header.html" %}
+
+<!-- Breadcrumb -->
+<div class="breadcrumb container">
+    <a href="/dashboard/coach/landing.html">Dashboard</a><span class="sep">/</span><span>New Invoice</span>
+</div>
+
+<!-- Main form content -->
+<main class="container" style="padding:16px;">
+    <section class="section" style="max-width: 600px; margin: 0 auto;">
+        
+        <h1 style="margin:0; font-size: 1.5rem; font-weight: 700; color: #1f2937;">Create New Invoice</h1>
+        
+        <form id="createInvoiceForm" style="display: grid; gap: 16px; margin-top: 24px;">
+            
+            <!-- Invoice Type -->
+            <div>
+                <label for="invoiceType" class="form-label">Invoice Type</label>
+                <select id="invoiceType" name="invoiceType" required class="form-input">
+                    <option value="">Select a type...</option>
+                    <option value="Individual">Individual Contract</option>
+                    <option value="Group">Group Contract</option>
+                    <option value="Corporate">Corporate Contract</option>
+                </select>
+            </div>
+
+            <!-- Contract (Conditional) -->
+            <div id="contractContainer" style="display: none;">
+                <label for="contractSelect" class="form-label">Contract</label>
+                <select id="contractSelect" name="contractId" required class="form-input" disabled>
+                    <option value="">Select an invoice type first...</option>
+                    <!-- Dynamically populated via JS -->
+                </select>
+            </div>
+
+            <!-- Invoice Date & Number Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+                <div>
+                    <label for="invoiceDate" class="form-label">Invoice Date</label>
+                    <input type="date" id="invoiceDate" name="invoiceDate" required class="form-input">
+                </div>
+                <div>
+                    <label for="invoiceNumber" class="form-label">Invoice Number</label>
+                    <input type="text" id="invoiceNumber" name="invoiceNumber" class="form-input" placeholder="e.g., INV-2024-001">
+                </div>
+            </div>
+
+            <!-- Value and Status Grid -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px;">
+                <div>
+                    <label for="invoiceValue" class="form-label">Invoice Value (€)</label>
+                    <input type="number" id="invoiceValue" name="invoiceValue" min="0" step="0.01" placeholder="e.g., 300.00" required class="form-input">
+                </div>
+                <div>
+                    <label for="status" class="form-label">Status</label>
+                    <select id="status" name="status" required class="form-input">
+                        <option value="Unpaid">Unpaid</option>
+                        <option value="Paid">Paid</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Notes Group -->
+            <div>
+                <label for="notes" class="form-label">Notes (Optional)</label>
+                <textarea id="notes" name="notes" rows="3" class="form-input" placeholder="Payment details, etc..."></textarea>
+            </div>
+
+            <!-- Status Message -->
+            <div id="formMessage" style="margin-top: 16px; font-size: 0.9rem;"></div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="submitBtn" class="btn" style="justify-content: center; margin-top: 16px;">
+                <span>Save Invoice</span>
+            </button>
+        </form>
+    </section>
+</main>
+
+{% include "abstract_templates/coach_dashboard_footer.html" %}
+
+<!-- Page-specific script -->
+<script type="module" src="/static/js/coach_dashboard/pages/create_invoice.js"></script>
+
+{% endblock %}

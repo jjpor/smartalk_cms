@@ -1,0 +1,219 @@
+{# --- Fase 1: Intestazione (Variabili Semplici & Navigazione) --- #}
+{% set lesson_title = "Retail Terminology: US vs. UK" %}
+{% set lesson_subtitle = "Mastering the language of commerce, from storefronts to stockrooms, and regional differences." %}
+
+{# CRITICO: nav_links su UNA SOLA RIGA per sicurezza parser backend #}
+{% set nav_links = [{'id': 'concepts', 'title': 'Concepts'}, {'id': 'discussion', 'title': 'Discussion'}, {'id': 'idioms', 'title': 'Idioms'}, {'id': 'glossary', 'title': 'US vs. UK'}, {'id': 'pronunciation', 'title': 'Pronunciation'}, {'id': 'roleplay', 'title': 'Role-Play'}] %}
+
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, match_exercise %}
+
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Dati Esercizi (Definiti INTERNAMENTE per sicurezza) --- #}
+
+{# Dati per Sezione 3 (Idioms Match) #}
+{% set idiom_terms = [
+    {'id': '1', 'text': 'To shop around'},
+    {'id': '2', 'text': 'A steal / A bargain'},
+    {'id': '3', 'text': 'To pay through the nose'},
+    {'id': '4', 'text': 'To foot the bill'},
+    {'id': '5', 'text': 'To be short of cash'}
+] %}
+{% set idiom_defs = [
+    {'id': '1', 'text': 'To compare prices and quality in different stores before buying.'},
+    {'id': '2', 'text': 'Something priced much lower than its actual value; an excellent deal.'},
+    {'id': '3', 'text': 'To pay an unreasonably high price for something.'},
+    {'id': '4', 'text': 'To pay for something, especially an expense incurred by someone else.'},
+    {'id': '5', 'text': 'To have little or no money currently available.'}
+] %}
+
+
+{# --- Fase 5: Conversione Contenuto --- #}
+
+{% call info_card('concepts', '1. Retail Business Models and Concepts', initial_state='show') %}
+    <div class="mt-4 text-slate-600 space-y-4">
+        <p>Retail is the sale of goods and services from individuals or businesses to the end-user (the consumer), in small quantities, for personal consumption. It is the final link in the supply chain.</p>
+        
+        <h4 class="font-bold text-slate-800 mt-6 mb-2">Key Retail Business Models</h4>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse border border-slate-200">
+                <thead class="bg-slate-50 text-slate-700">
+                    <tr>
+                        <th class="p-3 border border-slate-200">Term</th>
+                        <th class="p-3 border border-slate-200">Definition</th>
+                        <th class="p-3 border border-slate-200">Examples</th>
+                    </tr>
+                </thead>
+                <tbody class="text-slate-600">
+                    <tr>
+                        <td class="p-3 border border-slate-200 font-semibold">Brick-and-Mortar</td>
+                        <td class="p-3 border border-slate-200">A traditional physical location where customers can browse and purchase goods.</td>
+                        <td class="p-3 border border-slate-200 italic">Supermarkets, department stores, local shops.</td>
+                    </tr>
+                    <tr>
+                        <td class="p-3 border border-slate-200 font-semibold">E-commerce / Online Retail</td>
+                        <td class="p-3 border border-slate-200">Selling goods or services via the internet.</td>
+                        <td class="p-3 border border-slate-200 italic">Amazon, online boutiques.</td>
+                    </tr>
+                    <tr>
+                        <td class="p-3 border border-slate-200 font-semibold">Specialty Store</td>
+                        <td class="p-3 border border-slate-200">A store that sells a narrow range of merchandise with a high level of expertise.</td>
+                        <td class="p-3 border border-slate-200 italic">Jewelry stores, book shops, electronics retailers.</td>
+                    </tr>
+                    <tr>
+                        <td class="p-3 border border-slate-200 font-semibold">Supply Chain</td>
+                        <td class="p-3 border border-slate-200">The sequence of processes involved in the production and distribution of a commodity.</td>
+                        <td class="p-3 border border-slate-200 italic">Manufacturer → Wholesaler → Retailer → Consumer.</td>
+                    </tr>
+                    <tr>
+                        <td class="p-3 border border-slate-200 font-semibold">Customer Experience (CX)</td>
+                        <td class="p-3 border border-slate-200">The total interaction a customer has with a brand, from initial inquiry to post-purchase support.</td>
+                        <td class="p-3 border border-slate-200 italic">Store layout, friendly staff, easy returns.</td>
+                    </tr>
+                    <tr>
+                        <td class="p-3 border border-slate-200 font-semibold">Merchandising</td>
+                        <td class="p-3 border border-slate-200">The way products are displayed and promoted in a store to encourage sales.</td>
+                        <td class="p-3 border border-slate-200 italic">Window displays, shelf placement, signs.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('discussion', '2. Discussion and Critical Thinking', initial_state='show') %}
+    <div class="mt-4 text-slate-700 space-y-6">
+        <div>
+            <h4 class="font-bold text-cyan-700 mb-3">Personal Shopping Habits</h4>
+            <ol class="ml-6 list-decimal space-y-2">
+                <li>How has the growth of e-commerce affected your local area? Do you prefer to shop online or in a physical store, and why?</li>
+                <li>Describe the most memorable retail experience you have ever had (either positive or negative). What made it stand out?</li>
+                <li>When shopping for clothes or electronics, what is more important to you: the brand name, the price, or the quality of customer service?</li>
+                <li>If you were to open your own specialty store, what kind of product would you sell, and what steps would you take to ensure a great customer experience?</li>
+            </ol>
+        </div>
+        <div>
+            <h4 class="font-bold text-cyan-700 mb-3">The Business of Retail</h4>
+            <ol class="ml-6 list-decimal space-y-2" start="5">
+                <li>How important is "retail therapy" in modern society? Is shopping primarily a necessity or a form of entertainment?</li>
+                <li>What measures can traditional brick-and-mortar stores take to compete effectively with large online retailers?</li>
+                <li>In your opinion, what is the single biggest factor that determines a store's success (location, price, inventory, or staff)?</li>
+            </ol>
+        </div>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('idioms', '3. Retail-Related Idioms', initial_state='show') %}
+    <div class="mt-4">
+        <h4 class="font-bold text-slate-800 mb-4">Match the idiom to its meaning</h4>
+        {{ match_exercise('retail-idioms-match', idiom_terms, idiom_defs) }}
+    </div>
+
+    <div class="mt-8 p-4 bg-cyan-50 rounded-lg border-l-4 border-cyan-500">
+        <h4 class="font-bold text-cyan-800 mb-2">Quick Check:</h4>
+        <p class="text-sm text-slate-700">Use one of the idioms above to describe a time you bought something you regretted because it was too expensive.</p>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('glossary', '4. US vs. UK Retail Glossary', initial_state='show') %}
+    <div class="mt-4 text-slate-600 space-y-4">
+        <p>While most terms are mutually understandable, using the correct regional term is important for professionalism and clarity.</p>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse border border-slate-200">
+                <thead class="bg-cyan-50 text-cyan-900">
+                    <tr>
+                        <th class="p-3 border border-slate-200">Concept</th>
+                        <th class="p-3 border border-slate-200">US English 🇺🇸</th>
+                        <th class="p-3 border border-slate-200">UK English 🇬🇧</th>
+                    </tr>
+                </thead>
+                <tbody class="text-slate-600">
+                    <tr><td class="p-2 border border-slate-200 font-medium">Location</td><td class="p-2 border border-slate-200">Store</td><td class="p-2 border border-slate-200">Shop</td></tr>
+                    <tr class="bg-slate-50"><td class="p-2 border border-slate-200 font-medium">Staff</td><td class="p-2 border border-slate-200">Salesperson, Employee</td><td class="p-2 border border-slate-200">Shop Assistant, Staff</td></tr>
+                    <tr><td class="p-2 border border-slate-200 font-medium">The Final Count</td><td class="p-2 border border-slate-200">Checkout, Cash Register</td><td class="p-2 border border-slate-200">Checkout, Till</td></tr>
+                    <tr class="bg-slate-50"><td class="p-2 border border-slate-200 font-medium">Tax</td><td class="p-2 border border-slate-200">Sales Tax</td><td class="p-2 border border-slate-200">Value Added Tax (VAT)</td></tr>
+                    <tr><td class="p-2 border border-slate-200 font-medium">Transaction Record</td><td class="p-2 border border-slate-200">Receipt & Check</td><td class="p-2 border border-slate-200">Receipt & Bill</td></tr>
+                    <tr class="bg-slate-50"><td class="p-2 border border-slate-200 font-medium">Deals</td><td class="p-2 border border-slate-200">Sale, Coupon</td><td class="p-2 border border-slate-200">Offer, Promotion, Voucher</td></tr>
+                    <tr><td class="p-2 border border-slate-200 font-medium">Inventory</td><td class="p-2 border border-slate-200">Inventory</td><td class="p-2 border border-slate-200">Stock</td></tr>
+                    <tr class="bg-slate-50"><td class="p-2 border border-slate-200 font-medium">Payment Delay</td><td class="p-2 border border-slate-200">Layaway</td><td class="p-2 border border-slate-200">Lay-by</td></tr>
+                    <tr><td class="p-2 border border-slate-200 font-medium">Changing Clothes</td><td class="p-2 border border-slate-200">Dressing Room</td><td class="p-2 border border-slate-200">Fitting Room</td></tr>
+                    <tr class="bg-slate-50"><td class="p-2 border border-slate-200 font-medium">Money container</td><td class="p-2 border border-slate-200">Cash Register</td><td class="p-2 border border-slate-200">Till</td></tr>
+                    <tr><td class="p-2 border border-slate-200 font-medium">Wage doc.</td><td class="p-2 border border-slate-200">Paycheck</td><td class="p-2 border border-slate-200">Payslip / Wage Slip</td></tr>
+                    <tr class="bg-slate-50"><td class="p-2 border border-slate-200 font-medium">Advertising Paper</td><td class="p-2 border border-slate-200">Flyer</td><td class="p-2 border border-slate-200">Leaflet</td></tr>
+                    <tr><td class="p-2 border border-slate-200 font-medium">Job Loss</td><td class="p-2 border border-slate-200">Layoff</td><td class="p-2 border border-slate-200">Redundancy</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('pronunciation', '5. Pronunciation Focus', initial_state='show') %}
+    <div class="mt-4 text-slate-700 space-y-6">
+        <div>
+            <h4 class="font-bold text-cyan-700 mb-2">Focus 1: Short 'A' (/æ/) vs. Long 'A' (/ɑː/)</h4>
+            <p class="text-sm text-slate-600 mb-3">Note the difference in UK pronunciation for certain words, using a deeper /ɑː/ sound (like in "father").</p>
+            <table class="w-full text-left border-collapse border border-slate-200 mb-4">
+                <thead class="bg-slate-50">
+                    <tr><th class="p-2 border">Word</th><th class="p-2 border">US (GA)</th><th class="p-2 border">UK (RP)</th></tr>
+                </thead>
+                <tbody class="text-slate-600">
+                    <tr><td class="p-2 border font-medium">Cash</td><td class="p-2 border">/kæʃ/ (flat 'a')</td><td class="p-2 border">/kæʃ/ (similar)</td></tr>
+                    <tr><td class="p-2 border font-medium">Staff</td><td class="p-2 border">/stæf/ (flat 'a')</td><td class="p-2 border">/stɑːf/ (deep 'a')</td></tr>
+                    <tr><td class="p-2 border font-medium">Can't</td><td class="p-2 border">/kænt/ (flat 'a')</td><td class="p-2 border">/kɑːnt/ (deep 'a')</td></tr>
+                </tbody>
+            </table>
+            <p class="text-sm italic bg-slate-100 p-2 rounded">"The manager said I <span class="font-bold">can't</span> get <span class="font-bold">cash</span> back."</p>
+        </div>
+
+        <div>
+            <h4 class="font-bold text-cyan-700 mb-2">Focus 2: The 'R' Sound (Rhoticity)</h4>
+            <p class="text-sm text-slate-600 mb-3">US English almost always pronounces the 'R'. UK English often drops it unless followed by a vowel.</p>
+            <table class="w-full text-left border-collapse border border-slate-200 mb-4">
+                <thead class="bg-slate-50">
+                    <tr><th class="p-2 border">Word</th><th class="p-2 border">US (GA)</th><th class="p-2 border">UK (RP)</th></tr>
+                </thead>
+                <tbody class="text-slate-600">
+                    <tr><td class="p-2 border font-medium">Card</td><td class="p-2 border">/kɑrd/ (audible 'r')</td><td class="p-2 border">/kɑːd/ (silent 'r')</td></tr>
+                    <tr><td class="p-2 border font-medium">Offer</td><td class="p-2 border">/ˈɔfər/ (audible 'r')</td><td class="p-2 border">/ˈɒfə/ (silent 'r')</td></tr>
+                    <tr><td class="p-2 border font-medium">Customer</td><td class="p-2 border">/ˈkʌstəmər/ (audible 'r')</td><td class="p-2 border">/ˈkʌstəmə/ (silent 'r')</td></tr>
+                </tbody>
+            </table>
+            <p class="text-sm italic bg-slate-100 p-2 rounded">"I used my credit <span class="font-bold">card</span> to pay for the <span class="font-bold">offer</span>."</p>
+        </div>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('roleplay', '6. Application: Role-Play', initial_state='show') %}
+    <div class="mt-4 text-slate-700">
+        <div class="bg-slate-50 p-6 rounded-xl border border-slate-200">
+            <h4 class="font-bold text-slate-800 text-lg mb-2">Scenario: Handling a Faulty Return</h4>
+            <p class="text-slate-600 mb-4">A customer has purchased a sweater that shrunk after the first wash and is trying to return it without the receipt.</p>
+            
+            <h5 class="font-bold text-slate-700 mb-2">Instructions:</h5>
+            <p class="text-sm mb-4">Work in pairs (Customer vs. Shop Assistant). Perform the role-play twice:</p>
+            <ol class="ml-6 list-decimal space-y-2 mb-4">
+                <li><strong class="text-cyan-700">US Retail Setting:</strong> Use US terms (store, salesperson, dressing room, sales tax).</li>
+                <li><strong class="text-cyan-700">UK Retail Setting:</strong> Use UK terms (shop, shop assistant, fitting room, VAT, till).</li>
+            </ol>
+            <p class="text-sm italic text-slate-500">Goal: Explain the issue clearly, use polite language, and aim for a resolution (refund or exchange).</p>
+        </div>
+    </div>
+{% endcall %}
+
+{% endblock lesson_content %}

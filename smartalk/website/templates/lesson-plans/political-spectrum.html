@@ -1,0 +1,141 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "The Political Spectrum" %}
+{% set lesson_subtitle = "Principles, Ideas, and Perspectives" %}
+
+{% set nav_links = [{'id': 'warmup', 'title': 'Warm-Up'}, {'id': 'principles', 'title': 'Principles'}, {'id': 'vocabulary', 'title': 'Vocabulary'}, {'id': 'scenarios', 'title': 'Scenarios'}] %}
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, classify_exercise, match_exercise, random_item_generator %}
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne) --- #}
+
+{# Dati per Principles Classification #}
+{% set spectrum_categories = ['Left / Progressive', 'Center / Moderate', 'Right / Conservative'] %}
+{% set spectrum_items = [
+    {'text': 'Wealth redistribution and higher taxes for the wealthy', 'category': 'Left / Progressive'},
+    {'text': 'Focus on climate change and renewable energy', 'category': 'Left / Progressive'},
+    {'text': 'Stronger labor rights and unions', 'category': 'Left / Progressive'},
+    {'text': 'Protection of LGBTQ+ rights', 'category': 'Left / Progressive'},
+    {'text': 'Balance between freedom and responsibility', 'category': 'Center / Moderate'},
+    {'text': 'Dialogue and compromise in politics', 'category': 'Center / Moderate'},
+    {'text': 'Support for democracy and institutions', 'category': 'Center / Moderate'},
+    {'text': 'Traditional family values as foundation', 'category': 'Right / Conservative'},
+    {'text': 'Low taxes and free market economy', 'category': 'Right / Conservative'},
+    {'text': 'Strong military and police support', 'category': 'Right / Conservative'},
+    {'text': 'Skepticism towards rapid social change', 'category': 'Right / Conservative'}
+] %}
+
+{# Dati per Vocabulary Match #}
+{% set vocab_terms = [
+    {'id': '1', 'text': 'Ideology'},
+    {'id': '2', 'text': 'Bipartisan'},
+    {'id': '3', 'text': 'Policy'},
+    {'id': '4', 'text': 'Legislation'},
+    {'id': '5', 'text': 'Platform'},
+    {'id': '6', 'text': 'Consensus'}
+] %}
+
+{% set vocab_defs = [
+    {'id': '1', 'text': 'A system of ideas and ideals, forming the basis of economic or political theory.'},
+    {'id': '2', 'text': 'Involving agreement or cooperation of two opposing political parties.'},
+    {'id': '3', 'text': 'A course or principle of action adopted by a government or party.'},
+    {'id': '4', 'text': 'Laws, considered collectively.'},
+    {'id': '5', 'text': 'The stated aims of a political party.'},
+    {'id': '6', 'text': 'A general agreement.'}
+] %}
+
+{# Dati per Scenarios Randomizer (usando span font-bold come da regole v5.2) #}
+{% set scenario_questions = [
+    '<span class="font-bold">Discussing Immigration:</span> A colleague says, "We should have more open borders." How can you express a different viewpoint respectfully?',
+    '<span class="font-bold">Debating the Environment:</span> A friend says, "Protecting the environment is more important than economic growth." What is a counter-argument you could make, focusing on both sides?',
+    '<span class="font-bold">Talking about Taxes:</span> Someone argues, "The government should lower taxes for everyone." How would you explain the progressive viewpoint on taxation?',
+    '<span class="font-bold">Finding Common Ground:</span> You are in a disagreement about a social issue. How can you find a principle that you both agree on to build a bridge?'
+] %}
+
+{# --- Fase 5: Conversione Contenuto --- #}
+
+{% call info_card('warmup', '1. Warm-Up', initial_state='show') %}
+    <h4 class="font-bold text-slate-800 mb-4">Setting the Stage</h4>
+    <ul class="text-slate-600 list-disc list-inside space-y-2">
+        <li>What does "politics" mean to you?</li>
+        <li>Do you think it's easy or difficult to discuss politics with people who have different ideas? Why?</li>
+        <li>How do you know if a person's political beliefs are "left" or "right"?</li>
+    </ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('principles', '2. Common Principles', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Exploring the core ideas that define different parts of the spectrum.</p>
+    
+    <div class="grid md:grid-cols-3 gap-6 mb-8">
+        {# Left #}
+        <div class="bg-red-50 p-4 rounded-lg border-t-4 border-red-500">
+            <h4 class="text-lg font-bold text-red-700 mb-2">🔴 Left / Progressive</h4>
+            <ul class="text-sm text-slate-700 list-disc list-inside space-y-1">
+                <li>Wealth redistribution (taxes for rich).</li>
+                <li>Universal healthcare & social safety nets.</li>
+                <li>Focus on climate change.</li>
+                <li>Open immigration policies.</li>
+                <li>Protection of LGBTQ+ rights.</li>
+            </ul>
+        </div>
+        {# Center #}
+        <div class="bg-blue-50 p-4 rounded-lg border-t-4 border-blue-500">
+            <h4 class="text-lg font-bold text-blue-700 mb-2">🔵 Center / Moderate</h4>
+            <ul class="text-sm text-slate-700 list-disc list-inside space-y-1">
+                <li>Balance between freedom and responsibility.</li>
+                <li>Support for democracy and institutions.</li>
+                <li>Dialogue and compromise.</li>
+                <li>Realistic environmental policies.</li>
+                <li>Rule of law.</li>
+            </ul>
+        </div>
+        {# Right #}
+        <div class="bg-slate-50 p-4 rounded-lg border-t-4 border-slate-600">
+            <h4 class="text-lg font-bold text-slate-800 mb-2">⚫ Right / Conservative</h4>
+            <ul class="text-sm text-slate-700 list-disc list-inside space-y-1">
+                <li>Traditional family values.</li>
+                <li>National identity first.</li>
+                <li>Low taxes and free market.</li>
+                <li>Limited government intervention.</li>
+                <li>Strong military and police support.</li>
+            </ul>
+        </div>
+    </div>
+
+    <h4 class="font-bold text-slate-800 mb-4">Practice: Identify the Ideology</h4>
+    <p class="text-slate-600 mb-4">Drag the statement to the correct part of the spectrum.</p>
+    {{ classify_exercise('spectrum-classify', spectrum_categories, spectrum_items) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('vocabulary', '3. Vocabulary', initial_state='show') %}
+    <h4 class="font-bold text-slate-800 mb-4">Key Terms</h4>
+    <ul class="text-slate-600 list-disc list-inside space-y-2 mb-8">
+        <li><span class="font-semibold">Ideology</span> – A system of ideas and ideals, especially one that forms the basis of economic or political theory.</li>
+        <li><span class="font-semibold">Bipartisan</span> – Involving the agreement or cooperation of two political parties that usually oppose each other.</li>
+        <li><span class="font-semibold">Policy</span> – A course or principle of action adopted or proposed by a government, party, or business.</li>
+        <li><span class="font-semibold">Legislation</span> – Laws, considered collectively.</li>
+        <li><span class="font-semibold">Platform</span> – The stated aims of a political party.</li>
+        <li><span class="font-semibold">Consensus</span> – A general agreement.</li>
+    </ul>
+
+    <h4 class="font-bold text-slate-800 mb-4">Practice: Match Terms to Definitions</h4>
+    {{ match_exercise('politics-vocab-match', vocab_terms, vocab_defs) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('scenarios', '4. Scenarios: What would you say?', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Use these scenarios to practice discussing sensitive topics respectfully.</p>
+    {{ random_item_generator('politics-scenario-random', 'Next Scenario', 'politics-scenario-list', scenario_questions) }}
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}

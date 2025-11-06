@@ -1,54 +1,325 @@
-{% set lesson_title = '150 Questions: The Art of Getting to Know You' %}
-{% set lesson_subtitle = 'Tools for building deeper connections and better team communication.' %}
-{% set nav_links = [
-    {'id': 'overview', 'title': 'Overview'},
-    {'id': 'random-picker', 'title': 'Random Picker'},
-    {'id': 'full-list', 'title': 'Full List'}
-] %}
-{% set all_questions = [
-    "Who is your hero?",
-    "If you could live anywhere, where would it be?",
-    "What is your biggest fear?",
-    "What motivates you to work hard?",
-    "What is your favorite thing about your career?",
-    "What is your proudest accomplishment?",
-    "What is your favorite book to read?",
-    "Where do you see yourself in five years?",
-    "How many pairs of shoes do you own?",
-    "If you were a superhero, what powers would you have?"
-] %}
+{# ================================================================== #}
+{# ZONA 1: INTESTAZIONE SICURA (SOLO DEFINIZIONI SEMPLICI)            #}
+{# ================================================================== #}
+{% set lesson_title = "150 Questions: The Art of Getting to Know You" %}
+{% set lesson_subtitle = "Tools for building deeper connections and better team communication." %}
+
+{# REGOLA D'ORO: nav_links SU UNA SOLA RIGA #}
+{% set nav_links = [{'id': 'intro', 'title': 'Overview'}, {'id': 'random', 'title': 'Random Picker'}, {'id': 'full-list', 'title': 'Full Question Reference'}] %}
 
 {% extends "abstract_templates/lesson_base.html" %}
 {% from "abstract_templates/_macros.html" import info_card, random_item_generator %}
 
-
+{# ================================================================== #}
+{# ZONA 2: AREA DATI & CONTENUTO (TUTTO IL RESTO QUI DENTRO)          #}
+{# ================================================================== #}
 {% block lesson_content %}
 
-    {% call info_card('overview', 'Why Ask Better Questions?', border_color='indigo') %}
-        <div class="info-box info-box-blue">
-            <p>This module provides questions to facilitate better social and professional communication, helping teams build
-                empathy, break the ice, and improve cohesion.</p>
-        </div>
-    {% endcall %}
+{# --- DATI PER MACRO (SOLO LISTA PIATTA PER IL GENERATORE) --- #}
+{% set all_questions_plain = [
+    "Who is your hero?", "If you could live anywhere, where would it be?", "What is your biggest fear?",
+    "What is your favorite family vacation?", "What would you change about yourself if you could?",
+    "What really makes you angry?", "What motivates you to work hard?", "What is your favorite thing about your career?",
+    "What is your biggest complaint about your job?", "What is your proudest accomplishment?",
+    "What is your child's proudest accomplishment?", "What is your favorite book to read?",
+    "What makes you laugh the most?", "What was the last movie you went to? What did you think?",
+    "What did you want to be when you were small?", "What does your child want to be when he/she grows up?",
+    "If you could choose to do anything for a day, what would it be?", "What is your favorite game or sport to watch and play?",
+    "Would you rather ride a bike, ride a horse, or drive a car?", "What would you sing at Karaoke night?",
+    "What two radio stations do you listen to in the car the most?", "Which would you rather do: wash dishes, mow the lawn, clean the bathroom, or vacuum the house?",
+    "If you could hire someone to help you, would it be with cleaning, cooking, or yard work?", "If you could only eat one meal for the rest of your life, what would it be?",
+    "Who is your favorite author?", "Have you ever had a nickname? What is it?", "Do you like or dislike surprises? Why or why not?",
+    "In the evening, would you rather play a game, visit a relative, watch a movie, or read?", "Would you rather vacation in Hawaii or Alaska, and why?",
+    "Would you rather win the lottery or work at the perfect job? And why?", "Who would you want to be stranded with on a deserted island?",
+    "If money was no object, what would you do all day?", "If you could go back in time, what year would you travel to?",
+    "How would your friends describe you?", "What are your hobbies?", "What is the best gift you have been given?",
+    "What is the worst gift you have received?", "Aside from necessities, what one thing could you not go a day without?",
+    "List two pet peeves.", "Where do you see yourself in five years?", "How many pairs of shoes do you own?",
+    "If you were a superhero, what powers would you have?", "What would you do if you won the lottery?",
+    "What form of public transportation do you prefer? (air, boat, train, bus, car, etc.)", "What's your favorite zoo animal?",
+    "If you could go back in time to change one thing, what would it be?", "If you could share a meal with any 4 individuals, living or dead, who would they be?",
+    "How many pillows do you sleep with?", "What's the longest you've gone without sleep (and why)?",
+    "What's the tallest building you've been to the top in?", "Would you rather trade intelligence for looks or looks for intelligence?",
+    "How often do you buy clothes?", "Have you ever had a secret admirer?", "What's your favorite holiday?",
+    "What's the most daring thing you've ever done?", "What was the last thing you recorded on TV?",
+    "What was the last book you read?", "What's your favorite type of foreign food?", "Are you a clean or messy person?",
+    "Who would you want to play you in a movie of your life?", "How long does it take you to get ready in the morning?",
+    "What kitchen appliance do you use every day?", "What's your favorite fast-food chain?", "What's your favorite family recipe?",
+    "Do you love or hate roller coasters?", "What's your favorite family tradition?", "What is your favorite childhood memory?",
+    "What's your favorite movie?", "How old were you when you learned Santa wasn't real? How did you find out?",
+    "Is your glass half full or half empty?", "What's the craziest thing you’ve done in the name of love?",
+    "What three items would you take with you on a deserted island?", "What was your favorite subject in school?",
+    "What's the most unusual thing you've ever eaten?", "Do you collect anything?", "Is there anything you wished would come back into fashion?",
+    "Are you an introvert or an extrovert?", "Which of the five senses would you say is your strongest?",
+    "Have you ever had a surprise party? (that was an actual surprise)", "Are you related or distantly related to anyone famous?",
+    "What do you do to keep fit?", "Does your family have a “motto” – spoken or unspoken?",
+    "If you were ruler of your own country, what would be the first law you would introduce?", "Who was your favorite teacher in school and why?",
+    "What three things do you think of the most each day?", "If you had a warning label, what would yours say?",
+    "What song would you say best sums you up?", "What celebrity would you like to meet at Starbucks for a cup of coffee?",
+    "Who was your first crush?", "What's the most interesting thing you can see out of your office or kitchen window?",
+    "On a scale of 1-10 how funny would you say you are?", "Where do you see yourself in 10 years?",
+    "What was your first job?", "If you could join any past or current music group which would you want to join?",
+    "How many languages do you speak?", "What is your favorite family holiday tradition?", "Who is the most intelligent person you know?",
+    "If you had to describe yourself as an animal, which one would it be?", "What is one thing you will never do again?",
+    "Who knows you the best?", "Were you named after anyone?", "When was the last time you cried?",
+    "Do you like your handwriting?", "What is your favorite lunch meat?", "If you were another person would you be friends with you?",
+    "Do you have kids?", "Do you use sarcasm a lot?", "Do you still have your tonsils?", "Would you bungee jump?",
+    "What is your favorite cereal?", "Do you untie your shoes when you take them off?", "Do you think you are strong?",
+    "What is your favorite ice cream?", "What is the first thing you notice about people?", "Red or pink?",
+    "What is your least favorite thing about yourself?", "Who do you miss the most?", "What color shoes are you wearing?",
+    "What was the last thing you ate?", "What are you listening to right now?", "If you were a crayon, what color would you be?",
+    "Favorite smells?", "Who was the last person you talked to on the phone?", "Mountain hideaway or beach house?",
+    "Favorite sports to watch?", "Hair color?", "Eye color?", "Do you wear contacts?", "Favorite food?",
+    "Scary movies or happy endings?", "Last movie you watched?", "What color shirt are you wearing?",
+    "Summer or winter?", "Hugs or kisses?", "Favorite dessert?", "Strength training or cardio?",
+    "Computer or television?", "What book are you reading now?", "What is on your mouse pad?", "Favorite sound?",
+    "Rolling stones or beatles?", "What is the farthest you have been from home?", "Do you have a special talent?",
+    "Where were you born?", "Where are you living now?", "What color is your house?", "What color is your car?",
+    "Are you environmentally conscious?", "Tell me a joke.", "Are you someone who would answer random questions?"
+] %}
 
+{# --- INIZIO CONTENUTO LEZIONE --- #}
 
-    {% call info_card('random-picker', 'Interactive Tool: Random Question Picker', border_color='blue') %}
-        {{ random_item_generator(
-            exercise_id='q-generator',
-            button_text='Get Random Question',
-            source_list_id='question-source-list',
-            items=all_questions
-        )}}
-    {% endcall %}
-
-
-    {% call info_card('full-list', 'Full Question Reference List', initial_state='hide') %}
-        <p>Here are some of the questions available:</p>
-        <ul class="list-decimal list-inside mt-4 columns-1 md:columns-2">
-            {% for q in all_questions %}
-                <li>{{ q }}</li>
-            {% endfor %}
+{% call info_card('intro', '1. Why Ask Better Questions?', initial_state='show') %}
+    <div class="text-slate-600">
+        <p class="mb-4">This module provides an extensive collection of questions designed to facilitate better social and professional communication. Using these questions effectively helps teams:</p>
+        <ul class="list-disc list-inside ml-4 space-y-2 mb-6">
+            <li><strong>Build Empathy</strong>: Understanding colleagues' motivations, fears, and personal history fosters a more compassionate work environment.</li>
+            <li><strong>Break the Ice</strong>: Move beyond simple pleasantries and encourage authentic dialogue quickly.</li>
+            <li><strong>Improve Team Cohesion</strong>: Shared vulnerability and humor strengthen bonds and trust.</li>
         </ul>
-    {% endcall %}
 
-{% endblock %}
+        <h4 class="font-bold text-slate-800 mb-2">Reflection Prompts:</h4>
+        <ul class="list-disc list-inside ml-4 space-y-2">
+            <li>Think about the last time you learned something surprising about a coworker. How did that change your working relationship?</li>
+            <li>How can asking a personal question (like "What is your biggest fear?") in a professional setting be beneficial if handled respectfully?</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('random', '2. Interactive Tool: Random Question Picker', initial_state='show') %}
+    <p class="mb-6 text-slate-600">Click the button below to instantly generate a random question from the entire list. Perfect for starting a meeting or a new conversation!</p>
+    {{ random_item_generator('q-randomizer', 'Get Random Question', 'q-master-list', all_questions_plain) }}
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('full-list', '3. Full Question Reference (By Category)', initial_state='show') %}
+    <p class="mb-6 text-slate-600">Browse all 150 questions by category. Click a category name to expand it.</p>
+    
+    <div class="space-y-4">
+        {# CATEGORY: Personal & Values #}
+        <details class="group p-4 bg-slate-50 rounded-lg border border-slate-200 open:bg-white open:ring-1 open:ring-black/5">
+            <summary class="font-bold text-slate-800 cursor-pointer flex justify-between items-center">
+                <span>Personal & Values</span>
+                <span class="transition group-open:rotate-180">▾</span>
+            </summary>
+            <ul class="mt-4 ml-6 list-decimal space-y-1 text-slate-600 text-sm">
+                <li value="1">Who is your hero?</li>
+                <li value="3">What is your biggest fear?</li>
+                <li value="5">What would you change about yourself if you could?</li>
+                <li value="6">What really makes you angry?</li>
+                <li value="27">Do you like or dislike surprises? Why or why not?</li>
+                <li value="34">How would your friends describe you?</li>
+                <li value="38">Aside from necessities, what one thing could you not go a day without?</li>
+                <li value="39">List two pet peeves.</li>
+                <li value="59">Are you a clean or messy person?</li>
+                <li value="70">Is your glass half full or half empty?</li>
+                <li value="77">Are you an introvert or an extrovert?</li>
+                <li value="78">Which of the five senses would you say is your strongest?</li>
+                <li value="82">Does your family have a “motto” – spoken or unspoken?</li>
+                <li value="86">If you had a warning label, what would yours say?</li>
+                <li value="91">On a scale of 1-10 how funny would you say you are?</li>
+                <li value="97">Who is the most intelligent person you know?</li>
+                <li value="100">Who knows you the best?</li>
+                <li value="105">If you were another person would you be friends with you?</li>
+                <li value="107">Do you use sarcasm a lot?</li>
+                <li value="112">Do you think you are strong?</li>
+                <li value="114">What is the first thing you notice about people?</li>
+                <li value="116">What is your least favorite thing about yourself?</li>
+                <li value="117">Who do you miss the most?</li>
+                <li value="148">Are you environmentally conscious?</li>
+                <li value="150">Are you someone who would answer random questions?</li>
+            </ul>
+        </details>
+
+        {# CATEGORY: Career & Work #}
+        <details class="group p-4 bg-slate-50 rounded-lg border border-slate-200 open:bg-white open:ring-1 open:ring-black/5">
+            <summary class="font-bold text-slate-800 cursor-pointer flex justify-between items-center">
+                <span>Career & Work</span>
+                <span class="transition group-open:rotate-180">▾</span>
+            </summary>
+            <ul class="mt-4 ml-6 list-decimal space-y-1 text-slate-600 text-sm">
+                <li value="7">What motivates you to work hard?</li>
+                <li value="8">What is your favorite thing about your career?</li>
+                <li value="9">What is your biggest complaint about your job?</li>
+                <li value="15">What did you want to be when you were small?</li>
+                <li value="16">What does your child want to be when he/she grows up?</li>
+                <li value="40">Where do you see yourself in five years?</li>
+                <li value="92">Where do you see yourself in 10 years?</li>
+                <li value="93">What was your first job?</li>
+            </ul>
+        </details>
+
+        {# CATEGORY: Past & Memories #}
+        <details class="group p-4 bg-slate-50 rounded-lg border border-slate-200 open:bg-white open:ring-1 open:ring-black/5">
+            <summary class="font-bold text-slate-800 cursor-pointer flex justify-between items-center">
+                <span>Past & Memories</span>
+                <span class="transition group-open:rotate-180">▾</span>
+            </summary>
+            <ul class="mt-4 ml-6 list-decimal space-y-1 text-slate-600 text-sm">
+                <li value="10">What is your proudest accomplishment?</li>
+                <li value="11">What is your child's proudest accomplishment?</li>
+                <li value="14">What was the last movie you went to? What did you think?</li>
+                <li value="26">Have you ever had a nickname? What is it?</li>
+                <li value="33">If you could go back in time, what year would you travel to?</li>
+                <li value="36">What is the best gift you have been given?</li>
+                <li value="37">What is the worst gift you have received?</li>
+                <li value="49">What's the longest you've gone without sleep (and why)?</li>
+                <li value="50">What's the tallest building you've been to the top in?</li>
+                <li value="53">Have you ever had a secret admirer?</li>
+                <li value="55">What's the most daring thing you've ever done?</li>
+                <li value="67">What is your favorite childhood memory?</li>
+                <li value="69">How old were you when you learned Santa wasn't real? How did you find out?</li>
+                <li value="71">What's the craziest thing you’ve done in the name of love?</li>
+                <li value="74">What's the most unusual thing you've ever eaten?</li>
+                <li value="79">Have you ever had a surprise party? (that was an actual surprise)</li>
+                <li value="80">Are you related or distantly related to anyone famous?</li>
+                <li value="84">Who was your favorite teacher in school and why?</li>
+                <li value="89">Who was your first crush?</li>
+                <li value="99">What is one thing you will never do again?</li>
+                <li value="101">Were you named after anyone?</li>
+                <li value="102">When was the last time you cried?</li>
+                <li value="142">What is the farthest you have been from home?</li>
+                <li value="144">Where were you born?</li>
+            </ul>
+        </details>
+
+        {# CATEGORY: Favorites & Preferences #}
+        <details class="group p-4 bg-slate-50 rounded-lg border border-slate-200 open:bg-white open:ring-1 open:ring-black/5">
+            <summary class="font-bold text-slate-800 cursor-pointer flex justify-between items-center">
+                <span>Favorites & Preferences</span>
+                <span class="transition group-open:rotate-180">▾</span>
+            </summary>
+            <ul class="mt-4 ml-6 list-decimal space-y-1 text-slate-600 text-sm">
+                <li value="4">What is your favorite family vacation?</li>
+                <li value="12">What is your favorite book to read?</li>
+                <li value="13">What makes you laugh the most?</li>
+                <li value="18">What is your favorite game or sport to watch and play?</li>
+                <li value="20">What would you sing at Karaoke night?</li>
+                <li value="21">What two radio stations do you listen to in the car the most?</li>
+                <li value="22">Which would you rather do: wash dishes, mow the lawn, clean the bathroom, or vacuum the house?</li>
+                <li value="24">If you could only eat one meal for the rest of your life, what would it be?</li>
+                <li value="25">Who is your favorite author?</li>
+                <li value="28">In the evening, would you rather play a game, visit a relative, watch a movie, or read?</li>
+                <li value="29">Would you rather vacation in Hawaii or Alaska, and why?</li>
+                <li value="35">What are your hobbies?</li>
+                <li value="44">What form of public transportation do you prefer?</li>
+                <li value="45">What's your favorite zoo animal?</li>
+                <li value="54">What's your favorite holiday?</li>
+                <li value="58">What's your favorite type of foreign food?</li>
+                <li value="63">What's your favorite fast-food chain?</li>
+                <li value="64">What's your favorite family recipe?</li>
+                <li value="65">Do you love or hate roller coasters?</li>
+                <li value="66">What's your favorite family tradition?</li>
+                <li value="68">What's your favorite movie?</li>
+                <li value="73">What was your favorite subject in school?</li>
+                <li value="76">Is there anything you wished would come back into fashion?</li>
+                <li value="87">What song would you say best sums you up?</li>
+                <li value="96">What is your favorite family holiday tradition?</li>
+                <li value="104">What is your favorite lunch meat?</li>
+                <li value="110">What is your favorite cereal?</li>
+                <li value="113">What is your favorite ice cream?</li>
+                <li value="115">Red or pink?</li>
+                <li value="122">Favorite smells?</li>
+                <li value="125">Favorite sports to watch?</li>
+                <li value="129">Favorite food?</li>
+                <li value="130">Scary movies or happy endings?</li>
+                <li value="133">Summer or winter?</li>
+                <li value="134">Hugs or kisses?</li>
+                <li value="135">Favorite dessert?</li>
+                <li value="136">Strength training or cardio?</li>
+                <li value="137">Computer or television?</li>
+                <li value="140">Favorite sound?</li>
+                <li value="141">Rolling stones or beatles?</li>
+            </ul>
+        </details>
+
+        {# CATEGORY: Hypothetical & Fantasy #}
+        <details class="group p-4 bg-slate-50 rounded-lg border border-slate-200 open:bg-white open:ring-1 open:ring-black/5">
+            <summary class="font-bold text-slate-800 cursor-pointer flex justify-between items-center">
+                <span>Hypothetical & Fantasy</span>
+                <span class="transition group-open:rotate-180">▾</span>
+            </summary>
+            <ul class="mt-4 ml-6 list-decimal space-y-1 text-slate-600 text-sm">
+                <li value="2">If you could live anywhere, where would it be?</li>
+                <li value="17">If you could choose to do anything for a day, what would it be?</li>
+                <li value="19">Would you rather ride a bike, ride a horse, or drive a car?</li>
+                <li value="23">If you could hire someone to help you, would it be with cleaning, cooking, or yard work?</li>
+                <li value="30">Would you rather win the lottery or work at the perfect job? And why?</li>
+                <li value="31">Who would you want to be stranded with on a deserted island?</li>
+                <li value="32">If money was no object, what would you do all day?</li>
+                <li value="42">If you were a superhero, what powers would you have?</li>
+                <li value="43">What would you do if you won the lottery?</li>
+                <li value="46">If you could go back in time to change one thing, what would it be?</li>
+                <li value="47">If you could share a meal with any 4 individuals, living or dead, who would they be?</li>
+                <li value="51">Would you rather trade intelligence for looks or looks for intelligence?</li>
+                <li value="60">Who would you want to play you in a movie of your life?</li>
+                <li value="72">What three items would you take with you on a deserted island?</li>
+                <li value="83">If you were ruler of your own country, what would be the first law you would introduce?</li>
+                <li value="88">What celebrity would you like to meet at Starbucks for a cup of coffee?</li>
+                <li value="94">If you could join any past or current music group which would you want to join?</li>
+                <li value="98">If you had to describe yourself as an animal, which one would it be?</li>
+                <li value="109">Would you bungee jump?</li>
+                <li value="121">If you were a crayon, what color would you be?</li>
+                <li value="124">Mountain hideaway or beach house?</li>
+            </ul>
+        </details>
+
+        {# CATEGORY: Quick Check-in #}
+        <details class="group p-4 bg-slate-50 rounded-lg border border-slate-200 open:bg-white open:ring-1 open:ring-black/5">
+            <summary class="font-bold text-slate-800 cursor-pointer flex justify-between items-center">
+                <span>Quick Check-in</span>
+                <span class="transition group-open:rotate-180">▾</span>
+            </summary>
+            <ul class="mt-4 ml-6 list-decimal space-y-1 text-slate-600 text-sm">
+                <li value="41">How many pairs of shoes do you own?</li>
+                <li value="48">How many pillows do you sleep with?</li>
+                <li value="52">How often do you buy clothes?</li>
+                <li value="56">What was the last thing you recorded on TV?</li>
+                <li value="57">What was the last book you read?</li>
+                <li value="61">How long does it take you to get ready in the morning?</li>
+                <li value="62">What kitchen appliance do you use every day?</li>
+                <li value="75">Do you collect anything?</li>
+                <li value="81">What do you do to keep fit?</li>
+                <li value="85">What three things do you think of the most each day?</li>
+                <li value="90">What's the most interesting thing you can see out of your office or kitchen window?</li>
+                <li value="95">How many languages do you speak?</li>
+                <li value="103">Do you like your handwriting?</li>
+                <li value="106">Do you have kids?</li>
+                <li value="108">Do you still have your tonsils?</li>
+                <li value="111">Do you untie your shoes when you take them off?</li>
+                <li value="118">What color shoes are you wearing?</li>
+                <li value="119">What was the last thing you ate?</li>
+                <li value="120">What are you listening to right now?</li>
+                <li value="123">Who was the last person you talked to on the phone?</li>
+                <li value="126">Hair color?</li>
+                <li value="127">Eye color?</li>
+                <li value="128">Do you wear contacts?</li>
+                <li value="131">Last movie you watched?</li>
+                <li value="132">What color shirt are you wearing?</li>
+                <li value="138">What book are you reading now?</li>
+                <li value="139">What is on your mouse pad?</li>
+                <li value="143">Do you have a special talent?</li>
+                <li value="145">Where are you living now?</li>
+                <li value="146">What color is your house?</li>
+                <li value="147">What color is your car?</li>
+                <li value="149">Tell me a joke.</li>
+            </ul>
+        </details>
+    </div>
+{% endcall %}
+
+{% endblock lesson_content %}

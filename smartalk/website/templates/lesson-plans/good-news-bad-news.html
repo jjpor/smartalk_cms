@@ -1,0 +1,146 @@
+{# --- Fase 1: Intestazione (Variabili Semplici & Navigazione) --- #}
+{% set lesson_title = "Good News, Bad News: Delivery Strategies" %}
+{% set lesson_subtitle = "Mastering the art of delivering sensitive information with empathy and clarity." %}
+
+{# CRITICO: nav_links su UNA SOLA RIGA per sicurezza parser backend #}
+{% set nav_links = [{'id': 'intro', 'title': 'Introduction'}, {'id': 'article', 'title': 'Case Study'}, {'id': 'practice', 'title': 'Vocabulary Practice'}, {'id': 'creative', 'title': 'Role Play Ideas'}] %}
+
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, fill_in_the_gap_exercise %}
+
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Dati Esercizi (Definiti INTERNAMENTE per sicurezza) --- #}
+
+{# Dati per Sezione 3 (Vocab Fill-in) #}
+{% set vocab_fill_data = [
+    {'prefix': 'a) I’m', 'answer': 'sorry', 'suffix': 'I have some bad news. I was fired.'},
+    {'prefix': 'b) I am', 'answer': 'afraid', 'suffix': 'to say that the project has been cancelled. (or *regret*)'},
+    {'prefix': 'c) I', 'answer': 'regret', 'suffix': 'to inform you that your application has been unsuccessful.'},
+    {'prefix': 'd) We appreciate the opportunity to read your article, but', 'answer': 'unfortunately', 'suffix': 'it will not be published.'},
+    {'prefix': 'e) There is no easy', 'answer': 'way', 'suffix': 'to say this, but we will be closing our London division.'},
+    {'prefix': 'f) You', 'answer': 'know', 'suffix': 'what? I got the job!'},
+    {'prefix': 'g) Guess', 'answer': 'what', 'suffix': '? We got engaged!'},
+    {'prefix': 'h) We’re', 'answer': 'pleased', 'suffix': 'to tell you that you have been nominated for Employee of the Year.'},
+    {'prefix': 'i) I have some great news', 'answer': 'for', 'suffix': 'you. You’ve been promoted to senior manager.'},
+    {'prefix': 'j) Good', 'answer': 'news', 'suffix': '! I passed my final exam and got an A.'}
+] %}
+
+
+{# --- Fase 5: Conversione Contenuto --- #}
+
+{% call info_card('intro', '1. Setting the Stage', initial_state='show') %}
+    <div class="mt-4 text-slate-700 space-y-4">
+        <a href="https://youtu.be/vsLH70BrnnM" target="_blank">
+        <img src="https://img.youtube.com/vi/vsLH70BrnnM/maxresdefault.jpg" alt="Video Thumbnail" class="w-full max-w-md mx-auto rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300">
+        </a>        
+        <div>
+            <h4 class="font-bold text-slate-900 mb-2">Reflection Questions:</h4>
+            <ul class="ml-6 list-disc space-y-2">
+                <li>What news did the boss give his employees?</li>
+                <li>Why was his way of giving the bad news inappropriate? How could he have done it better?</li>
+                <li>When was the last time you had to give good or bad news? What happened?</li>
+                <li>Why can it be difficult to give good or bad news to people?</li>
+            </ul>
+        </div>
+
+        <div>
+            <h4 class="font-bold text-slate-900 mb-2">Key Vocabulary:</h4>
+            <ul class="ml-6 list-disc space-y-2 text-sm">
+                <li><span class="font-bold">GUTTING:</span> Very disappointing or upsetting.</li>
+                <li><span class="font-bold">EVERY CLOUD HAS A SILVER LINING:</span> Used for saying that there is usually a good aspect of a bad situation.</li>
+            </ul>
+        </div>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('article', '2. Case Study: The Cost of Poor Communication', initial_state='show') %}
+    <div class="mt-4 text-slate-700 space-y-4">
+        <h4 class="font-bold text-red-800 mb-2">CEO Who Fired 900 Employees Via Zoom</h4>
+        <p>Vishal Garg, CEO of unicorn mortgage lender startup Better.com—after receiving a $750 million cash infusion with a valuation of around $7 billion—bluntly informed his 900 employees that a large number of people will be fired in a cold, awkward one-way video announcement.</p>
+        <p>Looking visibly uncomfortable, Garg said that 15% of the workforce would be laid off. In a monotone voice, the chief executive stated, “This is the second time in my career I’m doing this and I do not want to do this. The last time I did it, I cried; this time I hope to be stronger.”</p>
+        <p>Three of Better.com’s top executives have reportedly resigned from the company after the unicorn mortgage lender was hit by a wave of backlash over the leaked Zoom call.</p>
+        <p>In a message from the founder and CEO, Garg issued an apology on the company’s blog. The chief executive wrote, “I want to apologize for the way I handled the layoffs last week.” He continued, “I failed to show the appropriate amount of respect and appreciation for the individuals who were affected... I own the decision to do the layoffs, but in communicating it, I blundered the execution. In doing so, I embarrassed you.”</p>
+        
+        <h5 class="font-bold text-slate-900 pt-4">Article Continued</h5>
+        <p>Fortune reported that the embattled CEO accused “at least 250″ terminated staffers of stealing from the company by working just two hours a day. In an email obtained by Forbes, Garg brazenly wrote, “HELLO—WAKE UP BETTER TEAM. You are TOO DAMN SLOW. You are a bunch of DUMB DOLPHINS... STOP IT RIGHT NOW. YOU ARE EMBARRASSING ME.”</p>
+        <p>History seems like it's repeating itself. On Tuesday, the company took the "difficult step of streamlining" its operations by laying off 3,000 more people. Better said that employees impacted would be properly notified personally over the phone.</p>
+        <p>In what seems like a glitch, workers were notified of their firings by seeing a severance payment in their bank accounts.</p>
+
+        <div class="mt-6 p-4 bg-red-50 rounded-lg border-l-4 border-red-500">
+            <h4 class="font-bold text-red-800 mb-2">Discussion Questions</h4>
+            <ul class="ml-6 list-disc space-y-2">
+                <li>Was the CEO delivering good news or bad news? Did he do it tastefully? What could he have done better?</li>
+                <li>How do you prefer to receive bad news? What about good news?</li>
+                <li>What do business leaders need to take into account when delivering news (especially bad news) to employees?</li>
+            </ul>
+        </div>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('practice', '3. Practice: Vocabulary for Delivery', initial_state='show') %}
+    <div class="mt-4">
+        <p class="text-slate-600 mb-4">Fill in the blanks with these words: <em>afraid, for, know, pleased, news, regret, sorry, unfortunately, way, what</em>.</p>
+        {{ fill_in_the_gap_exercise('delivery-vocab-fill', vocab_fill_data) }}
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('creative', '4. Get Creative: Role Play Scenarios', initial_state='show') %}
+    <div class="mt-4 text-slate-700 space-y-8">
+        
+        <div>
+            <h4 class="font-bold text-green-800 mb-4">Complete the Dialogues (Creative Writing)</h4>
+            <ul class="space-y-4 bg-slate-50 p-4 rounded-lg">
+                <li>
+                    <strong>1) Bad News (Formal):</strong><br>
+                    A: We regret to inform you that you have not passed your driving license exam.<br>
+                    B: [Your reaction/dialogue]
+                </li>
+                <li>
+                    <strong>2) Good News (Informal):</strong><br>
+                    A: [Good news opening]<br>
+                    B: That’s amazing! Thank you!
+                </li>
+                <li>
+                    <strong>3) Bad News (Travel):</strong><br>
+                    A: I’m afraid I have some bad news. Our flight to Barcelona has been cancelled.<br>
+                    B: [Disappointed but realistic response]
+                </li>
+            </ul>
+        </div>
+
+        <div>
+            <h4 class="font-bold text-green-800 mb-4">Role Play Scenarios</h4>
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <h5 class="font-bold text-slate-700 mb-2">General Situations</h5>
+                    <ul class="ml-4 list-disc space-y-2 text-sm">
+                        <li><strong>Partner:</strong> Good news: You won a trip. Bad news: The trip is for one person only.</li>
+                        <li><strong>Coworkers:</strong> Good news: Company is merging, everyone gets a raise. Bad news: You need to relocate.</li>
+                        <li><strong>Parent/Child:</strong> Good news: Moving to a new house. Bad news: Child must share a room.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-bold text-slate-700 mb-2">Professional Focus</h5>
+                    <ul class="ml-4 list-disc space-y-2 text-sm">
+                        <li><strong>Budget:</strong> Good news: Expenses are within budget. Bad news: Major discrepancy in initial estimation requires immediate fund reallocation.</li>
+                        <li><strong>Invoices:</strong> Good news: Most client invoices settled. Bad news: Major client filed for bankruptcy, leaving outstanding debt.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endcall %}
+
+{% endblock lesson_content %}

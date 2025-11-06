@@ -1,0 +1,130 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "Would You Rather? Decision & Values" %}
+{% set lesson_subtitle = "A guide for exploring priorities, ethics, and persuasive justification." %}
+
+{% set nav_links = [{'id': 'goal', 'title': 'Goal'}, {'id': 'phase1', 'title': 'Phase 1: Personal'}, {'id': 'phase2', 'title': 'Phase 2: Professional'}, {'id': 'phase3', 'title': 'Phase 3: Future & Ethics'}, {'id': 'exercise', 'title': 'Debate Challenge'}] %}
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, random_item_generator %}
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne) --- #}
+
+{# Dati per Phase 2 Randomizer (Professional Dilemmas) #}
+{% set professional_dilemmas = [
+    '<h4 class="font-bold text-indigo-700 mb-2">Ethics vs. Pay</h4><p>Would you rather work for a company that pays well but has poor ethics, OR a company that pays below industry standards but is highly ethical?</p>',
+    '<h4 class="font-bold text-indigo-700 mb-2">Profit vs. Planet</h4><p>Would you rather start a business that makes a lot of money but harms the environment, OR a business that helps the environment but makes very little profit?</p>',
+    '<h4 class="font-bold text-indigo-700 mb-2">Long-term vs. Short-term</h4><p>Would you rather lead a company focusing on sustainable, long-term growth (no profits for years), OR aggressive strategies with immediate profits but potential long-term damage?</p>',
+    '<h4 class="font-bold text-indigo-700 mb-2">Train vs. Hire</h4><p>Would you rather invest in training underperforming staff to potentially turn them into stars, OR hire new, already qualified talent for immediate performance?</p>',
+    '<h4 class="font-bold text-indigo-700 mb-2">Team Dynamics</h4><p>Would you rather work with a team of highly skilled professionals who are difficult to get along with, OR a less skilled team that\'s cooperative and supportive?</p>',
+    '<h4 class="font-bold text-indigo-700 mb-2">Leadership Style</h4><p>Would you rather work under a leader who is directive and makes quick decisions, OR a democratic leader whose decision-making processes take longer?</p>',
+    '<h4 class="font-bold text-indigo-700 mb-2">Workspace</h4><p>Would you rather work in an open-plan office (easy collaboration, limited privacy), OR a private office (more privacy, less interaction)?</p>'
+] %}
+
+{# --- Fase 5: Conversione Contenuto --- #}
+
+{% call info_card('goal', '1. Lesson Goal', initial_state='show') %}
+    <h4 class="font-bold text-slate-800 mb-4">The Power of "Why"</h4>
+    <p class="text-slate-600 mb-4">This lesson uses structured hypotheticals to force choices between competing values. The goal is to articulate not just the choice, but the <span class="font-semibold">underlying principle</span> driving that choice.</p>
+    <div class="bg-indigo-50 p-4 rounded-lg border-l-4 border-indigo-500">
+        <p class="italic font-medium text-indigo-800">Focus: <span class="font-bold">Justification</span>. Can you defend your choice using a clear ethical, professional, or personal framework?</p>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('phase1', '2. Phase 1: Personal & Lifestyle Lenses', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Explore fundamental lifestyle choices and trade-offs.</p>
+    
+    <div class="grid md:grid-cols-2 gap-6">
+        <div>
+            <h4 class="font-bold text-indigo-700 mb-3">Personal Preferences</h4>
+            <ul class="list-disc list-inside text-slate-600 space-y-2">
+                <li>Dinner with a movie star OR perform with your favorite musician?</li>
+                <li>Live in the world of the last TV show you watched OR the last book you read?</li>
+                <li>More free time with less money OR more money with significantly less free time?</li>
+                <li>Only watch pre-2000s movies OR only new releases from now on?</li>
+            </ul>
+        </div>
+        <div>
+            <h4 class="font-bold text-indigo-700 mb-3">Travel Decisions</h4>
+            <ul class="list-disc list-inside text-slate-600 space-y-2">
+                <li>Travel back in time to meet ancestors OR future to meet descendants?</li>
+                <li>A year living in a van traveling OR a year in a luxury hotel in one city?</li>
+                <li>Flying car with limited destinations OR traditional car with unlimited international travel?</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="mt-8 bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+        <h4 class="font-bold text-indigo-800 mb-2">Exercise: The Consistency Check</h4>
+        <p class="text-sm text-indigo-900">Based on your answers, identify which value (e.g., novelty, stability, experience, legacy) appeared most consistently. Was it a conscious choice?</p>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('phase2', '3. Phase 2: Professional Dilemmas', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Use the randomizer to select a tough workplace scenario. Justify your choice clearly.</p>
+    {{ random_item_generator('prof-dilemma-random', 'Next Dilemma', 'prof-dilemma-list', professional_dilemmas) }}
+
+    <div class="mt-8 bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+        <h4 class="font-bold text-indigo-800 mb-2">Exercise: The CEO's Press Release</h4>
+        <p class="text-sm text-indigo-900">Select one of the Business Ethics choices above. Write a one-paragraph statement justifying your decision to the public, focusing on either <span class="font-semibold">"Stakeholder Responsibility"</span> or <span class="font-semibold">"Shareholder Value."</span></p>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('phase3', '4. Phase 3: Societal & Future Implications', initial_state='show') %}
+    <p class="text-slate-600 mb-6">Debate the costs of progress and the impact of technology.</p>
+
+    <div class="space-y-6">
+        <div>
+            <h4 class="font-bold text-indigo-700 mb-2">Technology & Privacy</h4>
+            <ul class="list-disc list-inside text-slate-600 space-y-2">
+                <li>Give up social media OR streaming services for a year?</li>
+                <li>Ultimate convenience (smart devices) with NO privacy OR total privacy with NO convenience?</li>
+                <li>Future dependent on tech (efficiency) OR reduced reliance (human autonomy)?</li>
+            </ul>
+        </div>
+        <div>
+            <h4 class="font-bold text-indigo-700 mb-2">Environment & Education</h4>
+            <ul class="list-disc list-inside text-slate-600 space-y-2">
+                <li>Clean oceans yourself OR restore all rainforests with a touch?</li>
+                <li>All renewable but expensive energy OR cheap but polluting energy?</li>
+                <li>Free college for everyone OR free trade education for everyone?</li>
+                <li>Extremely knowledgeable on one subject OR fairly knowledgeable on many?</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="mt-8 bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+        <h4 class="font-bold text-indigo-800 mb-2">Exercise: Predicting the Cost</h4>
+        <p class="text-sm text-indigo-900">Pick one of your choices above. Now, argue <span class="font-bold">against</span> yourself: What is the single biggest unforeseen negative consequence of your choice?</p>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('exercise', '5. Bonus: The Ethical Debate', initial_state='show') %}
+    <div class="bg-red-50 p-6 rounded-xl border-2 border-red-200">
+        <h3 class="text-red-800 font-bold text-lg mb-4">Structured Debate Challenge</h3>
+        
+        <div class="mb-4">
+            <h4 class="font-bold text-red-900 mb-2">Scenario:</h4>
+            <p class="text-slate-700">You chose to buy only locally produced goods (expensive) over mass-produced items (cheaper, less transparent). A colleague says your choice is elitist and only possible because you have more disposable income.</p>
+        </div>
+
+        <div>
+            <h4 class="font-bold text-red-900 mb-2">Prompt:</h4>
+            <p class="text-slate-700">Construct a 3-point rebuttal. Defend the <span class="font-semibold">ethical framework</span> behind your decision without sounding judgmental. Focus on <span class="font-semibold">systemic impact</span> and <span class="font-semibold">long-term sustainability</span>.</p>
+        </div>
+    </div>
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}

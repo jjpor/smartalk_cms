@@ -1,14 +1,12 @@
-{# --- Lezione: Employee Engagement & Retention --- #}
-
 {% set lesson_title = "Employee Engagement & Retention" %}
 {% set lesson_subtitle = "Strategies for a motivated and loyal team." %}
 {% set nav_links = [
-    {'id': 'warmup', 'title': 'Warm-Up'},
-    {'id': 'part1', 'title': 'Part 1'},
-    {'id': 'part2', 'title': 'Part 2'},
-    {'id': 'part3', 'title': 'Part 3'},
-    {'id': 'scenarios', 'title': 'Scenarios'},
-    {'id': 'wrapup', 'title': 'Wrap-Up'}
+{'id': 'warmup', 'title': 'Warm-Up'},
+{'id': 'part1', 'title': 'Part 1'},
+{'id': 'part2', 'title': 'Part 2'},
+{'id': 'part3', 'title': 'Part 3'},
+{'id': 'scenarios', 'title': 'Scenarios'},
+{'id': 'wrapup', 'title': 'Wrap-Up'}
 ] %}
 
 {% extends "abstract_templates/lesson_base.html" %}
@@ -16,133 +14,138 @@
 
 {% block lesson_content %}
 
-    {% call info_card('warmup', '1. Warm-Up Discussion', initial_state='show') %}
-        <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-            <li>What does "employee engagement" mean to you?</li>
-            <li>How does engagement look different from simply being satisfied with a job?</li>
-            <li>What's one factor that has kept you motivated in a past role?</li>
-        </ul>
-    {% endcall %}
+{% call info_card('warmup', '1. Warm-Up Discussion', initial_state='show') %}
+<ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+    <li>What does "employee engagement" mean to you?</li>
+    <li>How does engagement look different from simply being satisfied with a job?</li>
+    <li>What's one factor that has kept you motivated in a past role?</li>
+</ul>
+{% endcall %}
 
-    <hr class="my-12 border-gray-200">
+<hr class="my-12 border-gray-200">
 
-    {% call info_card('part1', '2. Part 1 – Understanding the Importance', initial_state='show') %}
-        <p class="mt-4 font-semibold text-slate-700">Objective: Understand why engagement and retention are critical for business success.</p>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">Speaking Prompts:</h4>
-            <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
-                <li>Reflect on a time when you felt highly engaged at work. What contributed to that?</li>
-                <li>What are the risks for a company when turnover is high?</li>
-                <li>How does retention connect to employee engagement?</li>
-            </ul>
-        </div>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">Pair/Group Discussion:</h4>
-            <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
-                <li>How does employee wellbeing impact engagement?</li>
-                <li>How does company culture affect whether people stay or leave?</li>
-            </ul>
-        </div>
-    {% endcall %}
+{% call info_card('part1', '2. Part 1 – Understanding the Importance', initial_state='show') %}
+<p class="mt-4 font-semibold text-slate-700">Objective: Understand why engagement and retention are critical for
+    business success.</p>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Speaking Prompts:</h4>
+    <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+        <li>Reflect on a time when you felt highly engaged at work. What contributed to that?</li>
+        <li>What are the risks for a company when turnover is high?</li>
+        <li>How does retention connect to employee engagement?</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Pair/Group Discussion:</h4>
+    <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+        <li>How does employee wellbeing impact engagement?</li>
+        <li>How does company culture affect whether people stay or leave?</li>
+    </ul>
+</div>
+{% endcall %}
 
-    <hr class="my-12 border-gray-200">
+<hr class="my-12 border-gray-200">
 
-    {% call info_card('part2', '3. Part 2 – Assessing Current Engagement', initial_state='show') %}
-        <p class="mt-4 font-semibold text-slate-700">Objective: Evaluate current levels of engagement in a workplace.</p>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">Discussion Questions:</h4>
-            <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
-                <li>How often should managers have one-on-one check-ins with employees?</li>
-                <li>What are effective ways to measure engagement (surveys, informal talks, performance reviews)?</li>
-                <li>Have you ever worked somewhere that failed to measure engagement well? What was the result?</li>
-            </ul>
-        </div>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">Scenario Roleplays:</h4>
-            <div class="bg-gray-50 p-4 rounded-lg mt-2">
-                <p class="font-medium"><strong>Scenario:</strong> A usually enthusiastic employee becomes withdrawn and less productive.</p>
-                <p class="mt-1"><strong>Roleplay:</strong> Manager → check in with employee.</p>
-                <p class="mt-1"><strong>Reflection:</strong> How can early intervention change the outcome?</p>
-            </div>
-            <div class="bg-gray-50 p-4 rounded-lg mt-4">
-                <p class="font-medium"><strong>Scenario:</strong> The team has achieved a major milestone.</p>
-                <p class="mt-1"><strong>Roleplay:</strong> Manager → recognize team publicly.</p>
-                <p class="mt-1"><strong>Reflection:</strong> Why is recognition so powerful for motivation?</p>
-            </div>
-        </div>
-    {% endcall %}
+{% call info_card('part2', '3. Part 2 – Assessing Current Engagement', initial_state='show') %}
+<p class="mt-4 font-semibold text-slate-700">Objective: Evaluate current levels of engagement in a workplace.</p>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Discussion Questions:</h4>
+    <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+        <li>How often should managers have one-on-one check-ins with employees?</li>
+        <li>What are effective ways to measure engagement (surveys, informal talks, performance reviews)?</li>
+        <li>Have you ever worked somewhere that failed to measure engagement well? What was the result?</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Scenario Roleplays:</h4>
+    <div class="bg-gray-50 p-4 rounded-lg mt-2">
+        <p class="font-medium"><strong>Scenario:</strong> A usually enthusiastic employee becomes withdrawn and less
+            productive.</p>
+        <p class="mt-1"><strong>Roleplay:</strong> Manager → check in with employee.</p>
+        <p class="mt-1"><strong>Reflection:</strong> How can early intervention change the outcome?</p>
+    </div>
+    <div class="bg-gray-50 p-4 rounded-lg mt-4">
+        <p class="font-medium"><strong>Scenario:</strong> The team has achieved a major milestone.</p>
+        <p class="mt-1"><strong>Roleplay:</strong> Manager → recognize team publicly.</p>
+        <p class="mt-1"><strong>Reflection:</strong> Why is recognition so powerful for motivation?</p>
+    </div>
+</div>
+{% endcall %}
 
-    <hr class="my-12 border-gray-200">
+<hr class="my-12 border-gray-200">
 
-    {% call info_card('part3', '4. Part 3 – Implementing Engagement Strategies', initial_state='show') %}
-        <p class="mt-4 font-semibold text-slate-700">Objective: Identify and apply strategies to improve engagement.</p>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">Discussion Questions:</h4>
-            <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
-                <li>What are your team's unique motivators (career growth, recognition, work-life balance)?</li>
-                <li>How do you adapt your management style for different personalities?</li>
-            </ul>
-        </div>
-        <div class="mt-4">
-            <h4 class="font-semibold text-slate-800">Scenario Roleplays:</h4>
-            <div class="bg-gray-50 p-4 rounded-lg mt-2">
-                <p class="font-medium"><strong>Scenario:</strong> A team member wants to learn new skills not related to their current role.</p>
-                <p class="mt-1"><strong>Strategy:</strong> Offer cross-training, personal development opportunities.</p>
-                <p class="mt-1"><strong>Discussion:</strong> How does this influence loyalty and job satisfaction?</p>
-            </div>
-            <div class="bg-gray-50 p-4 rounded-lg mt-4">
-                <p class="font-medium"><strong>Scenario:</strong> Several team members feel overwhelmed with workload.</p>
-                <p class="mt-1"><strong>Strategy:</strong> Discuss workload management, redistribute tasks.</p>
-                <p class="mt-1"><strong>Discussion:</strong> How does this help prevent burnout?</p>
-            </div>
-        </div>
-    {% endcall %}
+{% call info_card('part3', '4. Part 3 – Implementing Engagement Strategies', initial_state='show') %}
+<p class="mt-4 font-semibold text-slate-700">Objective: Identify and apply strategies to improve engagement.</p>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Discussion Questions:</h4>
+    <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+        <li>What are your team's unique motivators (career growth, recognition, work-life balance)?</li>
+        <li>How do you adapt your management style for different personalities?</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Scenario Roleplays:</h4>
+    <div class="bg-gray-50 p-4 rounded-lg mt-2">
+        <p class="font-medium"><strong>Scenario:</strong> A team member wants to learn new skills not related to their
+            current role.</p>
+        <p class="mt-1"><strong>Strategy:</strong> Offer cross-training, personal development opportunities.</p>
+        <p class="mt-1"><strong>Discussion:</strong> How does this influence loyalty and job satisfaction?</p>
+    </div>
+    <div class="bg-gray-50 p-4 rounded-lg mt-4">
+        <p class="font-medium"><strong>Scenario:</strong> Several team members feel overwhelmed with workload.</p>
+        <p class="mt-1"><strong>Strategy:</strong> Discuss workload management, redistribute tasks.</p>
+        <p class="mt-1"><strong>Discussion:</strong> How does this help prevent burnout?</p>
+    </div>
+</div>
+{% endcall %}
 
-    <hr class="my-12 border-gray-200">
+<hr class="my-12 border-gray-200">
 
-    {% call info_card('scenarios', '5. Case Scenarios for Speaking Practice', initial_state='show') %}
+{% call info_card('scenarios', '5. Case Scenarios for Speaking Practice', initial_state='show') %}
+{# Le classi Tailwind per il paragrafo rimangono #}
+<p class="mt-4 font-semibold text-slate-700">Roleplay each case in pairs or groups. After each, discuss reflection
+    questions.</p>
+
+{# RIMOSSE: list-disc, list-outside, mt-4, space-y-4, pl-5 #}
+<ul class="text-slate-600">
+    <li>
         {# Le classi Tailwind per il paragrafo rimangono #}
-        <p class="mt-4 font-semibold text-slate-700">Roleplay each case in pairs or groups. After each, discuss reflection questions.</p>
-
-        {# RIMOSSE: list-disc, list-outside, mt-4, space-y-4, pl-5 #}
-        <ul class="text-slate-600">
-            <li>
-                {# Le classi Tailwind per il paragrafo rimangono #}
-                <p class="font-medium"><strong>A high-performing employee feels unchallenged and considers leaving.</strong></p>
-                {# RIMOSSE: list-disc, list-outside, ml-4, mt-1, space-y-1, pl-5 #}
-                <ul>
-                    <li>How should a manager respond?</li>
-                </ul>
-            </li>
-            <li>
-                <p class="font-medium"><strong>Remote work is creating communication gaps and missed deadlines.</strong></p>
-                <ul>
-                    <li>How can communication be improved?</li>
-                </ul>
-            </li>
-            <li>
-                <p class="font-medium"><strong>Many new hires are leaving within their first six months.</strong></p>
-                <ul>
-                    <li>What onboarding or support strategies could reduce this?</li>
-                </ul>
-            </li>
-            <li>
-                <p class="font-medium"><strong>Team members are frustrated with new technology and efficiency is decreasing.</strong></p>
-                <ul>
-                    <li>How can managers provide support and training?</li>
-                </ul>
-            </li>
+        <p class="font-medium"><strong>A high-performing employee feels unchallenged and considers leaving.</strong></p>
+        {# RIMOSSE: list-disc, list-outside, ml-4, mt-1, space-y-1, pl-5 #}
+        <ul>
+            <li>How should a manager respond?</li>
         </ul>
-    {% endcall %}
-
-    <hr class="my-12 border-gray-200">
-
-    {% call info_card('wrapup', '6. Wrap-Up Discussion', initial_state='show') %}
-        <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-            <li>What is one new strategy you would try in your current (or future) workplace to improve engagement?</li>
-            <li>Which is harder to achieve in your opinion: engagement or retention? Why?</li>
-            <li>If you were advising leadership, what top 3 actions would you recommend to reduce turnover?</li>
+    </li>
+    <li>
+        <p class="font-medium"><strong>Remote work is creating communication gaps and missed deadlines.</strong></p>
+        <ul>
+            <li>How can communication be improved?</li>
         </ul>
-    {% endcall %}
+    </li>
+    <li>
+        <p class="font-medium"><strong>Many new hires are leaving within their first six months.</strong></p>
+        <ul>
+            <li>What onboarding or support strategies could reduce this?</li>
+        </ul>
+    </li>
+    <li>
+        <p class="font-medium"><strong>Team members are frustrated with new technology and efficiency is
+                decreasing.</strong></p>
+        <ul>
+            <li>How can managers provide support and training?</li>
+        </ul>
+    </li>
+</ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('wrapup', '6. Wrap-Up Discussion', initial_state='show') %}
+<ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+    <li>What is one new strategy you would try in your current (or future) workplace to improve engagement?</li>
+    <li>Which is harder to achieve in your opinion: engagement or retention? Why?</li>
+    <li>If you were advising leadership, what top 3 actions would you recommend to reduce turnover?</li>
+</ul>
+{% endcall %}
 
 {% endblock lesson_content %}

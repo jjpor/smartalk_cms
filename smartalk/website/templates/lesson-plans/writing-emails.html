@@ -1,11 +1,10 @@
-{# --- 1. Definizione delle Variabili della Lezione --- #}
 {% set lesson_title = "Writing Emails" %}
 {% set lesson_subtitle = "Connecting with clarity and impact through writing." %}
 
 {% set nav_links = [
-    {'id': 'explanation', 'title': 'Explanation & Key Points'},
-    {'id': 'discussion', 'title': 'Discussion Questions'},
-    {'id': 'activity', 'title': 'Activity'}
+{'id': 'explanation', 'title': 'Explanation & Key Points'},
+{'id': 'discussion', 'title': 'Discussion Questions'},
+{'id': 'activity', 'title': 'Activity'}
 ] %}
 
 {# --- 2. Estensione del Template Base e Import Macro --- #}
@@ -16,74 +15,80 @@
 {# --- 3. Contenuto Specifico della Lezione --- #}
 {% block lesson_content %}
 
-    {# Sezione 1: Explanation Section #}
-    {% call info_card('explanation', '1. Explanation & Key Points', initial_state='show') %}
-        <div class="lesson-card"> {# Tendina interna #}
-            <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">Email Writing Fundamentals</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                <p class="text-slate-700 mt-4">Strategic communication often happens in email. Writing emails effectively means using the correct tone, clarity, and format.</p>
-                <p class="text-slate-700 font-semibold mt-4">Key Points:</p>
-                {# Uso la classe .key-points-list dal CSS master #}
-                <ul class="key-points-list mt-2 text-slate-600 space-y-1">
-                    <li><strong>Subject Line:</strong> Be clear and specific (e.g., "Meeting Rescheduled: Tuesday at 2 PM").</li>
-                    <li><strong>Greeting:</strong> Adjust formality ("Hi John" vs. "Dear Mr. Smith").</li>
-                    <li><strong>Body:</strong> Structure with short paragraphs. Be clear and concise.</li>
-                    <li><strong>Closing:</strong> End with a polite phrase ("Best regards," "Thank you,").</li>
-                    <li><strong>Tone:</strong> Match the relationship (professional, friendly, urgent).</li>
-                </ul>
-                <p class="text-slate-700 font-semibold mt-4">Examples:</p>
-                <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
-                    <li><strong>Formal:</strong> Dear Ms. Lopez, I am writing to confirm our meeting scheduled for Thursday at 3 PM.</li>
-                    <li><strong>Neutral:</strong> Hi David, Thanks for sending the report. I have a few questions before our call tomorrow.</li>
-                    <li><strong>Informal:</strong> Hey Sam, Can we push the meeting to later this week?</li>
-                </ul>
-            </div>
-        </div>
-    {% endcall %}
+{# Sezione 1: Explanation Section #}
+{% call info_card('explanation', '1. Explanation & Key Points', initial_state='show') %}
+<div class="lesson-card"> {# Tendina interna #}
+    <div class="card-header flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">Email Writing Fundamentals</h3>
+        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+    </div>
+    <div class="card-content">
+        <p class="text-slate-700 mt-4">Strategic communication often happens in email. Writing emails effectively means
+            using the correct tone, clarity, and format.</p>
+        <p class="text-slate-700 font-semibold mt-4">Key Points:</p>
+        {# Uso la classe .key-points-list dal CSS master #}
+        <ul class="key-points-list mt-2 text-slate-600 space-y-1">
+            <li><strong>Subject Line:</strong> Be clear and specific (e.g., "Meeting Rescheduled: Tuesday at 2 PM").
+            </li>
+            <li><strong>Greeting:</strong> Adjust formality ("Hi John" vs. "Dear Mr. Smith").</li>
+            <li><strong>Body:</strong> Structure with short paragraphs. Be clear and concise.</li>
+            <li><strong>Closing:</strong> End with a polite phrase ("Best regards," "Thank you,").</li>
+            <li><strong>Tone:</strong> Match the relationship (professional, friendly, urgent).</li>
+        </ul>
+        <p class="text-slate-700 font-semibold mt-4">Examples:</p>
+        <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+            <li><strong>Formal:</strong> Dear Ms. Lopez, I am writing to confirm our meeting scheduled for Thursday at 3
+                PM.</li>
+            <li><strong>Neutral:</strong> Hi David, Thanks for sending the report. I have a few questions before our
+                call tomorrow.</li>
+            <li><strong>Informal:</strong> Hey Sam, Can we push the meeting to later this week?</li>
+        </ul>
+    </div>
+</div>
+{% endcall %}
 
-    <hr class="my-12 border-gray-200">
+<hr class="my-12 border-gray-200">
 
-    {# Sezione 2: Discussion Questions Section #}
-    {% call info_card('discussion', '2. Discussion Questions') %}
-        <div class="lesson-card"> {# Tendina interna #}
-            <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">Your Perspective on Email Writing</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
-                    <li>When is it better to use a formal vs. informal email style?</li>
-                    <li>What makes an email easy (or hard) to understand?</li>
-                    <li>How can you make sure your tone is polite but clear when writing emails?</li>
-                </ul>
-            </div>
-        </div>
-    {% endcall %}
+{# Sezione 2: Discussion Questions Section #}
+{% call info_card('discussion', '2. Discussion Questions') %}
+<div class="lesson-card"> {# Tendina interna #}
+    <div class="card-header flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">Your Perspective on Email Writing</h3>
+        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+    </div>
+    <div class="card-content">
+        <ul class="list-disc list-inside mt-4 text-slate-600 space-y-2">
+            <li>When is it better to use a formal vs. informal email style?</li>
+            <li>What makes an email easy (or hard) to understand?</li>
+            <li>How can you make sure your tone is polite but clear when writing emails?</li>
+        </ul>
+    </div>
+</div>
+{% endcall %}
 
-    <hr class="my-12 border-gray-200">
+<hr class="my-12 border-gray-200">
 
-    {# Sezione 3: Activity Section #}
-    {% call info_card('activity', '3. Activity: Email Review') %}
-        <div class="lesson-card"> {# Tendina interna #}
-            <div class="card-header flex justify-between items-center">
-                <h3 class="font-bold text-slate-800">Student Email Analysis</h3>
-                <span class="text-2xl text-slate-500 arrow-icon">▾</span>
-            </div>
-            <div class="card-content">
-                <p class="text-slate-700 mt-4">Share a real email you have written for work or school (with personal details removed).</p>
-                <p class="text-slate-700 font-semibold mt-4">Together, we can analyze the email for:</p>
-                <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
-                    <li>Subject line clarity</li>
-                    <li>Tone (too formal, too informal, or just right)</li>
-                    <li>Structure (clear introduction, body, closing)</li>
-                    <li>Grammar and word choice</li>
-                </ul>
-                <p class="text-slate-700 mt-4">Then, we can rewrite the email together to make it more professional, clear, or effective.</p>
-            </div>
-        </div>
-    {% endcall %}
+{# Sezione 3: Activity Section #}
+{% call info_card('activity', '3. Activity: Email Review') %}
+<div class="lesson-card"> {# Tendina interna #}
+    <div class="card-header flex justify-between items-center">
+        <h3 class="font-bold text-slate-800">Student Email Analysis</h3>
+        <span class="text-2xl text-slate-500 arrow-icon">▾</span>
+    </div>
+    <div class="card-content">
+        <p class="text-slate-700 mt-4">Share a real email you have written for work or school (with personal details
+            removed).</p>
+        <p class="text-slate-700 font-semibold mt-4">Together, we can analyze the email for:</p>
+        <ul class="list-disc list-inside mt-2 text-slate-600 space-y-2">
+            <li>Subject line clarity</li>
+            <li>Tone (too formal, too informal, or just right)</li>
+            <li>Structure (clear introduction, body, closing)</li>
+            <li>Grammar and word choice</li>
+        </ul>
+        <p class="text-slate-700 mt-4">Then, we can rewrite the email together to make it more professional, clear, or
+            effective.</p>
+    </div>
+</div>
+{% endcall %}
 
 {% endblock lesson_content %}

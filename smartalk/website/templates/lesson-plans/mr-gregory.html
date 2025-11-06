@@ -1,0 +1,136 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "Mr. Gregory" %}
+{% set lesson_subtitle = "A lesson in empathy and the human cost of violence." %}
+
+{% set nav_links = [{'id': 'story', 'title': 'The Story'}, {'id': 'listen', 'title': 'Listen & Repeat'}, {'id': 'objectives', 'title': 'Coach Objectives'}, {'id': 'vocabulary', 'title': 'Words to Focus On'}] %}
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, multiple_choice_exercise, match_exercise %}
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne) --- #}
+
+{# Dati per Comprehension Quiz #}
+{% set story_quiz = [
+    {
+        'text': 'What was unusual about Mr. Gregory\'s special activity?',
+        'options': [
+            {'value': 'a', 'text': 'They had to read a whole book in one hour.'},
+            {'value': 'b', 'text': 'They did not need books and did not write anything down.'},
+            {'value': 'c', 'text': 'They had to wear special costumes.'}
+        ],
+        'correct_value': 'b'
+    },
+    {
+        'text': 'What happened to Erica when she picked the red paper?',
+        'options': [
+            {'value': 'a', 'text': 'She won a prize.'},
+            {'value': 'b', 'text': 'She became the leader of the gang.'},
+            {'value': 'c', 'text': 'She was "killed" in the simulation and had to leave.'}
+        ],
+        'correct_value': 'c'
+    },
+    {
+        'text': 'What was the main lesson of the activity?',
+        'options': [
+            {'value': 'a', 'text': 'To understand the pain of losing someone to violence.'},
+            {'value': 'b', 'text': 'How to join a gang safely.'},
+            {'value': 'c', 'text': 'That random chance controls everything.'}
+        ],
+        'correct_value': 'a'
+    }
+] %}
+
+{# Dati per Pronunciation Match #}
+{% set pron_words = [
+    {'id': '1', 'text': 'Gang'},
+    {'id': '2', 'text': 'Unlucky'},
+    {'id': '3', 'text': 'Relief'},
+    {'id': '4', 'text': 'Enemy'},
+    {'id': '5', 'text': 'Violence'}
+] %}
+
+{# Uso &nbsp; per sicurezza sugli spazi se necessario, ma qui è plain text #}
+{% set pron_rules = [
+    {'id': '1', 'text': '/æ/ sound (like "cat")'},
+    {'id': '2', 'text': '/ʌ/ sound (like "cup")'},
+    {'id': '3', 'text': 'Long /iː/ vowel'},
+    {'id': '4', 'text': 'Stress on first syllable (EN-e-my)'},
+    {'id': '5', 'text': 'Careful with /aɪ/ diphthong'}
+] %}
+
+{# --- Fase 5: Conversione Contenuto --- #}
+
+{% call info_card('story', '1. The Story (Reading)', initial_state='show') %}
+    <h4 class="font-bold text-slate-800 mb-4">Read carefully.</h4>
+    <div class="text-slate-600 space-y-4">
+        <p>Mr. Gregory is a high school teacher. One day, he tells his students that they will do a special activity. They will not need their books and they will not write anything down.</p>
+        <p>"As you know, we have seen some very sad stories on the news lately," Mr. Gregory says. "I want us all to think about some very important topics."</p>
+        <p>Mr. Gregory divides the class into two even groups. "Your group is your gang," the teacher explains to his class. "That means you are very close friends and you will do anything to protect each other." The students in each group smile at each other. It is true that they are all very good friends. "Now," Mr. Gregory continues, "there is a problem in your neighborhood, so you must meet the other gang. The other gang is your enemy."</p>
+        <p>The students laugh a little. It sounds silly because they all get along so well. But Mr. Gregory looks very serious, and he is a good teacher. The students all try to focus on the activity and play their roles well. Mr. Gregory explains that the problem in the neighborhood causes the two gangs to get into a fight. Reaching behind his desk, he picks up a bag and tells each of the students to take a piece of paper from it. Most of the pieces of paper are white, but there is one that is red. Erica, one of the students, looks at the red piece of paper in her hand. She smiles, wondering if maybe she has won a prize.</p>
+        <p>"Erica, please leave the classroom and close the door. Wait outside," Mr. Gregory instructs. The students are very confused. Erica feels a little uncomfortable, but she leaves the room and closes the door behind her.</p>
+        <p>"Erica has been very unlucky," Mr. Gregory says to the class. "She has been killed in the gang violence. Please look around."</p>
+        <p>Without saying a word, the students all look at each other. Erica is missing, and they all feel strange without her there. She always says funny things and makes them laugh. The room feels too quiet.</p>
+        <p>"I want you to imagine how you would feel if you never saw Erica again, if she never ever came back to class," Mr. Gregory explains.</p>
+        <p>All the students are quiet. It feels so sudden and wrong. They understand their teacher's lesson: people must never murder each other. When the teacher brings Erica back into the room, all her classmates hug her and explain the end of the activity. What a relief that she is really okay!</p>
+    </div>
+
+    <div class="mt-8">
+        <h4 class="font-semibold text-slate-800 mb-4">Comprehension Check</h4>
+        {{ multiple_choice_exercise('story-comprehension', story_quiz) }}
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('listen', '2. Listen & Repeat', initial_state='show') %}
+    <p class="text-slate-600 mb-4">Listen to the recording and repeat each sentence aloud. Focus on rhythm, intonation, and connectors.</p>
+    <audio controls class="w-full mt-4 p-2 bg-slate-50 rounded-lg border border-slate-200">
+        <source src="https://res.cloudinary.com/dk5bqpodg/video/upload/v1758111706/Mr_Gregory_-_Pronunciation_Check_yrltne.wav" type="audio/wav">
+        Your browser does not support the audio element.
+    </audio>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('objectives', '3. Coach Objectives', initial_state='show') %}
+    <h4 class="font-bold text-slate-800 mb-4">How to guide the activity</h4>
+    <ul class="list-disc list-inside text-slate-600 space-y-3">
+        <li><span class="font-semibold text-slate-800">Repetition:</span> Make the student repeat difficult words at least 3 times.</li>
+        <li><span class="font-semibold text-slate-800">Sound Awareness:</span> Explain why a sound is important. Example: <em>gang</em> (/æ/) vs <em>unlucky</em> (/ʌ/).</li>
+        <li><span class="font-semibold text-slate-800">Extra Practice:</span> Provide 10 more examples for each tricky sound.
+            <ul class="list-disc ml-8 mt-2 space-y-1">
+                <li><em>/æ/ (gang):</em> cat, hat, map, black, snack, rapid, matter, track, family, apple.</li>
+                <li><em>/ʌ/ (unlucky):</em> cup, luck, sun, money, brother, mother, love, under, funny, country.</li>
+                <li><em>/iː/ (relief):</em> seat, beat, need, green, teacher, believe, reach, speak, clean, people.</li>
+            </ul>
+        </li>
+        <li><span class="font-semibold text-slate-800">Linking:</span> Train the student to connect sentences smoothly, focusing on connectors: <em>and, so, but, because</em>.</li>
+        <li><span class="font-semibold text-slate-800">Intonation:</span> Encourage rising and falling tones to avoid monotone reading.</li>
+    </ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('vocabulary', '4. Words to Focus On', initial_state='show') %}
+    <h4 class="font-bold text-slate-800 mb-4">Pronunciation Targets</h4>
+    <ul class="list-disc list-inside text-slate-600 space-y-2 mb-8">
+        <li><span class="font-semibold">Gang</span> – /ɡæŋ/, open short <em>æ</em>. Contrast with <em>unlucky</em>.</li>
+        <li><span class="font-semibold">Enemy</span> – stress on first syllable: <em>EN</em>-e-my.</li>
+        <li><span class="font-semibold">Unlucky</span> – /ʌ/ vowel, not /æ/. Compare with <em>gang</em>.</li>
+        <li><span class="font-semibold">Violence</span> – /ˈvaɪə.ləns/, careful with diphthong /aɪ/.</li>
+        <li><span class="font-semibold">Relief</span> – /rɪˈliːf/, long /iː/ vowel.</li>
+        <li><span class="font-semibold">Protect</span> – stress on second syllable: pro-<em>TECT</em>.</li>
+        <li><span class="font-semibold">Neighborhood</span> – American /ˈneɪ.bɚ.hʊd/, final /hʊd/ often mispronounced.</li>
+        <li><span class="font-semibold">Connectors</span> – <em>and, but, so, because</em>: practice linking them into sentences without pause.</li>
+    </ul>
+
+    <h4 class="font-semibold text-slate-800 mb-4">Practice: Match the Sound Rule</h4>
+    {{ match_exercise('pronunciation-match', pron_words, pron_rules) }}
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}

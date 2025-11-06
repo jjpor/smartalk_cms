@@ -1,0 +1,142 @@
+{# --- Fase 1: Intestazione (Variabili Semplici & Navigazione) --- #}
+{% set lesson_title = "Metric vs. Imperial: Systems of Measurement" %}
+{% set lesson_subtitle = "Exploring the history, differences, and practical conversions of global measurement systems." %}
+
+{# CRITICO: nav_links su UNA SOLA RIGA per sicurezza parser backend #}
+{% set nav_links = [{'id': 'history', 'title': 'History'}, {'id': 'temperature', 'title': 'Temperature'}, {'id': 'conversion', 'title': 'Conversion Practice'}, {'id': 'discussion', 'title': 'Discussion'}] %}
+
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, multiple_choice_exercise, random_item_generator %}
+
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Dati Esercizi (Definiti INTERNAMENTE per sicurezza) --- #}
+
+{# Dati per Sezione 3 (Conversion Quiz) #}
+{% set conversion_quiz = [
+    {
+        'text': 'If a road sign says the speed limit is 100 km/h, what is this roughly in mph?',
+        'options': [{'value': 'a', 'text': 'Approx. 40 mph'}, {'value': 'b', 'text': 'Approx. 62 mph'}, {'value': 'c', 'text': 'Approx. 80 mph'}],
+        'correct_value': 'b'
+    },
+    {
+        'text': 'How many pounds (lbs) are roughly in 1 kilogram (kg)?',
+        'options': [{'value': 'a', 'text': '2.2 lbs'}, {'value': 'b', 'text': '1.5 lbs'}, {'value': 'c', 'text': '10 lbs'}],
+        'correct_value': 'a'
+    },
+    {
+        'text': 'Which is larger: a liter or a US gallon?',
+        'options': [{'value': 'a', 'text': 'A liter'}, {'value': 'b', 'text': 'A gallon'}, {'value': 'c', 'text': 'They are the same'}],
+        'correct_value': 'b'
+    },
+    {
+        'text': 'If it is 0°C outside, what is the temperature in Fahrenheit?',
+        'options': [{'value': 'a', 'text': '0°F'}, {'value': 'b', 'text': '100°F'}, {'value': 'c', 'text': '32°F'}],
+        'correct_value': 'c'
+    }
+] %}
+
+{# Dati per Sezione 4 (Random Discussion) #}
+{% set discussion_prompts = [
+    'Daily Measurements: Discuss the differences between measuring things like temperature, distance, and weight in your home country vs. abroad.',
+    'Travel Headaches: How do unit differences affect travelers? (e.g., speed limits, luggage weight).',
+    'Cooking: Have you ever had trouble with a recipe because of different measuring units (cups vs. grams)?',
+    'Weather Perception: Does 30°C sound hot to you, or does 86°F sound hotter? How does the number affect your perception?',
+    'Sports: Why do you think some sports mix units (e.g., a 100-meter sprint, but a marathon in miles)?',
+    'Future Trends: Do you think the whole world will ever use fully Metric? Why or why not?'
+] %}
+
+
+{# --- Fase 5: Conversione Contenuto --- #}
+
+{% call info_card('history', '1. Facts & Historical Context', initial_state='show') %}
+    <div class="mt-4 text-slate-700 space-y-3">
+        <h4 class="font-bold text-indigo-800 mb-2">Key Moments in Measurement History</h4>
+        <ul class="ml-6 list-disc space-y-2">
+            <li><strong>British Influence:</strong> The US customary system is derived from the British imperial system, used widely in American colonies before independence.</li>
+            <li><strong>Metric System Origins:</strong> Developed in France during the late 18th century, aiming for a standardized universal system based on decimals.</li>
+            <li><strong>US Metric Act of 1866:</strong> The US government officially recognized the metric system as legal, though it wasn't mandatory.</li>
+            <li><strong>Global vs. Local:</strong> While the US is officially "metric" in law, customary units (feet, pounds, gallons) still dominate daily life, construction, and football!</li>
+            <li><strong>Slow Adoption:</strong> The reluctance to switch is often due to massive infrastructure costs (changing every road sign) and cultural habit.</li>
+        </ul>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('temperature', '2. Temperature & Perception', initial_state='show') %}
+    <div class="mt-4 text-slate-700">
+        <p class="mb-6">Celsius and Fahrenheit scales feel very different. Use this chart to understand the "feeling" of weather in different units.</p>
+        
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse border border-slate-200">
+                <thead class="bg-yellow-50 text-slate-700">
+                    <tr>
+                        <th class="p-3 border border-slate-300">Metric (°C)</th>
+                        <th class="p-3 border border-slate-300">Imperial (°F)</th>
+                        <th class="p-3 border border-slate-300">Perception/Effect</th>
+                    </tr>
+                </thead>
+                <tbody class="text-slate-600">
+                    <tr class="bg-blue-50">
+                        <td class="p-3 border border-slate-200 font-semibold">-18°C to 0°C</td>
+                        <td class="p-3 border border-slate-200 font-semibold">0°F to 32°F</td>
+                        <td class="p-3 border border-slate-200">Very cold. Water freezes at 0°C / 32°F.</td>
+                    </tr>
+                    <tr>
+                        <td class="p-3 border border-slate-200 font-semibold">13°C to 18°C</td>
+                        <td class="p-3 border border-slate-200 font-semibold">55°F to 65°F</td>
+                        <td class="p-3 border border-slate-200">Cool. Light jacket weather.</td>
+                    </tr>
+                    <tr class="bg-green-50">
+                        <td class="p-3 border border-slate-200 font-semibold">18°C to 24°C</td>
+                        <td class="p-3 border border-slate-200 font-semibold">65°F to 75°F</td>
+                        <td class="p-3 border border-slate-200">Mild. Comfortable, pleasant weather.</td>
+                    </tr>
+                    <tr>
+                        <td class="p-3 border border-slate-200 font-semibold">29°C to 35°C</td>
+                        <td class="p-3 border border-slate-200 font-semibold">85°F to 95°F</td>
+                        <td class="p-3 border border-slate-200">Hot. Potentially uncomfortable.</td>
+                    </tr>
+                    <tr class="bg-red-50">
+                        <td class="p-3 border border-slate-200 font-semibold">Above 38°C</td>
+                        <td class="p-3 border border-slate-200 font-semibold">Above 100°F</td>
+                        <td class="p-3 border border-slate-200">Extremely hot. High risk of heat-related illness.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="mt-6 p-4 bg-slate-50 rounded-lg text-sm">
+            <p class="font-bold mb-1">Quick Reference Formulas:</p>
+            <ul class="ml-6 list-disc">
+                <li>F to C: Subtract 30 and halve it (rough estimate).</li>
+                <li>C to F: Double it and add 30 (rough estimate).</li>
+            </ul>
+        </div>
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('conversion', '3. Conversion Practice', initial_state='show') %}
+    <div class="mt-4">
+        <p class="mb-6 text-slate-600">Test your knowledge of common "benchmark" conversions that are useful for travel and daily life.</p>
+        {{ multiple_choice_exercise('conversion-quiz', conversion_quiz) }}
+    </div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('discussion', '4. Application Discussion', initial_state='show') %}
+    <div class="mt-4">
+        <p class="mb-6 text-slate-600">Use the generator to pick a topic and compare how these two systems affect real-world situations.</p>
+        {{ random_item_generator('metric-discussion', 'Next Topic', 'metric-discuss-list', discussion_prompts) }}
+    </div>
+{% endcall %}
+
+{% endblock lesson_content %}

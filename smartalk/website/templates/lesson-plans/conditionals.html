@@ -1,0 +1,270 @@
+{# --- Fase 1: Definizioni Variabili (Intestazione) --- #}
+{% set lesson_title = "Conditionals" %}
+{% set lesson_subtitle = "Exploring cause and effect in language." %}
+
+{% set nav_links = [
+{'id': 'warmup', 'title': 'Warm-Up'},
+{'id': 'zero', 'title': 'Zero'},
+{'id': 'first', 'title': 'First'},
+{'id': 'second', 'title': 'Second'},
+{'id': 'third', 'title': 'Third'},
+{'id': 'mixed', 'title': 'Mixed'},
+{'id': 'consolidation', 'title': 'Activities'},
+{'id': 'wrapup', 'title': 'Wrap-Up'}
+] %}
+
+
+{# --- Fase 2: Estensione e Import --- #}
+{% extends "abstract_templates/lesson_base.html" %}
+{% from "abstract_templates/_macros.html" import info_card, dropdown_fill_in_exercise, random_item_generator %}
+
+
+{# --- Fase 3: Blocco Contenuto --- #}
+{% block lesson_content %}
+
+{# --- Fase 4: Definizioni Variabili (Interne - REGOLA CRITICA) --- #}
+
+{# Dati per la Sezione 7 (Consolidation Quiz) #}
+{% set consolidation_quiz_data = [
+{
+'prefix': 'If you heat ice, it',
+'options': ['melts', 'will melt', 'would melt', 'would have melted'],
+'answer': 'melts',
+'suffix': '. (Zero)'
+},
+{
+'prefix': 'If we finish this meeting early, we',
+'options': ['go', 'will go', 'would go', 'would have gone'],
+'answer': 'will go',
+'suffix': 'for lunch. (First)'
+},
+{
+'prefix': 'If I were you, I',
+'options': ['ask', 'will ask', 'would ask', 'would have asked'],
+'answer': 'would ask',
+'suffix': 'for a raise. (Second)'
+},
+{
+'prefix': 'She',
+'options': ['passes', 'will pass', 'would pass', 'would have passed'],
+'answer': 'would have passed',
+'suffix': 'the exam if she had studied. (Third)'
+},
+{
+'prefix': 'If I had taken that job 5 years ago, I',
+'options': ['am', 'will be', 'would be', 'would have been'],
+'answer': 'would be',
+'suffix': 'rich now. (Mixed)'
+}
+] %}
+
+{# Dati per la Sezione 7 (Random Generator) #}
+{% set what_if_scenarios = [
+'What if you woke up and could fly?',
+'What if you were the CEO of your company for one day?',
+'What if you hadn\'t checked your email this morning?',
+'What if you get a surprise bonus next week?',
+'What if you could travel back in time to any moment?',
+'What if your company decided to go fully remote forever?',
+'What if you hadn\'t learned English?'
+] %}
+
+
+{# --- Fase 5: Conversione Contenuto (Modello Semplice) --- #}
+
+{% call info_card('warmup', '1. Warm-Up Discussion', initial_state='show') %}
+<ul class="text-slate-600">
+    <li>What do you think of when you hear the word "if"?</li>
+    <li>Why do you think conditionals are useful in business and everyday life?</li>
+    <li>Can you think of a time when one decision completely changed an outcome?</li>
+</ul>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('zero', '2. Zero Conditional', initial_state='show') %}
+<div class="info-box info-box-blue mt-4">
+    <p class="font-bold">Form:</p>
+    <p>If + Present Simple -> Present Simple</p>
+    <p class="italic mt-1">Example: If you heat water to 100 degrees, it boils.</p>
+</div>
+<p class="mt-4 text-slate-700"><strong>Use:</strong> General truths, scientific facts, and things that are always true.
+    (<strong>When</strong> can often replace <strong>if</strong> with the same meaning.)</p>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Practice (make sentences):</h4>
+    <ul class="text-slate-600">
+        <li>Jane / eat / too much chocolate / she / get / sick</li>
+        <li>You / not eat / you / die</li>
+        <li>You / heat ice / it / melts</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Discussion Questions:</h4>
+    <ul class="text-slate-600">
+        <li>If you don't sleep well, what happens the next day?</li>
+        <li>What happens if employees don't get clear communication at work?</li>
+        <li>If a company invests in employee training, what usually happens?</li>
+    </ul>
+</div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('first', '3. First Conditional', initial_state='show') %}
+<div class="info-box info-box-blue mt-4">
+    <p class="font-bold">Form:</p>
+    <p>If + Present Simple -> Future Simple / can / may</p>
+    <p class="italic mt-1">Example: If you study hard, you will pass the test.</p>
+</div>
+<p class="mt-4 text-slate-700"><strong>Use:</strong> Talking about real and possible situations in the present or
+    future.</p>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Practice (put verbs in correct form):</h4>
+    <ul class="text-slate-600">
+        <li>If you (not study), you (fail) the test.</li>
+        <li>I (lend) you my umbrella if you (need) it.</li>
+        <li>If I (be late), I (call) you.</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Discussion Questions:</h4>
+    <ul class="text-slate-600">
+        <li>If you get a raise, what will you do with the extra money?</li>
+        <li>What will happen if your company hires more people?</li>
+        <li>If there's a lot of traffic tonight, what will you do?</li>
+        <li>How will you respond if a coworker invites you out after work?</li>
+    </ul>
+</div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('second', '4. Second Conditional', initial_state='show') %}
+<div class="info-box info-box-blue mt-4">
+    <p class="font-bold">Form:</p>
+    <p>If + Past Simple -> would/could/might + Verb</p>
+    <p class="italic mt-1">Example: If I had a million dollars, I would buy a big house.</p>
+</div>
+<p class="mt-4 text-slate-700"><strong>Use:</strong> Unreal or hypothetical situations in the present or future.</p>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Practice (put verbs in correct form):</h4>
+    <ul class="text-slate-600">
+        <li>If you (leave) your job, you (travel) around the world.</li>
+        <li>If you (be) nicer to him, he (lend) you the money.</li>
+        <li>It (be) nice if the rain (stop).</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Discussion Questions:</h4>
+    <ul class="text-slate-600">
+        <li>If you could change one thing about your current job, what would it be?</li>
+        <li>If you were offered a job in another country, would you accept it? Why or why not?</li>
+        <li>If you had two extra hours every day, how would you spend the time?</li>
+        <li>What would happen if your company took away employee perks or benefits?</li>
+        <li>If you started your own business, what would you need to learn quickly?</li>
+    </ul>
+</div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('third', '5. Third Conditional', initial_state='show') %}
+<div class="info-box info-box-blue mt-4">
+    <p class="font-bold">Form:</p>
+    <p>If + Past Perfect -> would/could/might have + Past Participle</p>
+    <p class="italic mt-1">Example: If I had studied harder, I would have passed the exam.</p>
+</div>
+<p class="mt-4 text-slate-700"><strong>Use:</strong> Unreal situations in the past; often used to express regret or
+    criticism.</p>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Practice (put verbs in correct form):</h4>
+    <ul class="text-slate-600">
+        <li>If he (fall) asleep while driving, he (crash) his car.</li>
+        <li>I (lose) my job if I (be) late for work.</li>
+        <li>If we (have) enough money, we (go) to the concert.</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Discussion Questions:</h4>
+    <ul class="text-slate-600">
+        <li>What would have happened if the internet had never been invented?</li>
+        <li>If you hadn't learned English, how would your life be different?</li>
+        <li>What would have happened if you had chosen a different university major?</li>
+        <li>Can you think of a mistake at work that would have had a better outcome if something had been done
+            differently?</li>
+    </ul>
+</div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('mixed', '6. Mixed Conditionals', initial_state='show') %}
+<div class="info-box info-box-blue mt-4">
+    <p class="font-bold">Forms:</p>
+    <p>Past Condition -> Present Result:</p>
+    <p class="italic mt-1">If + Past Perfect -> would/might + Infinitive</p>
+    <p class="italic mt-1">Example: If I had gotten a master's degree, I might have a better job now.</p>
+    <p class="font-bold mt-4">Present Condition -> Past Result:</p>
+    <p class="italic mt-1">If + Simple Past -> would have/could have/might have + Past Participle</p>
+    <p class="italic mt-1">Example: If I were you, I would have taken the job offer.</p>
+</div>
+<div class="mt-4">
+    <h4 class_a="font-semibold text-slate-800">Practice:</h4>
+    <ul class="text-slate-600">
+        <li>If Karen (take) time off, she (be) general manager now.</li>
+        <li>If Kevin (speak) good English, he (get) the job.</li>
+        <li>If Carl (listen) to his friends, he (not be) in trouble.</li>
+    </ul>
+</div>
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Discussion Questions:</h4>
+    <ul class="text-slate-600">
+        <li>If you had studied something different, what kind of job might you have now?</li>
+        <li>If you had been born 100 years ago, what would your life be like today?</li>
+        <li>If the economy were stronger right now, what might you have done differently this year?</li>
+        <li>If you were more confident, what past opportunities would you have taken?</li>
+    </ul>
+</div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{# --- SEZIONE 7 (CONSOLIDATION) AGGIORNATA CON 2 MACRO --- #}
+{% call info_card('consolidation', '7. Consolidation Activities', initial_state='show') %}
+
+<div class="mt-4">
+    <h4 class="font-semibold text-slate-800">Consolidation Quiz: Choose the correct form</h4>
+    <p class="mt-2 mb-4 text-slate-600">Let's see if you can identify which conditional to use.</p>
+    {{ dropdown_fill_in_exercise('conditionals-quiz', consolidation_quiz_data) }}
+</div>
+
+<div class="mt-6">
+    <h4 class="font-semibold text-slate-800">Speaking Game: "What if...?"</h4>
+    <p class="mt-2 mb-4 text-slate-600">Click the button to get a random scenario. Answer the question using the correct
+        conditional.</p>
+    {{ random_item_generator('what-if-generator', 'Get "What if..." Scenario', 'what-if-list', what_if_scenarios) }}
+</div>
+
+<div class="mt-6">
+    <h4 class="font-semibold text-slate-800">Business Roleplays:</h4>
+    <ul class="text-slate-600">
+        <li>A project fails. Discuss what the team <strong>would have done differently</strong> using third
+            conditionals.</li>
+        <li>Talk about company growth. Predict what <strong>will happen if</strong> new technology is introduced.</li>
+        <li>Imagine you're CEO. Say what you <strong>would do if</strong> you had unlimited resources.</li>
+    </ul>
+</div>
+{% endcall %}
+
+<hr class="my-12 border-gray-200">
+
+{% call info_card('wrapup', '8. Wrap-Up Discussion', initial_state='show') %}
+<ul class="text-slate-600">
+    <li>Which conditional do you find the most useful in real life?</li>
+    <li>How can using conditionals help in professional communication (negotiations, planning, problem solving)?</li>
+    <li>Think of your career: If you had made one different choice, how would your life look now?</li>
+</ul>
+{% endcall %}
+
+{# --- Fase 6: Chiusura Blocco --- #}
+{% endblock lesson_content %}
