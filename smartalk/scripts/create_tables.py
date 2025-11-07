@@ -98,18 +98,26 @@ async def _create_contracts_table(db, table_name) -> None:
                 ],
                 "Projection": {
                     "ProjectionType": "INCLUDE",
-                    "NonKeyAttributes": ["left_calls", "used_calls", "max_end_date", "product_id"],
+                    "NonKeyAttributes": ["unlimited", "left_calls", "used_calls", "max_end_date", "product_id"],
                 },
             },
             {
-                "IndexName": "client-id-status-index",
+                "IndexName": "status-index",
                 "KeySchema": [
-                    {"AttributeName": "client_id", "KeyType": "HASH"},
-                    {"AttributeName": "status", "KeyType": "RANGE"},
+                    {"AttributeName": "status", "KeyType": "HASH"},
                 ],
                 "Projection": {
                     "ProjectionType": "INCLUDE",
-                    "NonKeyAttributes": ["product_id", "student_id"],
+                    "NonKeyAttributes": [
+                        "client_id",
+                        "report_card_cadency",
+                        "report_card_start_month",
+                        "report_card_email_recipients",
+                        "student_id",
+                        "unlimited",
+                        "max_end_date",
+                        "report_card_generator_id",
+                    ],
                 },
             },
             {
@@ -124,6 +132,17 @@ async def _create_contracts_table(db, table_name) -> None:
                 },
             },
             {
+                "IndexName": "client-id-status-index",
+                "KeySchema": [
+                    {"AttributeName": "client_id", "KeyType": "HASH"},
+                    {"AttributeName": "status", "KeyType": "RANGE"},
+                ],
+                "Projection": {
+                    "ProjectionType": "INCLUDE",
+                    "NonKeyAttributes": ["unlimited", "max_end_date", "report_card_generator_id", "student_id"],
+                },
+            },
+            {
                 "IndexName": "report-card-cadency-report-card-start-month-index",
                 "KeySchema": [
                     {"AttributeName": "report_card_cadency", "KeyType": "HASH"},
@@ -135,6 +154,14 @@ async def _create_contracts_table(db, table_name) -> None:
                 "IndexName": "report_card_generator_id-index",
                 "KeySchema": [{"AttributeName": "report_card_generator_id", "KeyType": "HASH"}],
                 "Projection": {"ProjectionType": "KEYS_ONLY"},
+            },
+            {
+                "IndexName": "client_id-report_card_generator_id-index",
+                "KeySchema": [
+                    {"AttributeName": "client_id", "KeyType": "HASH"},
+                    {"AttributeName": "report_card_generator_id", "KeyType": "RANGE"},
+                ],
+                "Projection": {"ProjectionType": "ALL"},
             },
         ],
     )

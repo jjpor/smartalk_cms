@@ -104,8 +104,8 @@ async def get_student_contracts_for_individual(
 async def get_student_contracts_for_group(db: DynamoDBServiceResource) -> List[Dict[str, Any]]:
     contracts_table = await get_table(db, settings.CONTRACTS_TABLE)
     contracts_response = await contracts_table.query(
-        IndexName="client-id-status-index",
-        KeyConditionExpression=Key("status").eq("active"),
+        IndexName="status-index",
+        KeyConditionExpression=Key("status").eq("Active"),
         FilterExpression=Attr("unlimited").eq(True)
         | Attr("max_end_date").not_exists()
         | Attr("max_end_date").gte(get_today_string()),
@@ -438,7 +438,7 @@ async def log_call_to_db(
                     if report_card_generator["next_start_month"] <= call_date:
                         report_card["start_month"] = report_card_generator["next_start_month"]
                         report_card["end_month"] = (
-                            datetime.fromisoformat(report_card_generator["next_start_month"] + "01").date()
+                            datetime.fromisoformat(report_card_generator["next_start_month"] + "-01").date()
                             + relativedelta(months=contract["report_card_cadency"])
                         ).strftime("%Y-%m")
                     report_card["coach_id"] = call["coach_id"]
@@ -693,6 +693,7 @@ async def get_report_card_tasks_db(coach: dict, db: DynamoDBServiceResource) -> 
         student_response = await users_table.get_item(Key={"id": student_id})
         student = student_response["Item"]
         calls_response = await tracker_table.query(
+            # SBAGLIATO
             KeyConditionExpression=Key("session_id").begins_with(f"{coach['id']}#{student_id}#")
         )
         calls = calls_response.get("Items", [])
@@ -761,6 +762,7 @@ async def get_flashcards(db, student_id: str) -> List[Dict[str, Any]]:
     """Recupera le flashcard di uno studente (Flashcards Table)."""
     # Assumo che db sia la Tabella Flashcards
     try:
+        # table = get_table(db, settings.FLASHCARDS_TABLE)
         response = db.query(
             KeyConditionExpression=Key("student_id").eq(student_id)
             & Key("term").begins_with("#")  # Assumo PK: student_id, SK: term
