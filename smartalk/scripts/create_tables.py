@@ -312,16 +312,18 @@ async def _create_report_cards_table(db, table_name) -> None:
 
 
 async def _create_debriefs_table(db, table_name) -> None:
-    """Tabella Debriefs (note post-sessione)."""
+    """Tabella Debriefs (note post-sessione).
+    debrief_id=student_id#coach_id
+    """
     await db.create_table(
         TableName=table_name,
         BillingMode="PAY_PER_REQUEST",
         KeySchema=[
-            {"AttributeName": "student_id", "KeyType": "HASH"},
+            {"AttributeName": "debrief_id", "KeyType": "HASH"},
             {"AttributeName": "date", "KeyType": "RANGE"},
         ],
         AttributeDefinitions=[
-            {"AttributeName": "student_id", "AttributeType": "S"},
+            {"AttributeName": "debrief_id", "AttributeType": "S"},
             {"AttributeName": "date", "AttributeType": "S"},
             {"AttributeName": "coach_id", "AttributeType": "S"},
         ],

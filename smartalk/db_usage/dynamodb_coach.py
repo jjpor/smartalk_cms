@@ -460,7 +460,7 @@ async def log_call_to_db(
                             },
                         }
                     )
-                    # delete no show rc di head coach JJ
+                    # delete no show rc di head coach JJ, se esiste
                     deletes.append(
                         {
                             "TableName": settings.REPORT_CARDS_TABLE,
@@ -500,30 +500,155 @@ async def log_call_to_db(
                             }
                         )
 
-            # 5) Debrief
-            debrief = {
-                "student_id": call["student_id"],
-                "date": call["date"],
-                "coach_id": call["coach_id"],
-                "draft": True,
-            }
-            puts.append(
-                {
-                    "TableName": settings.DEBRIEFS_TABLE,
-                    "Item": to_low_level_item(debrief),
-                    "ConditionExpression": "attribute_not_exists(#pk_attr) AND attribute_not_exists(#sk_attr)",
-                    "ExpressionAttributeNames": {
-                        "#pk_attr": "student_id",
-                        "#sk_attr": "date",
-                    },
-                }
-            )
+            # # 5) Debrief
+            # -> in fase di creazione e ricerca di items,
+            #           un debrief ha un campo call_id = student_id#coach_id#date
+            #           quando mostro le call possiamo creare un link di visualizzazione del debrief se presente
+            # debrief = {
+            #     "student_id": call["student_id"],
+            #     "date": call["date"],
+            #     "coach_id": call["coach_id"],
+            #     "draft": True,
+            # }
+            # puts.append(
+            #     {
+            #         "TableName": settings.DEBRIEFS_TABLE,
+            #         "Item": to_low_level_item(debrief),
+            #         "ConditionExpression": "attribute_not_exists(#pk_attr) AND attribute_not_exists(#sk_attr)",
+            #         "ExpressionAttributeNames": {
+            #             "#pk_attr": "student_id",
+            #             "#sk_attr": "date",
+            #         },
+            #     }
+            # )
 
             await make_atomic_transaction(db, checks=checks, puts=puts, updates=updates, deletes=deletes)
 
         return {"success": True, "message": "Chiamata registrata correttamente."}
     except ClientError as e:
-        logger.error(f"DynamoDB Error in log_call_to_db (TRACKER | CONTRACT | REPORT_CARD table): {e}")
+        logger.error(f"DynamoDB Error in log_call_to_db (TRACKER | CONTRACTS | REPORT_CARDS table): {e}")
+        return {"success": False, "error": str(e)}
+
+
+async def create_contract(
+    contract: dict,
+    has_report_card_context: bool,
+    report_card_generator: dict,
+    db: DynamoDBServiceResource,
+) -> Dict[str, Any]:
+    """
+    Registra un nuovo contratto (CONTRACTS Table).
+    Aggiorna a catena documenti correlati:
+        - report card generator (crea se non report_card_generator, update se contract["report_card_start_month"] < report_card_generator["current_start_month"])
+        - report card (crea no show su crea report_card_generator o su update report card generator)
+
+    """
+    try:
+        puts: List[Dict] = []
+        updates: List[Dict] = []
+
+        puts.append(
+            {
+                "TableName": settings.CONTRACTS_TABLE,
+                "Item": to_low_level_item(contract),
+                "ConditionExpression": "attribute_not_exists('#pk_attr')",
+                "ExpressionAttributeNames": {
+                    "#pk_attr": "contract_id",
+                },
+            }
+        )
+
+        if has_report_card_context:
+            report_card_generator_to_use = {}
+            create_report_card = False
+
+            if not report_card_generator:
+                # new report card generator
+                report_card_generator_to_use = {
+                    "report_card_generator_id": contract["report_card_generator_id"],
+                    "student_id": contract["student_id"],
+                    "client_id": contract["client_id"],
+                    "report_card_cadency": contract["report_card_generator_id"],
+                    "report_card_email_recipients": contract["report_card_email_recipients"],
+                    "current_start_month": contract["report_card_start_month"],
+                    "next_start_month": (
+                        datetime.fromisoformat(contract["report_card_start_month"] + "-01").date()
+                        + relativedelta(months=contract["report_card_cadency"])
+                    ).strftime("%Y-%m"),
+                }
+                puts.append(
+                    {
+                        "TableName": settings.REPORT_CARD_GENERATORS_TABLE,
+                        "Item": to_low_level_item(report_card_generator_to_use),
+                        "ConditionExpression": "attribute_not_exists(#pk_attr)",
+                        "ExpressionAttributeNames": {
+                            "#pk_attr": "report_card_generator_id",
+                        },
+                    }
+                )
+
+                create_report_card = True
+
+            else:
+                report_card_generator_to_use = report_card_generator
+                if contract["report_card_start_month"] < report_card_generator["current_start_month"]:
+                    # update report card generator
+                    updates.append(
+                        {
+                            "TableName": settings.REPORT_CARD_GENERATORS_TABLE,
+                            "Key": to_low_level_item(
+                                {"report_card_generator_id": report_card_generator_to_use["report_card_generator_id"]}
+                            ),
+                            "ConditionExpression": "attribute_exists(report_card_generator_id)",
+                            "UpdateExpression": "SET current_start_month = :current_start_month, next_start_month = :next_start_month",
+                            "ExpressionAttributeValues": {
+                                ":current_start_month": {"S": contract["report_card_start_month"]},
+                                ":next_start_month": {
+                                    "S": (
+                                        datetime.fromisoformat(contract["report_card_start_month"] + "-01").date()
+                                        + relativedelta(months=contract["report_card_cadency"])
+                                    ).strftime("%Y-%m")
+                                },
+                            },
+                        }
+                    )
+                    create_report_card = True
+
+            if create_report_card:
+                # new report card
+                report_card = {}
+                report_card["report_card_id"] = f"JJ#{report_card_generator_to_use['report_card_generator_id']}"
+                report_card["start_month"] = report_card_generator_to_use["current_start_month"]
+                report_card["end_month"] = report_card_generator_to_use["next_start_month"]
+                report_card["coach_id"] = "JJ"
+                report_card["student_id"] = report_card_generator_to_use["student_id"]
+                report_card["status"] = "no_show"
+                report_card["report_card_generator_id"] = report_card_generator_to_use["report_card_generator_id"]
+                report_card["report_card_email_recipients"] = report_card_generator_to_use[
+                    "report_card_email_recipients"
+                ]
+                report_card["report_card_cadency"] = report_card_generator_to_use["report_card_cadency"]
+                report_card["client_id"] = report_card_generator_to_use["client_id"]
+
+                puts.append(
+                    {
+                        "TableName": settings.REPORT_CARDS_TABLE,
+                        "Item": to_low_level_item(report_card),
+                        "ConditionExpression": "attribute_not_exists(#pk_attr) AND attribute_not_exists(#sk_attr)",
+                        "ExpressionAttributeNames": {
+                            "#pk_attr": "report_card_id",
+                            "#sk_attr": "start_month",
+                        },
+                    }
+                )
+
+        await make_atomic_transaction(db, puts=puts, updates=updates)
+
+        return {"success": True, "message": "Contratto registrato correttamente."}
+    except ClientError as e:
+        logger.error(
+            f"DynamoDB Error in create_contract (CONTRACTS | REPORT_CARDS | REPORT_CARD_GENERATORS table): {e}"
+        )
         return {"success": False, "error": str(e)}
 
 
