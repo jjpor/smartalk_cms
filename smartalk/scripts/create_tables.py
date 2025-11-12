@@ -270,20 +270,21 @@ async def _create_report_cards_table(db, table_name) -> None:
             {"AttributeName": "report_card_id", "AttributeType": "S"},
             {"AttributeName": "coach_id", "AttributeType": "S"},
             {"AttributeName": "start_month", "AttributeType": "S"},
+            {"AttributeName": "end_month", "AttributeType": "S"},
             {"AttributeName": "report_card_generator_id", "AttributeType": "S"},
             {"AttributeName": "status", "AttributeType": "S"},
         ],
         GlobalSecondaryIndexes=[
             # per vedere i completati di un periodo
             {
-                "IndexName": "status-start-month-index",
+                "IndexName": "status-end-month-index",
                 "KeySchema": [
                     {"AttributeName": "status", "KeyType": "HASH"},
-                    {"AttributeName": "start_month", "KeyType": "RANGE"},
+                    {"AttributeName": "end_month", "KeyType": "RANGE"},
                 ],
                 "Projection": {
                     "ProjectionType": "INCLUDE",
-                    "NonKeyAttributes": ["end_month", "student_id", "coach_id"],
+                    "NonKeyAttributes": ["start_month", "student_id", "coach_id"],
                 },
             },
             # per editare da un coach le draft (o i no show)
@@ -312,16 +313,18 @@ async def _create_report_cards_table(db, table_name) -> None:
 
 
 async def _create_debriefs_table(db, table_name) -> None:
-    """Tabella Debriefs (note post-sessione)."""
+    """Tabella Debriefs (note post-sessione).
+    debrief_id=student_id#coach_id
+    """
     await db.create_table(
         TableName=table_name,
         BillingMode="PAY_PER_REQUEST",
         KeySchema=[
-            {"AttributeName": "student_id", "KeyType": "HASH"},
+            {"AttributeName": "debrief_id", "KeyType": "HASH"},
             {"AttributeName": "date", "KeyType": "RANGE"},
         ],
         AttributeDefinitions=[
-            {"AttributeName": "student_id", "AttributeType": "S"},
+            {"AttributeName": "debrief_id", "AttributeType": "S"},
             {"AttributeName": "date", "AttributeType": "S"},
             {"AttributeName": "coach_id", "AttributeType": "S"},
         ],

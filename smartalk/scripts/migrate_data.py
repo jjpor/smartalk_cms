@@ -119,7 +119,6 @@ class Contract(BaseModel):
     client_id: str = Field(None, alias="Client ID")
     # Questi campi numerici possono essere vuoti
     package: Optional[str] = Field(None, alias="Package")
-    manual_total_calls: Optional[int | str] = Field(None, alias="Manual Total Calls")
     total_calls: Optional[int | str] = Field(None, alias="Total Calls")
     calls_per_week: Optional[float | str] = Field(None, alias="Calls/week")
     used_calls: Optional[float | str] = Field(None, alias="Used Calls")
@@ -664,6 +663,7 @@ async def migrate_all_data(db: Any):
 
     def debrief_logic(item):
         item["date"] = item.pop("debrief_date")
+        item["debrief_id"] = f"{item['student_id']}#{item['coach_id']}"
         return item
 
     logger.info("\n--- Migrating Debriefs ---")
@@ -676,20 +676,4 @@ async def migrate_all_data(db: Any):
     logger.info("DATA MIGRATION COMPLETED.")
 
 
-# TODO:
-# prima di await migrate_generic(db, settings.REPORT_CARDS_TABLE, "Report Cards", ReportCard),
-# creare una funzione per creare i report card generator attuali:
-# prendere tutti i contratti attivi
-# raggrupparli per report_card_generator_id (non nulli)
-# per ogni gruppo, vedere se hanno la stessa report_card_email_recipients
-#   se no sollevare eccezione
-#   se sì, creare il report card generator e salvarlo
-#       report_card_generator_id = student_id#client_id#report_card_cadency
-#       student_id = report_card_generator_id.split('#')[0]
-#       client_id = report_card_generator_id.split('#')[1]
-#       report_card_cadency = int(report_card_generator_id.split('#')[2])
-#       start_month = min(report_card_start_month)
-#       current_start_month = start_month <= today di report_card associato non in status sent
-#       next_start_month = parse_date_field(
-#          datetime.fromisoformat(current_start_month + "-01").date() + relativedelta(months=report_card_cadency])
-#       )[:7]
+# TODO: aggiungere has_debrief alle call che hanno un debrief, fare uno script, che gira a fine migrazione, che prende i debrief e mappa le call corrispondenti

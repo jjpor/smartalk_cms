@@ -4,6 +4,7 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Any, Dict, List, cast
 
+from dateutil import relativedelta
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from fastapi.responses import JSONResponse
 from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource
@@ -342,6 +343,96 @@ async def log_call_for_group_endpoint(
         raise HTTPException(status_code=400, detail=result.get("error"))
 
     return create_token_response({"message": result.get("message", "Chiamata registrata!")}, coach)
+
+
+@router.post("/newContract")
+async def new_contract_endpoint(
+    data: Dict[str, Any], coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
+) -> JSONResponse:
+    contract = {
+        "contract_id": data["contract_id"],
+        "student_id": data["student_id"],
+        "product_id": data["product_id"],
+        "status": "Active",
+        "unlimited": data["unlimited"],
+        "invoice_id": data["invoice_id"],
+        "client_id": data["client_id"],
+    }
+
+    has_report_card_context = False
+
+    if "report_card_cadency" in data and "report_card_start_month" in data and "report_card_email_recipients" in data:
+        contract = {
+            **contract,
+            **{
+                "report_card_cadency": data["report_card_cadency"],
+                "report_card_start_month": data["report_card_start_month"],
+                "report_card_email_recipients": data["report_card_email_recipients"],
+                "report_card_generator_id": f"{contract['student_id']}#{contract['client_id']}#{contract['report_card_cadency']}",
+            },
+        }
+        has_report_card_context = True
+
+    if not contract["unlimited"]:
+        products_table = await get_table(DBDependency, settings.PRODUCTS_TABLE)
+        product_response = await products_table.get_item(Key={"product_id": contract["product_id"]})
+        product = product_response.get("Item")
+        if "package" in data:
+            contract["total_calls"] = product["package"]
+        else:
+            contract["total_calls"] = data["total_calls"]
+
+        contract["calls_per_week"] = int(60 / product["duration"])
+        contract["used_calls"] = 0
+        contract["left_calls"] = contract["total_calls"]
+
+    report_card_generator = {}
+
+    if has_report_card_context:
+        # check se esiste report card generator che ha report_card_generator_id, devono avere stessa report_card_email_recipients e report_card_start_month allineati
+        report_card_generators_table = await get_table(DBDependency, settings.REPORT_CARD_GENERATORS_TABLE)
+        report_card_generator_response = await report_card_generators_table.get_item(
+            Key={"report_card_generator_id": contract["report_card_generator_id"]}
+        )
+        report_card_generator = report_card_generator_response.get("Item", {})
+        if report_card_generator:
+            assert report_card_generator["report_card_email_recipients"] == contract["report_card_email_recipients"], (
+                "This contract has different report_card_email_recipients"
+            )
+            start_month_aligned = contract["report_card_start_month"] == report_card_generator["current_start_month"]
+            if not start_month_aligned:
+                min_multiple = 0
+                max_multiple = 0
+                if contract["report_card_start_month"] < report_card_generator["current_start_month"]:
+                    min_multiple = -12
+                if contract["report_card_start_month"] > report_card_generator["current_start_month"]:
+                    max_multiple = 13
+                starting_aligning_date = datetime.fromisoformat(
+                    report_card_generator["current_start_month"] + "-01"
+                ).date()
+                for i in range(min_multiple, max_multiple):
+                    align_to_test = (
+                        starting_aligning_date + relativedelta(months=(i * contract["report_card_cadency"]))
+                    ).strftime("%Y-%m")
+                    if contract["report_card_start_month"] == align_to_test:
+                        start_month_aligned = True
+                        break
+
+            assert start_month_aligned, (
+                "report_card_start_month not aligned with report_card_cadency and other contracts"
+            )
+
+    result = await dynamodb_coach.create_contract(
+        contract,
+        has_report_card_context,
+        report_card_generator,
+        DBDependency,
+    )
+
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail=result.get("error"))
+
+    return create_token_response({"message": result.get("message", "Contratto registrato!")}, coach)
 
 
 # @router.post("/saveDebrief")
