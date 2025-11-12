@@ -270,20 +270,21 @@ async def _create_report_cards_table(db, table_name) -> None:
             {"AttributeName": "report_card_id", "AttributeType": "S"},
             {"AttributeName": "coach_id", "AttributeType": "S"},
             {"AttributeName": "start_month", "AttributeType": "S"},
+            {"AttributeName": "end_month", "AttributeType": "S"},
             {"AttributeName": "report_card_generator_id", "AttributeType": "S"},
             {"AttributeName": "status", "AttributeType": "S"},
         ],
         GlobalSecondaryIndexes=[
             # per vedere i completati di un periodo
             {
-                "IndexName": "status-start-month-index",
+                "IndexName": "status-end-month-index",
                 "KeySchema": [
                     {"AttributeName": "status", "KeyType": "HASH"},
-                    {"AttributeName": "start_month", "KeyType": "RANGE"},
+                    {"AttributeName": "end_month", "KeyType": "RANGE"},
                 ],
                 "Projection": {
                     "ProjectionType": "INCLUDE",
-                    "NonKeyAttributes": ["end_month", "student_id", "coach_id"],
+                    "NonKeyAttributes": ["start_month", "student_id", "coach_id"],
                 },
             },
             # per editare da un coach le draft (o i no show)

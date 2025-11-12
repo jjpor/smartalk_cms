@@ -674,3 +674,6 @@ async def migrate_all_data(db: Any):
     await migrate_generic(db, settings.REPORT_CARDS_TABLE, "Report Cards", ReportCard)
 
     logger.info("DATA MIGRATION COMPLETED.")
+
+
+# TODO: aggiungere has_debrief alle call che hanno un debrief, fare uno script, che gira a fine migrazione, che prende i debrief e mappa le call corrispondenti

@@ -352,10 +352,26 @@ async def log_call_to_db(
                 )
 
             # 2) TRACKER: Put con 'attribute_not_exists(session_id)'
+
+            debrief_id = f"{call['student_id']}#{call['coach_id']}"
+            debriefs_table = await get_table(db, settings.DEBRIEFS_TABLE)
+            debriefs_response = await debriefs_table.query(
+                KeyConditionExpression=Key("debrief_id").eq(debrief_id) & Key("date").eq(call_date),
+                ProjectionExpression="#date",
+                ExpressionAttributeNames={
+                    "#date": "date",
+                },
+            )
+            debriefs = debriefs_response.get("Items", [])
+
+            extra_dict_for_call = {}
+            if debriefs:
+                extra_dict_for_call["has_debrief"] = True
+
             puts.append(
                 {
                     "TableName": settings.TRACKER_TABLE,
-                    "Item": to_low_level_item(call),
+                    "Item": to_low_level_item({**call, **extra_dict_for_call}),
                     "ConditionExpression": "attribute_not_exists(#pk_attr) AND attribute_not_exists(#sk_attr)",
                     "ExpressionAttributeNames": {
                         "#pk_attr": "contract_id",
@@ -499,28 +515,6 @@ async def log_call_to_db(
                                 ),
                             }
                         )
-
-            # # 5) Debrief
-            # -> in fase di creazione e ricerca di items,
-            #           un debrief ha un campo call_id = student_id#coach_id#date
-            #           quando mostro le call possiamo creare un link di visualizzazione del debrief se presente
-            # debrief = {
-            #     "student_id": call["student_id"],
-            #     "date": call["date"],
-            #     "coach_id": call["coach_id"],
-            #     "draft": True,
-            # }
-            # puts.append(
-            #     {
-            #         "TableName": settings.DEBRIEFS_TABLE,
-            #         "Item": to_low_level_item(debrief),
-            #         "ConditionExpression": "attribute_not_exists(#pk_attr) AND attribute_not_exists(#sk_attr)",
-            #         "ExpressionAttributeNames": {
-            #             "#pk_attr": "student_id",
-            #             "#sk_attr": "date",
-            #         },
-            #     }
-            # )
 
             await make_atomic_transaction(db, checks=checks, puts=puts, updates=updates, deletes=deletes)
 
@@ -787,46 +781,55 @@ def next_month_prefix(today_date: date) -> str:
 async def get_report_card_tasks_db(coach: dict, db: DynamoDBServiceResource) -> Dict[str, List[Dict[str, Any]]]:
     """Trova i task di Report Card in sospeso."""
     tasks = []
-    no_shows = []
-    seen_students = []
     today_date = get_today_date()
     today_string = get_today_string(today_date)
-    users_table = await get_table(db, settings.USERS_TABLE)
-    contracts_table = await get_table(db, settings.CONTRACTS_TABLE)
-    tracker_table = await get_table(db, settings.TRACKER_TABLE)
     report_cards_table = await get_table(db, settings.REPORT_CARDS_TABLE)
 
-    # contracts[report_card_start_month <= month(today) and ]
-    cadencies = month_divisors(today_string)
-    next_month = next_month_prefix(today_date)
-    contracts = []
-    for cadency in cadencies:
-        contracts_by_cadency = await contracts_table.query(
-            IndexName="report-card-cadency-report-card-start-month-index",
-            KeyConditionExpression=(
-                Key("report_card_cadency").eq(cadency) & Key("report_card_start_month").lt(next_month)
-            ),
+    report_cards_response = await report_cards_table.query(
+        IndexName="coach-id-status-index",
+        KeyConditionExpression=Key("coach_id").eq(coach["id"]) & Key("status").eq("draft"),
+    )
+    report_cards = report_cards_response.get("Items", [])
+    report_cards_df = pd.DataFrame.from_dict(report_cards)
+    current_report_cards = report_cards_df[report_cards_df["end_month"] > today_string].to_dict("records")
+    expired_report_cards = report_cards_df[report_cards_df["end_month"] < today_string].to_dict("records")
+    tasks = {
+        "current_report_cards": current_report_cards,
+        "expired_report_cards": expired_report_cards,
+    }
+
+    if coach["role"] == "Head Coach":
+        # no show
+        report_cards_response = await report_cards_table.query(
+            IndexName="coach-id-status-index",
+            KeyConditionExpression=Key("coach_id").eq(coach["id"]) & Key("status").eq("no_show"),
+            FilterExpression=Attr("end_month").lt(today_string),
         )
-        contracts += contracts_by_cadency.get("Items", [])
+        no_shows = report_cards_response.get("Items", [])
 
-    #
-
-    for contract in contracts:
-        student_id = contract["student_id"]
-        if student_id in seen_students:
-            continue
-        student_response = await users_table.get_item(Key={"id": student_id})
-        student = student_response["Item"]
-        calls_response = await tracker_table.query(
-            # SBAGLIATO
-            KeyConditionExpression=Key("session_id").begins_with(f"{coach['id']}#{student_id}#")
+        # draft scadute di altri coach
+        report_cards_response = await report_cards_table.query(
+            IndexName="status-end-month-index",
+            KeyConditionExpression=Key("status").eq("draft") & Key("end_month").lt(today_string),
+            FilterExpression=Attr("coach_id").ne(coach["id"]),
         )
-        calls = calls_response.get("Items", [])
-        seen_students.append(student_id)
+        others_expired_report_cards = report_cards_response.get("Items", [])
 
-    # tasks = [{"studentId": "S001", "contractId": "C001", "name": "Mario", "surname": "Rossi", "calls": 4, "alreadyDrafted": False}]
-    # no_shows = [{"studentId": "S002", "contractId": "C002", "name": "Luca", "surname": "Verdi", "alreadySubmitted": False, "period": "current"}]
-    return {"tasks": tasks, "noShows": no_shows}
+        # completed scaduti
+        report_cards_response = await report_cards_table.query(
+            IndexName="status-end-month-index",
+            KeyConditionExpression=Key("status").eq("completed") & Key("end_month").lt(today_string),
+        )
+        completed_report_cards = report_cards_response.get("Items", [])
+
+        tasks = {
+            **tasks,
+            "no_shows": no_shows,
+            "others_expired_report_cards": others_expired_report_cards,
+            "completed_report_cards": completed_report_cards,
+        }
+
+    return tasks
 
 
 async def handle_report_card_submission(db, data: Dict[str, Any]) -> Dict[str, Any]:
