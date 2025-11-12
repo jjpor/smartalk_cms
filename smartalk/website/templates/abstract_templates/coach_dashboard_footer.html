@@ -1,6 +1,6 @@
 <script type="module"
-    src="{{ url_for('static', filename='js/coach_dashboard/core/api_core.js') }}?v={{ random() }}"> </script>
+    src="{{ url_for('static', path='js/coach_dashboard/core/api_core.js') }}?v={{ random() }}"> </script>
 
 {% if custom_js %}
-<script type="module" src="{{ url_for('static', filename=custom_js) }}?v={{ random() }}"> </script>
+<script type="module" src="{{ url_for('static', path=custom_js) }}?v={{ random() }}"> </script>
 {% endif %}
