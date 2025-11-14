@@ -1,7 +1,7 @@
-<link rel="stylesheet" href="{{ url_for('static', filename='css/coach_dashboard/global.css') }}?v={{ random() }}">
+<link rel="stylesheet" href="{{ url_for('static', path='css/coach_dashboard/global.css') }}?v={{ random() }}">
 
 {% if custom_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename=custom_css) }}?v={{ random() }}">
+<link rel="stylesheet" href="{{ url_for('static', path=custom_css) }}?v={{ random() }}">
 {% endif %}
 
 <div class="header-bar">
