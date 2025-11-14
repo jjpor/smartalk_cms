@@ -341,6 +341,22 @@ async def _create_debriefs_table(db, table_name) -> None:
     )
 
 
+async def _create_company_employees_table(db, table_name) -> None:
+    """Tabella Company employees (relations between students and companies)."""
+    await db.create_table(
+        TableName=table_name,
+        BillingMode="PAY_PER_REQUEST",
+        KeySchema=[
+            {"AttributeName": "company_id", "KeyType": "HASH"},
+            {"AttributeName": "student_id", "KeyType": "RANGE"},
+        ],
+        AttributeDefinitions=[
+            {"AttributeName": "company_id", "AttributeType": "S"},
+            {"AttributeName": "student_id", "AttributeType": "S"},
+        ],
+    )
+
+
 # -------------------------------------------------
 # FUNZIONE PRINCIPALE
 # -------------------------------------------------
@@ -363,6 +379,7 @@ async def ensure_tables(db) -> None:
             settings.REPORT_CARD_GENERATORS_TABLE: _create_report_card_generators_table,
             settings.REPORT_CARDS_TABLE: _create_report_cards_table,
             settings.DEBRIEFS_TABLE: _create_debriefs_table,
+            settings.COMPANY_EMPLOYEES_TABLE: _create_company_employees_table,
         }
 
         for table_name, create_func in tables_to_create.items():

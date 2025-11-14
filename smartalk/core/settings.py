@@ -17,6 +17,7 @@ class settings(BaseSettings):
     REPORT_CARDS_TABLE: str
     REPORT_CARD_GENERATORS_TABLE: str
     DEBRIEFS_TABLE: str
+    COMPANY_EMPLOYEES_TABLE: str
 
     # JWT
     JWT_SECRET: str

@@ -2,6 +2,7 @@ import asyncio
 import json
 import logging
 from contextlib import asynccontextmanager
+from datetime import date, datetime, timezone
 from decimal import Decimal
 from typing import Any, AsyncGenerator, Dict, List, Optional
 
@@ -18,6 +19,13 @@ logger.setLevel(logging.INFO)  # Mantenere INFO per vedere il conteggio
 # Contatore globale che stima il traffico in uscita da AWS (DB -> Server)
 AWS_EGRESS_DB_COUNTER_BYTES = 0
 lock = asyncio.Lock()
+
+
+def get_today_string(today: date = None):
+    if today is None:
+        return datetime.now(timezone.utc).date().isoformat()
+    else:
+        return today.isoformat()
 
 
 def to_low_level_item(item: Dict[str, Any]) -> Dict[str, Any]:
@@ -48,8 +56,30 @@ def to_low_level_item(item: Dict[str, Any]) -> Dict[str, Any]:
     return low_level_item
 
 
+def to_dynamodb_item(item: Dict[str, Any]) -> Dict[str, Any]:
+    """Converts a dictionary to a clean format for DynamoDB."""
+    final_item = {}
+    for key, value in item.items():
+        if isinstance(value, date):
+            final_item[key] = value.isoformat()
+        elif isinstance(value, datetime):
+            final_item[key] = value.isoformat()
+        # Convert any float to a Decimal before sending to DynamoDB
+        elif isinstance(value, float):
+            final_item[key] = Decimal(str(value))
+        elif value is not None and value != "":
+            final_item[key] = value
+    return final_item
+
+
 async def get_table(db: DynamoDBServiceResource, table_name: str) -> Table:
     return await db.Table(table_name)
+
+
+async def get_item(db: DynamoDBServiceResource, table_name: str, keys: dict) -> Table:
+    table = await get_table(db, table_name)
+    item_response = await table.get_item(Key=keys)
+    return item_response.get("Item", {})
 
 
 def get_db_client(db: DynamoDBServiceResource) -> DynamoDBClient:

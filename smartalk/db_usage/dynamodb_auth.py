@@ -3,7 +3,7 @@ import logging
 import uuid
 from typing import Any, Dict, Optional
 
-from boto3.dynamodb.conditions import Key
+from boto3.dynamodb.conditions import Attr, Key
 from botocore.exceptions import ClientError
 from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource
 from passlib.context import CryptContext
@@ -141,7 +141,7 @@ async def create_user_if_not_exists(
 
         try:
             # Atomicita' su ID: l'ID viene inserito solo se non esiste.
-            await table.put_item(Item=item, ConditionExpression="attribute_not_exists(id)")
+            await table.put_item(Item=item, ConditionExpression=Attr("id").not_exists())
             # Successo
             return item
 

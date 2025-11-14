@@ -12,6 +12,7 @@ from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource
 from smartalk.core.dynamodb import get_dynamodb_connection, get_table
 from smartalk.core.settings import settings
 from smartalk.db_usage import dynamodb_coach
+from smartalk.db_usage.dynamodb_auth import hash_password
 from smartalk.routes.auth import create_token_response, get_current_user
 
 router = APIRouter(tags=["Coach Dashboard"], prefix="/api/coach")
@@ -37,6 +38,13 @@ async def validate_coach_access(user: Dict[str, Any] | None = Depends(get_curren
     """Verifica che l'utente loggato sia di tipo 'coach' e restituisce l'oggetto utente completo."""
     if user.get("user_type") != "coach":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Accesso riservato ai coach")
+    return user
+
+
+async def validate_head_coach_access(user: Dict[str, Any] | None = Depends(get_current_user)) -> Dict[str, Any]:
+    """Verifica che l'utente loggato sia di tipo 'coach' e che sia con role "Head Coach". Restituisce l'oggetto utente completo."""
+    if user.get("user_type") != "coach" or user.get("role") != "Head Coach":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Accesso riservato a Head Coach")
     return user
 
 
@@ -161,9 +169,72 @@ async def get_report_card_tasks_endpoint(
     coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
 ) -> JSONResponse:
     """Replica doGet(action='getReportCardTasks')."""
-    tasks = dynamodb_coach.get_report_card_tasks_db(coach, DBDependency)
+    tasks = await dynamodb_coach.get_report_card_tasks_db(coach, DBDependency)
 
     return create_token_response(tasks, coach)
+
+
+@router.get("/edit_company")
+async def edit_company_endpoint(
+    request: Request, head_coach: Dict[str, Any] = Depends(validate_head_coach_access), DBDependency: Any = DBDependency
+) -> JSONResponse:
+    params = dict(request.query_params)
+    company, students = await dynamodb_coach.get_company_and_its_students(params["company_id"], DBDependency)
+    company["students"] = students
+    return create_token_response({"company": company}, head_coach)
+
+
+@router.get("/get_clients")
+async def get_clients(
+    head_coach: Dict[str, Any] = Depends(validate_head_coach_access), DBDependency: Any = DBDependency
+) -> JSONResponse:
+    clients = await dynamodb_coach.get_students_and_company_list(DBDependency)
+    return create_token_response({"clients": clients}, head_coach)
+
+
+@router.get("/get_employee_students")
+async def get_employee_students(
+    request: Request, head_coach: Dict[str, Any] = Depends(validate_head_coach_access), DBDependency: Any = DBDependency
+) -> JSONResponse:
+    params = dict(request.query_params)
+    students = await dynamodb_coach.get_employee_students_by_company(params["company_id"], DBDependency)
+    return create_token_response({"students": students}, head_coach)
+
+
+@router.get("/get_client_invoices")
+async def get_client_invoices(
+    request: Request, head_coach: Dict[str, Any] = Depends(validate_head_coach_access), DBDependency: Any = DBDependency
+) -> JSONResponse:
+    params = dict(request.query_params)
+    invoices = await dynamodb_coach.get_invoices_by_client(params["client_id"], DBDependency)
+    return create_token_response({"invoices": invoices}, head_coach)
+
+
+# lista call fatte coinvolte nel report card
+@router.get("/get_calls_for_report_card")
+async def get_calls_for_report_card(
+    request: Request, coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
+) -> JSONResponse:
+    params = dict(request.query_params)
+    calls = await dynamodb_coach.get_calls_by_report_card(
+        params["report_card_id"], params["start_month"], coach["id"], DBDependency
+    )
+    return create_token_response({"calls": calls}, coach)
+
+
+@router.get("get_debrief")
+async def get_debrief(
+    request: Request, coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
+) -> JSONResponse:
+    params = dict(request.query_params)
+    student_id = params["student_id"]
+    coach_id = params["coach_id"]
+    date = params["date"]
+    assert coach["id"] == coach_id, "Coach not authorized"
+    debrief = await dynamodb_coach.get_item(
+        DBDependency, settings.DEBRIEFS_TABLE, {"debrief_id": f"{student_id}#{coach_id}", "date": date}
+    )
+    return create_token_response({"debrief": debrief}, coach)
 
 
 # @router.get("/getFlashcards")
@@ -174,7 +245,7 @@ async def get_report_card_tasks_endpoint(
 # ) -> JSONResponse:
 #     """Replica doGet(action='getFlashcards')."""
 
-#     cards = dynamodb_coach.get_flashcards(db_flashcards, studentId) # Passo db_flashcards
+#     cards = await dynamodb_coach.get_flashcards(db_flashcards, studentId) # Passo db_flashcards
 
 #     return create_token_response({"cards": cards}, coach)
 
@@ -186,7 +257,7 @@ async def get_report_card_tasks_endpoint(
 # ) -> JSONResponse:
 #     """Replica doGet(action='getLessonPlanContent')."""
 
-#     content = dynamodb_coach.get_lesson_plan_content_db(db_users, studentId) # Passo db_users
+#     content = await dynamodb_coach.get_lesson_plan_content_db(db_users, studentId) # Passo db_users
 #     if not content:
 #         raise HTTPException(status_code=404, detail="Lesson Plan not found")
 #     return create_token_response({"content": content}, coach)
@@ -194,6 +265,58 @@ async def get_report_card_tasks_endpoint(
 # # ====================================================================
 # # POST ENDPOINTS
 # # ====================================================================
+
+
+@router.post("/create_company")
+async def create_company(
+    data: Dict[str, Any],
+    head_coach: Dict[str, Any] = Depends(validate_head_coach_access),
+    DBDependency: Any = DBDependency,
+) -> JSONResponse:
+    """New Company"""
+
+    company = {
+        "id": data["id"],
+        "name": data["name"],
+        "user_type": "company",
+        "password_hash": hash_password(str(data["password"])),
+    }
+    result = await dynamodb_coach.insert_new_company(company, DBDependency)
+
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail=result.get("error"))
+
+    return create_token_response({}, head_coach)
+
+
+@router.post("/add_employee")
+async def add_employee(
+    data: Dict[str, Any],
+    head_coach: Dict[str, Any] = Depends(validate_head_coach_access),
+    DBDependency: Any = DBDependency,
+) -> JSONResponse:
+    """Add an employee student to a company"""
+    result = await dynamodb_coach.insert_new_company_employee(data["company_id"], data["student_id"], DBDependency)
+
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail=result.get("error"))
+
+    return create_token_response({}, head_coach)
+
+
+@router.post("/remove_employee")
+async def remove_employee(
+    data: Dict[str, Any],
+    head_coach: Dict[str, Any] = Depends(validate_head_coach_access),
+    DBDependency: Any = DBDependency,
+) -> JSONResponse:
+    """Remove an employee student from a company"""
+    result = await dynamodb_coach.remove_new_company_employee(data["company_id"], data["student_id"], DBDependency)
+
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail=result.get("error"))
+
+    return create_token_response({}, head_coach)
 
 
 @router.post("/logCallForIndividual")
@@ -347,7 +470,9 @@ async def log_call_for_group_endpoint(
 
 @router.post("/newContract")
 async def new_contract_endpoint(
-    data: Dict[str, Any], coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
+    data: Dict[str, Any],
+    head_coach: Dict[str, Any] = Depends(validate_head_coach_access),
+    DBDependency: Any = DBDependency,
 ) -> JSONResponse:
     contract = {
         "contract_id": data["contract_id"],
@@ -432,7 +557,50 @@ async def new_contract_endpoint(
     if not result.get("success"):
         raise HTTPException(status_code=400, detail=result.get("error"))
 
-    return create_token_response({"message": result.get("message", "Contratto registrato!")}, coach)
+    return create_token_response({"message": result.get("message", "Contratto registrato!")}, head_coach)
+
+
+@router.post("/save_report_card_draft")
+async def save_report_card_draft(
+    data: Dict[str, Any],
+    coach: Dict[str, Any] = Depends(validate_coach_access),
+    DBDependency: Any = DBDependency,
+) -> JSONResponse:
+    result = await dynamodb_coach.update_report_card_draft(data, coach["id"], DBDependency)
+
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail=result.get("error"))
+
+    return create_token_response(result, coach)
+
+
+@router.post("/report_card_completed")
+async def report_card_completed(
+    data: Dict[str, Any],
+    coach: Dict[str, Any] = Depends(validate_coach_access),
+    DBDependency: Any = DBDependency,
+) -> JSONResponse:
+    result = await dynamodb_coach.update_report_card_to_completed(data, coach["id"], DBDependency)
+
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail=result.get("error"))
+
+    return create_token_response(result, coach)
+
+
+# from completed to no_show or draft
+@router.post("/restore_report_card_status")
+async def restore_report_card_status(
+    data: Dict[str, Any],
+    head_coach: Dict[str, Any] = Depends(validate_head_coach_access),
+    DBDependency: Any = DBDependency,
+) -> JSONResponse:
+    result = await dynamodb_coach.restore_report_card_from_completed(data, DBDependency)
+
+    if not result.get("success"):
+        raise HTTPException(status_code=400, detail=result.get("error"))
+
+    return create_token_response(result, head_coach)
 
 
 # @router.post("/saveDebrief")
@@ -445,25 +613,7 @@ async def new_contract_endpoint(
 
 #     data["coachId"] = coach.get("id")
 
-#     result = dynamodb_coach.handle_debrief_submission_db(db_debriefs, data) # Passo db_debriefs
-
-#     if not result.get("success"):
-#         raise HTTPException(status_code=400, detail=result.get("error"))
-
-#     return create_token_response(result, coach)
-
-
-# @router.post("/submitReportCard")
-# async def submit_report_card_endpoint(
-#     data: Dict[str, Any],
-#     coach: Dict[str, Any] = Depends(validate_coach_access),
-#     db_reports: Any = DBReportCards # REPORT_CARDS TABLE
-# ) -> JSONResponse:
-#     """Replica doPost(action='submitReportCard')."""
-
-#     data["coachId"] = coach.get("id")
-
-#     result = dynamodb_coach.handle_report_card_submission(db_reports, data) # Passo db_reports
+#     result = await dynamodb_coach.handle_debrief_submission_db(db_debriefs, data) # Passo db_debriefs
 
 #     if not result.get("success"):
 #         raise HTTPException(status_code=400, detail=result.get("error"))
@@ -479,7 +629,7 @@ async def new_contract_endpoint(
 # ) -> JSONResponse:
 #     """Replica doPost(action='updateFlashcardStatus')."""
 
-#     result = dynamodb_coach.update_flashcard_status(db_flashcards, data) # Passo db_flashcards
+#     result = await dynamodb_coach.update_flashcard_status(db_flashcards, data) # Passo db_flashcards
 
 #     if not result.get("success"):
 #         raise HTTPException(status_code=400, detail=result.get("error"))
@@ -494,7 +644,7 @@ async def new_contract_endpoint(
 # ) -> JSONResponse:
 #     """Replica doPost(action='saveLessonPlanContent')."""
 
-#     result = dynamodb_coach.save_lesson_plan_content_db(db_users, data.get('studentId'), data.get('content')) # Passo db_users
+#     result = await dynamodb_coach.save_lesson_plan_content_db(db_users, data.get('studentId'), data.get('content')) # Passo db_users
 
 #     if not result.get("success"):
 #         raise HTTPException(status_code=400, detail=result.get("error"))

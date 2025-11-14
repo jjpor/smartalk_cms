@@ -12,7 +12,14 @@ from botocore.exceptions import ClientError
 from dateutil import relativedelta
 from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource
 
-from smartalk.core.dynamodb import get_table, make_atomic_transaction, to_low_level_item
+from smartalk.core.dynamodb import (
+    get_item,
+    get_table,
+    get_today_string,
+    make_atomic_transaction,
+    to_dynamodb_item,
+    to_low_level_item,
+)
 from smartalk.core.settings import settings
 
 logger = logging.getLogger(__name__)
@@ -52,11 +59,7 @@ async def get_active_students(db: DynamoDBServiceResource) -> List[str]:
 
 
 async def get_client_name(client_id: str, db: DynamoDBServiceResource) -> str:
-    """Recupera gli ID degli studenti attivi (USERS Table)."""
-    # HASH: user_type (index: user-type-index)
-    table = await get_table(db, settings.USERS_TABLE)
-    response = await table.get_item(Key={"id": client_id})
-    client = response["Item"]
+    client = await get_item(db, settings.USERS_TABLE, {"id": client_id})
     if client["user_type"] == "student":
         return f"{client['name']} {client['surname']}"
     if client["user_type"] == "company":
@@ -180,10 +183,7 @@ async def get_students_and_contracts_by_client_and_product(
 
 
 async def get_participants(product_id: str, db: DynamoDBServiceResource) -> int:
-    products_table = await get_table(db, settings.PRODUCTS_TABLE)
-    product_response = await products_table.get_item(Key={"product_id": product_id})
-    product = product_response["Item"]
-
+    product = await get_item(db, settings.PRODUCTS_TABLE, {"product_id": product_id})
     return product["participants"]
 
 
@@ -206,37 +206,35 @@ def create_student_response(student_info: dict) -> dict:
 async def get_student_info(student_id: str, db: DynamoDBServiceResource) -> Optional[Dict[str, Any]]:
     """Recupera info base studente (USERS Table)."""
     try:
-        table = await get_table(db, settings.USERS_TABLE)
-        response_info = await table.get_item(Key={"id": student_id})
-        student_info = response_info["Item"]
+        student_info = await get_item(db, settings.USERS_TABLE, {"id": student_id})
         return create_student_response(student_info)
     except ClientError as e:
         logger.error(f"DynamoDB Error in get_student_info (USERS table): {e}")
         return None
 
 
-async def get_lesson_plan_content_db(db, student_id: str) -> Optional[str]:
-    """Ottiene il contenuto del Lesson Plan (USERS Table)."""
-    try:
-        response = db.get_item(Key={"id": student_id})
-        return response.get("Item", {}).get("LessonPlanContent")
-    except ClientError as e:
-        logger.error(f"DynamoDB Error in get_lesson_plan_content_db (USERS table): {e}")
-        return None
+# async def get_lesson_plan_content_db(db, student_id: str) -> Optional[str]:
+#     """Ottiene il contenuto del Lesson Plan (USERS Table)."""
+#     try:
+#         response = db.get_item(Key={"id": student_id})
+#         return response.get("Item", {}).get("LessonPlanContent")
+#     except ClientError as e:
+#         logger.error(f"DynamoDB Error in get_lesson_plan_content_db (USERS table): {e}")
+#         return None
 
 
-async def save_lesson_plan_content_db(db, student_id: str, content: str) -> Dict[str, Any]:
-    """Salva il contenuto del Lesson Plan (USERS Table)."""
-    try:
-        db.update_item(
-            Key={"id": student_id},
-            UpdateExpression="SET LessonPlanContent = :c",
-            ExpressionAttributeValues={":c": content or ""},
-        )
-        return {"success": True, "message": "Lesson Plan salvato correttamente."}
-    except ClientError as e:
-        logger.error(f"DynamoDB Error in save_lesson_plan_content_db (USERS table): {e}")
-        return {"success": False, "error": str(e)}
+# async def save_lesson_plan_content_db(db, student_id: str, content: str) -> Dict[str, Any]:
+#     """Salva il contenuto del Lesson Plan (USERS Table)."""
+#     try:
+#         db.update_item(
+#             Key={"id": student_id},
+#             UpdateExpression="SET LessonPlanContent = :c",
+#             ExpressionAttributeValues={":c": content or ""},
+#         )
+#         return {"success": True, "message": "Lesson Plan salvato correttamente."}
+#     except ClientError as e:
+#         logger.error(f"DynamoDB Error in save_lesson_plan_content_db (USERS table): {e}")
+#         return {"success": False, "error": str(e)}
 
 
 async def log_call_to_db(
@@ -367,6 +365,19 @@ async def log_call_to_db(
             extra_dict_for_call = {}
             if debriefs:
                 extra_dict_for_call["has_debrief"] = True
+            else:
+                # debrief does not exists
+                checks.append(
+                    {
+                        "TableName": settings.DEBRIEFS_TABLE,
+                        "Key": to_low_level_item({"debrief_id": debrief_id, "date": call_date}),
+                        "ConditionExpression": "attribute_not_exists(#pk_attr) AND attribute_not_exists(#sk_attr)",
+                        "ExpressionAttributeNames": {
+                            "#pk_attr": "debrief_id",
+                            "#sk_attr": "date",
+                        },
+                    }
+                )
 
             puts.append(
                 {
@@ -646,6 +657,76 @@ async def create_contract(
         return {"success": False, "error": str(e)}
 
 
+async def insert_new_company(company: Dict[str, Any], db: DynamoDBServiceResource) -> dict:
+    try:
+        users_table = await get_table(db, settings.USERS_TABLE)
+        await users_table.put_item(Item=to_dynamodb_item(company), ConditionExpression=Attr("id").not_exists())
+        return {"success": True}
+    except ClientError as e:
+        logger.error(f"DynamoDB Error in insert_new_company (USERS table): {e}")
+        return {"success": False, "error": str(e)}
+
+
+async def get_employee_students_by_company(company_id: str, db: DynamoDBServiceResource) -> dict:
+    # get employees
+    company_employees_table = await get_table(db, settings.COMPANY_EMPLOYEES_TABLE)
+    company_response = await company_employees_table.query(Key("company_id").eq(company_id))
+    students = [employee["student_id"] for employee in company_response.get("Items", [])]
+    return students
+
+
+async def get_invoices_by_client(client_id: str, db: DynamoDBServiceResource) -> dict:
+    # get employees
+    invoices_table = await get_table(db, settings.INVOICES_TABLE)
+    invoices_response = await invoices_table.query(
+        IndexName="client-id-index", KeyConditionExpression=Key("client_id").eq(client_id)
+    )
+    invoices = [invoice["invoice_id"] for invoice in invoices_response.get("Items", [])]
+    return invoices
+
+
+async def get_company_and_its_students(company_id: str, db: DynamoDBServiceResource) -> dict:
+    company = await get_item(db, settings.USERS_TABLE, {"id": company_id})
+    students = await get_employee_students_by_company(company_id, db)
+    return company, students
+
+
+async def insert_new_company_employee(company_id: str, student_id: str, db: DynamoDBServiceResource) -> dict:
+    try:
+        company_employees_table = await get_table(db, settings.COMPANY_EMPLOYEES_TABLE)
+        await company_employees_table.put_item(
+            Item=to_dynamodb_item({"company_id": company_id, "student_id": student_id}),
+            ConditionExpression=Attr("company_id").not_exists() & Attr("student_id").not_exists(),
+        )
+        return {"success": True}
+    except ClientError as e:
+        logger.error(f"DynamoDB Error in insert_new_company_employee (COMPANY_EMPLOYEES table): {e}")
+        return {"success": False, "error": str(e)}
+
+
+async def remove_new_company_employee(company_id: str, student_id: str, db: DynamoDBServiceResource) -> dict:
+    try:
+        company_employees_table = await get_table(db, settings.COMPANY_EMPLOYEES_TABLE)
+        await company_employees_table.delete_item(
+            Key={"company_id": company_id, "student_id": student_id},
+            ConditionExpression=Attr("company_id").exists() & Attr("student_id").exists(),
+        )
+        return {"success": True}
+    except ClientError as e:
+        logger.error(f"DynamoDB Error in remove_new_company_employee (COMPANY_EMPLOYEES table): {e}")
+        return {"success": False, "error": str(e)}
+
+
+async def get_students_and_company_list(db: DynamoDBServiceResource) -> dict:
+    students = get_active_students(db)
+    users_table = await get_table(db, settings.USERS_TABLE)
+    companies_response = await users_table.query(
+        IndexName="user-type-index", KeyConditionExpression=Key("user_type").eq("company"), ProjectionExpression="id"
+    )
+    companies = [company["id"] for company in companies_response.get("Items", [])]
+    return {"students": students, "companies": companies}
+
+
 async def get_monthly_earnings(coach_id: str, db: DynamoDBServiceResource) -> float:
     """Calcola il guadagno (TRACKER Table, coach-id-date-index)."""
     today = get_today_string()
@@ -760,13 +841,6 @@ def get_today_date():
     return datetime.now(timezone.utc).date()
 
 
-def get_today_string(today: date = None):
-    if today is None:
-        return datetime.now(timezone.utc).date().isoformat()
-    else:
-        return today.isoformat()
-
-
 def month_divisors(today_string: str) -> list[int]:
     month_number = int(today_string.split("-")[1])
     return [i for i in range(1, 7) if month_number % i == 0]
@@ -799,7 +873,7 @@ async def get_report_card_tasks_db(coach: dict, db: DynamoDBServiceResource) -> 
     }
 
     if coach["role"] == "Head Coach":
-        # no show
+        # no show scaduti
         report_cards_response = await report_cards_table.query(
             IndexName="coach-id-status-index",
             KeyConditionExpression=Key("coach_id").eq(coach["id"]) & Key("status").eq("no_show"),
@@ -832,81 +906,201 @@ async def get_report_card_tasks_db(coach: dict, db: DynamoDBServiceResource) -> 
     return tasks
 
 
-async def handle_report_card_submission(db, data: Dict[str, Any]) -> Dict[str, Any]:
-    """Salva o aggiorna un Report Card (REPORT_CARDS Table)."""
-    coach_id = data.get("coachId")
-    contract_id = data.get("contractId")
-    student_id = data.get("studentId")
-    current_date_iso = get_today_string()
-
-    # PK: student_id, SK: report_card_id (coach_id#contract_id#date)
-    report_card_id = f"{coach_id}#{contract_id}#{current_date_iso}"
-
-    try:
-        db.put_item(
-            Item={
-                "student_id": student_id,
-                "report_card_id": report_card_id,
-                "coach_id": coach_id,
-                "contract_id": contract_id,
-                "date": current_date_iso,
-                "Report": data.get("report"),
-                "Sent": "NO",
-            }
+async def get_calls_by_report_card(
+    report_card_id: str, start_month: str, coach_id: str, db: DynamoDBServiceResource
+) -> Dict[str, List[Dict[str, Any]]]:
+    report_card = await get_item(
+        db, settings.REPORT_CARDS_TABLE, {"report_card_id": report_card_id, "start_month": start_month}
+    )
+    assert report_card, "Report card not valid"
+    assert report_card["coach_id"] == coach_id, "Coach not authorized"
+    report_card_generator_id = report_card["report_card_generator_id"]
+    contracts_table = await get_table(db, settings.CONTRACTS_TABLE)
+    contracts_response = await contracts_table.query(
+        IndexName="report_card_generator_id-index",
+        KeyConditionExpression=Key("report_card_generator_id").eq(report_card_generator_id),
+    )
+    contract_ids = [contract["contract_id"] for contract in contracts_response.get("Items", [])]
+    calls = []
+    tracker_table = await get_table(db, settings.TRACKER_TABLE)
+    student_id = report_card_generator_id.split("#")[0]
+    session_id_starting = f"{coach_id}#{student_id}#{start_month}"
+    call_field_to_keep = [
+        "date",
+        "student_id",
+        "contract_id",
+        "coach_id",
+        "product_id",
+        "units",
+        "duration",
+        "attendance",
+        "notes",
+        "has_debrief",
+    ]
+    for contract_id in contract_ids:
+        # calls for the contract by the coach in the report card period with the student
+        calls_response = await tracker_table.query(
+            KeyConditionExpression=Key("contract_id").eq(contract_id) & Key("session_id").gt(session_id_starting),
+            FilterExpression=Attr("date").lt(report_card["end_month"]),
         )
+        calls += [{k: call.get(k) for k in call_field_to_keep} for call in calls_response.get("Items", [])]
+    return calls
+
+
+async def update_report_card_draft(report_card: dict, coach_id: str, db: DynamoDBServiceResource) -> dict:
+    try:
+        keys = {"report_card_id": report_card["report_card_id"], "start_month": report_card["start_month"]}
+
+        report_card_table = await get_table(db, settings.REPORT_CARDS_TABLE)
+        field_to_update = ["report", "attendance"]
+        update_expr = []
+        expr_vals = {}
+        for k in field_to_update:
+            update_expr.append(f"{k} = :{k}")
+            expr_vals[f":{k}"] = report_card[k]
+
+        await report_card_table.update_item(
+            Key=keys,
+            UpdateExpression="SET " + ", ".join(update_expr),
+            ConditionExpression=Attr("report_card_id").exists()
+            & Attr("start_month").exists()
+            & Attr("coach_id").eq(coach_id)
+            & Attr("status").eq("draft"),
+            ExpressionAttributeValues=expr_vals,
+        )
+
         return {"success": True, "message": "Report Card salvata in bozza."}
     except ClientError as e:
-        logger.error(f"DynamoDB Error in handle_report_card_submission (REPORT_CARDS table): {e}")
+        logger.error(f"DynamoDB Error in update_report_card_draft (REPORT_CARDS table): {e}")
         return {"success": False, "error": str(e)}
+
+
+async def update_report_card_to_completed(report_card: dict, coach_id: str, db: DynamoDBServiceResource) -> dict:
+    try:
+        assert report_card["status"] in ["no_show", "draft"], f"The report card is with status {report_card['status']}"
+
+        keys = {"report_card_id": report_card["report_card_id"], "start_month": report_card["start_month"]}
+
+        report_card_table = await get_table(db, settings.REPORT_CARDS_TABLE)
+
+        update_expr = ["status = :status"]
+        expr_vals = {":status": "completed"}
+
+        await report_card_table.update_item(
+            Key=keys,
+            UpdateExpression="SET " + ", ".join(update_expr),
+            ConditionExpression=Attr("report_card_id").exists()
+            & Attr("start_month").exists()
+            & Attr("coach_id").eq(coach_id)
+            & Attr("status").eq(report_card["status"]),
+            ExpressionAttributeValues=expr_vals,
+        )
+
+        return {"success": True, "message": "Report Card completato."}
+    except ClientError as e:
+        logger.error(f"DynamoDB Error in update_report_card_to_completed (REPORT_CARDS table): {e}")
+        return {"success": False, "error": str(e)}
+
+
+async def restore_report_card_from_completed(report_card: dict, db: DynamoDBServiceResource) -> dict:
+    try:
+        keys = {"report_card_id": report_card["report_card_id"], "start_month": report_card["start_month"]}
+        old_report_card = await get_item(db, settings.REPORT_CARDS_TABLE, keys)
+        report_card_table = await get_table(db, settings.REPORT_CARDS_TABLE)
+
+        update_expr = ["status = :status"]
+        expr_vals = {":status": "no_show" if old_report_card["attendance"] is None else "draft"}
+
+        await report_card_table.update_item(
+            Key=keys,
+            UpdateExpression="SET " + ", ".join(update_expr),
+            ConditionExpression=Attr("report_card_id").exists()
+            & Attr("start_month").exists()
+            & Attr("status").eq("completed"),
+            ExpressionAttributeValues=expr_vals,
+        )
+
+        return {"success": True, "message": "Report Card modificabile."}
+    except ClientError as e:
+        logger.error(f"DynamoDB Error in restore_report_card_from_completed (REPORT_CARDS table): {e}")
+        return {"success": False, "error": str(e)}
+
+
+# async def handle_report_card_submission(db, data: Dict[str, Any]) -> Dict[str, Any]:
+#     """Salva o aggiorna un Report Card (REPORT_CARDS Table)."""
+#     coach_id = data.get("coachId")
+#     contract_id = data.get("contractId")
+#     student_id = data.get("studentId")
+#     current_date_iso = get_today_string()
+
+#     # PK: student_id, SK: report_card_id (coach_id#contract_id#date)
+#     report_card_id = f"{coach_id}#{contract_id}#{current_date_iso}"
+
+#     try:
+#         db.put_item(
+#             Item={
+#                 "student_id": student_id,
+#                 "report_card_id": report_card_id,
+#                 "coach_id": coach_id,
+#                 "contract_id": contract_id,
+#                 "date": current_date_iso,
+#                 "Report": data.get("report"),
+#                 "Sent": "NO",
+#             }
+#         )
+#         return {"success": True, "message": "Report Card salvata in bozza."}
+#     except ClientError as e:
+#         logger.error(f"DynamoDB Error in handle_report_card_submission (REPORT_CARDS table): {e}")
+#         return {"success": False, "error": str(e)}
 
 
 # Funzioni per Tabella DEBRIEFS
-async def handle_debrief_submission_db(db, data: Dict[str, Any]) -> Dict[str, Any]:
-    """Salva una bozza di Debrief (DEBRIEFS Table)."""
-    student_id = data.get("studentId")
-    coach_id = data.get("coachId")
-    current_date_iso = datetime.now(timezone.utc).date().isoformat()
+# async def handle_debrief_submission_db(db, data: Dict[str, Any]) -> Dict[str, Any]:
+#     """Salva una bozza di Debrief (DEBRIEFS Table)."""
+#     student_id = data.get("studentId")
+#     coach_id = data.get("coachId")
+#     current_date_iso = datetime.now(timezone.utc).date().isoformat()
 
-    # PK: student_id, SK: date (ISO_TIMESTAMP)
-    try:
-        db.put_item(
-            Item={
-                "student_id": student_id,
-                "date": current_date_iso,
-                "coach_id": coach_id,
-                "Goals": data.get("goals", ""),
-                "Topics": data.get("topics", ""),
-                "Draft": "YES" if data.get("draft") else "NO",
-            }
-        )
-        return {"success": True, "message": "Debrief salvato correttamente."}
-    except ClientError as e:
-        logger.error(f"DynamoDB Error in handle_debrief_submission_db (DEBRIEFS table): {e}")
-        return {"success": False, "error": str(e)}
+#     # PK: student_id, SK: date (ISO_TIMESTAMP)
+#     try:
+#         db.put_item(
+#             Item={
+#                 "student_id": student_id,
+#                 "date": current_date_iso,
+#                 "coach_id": coach_id,
+#                 "Goals": data.get("goals", ""),
+#                 "Topics": data.get("topics", ""),
+#                 "Draft": "YES" if data.get("draft") else "NO",
+#             }
+#         )
+#         return {"success": True, "message": "Debrief salvato correttamente."}
+#     except ClientError as e:
+#         logger.error(f"DynamoDB Error in handle_debrief_submission_db (DEBRIEFS table): {e}")
+#         return {"success": False, "error": str(e)}
 
 
 # Funzioni per Tabella FLASHCARDS (Non definita, ma ne assumiamo la struttura)
-async def get_flashcards(db, student_id: str) -> List[Dict[str, Any]]:
-    """Recupera le flashcard di uno studente (Flashcards Table)."""
-    # Assumo che db sia la Tabella Flashcards
-    try:
-        # table = get_table(db, settings.FLASHCARDS_TABLE)
-        response = db.query(
-            KeyConditionExpression=Key("student_id").eq(student_id)
-            & Key("term").begins_with("#")  # Assumo PK: student_id, SK: term
-        )
-        cards = [
-            {
-                "en": item.get("EN"),
-                "it": item.get("IT"),
-                "status": item.get("Status", "unknown"),
-            }
-            for item in response.get("Items", [])
-        ]
-        return cards
-    except ClientError as e:
-        logger.error(f"DynamoDB Error in get_flashcards (FLASHCARDS table): {e}")
-        return []
+# async def get_flashcards(db, student_id: str) -> List[Dict[str, Any]]:
+#     """Recupera le flashcard di uno studente (Flashcards Table)."""
+#     # Assumo che db sia la Tabella Flashcards
+#     try:
+#         # table = get_table(db, settings.FLASHCARDS_TABLE)
+#         response = db.query(
+#             KeyConditionExpression=Key("student_id").eq(student_id)
+#             & Key("term").begins_with("#")  # Assumo PK: student_id, SK: term
+#         )
+#         cards = [
+#             {
+#                 "en": item.get("EN"),
+#                 "it": item.get("IT"),
+#                 "status": item.get("Status", "unknown"),
+#             }
+#             for item in response.get("Items", [])
+#         ]
+#         return cards
+#     except ClientError as e:
+#         logger.error(f"DynamoDB Error in get_flashcards (FLASHCARDS table): {e}")
+#         return []
 
 
 # async def update_flashcard_status(db, data: Dict[str, Any]) -> Dict[str, Any]:

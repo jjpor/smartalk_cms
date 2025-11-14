@@ -13,11 +13,9 @@ from boto3.dynamodb.conditions import Attr, Key
 from dateutil import relativedelta
 from pydantic import BaseModel, EmailStr, Field, ValidationError, field_validator
 
-from smartalk.db_usage.dynamodb_coach import get_today_string
-
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from smartalk.core.dynamodb import get_table
+from smartalk.core.dynamodb import get_table, get_today_string, to_dynamodb_item
 from smartalk.core.settings import settings
 from smartalk.db_usage.dynamodb_auth import hash_password
 
@@ -234,6 +232,11 @@ class ReportCard(BaseModel):
     client_id: str = Field(..., alias="client_id")
 
 
+class CompanyEmployee(BaseModel):
+    company_id: str = Field(..., alias="company_id")
+    student_id: str = Field(..., alias="student_id")
+
+
 # ---
 # SEZIONE 2: LOGICA DI MIGRAZIONE
 # ---
@@ -258,23 +261,6 @@ async def fetch_sheet_data(sheet_name: str) -> List[Dict[str, Any]]:
         except Exception as e:
             logger.error(f"  -> An error occurred while fetching {sheet_name}: {e}", exc_info=True)
             return []
-
-
-def to_dynamodb_item(item: Dict[str, Any]) -> Dict[str, Any]:
-    """Converts a dictionary to a clean format for DynamoDB."""
-    final_item = {}
-    for key, value in item.items():
-        if isinstance(value, date):
-            final_item[key] = value.isoformat()
-        elif isinstance(value, datetime):
-            final_item[key] = value.isoformat()
-        # --- FIX IS HERE ---
-        # Convert any float to a Decimal before sending to DynamoDB
-        elif isinstance(value, float):
-            final_item[key] = Decimal(str(value))
-        elif value is not None and value != "":
-            final_item[key] = value
-    return final_item
 
 
 key_map = {
@@ -500,8 +486,9 @@ async def introduce_report_card_generators_and_report_cards(db: Any):
 
     contracts_df = pd.DataFrame.from_dict(contracts)
     report_card_generators_df = (
-        contracts_df.groupby("report_card_generator_id")[
+        contracts_df[
             [
+                "report_card_generator_id",
                 "student_id",
                 "client_id",
                 "report_card_cadency",
@@ -509,7 +496,7 @@ async def introduce_report_card_generators_and_report_cards(db: Any):
                 "report_card_email_recipients",
             ]
         ]
-        .first()
+        .drop_duplicates()
         .rename(columns={"report_card_start_month": "start_month"})
     )
 
@@ -568,7 +555,7 @@ async def introduce_report_card_generators_and_report_cards(db: Any):
                 report_card["report_card_email_recipients"] = report_card_generator["report_card_email_recipients"]
                 report_card["report_card_cadency"] = report_card_generator["report_card_cadency"]
                 report_card["client_id"] = report_card_generator["client_id"]
-                await report_cards_table.put_item(Item=report_card)
+                await report_cards_table.put_item(Item=to_dynamodb_item(report_card))
         else:
             # no_show
             # new report card
@@ -586,7 +573,7 @@ async def introduce_report_card_generators_and_report_cards(db: Any):
             report_card["report_card_email_recipients"] = report_card_generator["report_card_email_recipients"]
             report_card["report_card_cadency"] = report_card_generator["report_card_cadency"]
             report_card["client_id"] = report_card_generator["client_id"]
-            await report_cards_table.put_item(Item=report_card)
+            await report_cards_table.put_item(Item=to_dynamodb_item(report_card))
 
         # next period
         calls_response = await tracker_table.query(
@@ -616,11 +603,54 @@ async def introduce_report_card_generators_and_report_cards(db: Any):
                 report_card["report_card_email_recipients"] = report_card_generator["report_card_email_recipients"]
                 report_card["report_card_cadency"] = report_card_generator["report_card_cadency"]
                 report_card["client_id"] = report_card_generator["client_id"]
-                await report_cards_table.put_item(Item=report_card)
+                await report_cards_table.put_item(Item=to_dynamodb_item(report_card))
 
 
 # ---
-# SEZIONE 4: FUNZIONE PRINCIPALE DI MIGRAZIONE
+# SEZIONE 4: FUNZIONE DI CREAZIONE DELLE RELAZIONI COMPANY - STUDENT
+# ---
+async def insert_company_student_relations(db: Any):
+    # per ogni company prendo gli student che trovo nei contratti attivi
+
+    users_table = await get_table(db, settings.USERS_TABLE)
+    contracts_table = await get_table(db, settings.CONTRACTS_TABLE)
+    company_employees_table = await get_table(db, settings.COMPANY_EMPLOYEES_TABLE)
+
+    # list of company ids
+    response = await users_table.query(
+        IndexName="user-type-index",
+        KeyConditionExpression=Key("user_type").eq("company"),
+        ProjectionExpression="#id",
+        ExpressionAttributeNames={"#id": "id"},
+    )
+    company_ids = [item.get("id") for item in response.get("Items", [])]
+
+    contracts_for_companies = []
+    for company_id in company_ids:
+        # contracts for company_id
+        contracts_response = await contracts_table.query(
+            IndexName="client-id-status-index",
+            KeyConditionExpression=Key("client_id").eq(company_id) & Key("status").eq("Active"),
+            ProjectionExpression="#student",
+            ExpressionAttributeNames={"#student": "student_id"},
+        )
+        contracts_for_companies.append(contracts_response["Items"])
+
+    unique_company_student_relations = (
+        pd.DataFrame.from_dict(contracts_for_companies)[["client_id", "student_id"]]
+        .drop_duplicates()
+        .rename(columns={"client_id": "company_id"})
+        .to_dict("records")
+    )
+
+    for relation in unique_company_student_relations:
+        data = CompanyEmployee.model_validate(relation)
+        item = to_dynamodb_item(data.model_dump())
+        company_employees_table.put_item(Item=item)
+
+
+# ---
+# SEZIONE 5: FUNZIONE PRINCIPALE DI MIGRAZIONE
 # ---
 
 
@@ -634,23 +664,6 @@ async def migrate_all_data(db: Any):
     logger.info("\n--- Migrating Products ---")
     await migrate_generic(db, settings.PRODUCTS_TABLE, "Products", Product)
 
-    def contract_logic(item):
-        if item["unlimited"]:
-            item.pop("used_calls")
-            item.pop("left_calls")
-        return item
-
-    logger.info("\n--- Migrating Contracts ---")
-    await migrate_generic(db, settings.CONTRACTS_TABLE, "Contracts", Contract, special_logic=contract_logic)
-
-    def tracker_logic(item):
-        item["date"] = item.pop("session_date")
-        item["session_id"] = f"{item['coach_id']}#{item['student_id']}#{item['date']}"
-        return item
-
-    logger.info("\n--- Migrating Tracker ---")
-    await migrate_generic(db, settings.TRACKER_TABLE, "Tracker", Tracker, special_logic=tracker_logic)
-
     def invoice_logic(item):
         if "invoice_date" in item:
             item["date"] = item.pop("invoice_date")
@@ -661,19 +674,44 @@ async def migrate_all_data(db: Any):
     logger.info("\n--- Migrating Invoices ---")
     await migrate_generic(db, settings.INVOICES_TABLE, "Invoices", Invoice, special_logic=invoice_logic)
 
+    def contract_logic(item):
+        if item["unlimited"]:
+            item.pop("used_calls")
+            item.pop("left_calls")
+        return item
+
+    logger.info("\n--- Migrating Contracts ---")
+    await migrate_generic(db, settings.CONTRACTS_TABLE, "Contracts", Contract, special_logic=contract_logic)
+
+    # migration for company - student relations
+    await insert_company_student_relations(db)
+
+    calls_with_debrief = []
+
     def debrief_logic(item):
         item["date"] = item.pop("debrief_date")
         item["debrief_id"] = f"{item['student_id']}#{item['coach_id']}"
+        global id_for_debrief_in_call
+        id_for_debrief_in_call = f"{item['debrief_id']}#{item['date']}"
+        if id_for_debrief_in_call not in calls_with_debrief:
+            calls_with_debrief.append(id_for_debrief_in_call)
         return item
 
     logger.info("\n--- Migrating Debriefs ---")
     await migrate_generic(db, settings.DEBRIEFS_TABLE, "Debriefs", Debrief, special_logic=debrief_logic)
+
+    def tracker_logic(item):
+        item["date"] = item.pop("session_date")
+        item["session_id"] = f"{item['coach_id']}#{item['student_id']}#{item['date']}"
+        if f"{item['student_id']}#{item['coach_id']}#{item['date']}" in calls_with_debrief:
+            item["has_debrief"] = True
+        return item
+
+    logger.info("\n--- Migrating Tracker ---")
+    await migrate_generic(db, settings.TRACKER_TABLE, "Tracker", Tracker, special_logic=tracker_logic)
 
     logger.info("\n--- Migrating Report Cards ---")
     await introduce_report_card_generators_and_report_cards(db)
     await migrate_generic(db, settings.REPORT_CARDS_TABLE, "Report Cards", ReportCard)
 
     logger.info("DATA MIGRATION COMPLETED.")
-
-
-# TODO: aggiungere has_debrief alle call che hanno un debrief, fare uno script, che gira a fine migrazione, che prende i debrief e mappa le call corrispondenti
