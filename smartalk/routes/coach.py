@@ -4,6 +4,7 @@ from datetime import datetime
 from decimal import Decimal
 from typing import Any, Dict, List, cast
 
+import pandas as pd
 from dateutil import relativedelta
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from fastapi.responses import JSONResponse
@@ -311,7 +312,11 @@ async def remove_employee(
     DBDependency: Any = DBDependency,
 ) -> JSONResponse:
     """Remove an employee student from a company"""
-    result = await dynamodb_coach.remove_new_company_employee(data["company_id"], data["student_id"], DBDependency)
+    result = await dynamodb_coach.delete_item(
+        DBDependency,
+        settings.COMPANY_EMPLOYEES_TABLE,
+        {"company_id": data["company_id"], "student_id": data["student_id"]},
+    )
 
     if not result.get("success"):
         raise HTTPException(status_code=400, detail=result.get("error"))
@@ -601,6 +606,59 @@ async def restore_report_card_status(
         raise HTTPException(status_code=400, detail=result.get("error"))
 
     return create_token_response(result, head_coach)
+
+
+# send all completed report cards
+@router.post("/send_all_completed_report_cards")
+async def send_all_completed_report_cards(
+    head_coach: Dict[str, Any] = Depends(validate_head_coach_access),
+    DBDependency: Any = DBDependency,
+) -> JSONResponse:
+    # validazione assenza report card scaduti in modalità no show o draft
+    check = await dynamodb_coach.is_empty_no_show_or_draft_expired_report_cards(DBDependency)
+    if not check.get("success"):
+        raise HTTPException(status_code=400, detail=check.get("error"))
+
+    # creazione report da inviare raggruppati per client
+    completed_report_cards = await dynamodb_coach.get_completed_expired_report_cards(DBDependency)
+    if not completed_report_cards:
+        raise HTTPException(status_code=400, detail="Empty completed expired report cards")
+
+    # invio report tramite email
+
+    completed_report_cards_df = pd.DataFrame.from_dict(completed_report_cards)
+    completed_report_cards_df = completed_report_cards_df[["report_card_generator_id", "report_card_id", "start_month"]]
+
+    for report_card_generator_id in completed_report_cards_df["report_card_generator_id"].unique():
+        # aggiornamento o eliminazione report card generator
+        response = {}
+        min_report_card_start_month = await dynamodb_coach.get_min_report_card_start_month_by_report_card_generator_id(
+            report_card_generator_id, DBDependency
+        )
+        if min_report_card_start_month:
+            # aggiornamento current_start_month e next_start_month, metto a sent gli attuali report card e creazione eventuale report card no_show
+            response = await dynamodb_coach.update_report_card_and_generator(
+                completed_report_cards_df[
+                    completed_report_cards_df["report_card_generator_id"] == report_card_generator_id
+                ].to_dict("records")[["report_card_id", "start_month"]],
+                report_card_generator_id,
+                min_report_card_start_month,
+                DBDependency,
+            )
+        else:
+            # elimino report card generator, metto a sent gli attuali report card
+            response = await dynamodb_coach.update_report_card_and_delete_generator(
+                completed_report_cards_df[
+                    completed_report_cards_df["report_card_generator_id"] == report_card_generator_id
+                ].to_dict("records")[["report_card_id", "start_month"]],
+                report_card_generator_id,
+                DBDependency,
+            )
+
+        if not response.get("success"):
+            raise HTTPException(status_code=400, detail=check.get("error"))
+
+    return create_token_response({}, head_coach)
 
 
 # @router.post("/saveDebrief")

@@ -13,6 +13,7 @@ from dateutil import relativedelta
 from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource
 
 from smartalk.core.dynamodb import (
+    delete_item,
     get_item,
     get_table,
     get_today_string,
@@ -535,6 +536,198 @@ async def log_call_to_db(
         return {"success": False, "error": str(e)}
 
 
+async def get_min_report_card_start_month_by_report_card_generator_id(
+    report_card_generator_id: str, db: DynamoDBServiceResource
+) -> Dict[str, Any]:
+    # check on active contracts
+    contracts_table = await get_table(db, settings.CONTRACTS_TABLE)
+    contracts_response = await contracts_table.query(
+        IndexName="report_card_generator_id-status-index",
+        KeyConditionExpression=Key("report_card_generator_id").eq(report_card_generator_id)
+        & Key("status").eq("Active"),
+        ProjectionExpression="report_card_start_month",
+    )
+    start_months = [contract["report_card_start_month"] for contract in contracts_response.get("items", [])]
+
+    # check on draft report cards
+    report_cards_table = await get_table(db, settings.REPORT_CARDS_TABLE)
+    report_cards_response = await report_cards_table.query(
+        IndexName="report-card-generator-id-status-index",
+        KeyConditionExpression=Key("report_card_generator_id").eq(report_card_generator_id) & Key("status").eq("draft"),
+        # filtro per sicurezza, in realtà non dovrebbe mai servire
+        FilterExpression=Attr("start_month").gt(get_today_string),
+        ProjectionExpression="start_month",
+    )
+    start_months += [report_card["start_month"] for report_card in report_cards_response.get("items", [])]
+
+    return min(start_months) if start_months else None
+
+
+async def update_report_card_and_generator(
+    completed_report_cards: List[dict],
+    report_card_generator_id: str,
+    min_report_card_start_month: str,
+    db: DynamoDBServiceResource,
+) -> Dict[str, Any]:
+    """
+    Aggiorna gli stati a sent di completed_report_cards
+    Aggiorna un report card generator sul prossimo periodo utile (analizza today e min_report_card_start_month)
+    Aggiorna a catena documenti correlati:
+        - report card (crea no show su se non esistono report card su quel report card generator per il nuovo periodo)
+
+    """
+    try:
+        report_card_generator = await get_item(
+            db, settings.REPORT_CARD_GENERATORS_TABLE, {"report_card_generator_id": report_card_generator_id}
+        )
+
+        puts: List[Dict] = []
+        updates: List[Dict] = []
+
+        # update report card status a sent
+        for completed_report_card in completed_report_cards:
+            updates.append(
+                {
+                    "TableName": settings.REPORT_CARDS_TABLE,
+                    "Key": to_low_level_item(
+                        {
+                            "report_card_id": completed_report_card["report_card_id"],
+                            "start_month": completed_report_card["start_month"],
+                        }
+                    ),
+                    "ConditionExpression": "attribute_exists(report_card_id) AND attribute_exists(start_month) AND status = :old_status AND report_card_generator_id = :report_card_generator_id",
+                    "UpdateExpression": "SET status = :status",
+                    "ExpressionAttributeValues": {
+                        ":old_status": {"S": "completed"},
+                        ":status": {"S": "sent"},
+                        ":report_card_generator_id": report_card_generator_id,
+                    },
+                }
+            )
+
+        today_string = get_today_string()
+        if min_report_card_start_month > today_string:
+            # allineo con il primo periodo utile
+            report_card_generator["current_start_month"] = min_report_card_start_month
+        else:
+            # porto avanti di un periodo
+            report_card_generator["current_start_month"] = report_card_generator["next_start_month"]
+        report_card_generator["next_start_month"] = (
+            datetime.fromisoformat(report_card_generator["current_start_month"] + "-01").date()
+            + relativedelta(months=report_card_generator["report_card_cadency"])
+        ).strftime("%Y-%m")
+
+        # update report card generator period
+        updates.append(
+            {
+                "TableName": settings.REPORT_CARD_GENERATORS_TABLE,
+                "Key": to_low_level_item({"report_card_generator_id": report_card_generator_id}),
+                "ConditionExpression": "attribute_exists(report_card_generator_id)",
+                "UpdateExpression": "SET current_start_month = :current_start_month, next_start_month = :next_start_month",
+                "ExpressionAttributeValues": {
+                    ":current_start_month": {"S": report_card_generator["current_start_month"]},
+                    ":next_start_month": {"S": report_card_generator["next_start_month"]},
+                },
+            }
+        )
+
+        report_cards_table = await get_table(db, settings.REPORT_CARDS_TABLE)
+        report_cards_response = await report_cards_table.query(
+            IndexName="report-card-generator-id-start-month-index",
+            KeyConditionExpression=Key("report_card_generator_id").eq(report_card_generator_id)
+            & Key("start_month").eq(report_card_generator["current_start_month"]),
+            Limit=1,
+        )
+
+        if not report_cards_response.get("Items", []):
+            # new report card
+            report_card = {}
+            report_card["report_card_id"] = f"JJ#{report_card_generator['report_card_generator_id']}"
+            report_card["start_month"] = report_card_generator["current_start_month"]
+            report_card["end_month"] = report_card_generator["next_start_month"]
+            report_card["coach_id"] = "JJ"
+            report_card["student_id"] = report_card_generator["student_id"]
+            report_card["status"] = "no_show"
+            report_card["report_card_generator_id"] = report_card_generator["report_card_generator_id"]
+            report_card["report_card_email_recipients"] = report_card_generator["report_card_email_recipients"]
+            report_card["report_card_cadency"] = report_card_generator["report_card_cadency"]
+            report_card["client_id"] = report_card_generator["client_id"]
+
+            puts.append(
+                {
+                    "TableName": settings.REPORT_CARDS_TABLE,
+                    "Item": to_low_level_item(report_card),
+                    "ConditionExpression": "attribute_not_exists(#pk_attr) AND attribute_not_exists(#sk_attr)",
+                    "ExpressionAttributeNames": {
+                        "#pk_attr": "report_card_id",
+                        "#sk_attr": "start_month",
+                    },
+                }
+            )
+
+        await make_atomic_transaction(db, puts=puts, updates=updates)
+
+        return {"success": True, "message": "Report card generator aggiornato correttamente."}
+    except ClientError as e:
+        logger.error(
+            f"DynamoDB Error in update_report_card_generator (CONTRACTS | REPORT_CARDS | REPORT_CARD_GENERATORS table): {e}"
+        )
+        return {"success": False, "error": str(e)}
+
+
+async def update_report_card_and_delete_generator(
+    completed_report_cards: List[dict],
+    report_card_generator_id: str,
+    db: DynamoDBServiceResource,
+) -> Dict[str, Any]:
+    """
+    Aggiorna gli stati a sent di completed_report_cards
+    Elimino report card generator
+    """
+    try:
+        updates: List[Dict] = []
+        deletes: List[Dict] = []
+
+        # update report card status a sent
+        for completed_report_card in completed_report_cards:
+            updates.append(
+                {
+                    "TableName": settings.REPORT_CARDS_TABLE,
+                    "Key": to_low_level_item(
+                        {
+                            "report_card_id": completed_report_card["report_card_id"],
+                            "start_month": completed_report_card["start_month"],
+                        }
+                    ),
+                    "ConditionExpression": "attribute_exists(report_card_id) AND attribute_exists(start_month) AND status = :old_status AND report_card_generator_id = :report_card_generator_id",
+                    "UpdateExpression": "SET status = :status",
+                    "ExpressionAttributeValues": {
+                        ":old_status": {"S": "completed"},
+                        ":status": {"S": "sent"},
+                        ":report_card_generator_id": report_card_generator_id,
+                    },
+                }
+            )
+
+        # delete report card generator
+        deletes.append(
+            {
+                "TableName": settings.REPORT_CARD_GENERATORS_TABLE,
+                "Key": to_low_level_item({"report_card_generator_id": report_card_generator_id}),
+                "ConditionExpression": "attribute_exists(report_card_generator_id)",
+            }
+        )
+
+        await make_atomic_transaction(db, updates=updates, deletes=deletes)
+
+        return {"success": True, "message": "Report card generator aggiornato correttamente."}
+    except ClientError as e:
+        logger.error(
+            f"DynamoDB Error in update_report_card_generator (CONTRACTS | REPORT_CARDS | REPORT_CARD_GENERATORS table): {e}"
+        )
+        return {"success": False, "error": str(e)}
+
+
 async def create_contract(
     contract: dict,
     has_report_card_context: bool,
@@ -704,19 +897,6 @@ async def insert_new_company_employee(company_id: str, student_id: str, db: Dyna
         return {"success": False, "error": str(e)}
 
 
-async def remove_new_company_employee(company_id: str, student_id: str, db: DynamoDBServiceResource) -> dict:
-    try:
-        company_employees_table = await get_table(db, settings.COMPANY_EMPLOYEES_TABLE)
-        await company_employees_table.delete_item(
-            Key={"company_id": company_id, "student_id": student_id},
-            ConditionExpression=Attr("company_id").exists() & Attr("student_id").exists(),
-        )
-        return {"success": True}
-    except ClientError as e:
-        logger.error(f"DynamoDB Error in remove_new_company_employee (COMPANY_EMPLOYEES table): {e}")
-        return {"success": False, "error": str(e)}
-
-
 async def get_students_and_company_list(db: DynamoDBServiceResource) -> dict:
     students = get_active_students(db)
     users_table = await get_table(db, settings.USERS_TABLE)
@@ -851,6 +1031,16 @@ def next_month_prefix(today_date: date) -> str:
     return next_month.strftime("%Y-%m")
 
 
+async def get_completed_expired_report_cards(db: DynamoDBServiceResource):
+    today_string = get_today_string()
+    report_cards_table = await get_table(db, settings.REPORT_CARDS_TABLE)
+    report_cards_response = await report_cards_table.query(
+        IndexName="status-end-month-index",
+        KeyConditionExpression=Key("status").eq("completed") & Key("end_month").lt(today_string),
+    )
+    return report_cards_response.get("Items", [])
+
+
 # Funzioni per Tabella REPORT_CARDS
 async def get_report_card_tasks_db(coach: dict, db: DynamoDBServiceResource) -> Dict[str, List[Dict[str, Any]]]:
     """Trova i task di Report Card in sospeso."""
@@ -890,11 +1080,7 @@ async def get_report_card_tasks_db(coach: dict, db: DynamoDBServiceResource) -> 
         others_expired_report_cards = report_cards_response.get("Items", [])
 
         # completed scaduti
-        report_cards_response = await report_cards_table.query(
-            IndexName="status-end-month-index",
-            KeyConditionExpression=Key("status").eq("completed") & Key("end_month").lt(today_string),
-        )
-        completed_report_cards = report_cards_response.get("Items", [])
+        completed_report_cards = await get_completed_expired_report_cards(db)
 
         tasks = {
             **tasks,
@@ -904,6 +1090,33 @@ async def get_report_card_tasks_db(coach: dict, db: DynamoDBServiceResource) -> 
         }
 
     return tasks
+
+
+async def is_empty_no_show_or_draft_expired_report_cards(
+    db: DynamoDBServiceResource,
+) -> Dict[str, List[Dict[str, Any]]]:
+    try:
+        report_cards_table = await get_table(db, settings.REPORT_CARDS_TABLE)
+
+        today_string = get_today_string()
+        # no show scaduti
+        report_cards_response = await report_cards_table.query(
+            IndexName="status-end-month-index",
+            KeyConditionExpression=Key("status").eq("no_show") & Attr("end_month").lt(today_string),
+        )
+        assert not report_cards_response.get("Items", []), "Ther are no show expired report cards"
+
+        # draft scadute di altri coach
+        report_cards_response = await report_cards_table.query(
+            IndexName="status-end-month-index",
+            KeyConditionExpression=Key("status").eq("draft") & Key("end_month").lt(today_string),
+        )
+        assert not report_cards_response.get("Items", []), "Ther are draft expired report cards"
+
+        return {"success": True, "message": "No no_shor or draft expired report card"}
+    except ClientError as e:
+        logger.error(f"DynamoDB Error in no_show_or_draft_expired_report_cards (REPORT_CARDS table): {e}")
+        return {"success": False, "error": str(e)}
 
 
 async def get_calls_by_report_card(

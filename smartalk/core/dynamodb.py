@@ -7,6 +7,7 @@ from decimal import Decimal
 from typing import Any, AsyncGenerator, Dict, List, Optional
 
 from aioboto3 import Session as AioSession
+from botocore.exceptions import ClientError
 from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource, Table
 from types_aiobotocore_dynamodb.client import DynamoDBClient
 
@@ -80,6 +81,16 @@ async def get_item(db: DynamoDBServiceResource, table_name: str, keys: dict) -> 
     table = await get_table(db, table_name)
     item_response = await table.get_item(Key=keys)
     return item_response.get("Item", {})
+
+
+async def delete_item(db: DynamoDBServiceResource, table_name: str, keys: dict) -> Table:
+    try:
+        table = await get_table(db, table_name)
+        await table.delete_item(Key=keys, ConditionExpression=" AND ".join([f"attribute_exists({k})" for k in keys]))
+        return {"success": True}
+    except ClientError as e:
+        logger.error(f"DynamoDB Error in delete_item ({table_name} table): {e}")
+        return {"success": False, "error": str(e)}
 
 
 def get_db_client(db: DynamoDBServiceResource) -> DynamoDBClient:

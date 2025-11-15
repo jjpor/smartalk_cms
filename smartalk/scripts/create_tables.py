@@ -151,9 +151,15 @@ async def _create_contracts_table(db, table_name) -> None:
                 "Projection": {"ProjectionType": "ALL"},
             },
             {
-                "IndexName": "report_card_generator_id-index",
-                "KeySchema": [{"AttributeName": "report_card_generator_id", "KeyType": "HASH"}],
-                "Projection": {"ProjectionType": "KEYS_ONLY"},
+                "IndexName": "report_card_generator_id-status-index",
+                "KeySchema": [
+                    {"AttributeName": "report_card_generator_id", "KeyType": "HASH"},
+                    {"AttributeName": "status", "KeyType": "RANGE"},
+                ],
+                "Projection": {
+                    "ProjectionType": "INCLUDE",
+                    "NonKeyAttributes": ["report_card_start_month"],
+                },
             },
             {
                 "IndexName": "client_id-report_card_generator_id-index",
@@ -306,6 +312,18 @@ async def _create_report_cards_table(db, table_name) -> None:
                 "Projection": {
                     "ProjectionType": "INCLUDE",
                     "NonKeyAttributes": ["end_month", "coach_id"],
+                },
+            },
+            # per capire se esiste un report card di un periodo appena iniziato
+            {
+                "IndexName": "report-card-generator-id-status-index",
+                "KeySchema": [
+                    {"AttributeName": "report_card_generator_id", "KeyType": "HASH"},
+                    {"AttributeName": "status", "KeyType": "RANGE"},
+                ],
+                "Projection": {
+                    "ProjectionType": "INCLUDE",
+                    "NonKeyAttributes": ["start_month"],
                 },
             },
         ],
