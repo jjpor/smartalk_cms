@@ -519,8 +519,9 @@ async def new_contract_endpoint(
     report_card_generator = {}
 
     if has_report_card_context:
-        # check se esiste report card generator che ha report_card_generator_id, devono avere stessa report_card_email_recipients e report_card_start_month allineati
         report_card_generators_table = await get_table(DBDependency, settings.REPORT_CARD_GENERATORS_TABLE)
+
+        # check se esiste report card generator che ha report_card_generator_id, devono avere stessa report_card_email_recipients e report_card_start_month allineati
         report_card_generator_response = await report_card_generators_table.get_item(
             Key={"report_card_generator_id": contract["report_card_generator_id"]}
         )

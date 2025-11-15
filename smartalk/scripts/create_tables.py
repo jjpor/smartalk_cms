@@ -254,6 +254,19 @@ async def _create_report_card_generators_table(db, table_name) -> None:
         AttributeDefinitions=[
             {"AttributeName": "report_card_generator_id", "AttributeType": "S"},
         ],
+        GlobalSecondaryIndexes=[
+            # per vedere altri report card dello stesso client
+            {
+                "IndexName": "client_id-index",
+                "KeySchema": [
+                    {"AttributeName": "client_id", "KeyType": "HASH"},
+                ],
+                "Projection": {
+                    "ProjectionType": "INCLUDE",
+                    "NonKeyAttributes": ["report_card_email_recipients"],
+                },
+            },
+        ],
     )
 
 

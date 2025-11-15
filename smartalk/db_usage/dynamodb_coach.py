@@ -745,6 +745,20 @@ async def create_contract(
         puts: List[Dict] = []
         updates: List[Dict] = []
 
+        # check se esiste altro report card generator con stesso client e cadency, devono avere stesse email
+        report_card_generators_table = await get_table(db, settings.REPORT_CARD_GENERATORS_TABLE)
+        report_card_generator_response = await report_card_generators_table.query(
+            IndexName="client_id-index",
+            KeyConditionExpression=Key("client_id").eq(contract["client_id"]),
+            ProjectionExpression="report_card_email_recipients",
+        )
+        similar_report_card_generators = report_card_generator_response.get("Items", [])
+        if similar_report_card_generators:
+            assert (
+                similar_report_card_generators[0]["report_card_email_recipients"]
+                == contract["report_card_email_recipients"]
+            ), "This contract has different report_card_email_recipients"
+
         puts.append(
             {
                 "TableName": settings.CONTRACTS_TABLE,
