@@ -214,3 +214,9 @@ dynamodb_local/
 
 #analisi
 *.odt*
+
+#json
+*.json
+
+# testing
+testing

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Report Cards for {{ company_name }}</title>
+    <style>
+        body {
+            font-family: "Trebuchet MS", Verdana, sans-serif;
+            background: #fafafa;
+            padding: 0;
+            color: #4d4d4d;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 0;
+            color: #C30203;
+        }
+
+        .logo-container {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            max-width: 700px;
+            margin: 10px auto;
+        }
+
+        .student-card {
+            background: white;
+            border-radius: 10px;
+            padding: 15px 17px;
+            box-sizing: border-box;
+        }
+
+        .student-card h3 {
+            margin: 0 0 10px;
+            font-weight: 700;
+            font-size: 1.35rem;
+            color: #C30203;
+        }
+
+        .student-card p {
+            margin: 6px 0;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .report {
+            text-align: justify;
+            margin-top: 10px;
+            padding-top: 14px;
+            border-top: 1px solid #ddd;
+            font-size: 15px;
+            line-height: 1.5;
+            font-weight: 400;
+            color: #333;
+        }
+
+        .report p {
+            margin: 0 0 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="logo-container">
+        {{ logo_html | safe }}
+    </div>
+    <h2>Report Cards for {{ company_name }}</h2>
+
+    <div class="card-container">
+        {% for s in students %}
+        <div class="student-card">
+            <h3>{{ s.first_name }} {{ s.last_name }}</h3>
+            <p><strong>Attendance:</strong> {{ s.attendance }}</p>
+            <p><strong>Coach:</strong> {{ s.coach_id }}</p>
+            <div class="report">
+                {% for p in s.report_paragraphs %}
+                <p>{{ p }}</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+
+</html>
