@@ -26,6 +26,7 @@ class settings(BaseSettings):
     # Google OAuth
     GOOGLE_CLIENT_ID: str
     GMAIL_TOKEN_JSON: str
+    CALENDAR_SERVICE: str
 
     # --- Variabile per la migrazione ---
     # Impostala a 'True' nel file .env solo per il primo avvio

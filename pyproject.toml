@@ -44,6 +44,7 @@ pandas = "^2.3.3"
 weasyprint = "^66.0"
 google-api-python-client = "^2.187.0"
 google-auth-httplib2 = "^0.2.1"
+aiogoogle = "^5.17.0"
 
 
 [tool.poetry.group.dev.dependencies]

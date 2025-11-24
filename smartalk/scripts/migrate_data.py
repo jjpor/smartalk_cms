@@ -58,6 +58,8 @@ class CoachUser(BaseModel):
     middle_name: Optional[str] = Field(None, alias="Middle Name")
     address: Optional[str] = Field(None, alias="Address")
     citizenship: Optional[str] = Field(None, alias="Citizenship")
+    time_zone: str = Field(None, alias="Time Zone")
+    calendar_id: str = Field(None, alias="Calendar ID")
 
 
 class StudentUser(BaseModel):
