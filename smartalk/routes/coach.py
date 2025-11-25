@@ -2,15 +2,15 @@
 
 from datetime import datetime
 from decimal import Decimal
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, cast
 
 import pandas as pd
 from dateutil import relativedelta
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import JSONResponse
 from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource
 
-from smartalk.core.dynamodb import get_dynamodb_connection, get_table
+from smartalk.core.dynamodb import get_dynamodb_connection
 from smartalk.core.settings import settings
 from smartalk.db_usage import dynamodb_coach
 from smartalk.db_usage.dynamodb_auth import hash_password
@@ -334,12 +334,10 @@ async def log_call_for_individual_endpoint(
     student_id = data["student_id"]
     call_date = datetime.fromisoformat(data["callDate"]).date().isoformat()
 
-    contract_table = await get_table(DBDependency, settings.CONTRACTS_TABLE)
-    product_table = await get_table(DBDependency, settings.PRODUCTS_TABLE)
-    contract_response = contract_table.get_item(Key={"contract_id": contract_id})
-    contract = contract_response["Item"]
-    product_response = product_table.get_item(Key={"product_id": contract.get("product_id")})
-    product = product_response["Item"]
+    contract = await dynamodb_coach.get_item(DBDependency, settings.CONTRACTS_TABLE, {"contract_id": contract_id})
+    product = await dynamodb_coach.get_item(
+        DBDependency, settings.PRODUCTS_TABLE, {"product": contract.get("product_id")}
+    )
 
     standard_duration = product["duration"]
     effective_duration = data.get("callDuration", standard_duration)
@@ -398,11 +396,8 @@ async def log_call_for_group_endpoint(
     product_id = data["product_id"]
     call_date = datetime.fromisoformat(data["callDate"]).date().isoformat()
 
-    contract_table = await get_table(DBDependency, settings.CONTRACTS_TABLE)
-    product_table = await get_table(DBDependency, settings.PRODUCTS_TABLE)
-
-    product_response = product_table.get_item(Key={"product_id": product_id})
-    product = product_response["Item"]
+    contract_table = await dynamodb_coach.get_table(DBDependency, settings.CONTRACTS_TABLE)
+    product = await dynamodb_coach.get_item(DBDependency, settings.PRODUCTS_TABLE, {"product_id": product_id})
 
     assert product["participants"] == len(group), (
         f"Product {product['product_id']} has a different number of participants"
@@ -429,7 +424,7 @@ async def log_call_for_group_endpoint(
         students_already_in_group.append(student_id)
 
         # check right contract for student, client, product
-        contract_response = contract_table.get_item(Key={"contract_id": contract_id})
+        contract_response = await contract_table.get_item(Key={"contract_id": contract_id})
         contract = contract_response["Item"]
         assert contract["student_id"] == student_id, f"{student_id} has a different contract"
         assert contract["product_id"] == product_id, f"{student_id} has a different product"
@@ -504,9 +499,9 @@ async def new_contract_endpoint(
         has_report_card_context = True
 
     if not contract["unlimited"]:
-        products_table = await get_table(DBDependency, settings.PRODUCTS_TABLE)
-        product_response = await products_table.get_item(Key={"product_id": contract["product_id"]})
-        product = product_response.get("Item")
+        product = await dynamodb_coach.get_item(
+            DBDependency, settings.PRODUCTS_TABLE, {"product_id": contract["product_id"]}
+        )
         if "package" in data:
             contract["total_calls"] = product["package"]
         else:
@@ -519,13 +514,12 @@ async def new_contract_endpoint(
     report_card_generator = {}
 
     if has_report_card_context:
-        report_card_generators_table = await get_table(DBDependency, settings.REPORT_CARD_GENERATORS_TABLE)
-
         # check se esiste report card generator che ha report_card_generator_id, devono avere stessa report_card_email_recipients e report_card_start_month allineati
-        report_card_generator_response = await report_card_generators_table.get_item(
-            Key={"report_card_generator_id": contract["report_card_generator_id"]}
+        report_card_generator = await dynamodb_coach.get_item(
+            DBDependency,
+            settings.REPORT_CARD_GENERATORS_TABLE,
+            {"report_card_generator_id": contract["report_card_generator_id"]},
         )
-        report_card_generator = report_card_generator_response.get("Item", {})
         if report_card_generator:
             assert report_card_generator["report_card_email_recipients"] == contract["report_card_email_recipients"], (
                 "This contract has different report_card_email_recipients"
