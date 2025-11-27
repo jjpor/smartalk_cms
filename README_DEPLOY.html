@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Smartalk – Deployment Guide</title>
+    <style>
+        body {
+            background-color: #121212;
+            color: #eee;
+            font-family: Arial, Helvetica, sans-serif;
+            line-height: 1.6;
+            padding: 40px;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #90caf9;
+            margin-top: 40px;
+        }
+
+        a {
+            color: #64b5f6;
+        }
+
+        code {
+            background: #1e1e1e;
+            color: #fff;
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        pre {
+            background: #1e1e1e;
+            padding: 16px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+
+        pre code {
+            padding: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>🚀 Smartalk – Deployment & Development Guide</h1>
+
+    <p>
+        Guida completa per sviluppare in locale, gestire i webhook Google Calendar, migrare i dati e fare deploy su
+        Render + DynamoDB AWS.
+    </p>
+
+    <hr>
+
+    <h2>1. Struttura del file <code>.env</code> (ordine obbligatorio)</h2>
+
+    <pre><code>
+AWS_REGION=eu-west-1
+DYNAMO_ENDPOINT=http://localhost:8000
+AWS_ACCESS_KEY_ID=dummy
+AWS_SECRET_ACCESS_KEY=dummy
+
+USERS_TABLE=smartalk_users
+PRODUCTS_TABLE=smartalk_products
+CONTRACTS_TABLE=smartalk_contracts
+INVOICES_TABLE=smartalk_invoices
+TRACKER_TABLE=smartalk_tracker
+REPORT_CARDS_TABLE=smartalk_report_cards
+REPORT_CARD_GENERATORS_TABLE=smartalk_report_card_generators
+DEBRIEFS_TABLE=smartalk_debriefs
+COMPANY_EMPLOYEES_TABLE=smartalk_company_employees
+BOOKING_CALLS_TABLE=smartalk_booking_calls
+CALENDAR_SYNC_TABLE=smartalk_calendar_sync
+
+JWT_SECRET=xxxxx
+JWT_ALG=HS256
+
+GOOGLE_CLIENT_ID=xxxxx
+GMAIL_TOKEN_JSON=&lt;json_gmail_su_una_linea&gt;
+CALENDAR_SERVICE=&lt;json_service_account_su_una_linea&gt;
+
+RUN_DATA_MIGRATION=True
+LOCAL_ENDPOINT=http://localhost:8001
+
+CRON_SECRET=xxxxx
+
+CALENDAR_SYNC_WEBHOOK_URL=https://xxxxx.ngrok.io/calendar-sync/callback
+</code></pre>
+
+    <hr>
+
+    <h2>2. Avvio Ngrok automatico (PRIMA DI TUTTO)</h2>
+
+    <p>
+        Ngrok serve per ricevere i webhook Google Calendar in locale.
+        Lo script sottostante:
+    </p>
+
+    <ul>
+        <li>avvia Ngrok in background</li>
+        <li>recupera la URL HTTPS</li>
+        <li>aggiorna automaticamente <code>.env</code></li>
+        <li>salva il PID (solo informativo)</li>
+    </ul>
+
+    Esegui:
+
+    <pre><code>poetry run python scripts/start_ngrok_and_update_env.py</code></pre>
+
+    <hr>
+
+    <h2>3. Avvia l’ambiente locale (DynamoDB + backend)</h2>
+
+    <p>
+        Ora che <code>.env</code> contiene la URL aggiornata:
+    </p>
+
+    <pre><code>docker compose up --build</code></pre>
+
+    <ul>
+        <li>DynamoDB Local &rarr; <code>localhost:8000</code></li>
+        <li>Smartalk CMS &rarr; <code>localhost:8001</code></li>
+    </ul>
+
+    <hr>
+
+    <h2>4. Startup locale &rarr; migrazione dati + attivazione watchers</h2>
+
+    <p>
+        Il comando <code>/startup</code> fa TUTTO automaticamente, in ordine:
+    </p>
+
+    <ol>
+        <li>Controllo chiave interna</li>
+        <li>Migrazione dati (solo se <code>RUN_DATA_MIGRATION=True</code>)</li>
+        <li>Setup watchers Google Calendar</li>
+        <li>Sync iniziale eventi</li>
+    </ol>
+
+    Esegui:
+
+    <pre><code>
+curl "http://localhost:8001/startup?x_internal_key=XXXXX"
+</code></pre>
+
+    <p><b>NOTA:</b> Non eseguire manualmente /migration — è integrato in /startup.</p>
+
+    <hr>
+
+    <h2>5. Test locali (PRIMA del deploy)</h2>
+
+    <p>Checklist completa:</p>
+
+    <h3>✓ 5.1 Verifica migrazione dati</h3>
+    <pre><code>
+curl http://localhost:8001/student/me
+curl http://localhost:8001/coach/me
+curl http://localhost:8001/products/all
+</code></pre>
+
+    <h3>✓ 5.2 Verifica calendario</h3>
+    <pre><code>
+curl "http://localhost:8001/calendar/free-slots?coach_id=...&start=...&end=..."
+</code></pre>
+
+    <h3>✓ 5.3 Verifica watchers locali</h3>
+    - sposta un evento
+    - crea un evento
+    - elimina un evento
+
+    Verifica che nella tabella <code>smartalk_calendar_sync</code> compaiano update dello stato.
+
+    <hr>
+    <h2>6. Prepara l’ambiente per passare da locale → AWS DynamoDB</h2>
+
+    <p>
+        Quando vuoi passare da sviluppo locale ad AWS DynamoDB:
+    </p>
+
+    Modifica nel <code>.env</code>:
+
+    <pre><code>DYNAMO_ENDPOINT=
+RUN_DATA_MIGRATION=False
+AWS_ACCESS_KEY_ID=&lt;AWS KEY&gt;
+AWS_SECRET_ACCESS_KEY=&lt;AWS SECRET&gt;
+</code></pre>
+
+    <hr>
+    <h2>7. Deploy Smartalk CMS su Render</h2>
+
+    <p>Su Render devi impostare TUTTE le variabili del tuo <code>.env</code>, ma in particolare</p>
+
+    <pre><code>DYNAMO_ENDPOINT=
+RUN_DATA_MIGRATION=False</code></pre>
+
+    <p><b>IMPORTANTE:</b> Imposta anche:</p>
+
+    <pre><code>CALENDAR_SYNC_WEBHOOK_URL=https://www.smartalk.online/calendar-sync/callback
+</code></pre>
+
+    <p>
+        In produzione il webhook DEVE puntare al dominio pubblico, NON a Ngrok.
+    </p>
+    <p>La creazione delle tabelle AWS avviene automaticamente al primo avvio del backend su Render grazie al lifespan.
+        (Questa fase non trasferisce dati, crea solo la struttura delle tabelle.)</p>
+
+    <hr>
+    <h2>8. Sync DynamoDB Locale → AWS</h2>
+
+    <p>
+        Una volta che le tabelle AWS esistono:
+    </p>
+
+    <pre><code>poetry run python smartalk/scripts/sync_local_to_aws.py</code></pre>
+
+    <p>
+        Tutti i dati locali vengono trasferiti su AWS.
+    </p>
+
+    <hr>
+
+    <h2>9. Attiva watchers Google Calendar REALI in produzione</h2>
+
+    <pre><code>
+curl "https://www.smartalk.online/startup?x_internal_key=XXXXX"
+</code></pre>
+
+    <p>
+        Questo crea watchers Google Calendar stabili via HTTPS e sincronizza tutto.
+    </p>
+
+    <hr>
+
+    <h2>10. Arresto Ngrok (locale)</h2>
+
+    <p>
+        Non servono script: basta eseguire:
+    </p>
+
+    <pre><code>pkill ngrok</code></pre>
+
+    oppure semplicemente spegnere il terminale/PC.
+
+    <hr>
+
+    <h2>Deployment completato ✔</h2>
+
+    <p>
+        Smartalk è ora operativo in produzione, con sincronizzazione Google Calendar in tempo reale,
+        database AWS completo: pipeline di deploy stabile.
+    </p>
+
+</body>
+
+</html>

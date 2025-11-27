@@ -38,13 +38,6 @@ def _parse_event_datetime(value: str) -> datetime:
     return dt.astimezone(timezone.utc)
 
 
-def _is_valid_slot_start(dt: datetime) -> bool:
-    """
-    Uno slot è valido solo se inizia ai minuti 0 o 30.
-    """
-    return dt.minute in (0, 30) and dt.second == 0 and dt.microsecond == 0
-
-
 class CalendarManager:
     def __init__(self, user_email: str, calendar_id: str):
         self.user_email = user_email
@@ -154,7 +147,6 @@ class CalendarManager:
         # -------------------------
         # 7. Crea i 3 nuovi eventi
         # -------------------------
-        results = {}
 
         # FREE PRIMA
         if evt_start < start_dt:
@@ -171,13 +163,13 @@ class CalendarManager:
             ],
             transparency="opaque",
         )
-        results["busy_event_id"] = event_busy["id"]
+        event_id = event_busy["id"]
 
         # FREE DOPO
         if end_dt < evt_end:
             await self.create_free_slot(start=end_dt.isoformat(), end=evt_end.isoformat())
 
-        return int(call_duration / product_unit_duration), start_dt, end_dt
+        return int(call_duration / product_unit_duration), start_dt, end_dt, event_id
 
     # ---------------------------------------------------------
     # UPDATE EVENT (FREE → BUSY, aggiungere meet link, ecc.)

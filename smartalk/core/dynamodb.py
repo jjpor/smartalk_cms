@@ -83,6 +83,18 @@ async def get_item(db: DynamoDBServiceResource, table_name: str, keys: dict) -> 
     return item_response.get("Item", {})
 
 
+async def put_item(db: DynamoDBServiceResource, table_name: str, item: dict, keys: list) -> Table:
+    try:
+        table = await get_table(db, table_name)
+        await table.put_item(
+            Item=to_dynamodb_item(item), ConditionExpression=" AND ".join([f"attribute_not_exists({k})" for k in keys])
+        )
+        return {"success": True}
+    except ClientError as e:
+        logger.error(f"DynamoDB Error in put_item ({table_name} table): {e}")
+        return {"success": False, "error": str(e)}
+
+
 async def delete_item(db: DynamoDBServiceResource, table_name: str, keys: dict) -> Table:
     try:
         table = await get_table(db, table_name)
@@ -102,6 +114,9 @@ def get_dynamodb_resource_context():
     Restituisce l'AsyncContextManager (session.resource(...)).
     Gestisce la logica condizionale per l'ambiente (Locale vs AWS).
     """
+
+    # Quando usi AWS CLI per controllare le tabelle, specifica la regione:
+    # aws dynamodb list-tables --region <settings.AWS_REGION>
 
     # Prepara i parametri della Sessione AioBoto3.
     # Se le variabili sono stringhe vuote (""), 'or None' le converte in None,

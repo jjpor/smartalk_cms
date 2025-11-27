@@ -18,6 +18,7 @@ from smartalk.core.dynamodb import (
     get_table,
     get_today_string,
     make_atomic_transaction,
+    put_item,
     to_dynamodb_item,
     to_low_level_item,
 )
@@ -865,13 +866,7 @@ async def create_contract(
 
 
 async def insert_new_company(company: Dict[str, Any], db: DynamoDBServiceResource) -> dict:
-    try:
-        users_table = await get_table(db, settings.USERS_TABLE)
-        await users_table.put_item(Item=to_dynamodb_item(company), ConditionExpression=Attr("id").not_exists())
-        return {"success": True}
-    except ClientError as e:
-        logger.error(f"DynamoDB Error in insert_new_company (USERS table): {e}")
-        return {"success": False, "error": str(e)}
+    return await put_item(db, settings.USERS_TABLE, company, ["id"])
 
 
 async def get_employee_students_by_company(company_id: str, db: DynamoDBServiceResource) -> dict:

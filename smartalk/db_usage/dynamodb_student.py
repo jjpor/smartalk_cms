@@ -28,7 +28,7 @@ from smartalk.email_and_automations.utils.calendars_manager import CalendarManag
 logger = logging.getLogger(__name__)
 
 
-# Funzioni per resuperare gli slot liberi del coach
+# Funzioni per recuperare gli slot liberi del coach
 async def get_free_coach_slots(
     coach_id: str,
     student_id: str,
@@ -135,7 +135,7 @@ async def book_call(
         raise HTTPException(400, "Calendario coach non configurato")
 
     calendar = CalendarManager(user_email=coach_email, calendar_id=calendar_id)
-    units, start_dt, end_dt = await calendar.book_call(
+    units, start_dt, end_dt, event_id = await calendar.book_call(
         start, end, product_name, product_unit_duration, student["email"]
     )
 
@@ -151,6 +151,7 @@ async def book_call(
         "end": end_dt.isoformat(),
         "status": "cancelable",
         "units": units,
+        "event_id": event_id,
     }
 
     booking_calls_table = await get_table(db, settings.BOOKING_CALLS_TABLE)

@@ -388,6 +388,43 @@ async def _create_company_employees_table(db, table_name) -> None:
     )
 
 
+async def _create_calendar_sync_table(db, table_name) -> None:
+    """Tabella Calendar Sync (automatic updates tracking from Google Calendars)."""
+    await db.create_table(
+        TableName=table_name,
+        BillingMode="PAY_PER_REQUEST",
+        KeySchema=[
+            {"AttributeName": "calendar_id", "KeyType": "HASH"},
+            {"AttributeName": "channel_id", "KeyType": "RANGE"},
+        ],
+        AttributeDefinitions=[
+            {"AttributeName": "calendar_id", "AttributeType": "S"},
+            {"AttributeName": "channel_id", "AttributeType": "S"},
+            {"AttributeName": "resource_id", "AttributeType": "S"},
+            {"AttributeName": "active", "AttributeType": "S"},
+            {"AttributeName": "expiration", "AttributeType": "N"},
+        ],
+        GlobalSecondaryIndexes=[
+            {
+                "IndexName": "GSI1-resource",
+                "KeySchema": [
+                    {"AttributeName": "resource_id", "KeyType": "HASH"},
+                    {"AttributeName": "calendar_id", "KeyType": "RANGE"},
+                ],
+                "Projection": {"ProjectionType": "ALL"},
+            },
+            {
+                "IndexName": "GSI2-active",
+                "KeySchema": [
+                    {"AttributeName": "active", "KeyType": "HASH"},
+                    {"AttributeName": "expiration", "KeyType": "RANGE"},
+                ],
+                "Projection": {"ProjectionType": "ALL"},
+            },
+        ],
+    )
+
+
 # -------------------------------------------------
 # FUNZIONE PRINCIPALE
 # -------------------------------------------------
@@ -411,6 +448,7 @@ async def ensure_tables(db) -> None:
             settings.REPORT_CARDS_TABLE: _create_report_cards_table,
             settings.DEBRIEFS_TABLE: _create_debriefs_table,
             settings.COMPANY_EMPLOYEES_TABLE: _create_company_employees_table,
+            settings.CALENDAR_SYNC_TABLE: _create_calendar_sync_table,
         }
 
         for table_name, create_func in tables_to_create.items():

@@ -32,6 +32,18 @@ class settings(BaseSettings):
     # --- Variabile per la migrazione ---
     # Impostala a 'True' nel file .env solo per il primo avvio
     RUN_DATA_MIGRATION: bool = False
+    LOCAL_ENDPOINT: str
+
+    # Startup
+    INTERNAL_STARTUP_KEY: str
+
+    # Scheduler
+    # su cron-job.org impostare Header: X-CRON-SECRET: CRON_SECRET
+    CRON_SECRET: str
+
+    # real time calendar sync
+    CALENDAR_SYNC_TABLE: str
+    CALENDAR_SYNC_WEBHOOK_URL: str
 
     class Config:
         env_file = ".env"
