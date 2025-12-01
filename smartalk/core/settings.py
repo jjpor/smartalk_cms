@@ -1,7 +1,11 @@
+from pydantic import EmailStr
 from pydantic_settings import BaseSettings
 
 
 class settings(BaseSettings):
+    # Email
+    SENDER: EmailStr
+
     # DynamoDB
     AWS_REGION: str
     DYNAMO_ENDPOINT: str | None = None

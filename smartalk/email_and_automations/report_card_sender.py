@@ -54,7 +54,7 @@ def prepare_report_cards_dataframe(
 
     # nome completo studente, es. "Mario Rossi"
     def _student_full_name(sid: str) -> str:
-        return student_names_by_id.get(sid, "")
+        return student_names_by_id[sid]
 
     df["student_full_name"] = df["student_id"].map(_student_full_name)
     return df
@@ -65,7 +65,7 @@ def prepare_report_cards_dataframe(
 # ==========================
 
 
-def render_pdf_html_for_client(
+def render_pdf_html_for_client_and_period(
     company_name: str,
     period_str: str,
     client_df: pd.DataFrame,
@@ -85,7 +85,10 @@ def render_pdf_html_for_client(
         - attendance
         - report
     """
-    pdf_template = templates.env.get_template("reportCardPdf.html")
+    try:
+        pdf_template = templates.env.get_template("reportCardPdf.html")
+    except Exception as e:
+        raise RuntimeError(f"Missing template reportCardPdf.html: {e}")
 
     # ordina per nome studente
     client_df = client_df.sort_values("student_full_name", na_position="last")
@@ -140,52 +143,43 @@ def generate_grouped_report_card_bundles(
 
     bundles: List[Dict[str, Any]] = []
 
-    # Periodo: usa minimo start_month e massimo end_month del gruppo
-    def build_period_str(group: pd.DataFrame) -> str:
-        try:
-            start_min = group["start_month"].min()
-            end_max = group["end_month"].max()
-            if start_min == end_max:
-                return start_min
-            return f"{start_min} – {end_max}"
-        except Exception:
-            return ""
+    grouped = df.groupby(["client_id", "start_month", "end_month"], dropna=True)
 
-    current_month = datetime.now().strftime("%Y-%m")
-    grouped = df.groupby("client_id", dropna=True)
+    for key, df_key in grouped:
+        client_id, start_month, end_month = key
+        company_name = client_names_by_id[client_id]
 
-    for client_id, client_df in grouped:
-        client_id_str = str(client_id).upper()
-        company_name = client_names_by_id.get(client_id_str, client_id_str)
+        # recipients
+        report_card_email_recipients_list = list(df_key["report_card_email_recipients"].unique())
+        if not len(report_card_email_recipients_list) == 1:
+            raise RuntimeError(f"report_card_email_recipients not well defined for client {client_id}")
 
-        # recipient: prende il primo non vuoto
-        recipients_series = client_df["report_card_email_recipients"].dropna()
-        recipient_str = recipients_series.iloc[0] if not recipients_series.empty else None
-        if not recipient_str:
-            continue
+        report_card_email_recipients = report_card_email_recipients_list[0]
+        if not report_card_email_recipients:
+            raise RuntimeError(f"report_card_email_recipients undefined for client {client_id}")
 
-        emails = [e.strip() for e in recipient_str.split(",") if e.strip()]
+        emails = [e.strip() for e in report_card_email_recipients.split(",") if e.strip()]
         to_email = emails[0] if emails else ""
-        cc_email = emails[1] if len(emails) > 1 else ""
+        cc_email = ", ".join(emails[1:]) if len(emails) > 1 else ""
 
         if not to_email:
             continue
 
-        period_str = build_period_str(client_df)
+        period_str = f"{start_month} - {end_month}"
 
-        html_content = render_pdf_html_for_client(
+        html_content = render_pdf_html_for_client_and_period(
             company_name=company_name,
             period_str=period_str,
-            client_df=client_df,
+            client_df=df_key,
             logo_html=logo_html,
         )
         pdf_bytes = generate_pdf_bytes_from_html(html_content)
 
-        filename = f"{company_name}_Report_Card_{current_month}.pdf".replace(" ", "_")
+        filename = f"{company_name}_Report_Card_{period_str}.pdf".replace(" ", "_")
 
         bundles.append(
             {
-                "client_id": client_id_str,
+                "client_id": client_id,
                 "company_name": company_name,
                 "to_email": to_email,
                 "cc_email": cc_email,
@@ -195,7 +189,6 @@ def generate_grouped_report_card_bundles(
                         "filename": filename,
                     }
                 ],
-                "report_cards": client_df,
             }
         )
 

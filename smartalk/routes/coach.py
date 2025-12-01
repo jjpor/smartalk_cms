@@ -9,11 +9,13 @@ from dateutil import relativedelta
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import JSONResponse
 from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource
+from pydantic import EmailStr
 
 from smartalk.core.dynamodb import get_dynamodb_connection
 from smartalk.core.settings import settings
 from smartalk.db_usage import dynamodb_coach
 from smartalk.db_usage.dynamodb_auth import hash_password
+from smartalk.email_and_automations.report_card_sender import run_send_report_cards
 from smartalk.routes.auth import create_token_response, get_current_user
 
 router = APIRouter(tags=["Coach Dashboard"], prefix="/api/coach")
@@ -223,7 +225,7 @@ async def get_calls_for_report_card(
     return create_token_response({"calls": calls}, coach)
 
 
-@router.get("get_debrief")
+@router.get("/get_debrief")
 async def get_debrief(
     request: Request, coach: Dict[str, Any] = Depends(validate_coach_access), DBDependency: Any = DBDependency
 ) -> JSONResponse:
@@ -336,7 +338,7 @@ async def log_call_for_individual_endpoint(
 
     contract = await dynamodb_coach.get_item(DBDependency, settings.CONTRACTS_TABLE, {"contract_id": contract_id})
     product = await dynamodb_coach.get_item(
-        DBDependency, settings.PRODUCTS_TABLE, {"product": contract.get("product_id")}
+        DBDependency, settings.PRODUCTS_TABLE, {"product_id": contract.get("product_id")}
     )
 
     standard_duration = product["duration"]
@@ -487,12 +489,27 @@ async def new_contract_endpoint(
     has_report_card_context = False
 
     if "report_card_cadency" in data and "report_card_start_month" in data and "report_card_email_recipients" in data:
+        parts = [p.strip() for p in data["report_card_email_recipients"].split(",") if p.strip()]
+
+        valid_emails = []
+        for p in parts:
+            try:
+                valid_emails.append(EmailStr(p))
+            except Exception:
+                raise ValueError(f"Invalid email addresses in report_card_email_recipients: {p}")
+
+        if not valid_emails:
+            raise ValueError("No valid email addresses in report_card_email_recipients")
+
+        # salva sempre come stringa normalizzata
+        report_card_email_recipients = ", ".join([str(e) for e in valid_emails])
+
         contract = {
             **contract,
             **{
                 "report_card_cadency": data["report_card_cadency"],
                 "report_card_start_month": data["report_card_start_month"],
-                "report_card_email_recipients": data["report_card_email_recipients"],
+                "report_card_email_recipients": report_card_email_recipients,
                 "report_card_generator_id": f"{contract['student_id']}#{contract['client_id']}#{contract['report_card_cadency']}",
             },
         }
@@ -619,9 +636,24 @@ async def send_all_completed_report_cards(
     if not completed_report_cards:
         raise HTTPException(status_code=400, detail="Empty completed expired report cards")
 
-    # invio report tramite email
-
     completed_report_cards_df = pd.DataFrame.from_dict(completed_report_cards)
+    student_ids = list(completed_report_cards_df["student_id"].unique())
+    client_ids = list(completed_report_cards_df["client_id"].unique())
+    student_names_by_id = {}
+    for student_id in student_ids:
+        student_names_by_id[student_id] = await dynamodb_coach.get_client_name(student_id)
+    client_names_by_id = {}
+    for client_id in client_ids:
+        client_names_by_id[client_id] = await dynamodb_coach.get_client_name(client_id)
+
+    # invio report tramite email (raggruppati per client e periodo)
+    run_send_report_cards(
+        completed_report_cards,
+        student_names_by_id,
+        client_names_by_id,
+        settings.SENDER,
+    )
+
     completed_report_cards_df = completed_report_cards_df[["report_card_generator_id", "report_card_id", "start_month"]]
 
     for report_card_generator_id in completed_report_cards_df["report_card_generator_id"].unique():
@@ -635,7 +667,7 @@ async def send_all_completed_report_cards(
             response = await dynamodb_coach.update_report_card_and_generator(
                 completed_report_cards_df[
                     completed_report_cards_df["report_card_generator_id"] == report_card_generator_id
-                ].to_dict("records")[["report_card_id", "start_month"]],
+                ][["report_card_id", "start_month"]].to_dict("records"),
                 report_card_generator_id,
                 min_report_card_start_month,
                 DBDependency,
@@ -645,7 +677,7 @@ async def send_all_completed_report_cards(
             response = await dynamodb_coach.update_report_card_and_delete_generator(
                 completed_report_cards_df[
                     completed_report_cards_df["report_card_generator_id"] == report_card_generator_id
-                ].to_dict("records")[["report_card_id", "start_month"]],
+                ][["report_card_id", "start_month"]].to_dict("records"),
                 report_card_generator_id,
                 DBDependency,
             )

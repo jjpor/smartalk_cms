@@ -301,10 +301,7 @@ async def _create_report_cards_table(db, table_name) -> None:
                     {"AttributeName": "status", "KeyType": "HASH"},
                     {"AttributeName": "end_month", "KeyType": "RANGE"},
                 ],
-                "Projection": {
-                    "ProjectionType": "INCLUDE",
-                    "NonKeyAttributes": ["start_month", "student_id", "coach_id"],
-                },
+                "Projection": {"ProjectionType": "ALL"},
             },
             # per editare da un coach le draft (o i no show)
             {

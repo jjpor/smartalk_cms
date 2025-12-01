@@ -142,6 +142,26 @@ class Contract(BaseModel):
     def _parse_month_field(cls, value):
         return parse_date_field(value)[:7]
 
+    @field_validator("report_card_email_recipients", mode="before")
+    def validate_email_list(cls, value):
+        if not value or not value.strip():
+            return ""
+
+        parts = [p.strip() for p in value.split(",") if p.strip()]
+
+        valid_emails = []
+        for p in parts:
+            try:
+                valid_emails.append(EmailStr(p))
+            except Exception:
+                raise ValueError(f"Invalid email addresses in report_card_email_recipients: {p}")
+
+        if not valid_emails:
+            raise ValueError("No valid email addresses in report_card_email_recipients")
+
+        # salva sempre come stringa normalizzata
+        return ", ".join([str(e) for e in valid_emails])
+
 
 class Tracker(BaseModel):
     session_date: date = Field(..., alias="Date")
