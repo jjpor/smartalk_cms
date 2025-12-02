@@ -1,15 +1,16 @@
 # smartalk/routes/coach.py
 
+import re
 from datetime import datetime
 from decimal import Decimal
 from typing import Any, Dict, cast
 
 import pandas as pd
-from dateutil import relativedelta
+from dateutil.relativedelta import relativedelta
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import JSONResponse
 from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource
-from pydantic import EmailStr
+from pydantic import EmailStr, TypeAdapter
 
 from smartalk.core.dynamodb import get_dynamodb_connection
 from smartalk.core.settings import settings
@@ -22,6 +23,8 @@ router = APIRouter(tags=["Coach Dashboard"], prefix="/api/coach")
 
 # Uso della Dependency Injection per ottenere la connessione resiliente
 DBDependency = Depends(get_dynamodb_connection)
+
+email_adapter = TypeAdapter(EmailStr)
 
 
 def to_decimal(value):
@@ -477,7 +480,6 @@ async def new_contract_endpoint(
     DBDependency: Any = DBDependency,
 ) -> JSONResponse:
     contract = {
-        "contract_id": data["contract_id"],
         "student_id": data["student_id"],
         "product_id": data["product_id"],
         "status": "Active",
@@ -489,12 +491,18 @@ async def new_contract_endpoint(
     has_report_card_context = False
 
     if "report_card_cadency" in data and "report_card_start_month" in data and "report_card_email_recipients" in data:
-        parts = [p.strip() for p in data["report_card_email_recipients"].split(",") if p.strip()]
+        NBSP = "\u00a0"  # non-breaking space
+
+        # Normalizzazione robusta
+        val = str(data["report_card_email_recipients"]).replace(NBSP, " ").strip()
+
+        # Split robusto (gestisce spazi multipli, unicode, ecc.)
+        parts = [p.strip() for p in re.split(r"[,;]", val) if p.strip()]
 
         valid_emails = []
         for p in parts:
             try:
-                valid_emails.append(EmailStr(p))
+                valid_emails.append(email_adapter.validate_python(p))
             except Exception:
                 raise ValueError(f"Invalid email addresses in report_card_email_recipients: {p}")
 

@@ -2,6 +2,7 @@ import logging
 import os
 
 # Permette allo script di trovare i moduli del progetto
+import re
 import sys
 from datetime import date, datetime
 from decimal import Decimal
@@ -10,8 +11,8 @@ from typing import Any, Dict, List, Optional
 import httpx
 import pandas as pd
 from boto3.dynamodb.conditions import Attr, Key
-from dateutil import relativedelta
-from pydantic import BaseModel, EmailStr, Field, ValidationError, field_validator
+from dateutil.relativedelta import relativedelta
+from pydantic import BaseModel, EmailStr, Field, TypeAdapter, ValidationError, field_validator
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -19,8 +20,27 @@ from smartalk.core.dynamodb import get_table, get_today_string, to_dynamodb_item
 from smartalk.core.settings import settings
 from smartalk.db_usage.dynamodb_auth import hash_password
 
-# --- CONFIGURAZIONE logging.basicConfig(
+# --- CONFIG BASE ---
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s — %(levelname)s — %(name)s — %(message)s",
+    datefmt="%Y-%m-%d %H:%M:%S",
+)
+
+# Logger specifico per la migrazione
 logger = logging.getLogger("data_migration")
+
+# --- FILE HANDLER ---
+LOG_DIR = "logs"
+os.makedirs(LOG_DIR, exist_ok=True)
+file_handler = logging.FileHandler(os.path.join(LOG_DIR, "migration.log"), encoding="utf-8")
+file_handler.setLevel(logging.INFO)
+file_handler.setFormatter(
+    logging.Formatter("%(asctime)s — %(levelname)s — %(name)s — %(message)s", "%Y-%m-%d %H:%M:%S")
+)
+logger.addHandler(file_handler)
+logger.setLevel(logging.INFO)
+
 APPS_SCRIPT_URL = (
     "https://script.google.com/macros/s/AKfycbxkMQHNbDYt3LesAzEDbeii9aqgJ7xsww31yWcK9fLBs9l-tvKgR1WsVcAXJ3CNcm8/exec"
 )
@@ -31,15 +51,19 @@ APPS_SCRIPT_URL = (
 
 
 # Funzione helper per validatori di date
-def parse_date_field(value: Any) -> Optional[date]:
+def parse_date_field(value: Any) -> Optional[str]:
     if isinstance(value, str) and value.strip():
         # Gestisce formati come 'YYYY-MM-DD' o 'DD/MM/YYYY'
         for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%Y-%m-%dT%H:%M:%S.%fZ"):
             try:
-                return datetime.strptime(value, fmt).date()
+                return datetime.strptime(value, fmt).date().isoformat()
             except ValueError:
                 pass
         raise ValueError(f"Impossibile parsare la data dalla stringa: {value}")
+    if isinstance(value, datetime):
+        return value.date().isoformat()
+    if isinstance(value, date):
+        return value.isoformat()
     return None
 
 
@@ -109,6 +133,9 @@ class Product(BaseModel):
         return str(value) if value is not None else None
 
 
+email_adapter = TypeAdapter(EmailStr)
+
+
 class Contract(BaseModel):
     contract_id: str = Field(..., alias="Contract ID")
     student_id: str = Field(..., alias="Student ID")
@@ -124,9 +151,9 @@ class Contract(BaseModel):
     used_calls: Optional[float | str] = Field(None, alias="Used Calls")
     left_calls: Optional[float | str] = Field(None, alias="Left Calls")
     report_card_cadency: Optional[int | str] = Field(None, alias="Report Card Cadency")
-    start_date: Optional[date] = Field(None, alias="Start Date")
-    max_end_date: Optional[date] = Field(None, alias="Max End Date")
-    report_card_start_month: Optional[date] = Field(None, alias="Report Card Start Date")
+    start_date: Optional[str] = Field(None, alias="Start Date")
+    max_end_date: Optional[str] = Field(None, alias="Max End Date")
+    report_card_start_month: Optional[str] = Field(None, alias="Report Card Start Date")
     report_card_email_recipients: Optional[str] = Field(None, alias="Report Card Email Recipient(s)")
     report_card_generator_id: Optional[str] = Field(None, alias="report_card_generator_id")
 
@@ -140,21 +167,30 @@ class Contract(BaseModel):
 
     @field_validator("report_card_start_month", mode="before")
     def _parse_month_field(cls, value):
-        return parse_date_field(value)[:7]
+        if value:
+            return parse_date_field(value)[:7]
+        else:
+            ""
 
     @field_validator("report_card_email_recipients", mode="before")
     def validate_email_list(cls, value):
         if not value or not value.strip():
             return ""
 
-        parts = [p.strip() for p in value.split(",") if p.strip()]
+        NBSP = "\u00a0"  # non-breaking space
+
+        # Normalizzazione robusta
+        val = str(value).replace(NBSP, " ").strip()
+
+        # Split robusto (gestisce spazi multipli, unicode, ecc.)
+        parts = [p.strip() for p in re.split(r"[,;]", val) if p.strip()]
 
         valid_emails = []
         for p in parts:
             try:
-                valid_emails.append(EmailStr(p))
+                valid_emails.append(email_adapter.validate_python(p))
             except Exception:
-                raise ValueError(f"Invalid email addresses in report_card_email_recipients: {p}")
+                raise ValueError(f"Invalid email addresses in report_card_email_recipients: {repr(p)}")
 
         if not valid_emails:
             raise ValueError("No valid email addresses in report_card_email_recipients")
@@ -164,7 +200,7 @@ class Contract(BaseModel):
 
 
 class Tracker(BaseModel):
-    session_date: date = Field(..., alias="Date")
+    session_date: str = Field(..., alias="Date")
     student_id: str = Field(..., alias="Student ID")
     contract_id: str = Field(..., alias="Contract ID")
     coach_id: str = Field(..., alias="Coach ID")
@@ -189,8 +225,8 @@ class Invoice(BaseModel):
     invoice_id: str = Field(..., alias="Invoice ID")
     client_id: str = Field(..., alias="Client ID")
     buyer: Optional[str] = Field(None, alias="Buyer")
-    invoice_date: Optional[date | str] = Field(..., alias="Date")
-    due_date: Optional[date | str] = Field(..., alias="Due")
+    invoice_date: Optional[str] = Field(..., alias="Date")
+    due_date: Optional[str] = Field(..., alias="Due")
     amount: Decimal = Field(..., alias="Amount")
     paid: bool = Field(..., alias="Paid")
     installments: Optional[int | str] = Field(None, alias="Installments")
@@ -206,7 +242,7 @@ class Invoice(BaseModel):
 
 
 class Debrief(BaseModel):
-    debrief_date: date = Field(..., alias="Date")
+    debrief_date: str = Field(..., alias="Date")
     coach_id: str = Field(..., alias="Coach ID")
     student_id: str = Field(..., alias="Student ID")
     goals: Optional[str] = Field(None, alias="Goals")
@@ -216,9 +252,9 @@ class Debrief(BaseModel):
     pronunciation: Optional[str] = Field(None, alias="Pronunciation")
     other: Optional[str] = Field(None, alias="Other")
     homework: Optional[str] = Field(None, alias="Homework")
-    draft: bool = Field(False, alias="Draft")
-    sent: bool = Field(False, alias="Sent")
-    sent_date: Optional[date] = Field(None, alias="Sent Date")
+    draft: Optional[bool] = Field(None, alias="Draft")
+    sent: Optional[bool] = Field(None, alias="Sent")
+    sent_date: Optional[str] = Field(None, alias="Sent Date")
 
     @field_validator("draft", "sent", mode="before")
     def standardize_boolean(cls, value):
@@ -293,7 +329,7 @@ key_map = {
     "Contracts": ["contract_id"],
     "Tracker": ["contract_id", "session_id"],
     "Invoices": ["invoice_id"],
-    "Debriefs": ["student_id", "date"],
+    "Debriefs": ["debrief_id", "date"],
     "Report Cards": ["report_card_id", "start_month"],
 }
 
@@ -327,7 +363,7 @@ async def migrate_users(db: Any):
                         logger.info(f"Already inserted overwritten item {user_type}: {previous_item}")
                     await table.put_item(Item=to_dynamodb_item(item))
             except ValidationError as e:
-                logger.warning(f"  -> Skipping invalid {user_type} row {row_index}: {e} | Data: {row}")
+                logger.warning(f"  -> Skipping invalid {user_type} row {row_index}: {e} | Data: {repr(row)}")
             row_index += 1
 
 
@@ -368,14 +404,22 @@ async def migrate_generic(db: Any, table_name: str, sheet_name: str, model_cls: 
                 continue
 
             if table_name == settings.CONTRACTS_TABLE:
-                if row["report_card_cadency"] not in ["", None] and isinstance(row["report_card_cadency"], int):
+                if row["Invoice ID"] in ["", None]:
+                    continue
+                if row["Report Card Cadency"] not in ["", None] and isinstance(row["Report Card Cadency"], int):
                     row["report_card_generator_id"] = (
-                        f"{row['student_id']}#{row['client_id']}#{row['report_card_cadency']}"
+                        f"{row['Student ID']}#{row['Client ID']}#{row['Report Card Cadency']}"
                     )
                 else:
                     row["report_card_generator_id"] = ""
 
+            if table_name == settings.CALLS_TABLE:
+                if row["Student ID"] in ["", None]:
+                    continue
+
             if table_name == settings.REPORT_CARDS_TABLE:
+                if row["Student ID"] in ["", None]:
+                    continue
                 contract_id = row.get("Contract ID")
                 contract = None
                 if contract_id in ["", None]:
@@ -393,21 +437,28 @@ async def migrate_generic(db: Any, table_name: str, sheet_name: str, model_cls: 
                     f"{contract['student_id']}#{row['client_id']}#{row['report_card_cadency']}"
                 )
                 row["report_card_id"] = f"{row['Coach ID']}#{row['report_card_generator_id']}"
-                report_card_start_month = contract["report_card_start_month"]
-                row["start_month"] = report_card_start_month
-                report_date = parse_date_field(row["Date"])
-                while True:
-                    if row["start_month"] <= report_date:
-                        break
-                    else:
-                        row["start_month"] = parse_date_field(
-                            datetime.fromisoformat(row["start_month"] + "-01").date()
-                            + relativedelta(months=row["report_card_cadency"])
-                        )[:7]
+                row["start_month"] = contract["report_card_start_month"]
                 row["end_month"] = parse_date_field(
                     datetime.fromisoformat(row["start_month"] + "-01").date()
                     + relativedelta(months=row["report_card_cadency"])
                 )[:7]
+                report_date = parse_date_field(row["Date"])
+                while report_date < row["start_month"] or row["end_month"] < report_date:
+                    time_sign = 1
+                    if report_date < row["start_month"]:
+                        time_sign = -1
+
+                    # update start_month with time_sign and report_card_cadency
+                    row["start_month"] = parse_date_field(
+                        datetime.fromisoformat(row["start_month"] + "-01").date()
+                        + relativedelta(months=time_sign * row["report_card_cadency"])
+                    )[:7]
+
+                    # align end_month with start_month
+                    row["end_month"] = parse_date_field(
+                        datetime.fromisoformat(row["start_month"] + "-01").date()
+                        + relativedelta(months=row["report_card_cadency"])
+                    )[:7]
                 if row["Sent"]:
                     row["status"] = "sent"
                 else:
@@ -416,6 +467,10 @@ async def migrate_generic(db: Any, table_name: str, sheet_name: str, model_cls: 
                     else:
                         # nella migrazione non esistono no_show
                         row["status"] = "draft"
+
+            if table_name == settings.DEBRIEFS_TABLE:
+                if row["Student ID"] in ["", None]:
+                    continue
 
             data = model_cls.model_validate(row)
             item = to_dynamodb_item(data.model_dump())
@@ -445,10 +500,11 @@ async def introduce_report_card_generators_and_report_cards(db: Any):
 
     # contracts with rc
     contracts_response = await contracts_table.query(
-        IndexName="client_id-report_card_generator_id-index",
-        KeyConditionExpression=Key("client_id").eq("M1A") & Key("report_card_generator_id").gt(""),
+        IndexName="client_id-index",
+        KeyConditionExpression=Key("client_id").eq("M1A"),
+        FilterExpression=Attr("report_card_generator_id").exists(),
     )
-    contracts_with_rc = contracts_response["Items"]
+    contracts_with_rc = contracts_response.get("Items", [])
 
     # contracts without rc, active, unlimited or not expired
     contracts_response = await contracts_table.query(
@@ -463,7 +519,7 @@ async def introduce_report_card_generators_and_report_cards(db: Any):
         ProjectionExpression="contract_id, client_id, student_id",
     )
 
-    contracts_without_rc = contracts_response["Items"]
+    contracts_without_rc = contracts_response.get("Items", [])
 
     contracts_without_rc_df = pd.DataFrame.from_dict(contracts_without_rc)
 
@@ -483,15 +539,16 @@ async def introduce_report_card_generators_and_report_cards(db: Any):
                 update_expr.append(f"{k} = :{k}")
                 expr_vals[f":{k}"] = v
 
-        for contract_without_rc in contracts_without_rc_df[
-            (contracts_without_rc_df["client_id"] == contract_with_rc["client_id"])
-            & (contracts_without_rc_df["student_id"] == contract_with_rc["student_id"])
-        ].to_dict("records"):
-            await contracts_table.update_item(
-                Key={"contract_id": contract_without_rc["contract_id"]},
-                UpdateExpression="SET " + ", ".join(update_expr),
-                ExpressionAttributeValues=expr_vals,
-            )
+        if not contracts_without_rc_df.empty:
+            for contract_without_rc in contracts_without_rc_df[
+                (contracts_without_rc_df["client_id"] == contract_with_rc["client_id"])
+                & (contracts_without_rc_df["student_id"] == contract_with_rc["student_id"])
+            ].to_dict("records"):
+                await contracts_table.update_item(
+                    Key={"contract_id": contract_without_rc["contract_id"]},
+                    UpdateExpression="SET " + ", ".join(update_expr),
+                    ExpressionAttributeValues=expr_vals,
+                )
 
     # creazione report card generators
     contracts_response = await contracts_table.query(
@@ -504,128 +561,129 @@ async def introduce_report_card_generators_and_report_cards(db: Any):
         )
         & Attr("report_card_generator_id").exists(),
     )
-    contracts = contracts_response["Items"]
+    contracts = contracts_response.get("Items", [])
 
     contracts_df = pd.DataFrame.from_dict(contracts)
-    report_card_generators_df = (
-        contracts_df[
-            [
-                "report_card_generator_id",
-                "student_id",
-                "client_id",
-                "report_card_cadency",
-                "report_card_start_month",
-                "report_card_email_recipients",
+    if not contracts_df.empty:
+        report_card_generators_df = (
+            contracts_df[
+                [
+                    "report_card_generator_id",
+                    "student_id",
+                    "client_id",
+                    "report_card_cadency",
+                    "report_card_start_month",
+                    "report_card_email_recipients",
+                ]
             ]
-        ]
-        .drop_duplicates()
-        .rename(columns={"report_card_start_month": "start_month"})
-    )
+            .drop_duplicates()
+            .rename(columns={"report_card_start_month": "start_month"})
+        )
 
-    report_card_generators_table = await get_table(db, settings.REPORT_CARD_GENERATORS_TABLE)
-    today_string = get_today_string()
-    for rcg in report_card_generators_df.to_dict("records"):
-        rcg["current_start_month"] = rcg["start_month"]
-        rcg["next_start_month"] = parse_date_field(
-            datetime.fromisoformat(rcg["current_start_month"] + "-01").date()
-            + relativedelta(months=rcg["report_card_cadency"])
-        )[:7]
-        while rcg["next_start_month"] <= today_string:
-            rcg["current_start_month"] = rcg["next_start_month"]
+        report_card_generators_table = await get_table(db, settings.REPORT_CARD_GENERATORS_TABLE)
+        today_string = get_today_string()
+        for rcg in report_card_generators_df.to_dict("records"):
+            rcg["current_start_month"] = rcg["start_month"]
             rcg["next_start_month"] = parse_date_field(
                 datetime.fromisoformat(rcg["current_start_month"] + "-01").date()
                 + relativedelta(months=rcg["report_card_cadency"])
             )[:7]
+            while rcg["next_start_month"] <= today_string:
+                rcg["current_start_month"] = rcg["next_start_month"]
+                rcg["next_start_month"] = parse_date_field(
+                    datetime.fromisoformat(rcg["current_start_month"] + "-01").date()
+                    + relativedelta(months=rcg["report_card_cadency"])
+                )[:7]
 
-        data = ReportCardGenerator.model_validate(rcg)
-        report_card_generator = to_dynamodb_item(data.model_dump())
-        await report_card_generators_table.put_item(Item=report_card_generator)
+            data = ReportCardGenerator.model_validate(rcg)
+            report_card_generator = to_dynamodb_item(data.model_dump())
+            await report_card_generators_table.put_item(Item=report_card_generator)
 
-        # creazione dei report card draft e no show
-        report_cards_table = await get_table(db, settings.REPORT_CARDS_TABLE)
-        tracker_table = await get_table(db, settings.TRACKER_TABLE)
+            # creazione dei report card draft e no show
+            report_cards_table = await get_table(db, settings.REPORT_CARDS_TABLE)
+            calls_table = await get_table(db, settings.CALLS_TABLE)
 
-        # current period
-        calls_response = await tracker_table.query(
-            IndexName="student-id-date-index",
-            KeyConditionExpression=Key("student_id").eq(report_card_generator["student_id"])
-            & Key("date").between(
-                low_value=report_card_generator["current_start_month"],
-                high_value=report_card_generator["next_start_month"],
-            ),
-            ProjectionExpression="coach_id",
-        )
-        calls = calls_response.get("Items", [])
+            # current period
+            calls_response = await calls_table.query(
+                IndexName="student-id-date-index",
+                KeyConditionExpression=Key("student_id").eq(report_card_generator["student_id"])
+                & Key("date").between(
+                    low_value=report_card_generator["current_start_month"],
+                    high_value=report_card_generator["next_start_month"],
+                ),
+                ProjectionExpression="coach_id",
+            )
+            calls = calls_response.get("Items", [])
 
-        if calls:
-            # draft
-            calls_df = pd.DataFrame.from_dict(calls)
-            for coach_id in calls_df["coach_id"].unique():
+            if calls:
+                # draft
+                calls_df = pd.DataFrame.from_dict(calls)
+                for coach_id in calls_df["coach_id"].unique():
+                    # new report card
+                    report_card = {}
+                    report_card["report_card_id"] = f"{coach_id}#{report_card_generator['report_card_generator_id']}"
+                    report_card["start_month"] = report_card_generator["current_start_month"]
+                    # report_card["start_month"] = report_card_generator["next_start_month"]
+                    report_card["end_month"] = (
+                        datetime.fromisoformat(report_card["start_month"] + "-01").date()
+                        + relativedelta(months=report_card_generator["report_card_cadency"])
+                    ).strftime("%Y-%m")
+                    report_card["coach_id"] = coach_id
+                    report_card["student_id"] = report_card_generator["student_id"]
+                    report_card["status"] = "draft"
+                    report_card["report_card_generator_id"] = report_card_generator["report_card_generator_id"]
+                    report_card["report_card_email_recipients"] = report_card_generator["report_card_email_recipients"]
+                    report_card["report_card_cadency"] = report_card_generator["report_card_cadency"]
+                    report_card["client_id"] = report_card_generator["client_id"]
+                    await report_cards_table.put_item(Item=to_dynamodb_item(report_card))
+            else:
+                # no_show
                 # new report card
                 report_card = {}
-                report_card["report_card_id"] = f"{coach_id}#{report_card_generator['report_card_generator_id']}"
+                report_card["report_card_id"] = f"JJ#{report_card_generator['report_card_generator_id']}"
                 report_card["start_month"] = report_card_generator["current_start_month"]
-                # report_card["start_month"] = report_card_generator["next_start_month"]
                 report_card["end_month"] = (
                     datetime.fromisoformat(report_card["start_month"] + "-01").date()
                     + relativedelta(months=report_card_generator["report_card_cadency"])
                 ).strftime("%Y-%m")
-                report_card["coach_id"] = coach_id
+                report_card["coach_id"] = "JJ"
                 report_card["student_id"] = report_card_generator["student_id"]
-                report_card["status"] = "draft"
+                report_card["status"] = "no_show"
                 report_card["report_card_generator_id"] = report_card_generator["report_card_generator_id"]
                 report_card["report_card_email_recipients"] = report_card_generator["report_card_email_recipients"]
                 report_card["report_card_cadency"] = report_card_generator["report_card_cadency"]
                 report_card["client_id"] = report_card_generator["client_id"]
                 await report_cards_table.put_item(Item=to_dynamodb_item(report_card))
-        else:
-            # no_show
-            # new report card
-            report_card = {}
-            report_card["report_card_id"] = f"JJ#{report_card_generator['report_card_generator_id']}"
-            report_card["start_month"] = report_card_generator["current_start_month"]
-            report_card["end_month"] = (
-                datetime.fromisoformat(report_card["start_month"] + "-01").date()
-                + relativedelta(months=report_card_generator["report_card_cadency"])
-            ).strftime("%Y-%m")
-            report_card["coach_id"] = "JJ"
-            report_card["student_id"] = report_card_generator["student_id"]
-            report_card["status"] = "no_show"
-            report_card["report_card_generator_id"] = report_card_generator["report_card_generator_id"]
-            report_card["report_card_email_recipients"] = report_card_generator["report_card_email_recipients"]
-            report_card["report_card_cadency"] = report_card_generator["report_card_cadency"]
-            report_card["client_id"] = report_card_generator["client_id"]
-            await report_cards_table.put_item(Item=to_dynamodb_item(report_card))
 
-        # next period
-        calls_response = await tracker_table.query(
-            IndexName="student-id-date-index",
-            KeyConditionExpression=Key("student_id").eq(report_card_generator["student_id"])
-            & Key("date").gt(report_card_generator["next_start_month"]),
-            ProjectionExpression="coach_id",
-        )
-        calls = calls_response.get("Items", [])
+            # next period
+            calls_response = await calls_table.query(
+                IndexName="student-id-date-index",
+                KeyConditionExpression=Key("student_id").eq(report_card_generator["student_id"])
+                & Key("date").gt(report_card_generator["next_start_month"]),
+                ProjectionExpression="coach_id",
+            )
+            calls = calls_response.get("Items", [])
 
-        if calls:
-            # draft
-            calls_df = pd.DataFrame.from_dict(calls)
-            for coach_id in calls_df["coach_id"].unique():
-                # new report card
-                report_card = {}
-                report_card["report_card_id"] = f"{coach_id}#{report_card_generator['report_card_generator_id']}"
-                report_card["start_month"] = report_card_generator["next_start_month"]
-                report_card["end_month"] = (
-                    datetime.fromisoformat(report_card["start_month"] + "-01").date()
-                    + relativedelta(months=report_card_generator["report_card_cadency"])
-                ).strftime("%Y-%m")
-                report_card["coach_id"] = coach_id
-                report_card["student_id"] = report_card_generator["student_id"]
-                report_card["status"] = "draft"
-                report_card["report_card_generator_id"] = report_card_generator["report_card_generator_id"]
-                report_card["report_card_email_recipients"] = report_card_generator["report_card_email_recipients"]
-                report_card["report_card_cadency"] = report_card_generator["report_card_cadency"]
-                report_card["client_id"] = report_card_generator["client_id"]
-                await report_cards_table.put_item(Item=to_dynamodb_item(report_card))
+            if calls:
+                # draft
+                calls_df = pd.DataFrame.from_dict(calls)
+                for coach_id in calls_df["coach_id"].unique():
+                    # new report card
+                    report_card = {}
+                    report_card["report_card_id"] = f"{coach_id}#{report_card_generator['report_card_generator_id']}"
+                    report_card["start_month"] = report_card_generator["next_start_month"]
+                    report_card["end_month"] = (
+                        datetime.fromisoformat(report_card["start_month"] + "-01").date()
+                        + relativedelta(months=report_card_generator["report_card_cadency"])
+                    ).strftime("%Y-%m")
+                    report_card["coach_id"] = coach_id
+                    report_card["student_id"] = report_card_generator["student_id"]
+                    report_card["status"] = "draft"
+                    report_card["report_card_generator_id"] = report_card_generator["report_card_generator_id"]
+                    report_card["report_card_email_recipients"] = report_card_generator["report_card_email_recipients"]
+                    report_card["report_card_cadency"] = report_card_generator["report_card_cadency"]
+                    report_card["client_id"] = report_card_generator["client_id"]
+                    await report_cards_table.put_item(Item=to_dynamodb_item(report_card))
 
 
 # ---
@@ -653,10 +711,10 @@ async def insert_company_student_relations(db: Any):
         contracts_response = await contracts_table.query(
             IndexName="client-id-status-index",
             KeyConditionExpression=Key("client_id").eq(company_id) & Key("status").eq("Active"),
-            ProjectionExpression="#student",
-            ExpressionAttributeNames={"#student": "student_id"},
+            ProjectionExpression="#student, #client",
+            ExpressionAttributeNames={"#student": "student_id", "#client": "client_id"},
         )
-        contracts_for_companies.append(contracts_response["Items"])
+        contracts_for_companies += contracts_response.get("Items", [])
 
     unique_company_student_relations = (
         pd.DataFrame.from_dict(contracts_for_companies)[["client_id", "student_id"]]
@@ -668,7 +726,7 @@ async def insert_company_student_relations(db: Any):
     for relation in unique_company_student_relations:
         data = CompanyEmployee.model_validate(relation)
         item = to_dynamodb_item(data.model_dump())
-        company_employees_table.put_item(Item=item)
+        await company_employees_table.put_item(Item=item)
 
 
 # ---
@@ -697,9 +755,11 @@ async def migrate_all_data(db: Any):
     await migrate_generic(db, settings.INVOICES_TABLE, "Invoices", Invoice, special_logic=invoice_logic)
 
     def contract_logic(item):
-        if item["unlimited"]:
-            item.pop("used_calls")
-            item.pop("left_calls")
+        if item.get("unlimited"):
+            if "used_calls" in item:
+                _ = item.pop("used_calls")
+            if "left_calls" in item:
+                _ = item.pop("left_calls")
         return item
 
     logger.info("\n--- Migrating Contracts ---")
@@ -730,10 +790,20 @@ async def migrate_all_data(db: Any):
         return item
 
     logger.info("\n--- Migrating Tracker ---")
-    await migrate_generic(db, settings.TRACKER_TABLE, "Tracker", Tracker, special_logic=tracker_logic)
+    await migrate_generic(db, settings.CALLS_TABLE, "Tracker", Tracker, special_logic=tracker_logic)
 
     logger.info("\n--- Migrating Report Cards ---")
     await introduce_report_card_generators_and_report_cards(db)
     await migrate_generic(db, settings.REPORT_CARDS_TABLE, "Report Cards", ReportCard)
 
     logger.info("DATA MIGRATION COMPLETED.")
+
+
+# TODO:
+# aggiornare le colonne di Contracts table
+# Start Date,	Max End Date,	Status,	Used Calls,	Left Calls
+# in maniera coerente con le call inserite fino ad ora
+
+# TODO:
+# verificare i dati originari da google sheet che siano corenti con le colonne
+# Units,	Duration,	Coach Rate,	Prod cost

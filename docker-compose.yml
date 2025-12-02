@@ -33,6 +33,7 @@ services:
     # Mappa la cartella corrente del codice alla directory del codice dentro /app nel container.
     volumes:
       - ./smartalk:/app/smartalk
+      - ./logs:/app/logs
 
     # 2. AGGIORNA IL COMMAND PER USARE IL RELOAD DI UVICORN
     # Questo dice a uvicorn di guardare i file sorgente e riavviarsi se cambiano.

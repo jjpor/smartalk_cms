@@ -88,6 +88,7 @@ async def _create_contracts_table(db, table_name) -> None:
             {"AttributeName": "report_card_cadency", "AttributeType": "N"},
             {"AttributeName": "report_card_start_month", "AttributeType": "S"},
             {"AttributeName": "report_card_generator_id", "AttributeType": "S"},
+            {"AttributeName": "product_id", "AttributeType": "S"},
         ],
         GlobalSecondaryIndexes=[
             {
@@ -96,10 +97,15 @@ async def _create_contracts_table(db, table_name) -> None:
                     {"AttributeName": "student_id", "KeyType": "HASH"},
                     {"AttributeName": "status", "KeyType": "RANGE"},
                 ],
-                "Projection": {
-                    "ProjectionType": "INCLUDE",
-                    "NonKeyAttributes": ["unlimited", "left_calls", "used_calls", "max_end_date", "product_id"],
-                },
+                "Projection": {"ProjectionType": "ALL"},
+            },
+            {
+                "IndexName": "status-contract_id-index",
+                "KeySchema": [
+                    {"AttributeName": "status", "KeyType": "HASH"},
+                    {"AttributeName": "contract_id", "KeyType": "RANGE"},
+                ],
+                "Projection": {"ProjectionType": "KEYS_ONLY"},
             },
             {
                 "IndexName": "status-index",
@@ -117,6 +123,7 @@ async def _create_contracts_table(db, table_name) -> None:
                         "unlimited",
                         "max_end_date",
                         "report_card_generator_id",
+                        "product_id",
                     ],
                 },
             },
@@ -139,7 +146,16 @@ async def _create_contracts_table(db, table_name) -> None:
                 ],
                 "Projection": {
                     "ProjectionType": "INCLUDE",
-                    "NonKeyAttributes": ["unlimited", "max_end_date", "report_card_generator_id", "student_id"],
+                    "NonKeyAttributes": [
+                        "unlimited",
+                        "max_end_date",
+                        "student_id",
+                        "report_card_cadency",
+                        "report_card_start_month",
+                        "report_card_email_recipients",
+                        "report_card_generator_id",
+                        "start_date",
+                    ],
                 },
             },
             {
@@ -162,10 +178,9 @@ async def _create_contracts_table(db, table_name) -> None:
                 },
             },
             {
-                "IndexName": "client_id-report_card_generator_id-index",
+                "IndexName": "client_id-index",
                 "KeySchema": [
                     {"AttributeName": "client_id", "KeyType": "HASH"},
-                    {"AttributeName": "report_card_generator_id", "KeyType": "RANGE"},
                 ],
                 "Projection": {"ProjectionType": "ALL"},
             },
@@ -193,9 +208,9 @@ async def _create_invoices_table(db, table_name) -> None:
     )
 
 
-async def _create_tracker_table(db, table_name) -> None:
+async def _create_calls_table(db, table_name) -> None:
     """
-    Tabella Tracker (tracciamento sessioni).
+    Tabella Calls (tracciamento sessioni).
     - PK (composita): contract_id (HASH) + session_id (RANGE)
     - La Sort Key 'session_id' è una chiave composita (es. "COACH_ID#STUDENT_ID#ISO_DATE")
       per garantire l'unicità di ogni sessione, anche in lezioni di gruppo.
@@ -253,6 +268,7 @@ async def _create_report_card_generators_table(db, table_name) -> None:
         KeySchema=[{"AttributeName": "report_card_generator_id", "KeyType": "HASH"}],
         AttributeDefinitions=[
             {"AttributeName": "report_card_generator_id", "AttributeType": "S"},
+            {"AttributeName": "client_id", "AttributeType": "S"},
         ],
         GlobalSecondaryIndexes=[
             # per vedere altri report card dello stesso client
@@ -440,7 +456,7 @@ async def ensure_tables(db) -> None:
             settings.PRODUCTS_TABLE: _create_products_table,
             settings.CONTRACTS_TABLE: _create_contracts_table,
             settings.INVOICES_TABLE: _create_invoices_table,
-            settings.TRACKER_TABLE: _create_tracker_table,
+            settings.CALLS_TABLE: _create_calls_table,
             settings.REPORT_CARD_GENERATORS_TABLE: _create_report_card_generators_table,
             settings.REPORT_CARDS_TABLE: _create_report_cards_table,
             settings.DEBRIEFS_TABLE: _create_debriefs_table,

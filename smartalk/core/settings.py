@@ -17,7 +17,7 @@ class settings(BaseSettings):
     PRODUCTS_TABLE: str
     CONTRACTS_TABLE: str
     INVOICES_TABLE: str
-    TRACKER_TABLE: str
+    CALLS_TABLE: str
     REPORT_CARDS_TABLE: str
     REPORT_CARD_GENERATORS_TABLE: str
     DEBRIEFS_TABLE: str

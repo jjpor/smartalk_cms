@@ -9,7 +9,7 @@ from typing import Any, Dict, List, Optional
 import pandas as pd
 from boto3.dynamodb.conditions import Attr, Key
 from botocore.exceptions import ClientError
-from dateutil import relativedelta
+from dateutil.relativedelta import relativedelta
 from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource
 
 from smartalk.core.dynamodb import (
@@ -79,7 +79,7 @@ async def get_student_contracts_for_individual(
         | Attr("max_end_date").not_exists()
         | Attr("max_end_date").gte(get_today_string()),
         ScanIndexForward=False,
-        ProjectionExpression=", ".join(["product_id"]),
+        ProjectionExpression=", ".join(["product_id", "client_id", "contract_id"]),
     )
     products_table = await get_table(db, settings.PRODUCTS_TABLE)
 
@@ -115,7 +115,7 @@ async def get_student_contracts_for_group(db: DynamoDBServiceResource) -> List[D
         | Attr("max_end_date").not_exists()
         | Attr("max_end_date").gte(get_today_string()),
         ScanIndexForward=False,
-        ProjectionExpression=", ".join(["product_id"]),
+        ProjectionExpression=", ".join(["product_id", "contract_id", "student_id", "client_id"]),
     )
     products_table = await get_table(db, settings.PRODUCTS_TABLE)
 
@@ -165,7 +165,7 @@ async def get_students_and_contracts_by_client_and_product(
             | Attr("max_end_date").gte(get_today_string())
         ),
         ScanIndexForward=False,
-        ProjectionExpression=", ".join(["student_id"]),
+        ProjectionExpression=", ".join(["student_id", "contract_id"]),
     )
     students_table = await get_table(db, settings.USERS_TABLE)
 
@@ -383,7 +383,7 @@ async def log_call_to_db(
 
             puts.append(
                 {
-                    "TableName": settings.TRACKER_TABLE,
+                    "TableName": settings.CALLS_TABLE,
                     "Item": to_low_level_item({**call, **extra_dict_for_call}),
                     "ConditionExpression": "attribute_not_exists(#pk_attr) AND attribute_not_exists(#sk_attr)",
                     "ExpressionAttributeNames": {
@@ -548,7 +548,7 @@ async def get_min_report_card_start_month_by_report_card_generator_id(
         & Key("status").eq("Active"),
         ProjectionExpression="report_card_start_month",
     )
-    start_months = [contract["report_card_start_month"] for contract in contracts_response.get("items", [])]
+    start_months = [contract["report_card_start_month"] for contract in contracts_response.get("Items", [])]
 
     # check on draft report cards
     report_cards_table = await get_table(db, settings.REPORT_CARDS_TABLE)
@@ -559,7 +559,7 @@ async def get_min_report_card_start_month_by_report_card_generator_id(
         FilterExpression=Attr("start_month").gt(get_today_string),
         ProjectionExpression="start_month",
     )
-    start_months += [report_card["start_month"] for report_card in report_cards_response.get("items", [])]
+    start_months += [report_card["start_month"] for report_card in report_cards_response.get("Items", [])]
 
     return min(start_months) if start_months else None
 
@@ -760,17 +760,6 @@ async def create_contract(
                 == contract["report_card_email_recipients"]
             ), "This contract has different report_card_email_recipients"
 
-        puts.append(
-            {
-                "TableName": settings.CONTRACTS_TABLE,
-                "Item": to_low_level_item(contract),
-                "ConditionExpression": "attribute_not_exists('#pk_attr')",
-                "ExpressionAttributeNames": {
-                    "#pk_attr": "contract_id",
-                },
-            }
-        )
-
         if has_report_card_context:
             report_card_generator_to_use = {}
             create_report_card = False
@@ -855,6 +844,53 @@ async def create_contract(
                     }
                 )
 
+        # create new contract_id
+        contracts_table = await get_table(db, settings.CONTRACTS_TABLE)
+        active_contracts_response = await contracts_table.query(
+            IndexName="status-contract_id-index",
+            KeyConditionExpression=Key("status").eq("Active"),
+            ProjectionExpression="contract_id",
+            Limit=1,
+        )
+
+        inactive_contracts_response = await contracts_table.query(
+            IndexName="status-contract_id-index",
+            KeyConditionExpression=Key("status").eq("Inactive"),
+            ProjectionExpression="contract_id",
+            Limit=1,
+        )
+
+        contract_ids = [
+            contract["contract_id"]
+            for contract in active_contracts_response.get("Items", []) + inactive_contracts_response.get("Items", [])
+        ]
+
+        contract_id = "CON001"
+        if contract_ids:
+            max_contract_id = max(contract_ids)
+            contract_id = int(max_contract_id.split("CON")[1]) + 1
+            if contract_id > 99:
+                contract_id = f"CON{contract_id}"
+            else:
+                if contract_id > 9:
+                    contract_id = f"CON0{contract_id}"
+                else:
+                    contract_id = f"CON00{contract_id}"
+
+        contract["contract_id"] = contract_id
+
+        # prepare put item
+        puts.append(
+            {
+                "TableName": settings.CONTRACTS_TABLE,
+                "Item": to_low_level_item(contract),
+                "ConditionExpression": "attribute_not_exists('#pk_attr')",
+                "ExpressionAttributeNames": {
+                    "#pk_attr": "contract_id",
+                },
+            }
+        )
+
         await make_atomic_transaction(db, puts=puts, updates=updates)
 
         return {"success": True, "message": "Contratto registrato correttamente."}
@@ -910,7 +946,9 @@ async def get_students_and_company_list(db: DynamoDBServiceResource) -> dict:
     students = get_active_students(db)
     users_table = await get_table(db, settings.USERS_TABLE)
     companies_response = await users_table.query(
-        IndexName="user-type-index", KeyConditionExpression=Key("user_type").eq("company"), ProjectionExpression="id"
+        IndexName="user-type-index",
+        KeyConditionExpression=Key("user_type").eq("company"),
+        ProjectionExpression="id",
     )
     companies = [company["id"] for company in companies_response.get("Items", [])]
     return {"students": students, "companies": companies}
@@ -922,7 +960,7 @@ async def get_monthly_earnings(coach_id: str, db: DynamoDBServiceResource) -> fl
 
     try:
         # GSI: coach-id-date-index (HASH: coach_id, RANGE: date)
-        table = await get_table(db, settings.TRACKER_TABLE)
+        table = await get_table(db, settings.CALLS_TABLE)
         response = await table.query(
             IndexName="coach-id-date-index",
             KeyConditionExpression=Key("coach_id").eq(coach_id) & Key("date").begins_with(today[:7]),
@@ -938,8 +976,8 @@ async def get_monthly_earnings(coach_id: str, db: DynamoDBServiceResource) -> fl
 async def get_calls_by_coach(db, coach_id: str) -> List[Dict[str, Any]]:
     """Recupera tutte le chiamate (TRACKER Table, coach-id-date-index)."""
     try:
-        tracker_table = await get_table(db, settings.TRACKER_TABLE)
-        lessons = await tracker_table.query(
+        calls_table = await get_table(db, settings.CALLS_TABLE)
+        lessons = await calls_table.query(
             IndexName="coach-id-date-index",
             KeyConditionExpression=Key("coach_id").eq(coach_id),
             ScanIndexForward=False,
@@ -967,8 +1005,8 @@ async def get_calls_by_coach(db, coach_id: str) -> List[Dict[str, Any]]:
 async def get_calls_by_student(student_id: str, db: DynamoDBServiceResource) -> List[Dict[str, Any]]:
     """Recupera tutte le chiamate (TRACKER Table, student-id-date-index)."""
     try:
-        tracker_table = await get_table(db, settings.TRACKER_TABLE)
-        lessons = await tracker_table.query(
+        calls_table = await get_table(db, settings.CALLS_TABLE)
+        lessons = await calls_table.query(
             IndexName="student-id-date-index",
             KeyConditionExpression=Key("student_id").eq(student_id),
             ScanIndexForward=False,
@@ -1144,7 +1182,7 @@ async def get_calls_by_report_card(
     )
     contract_ids = [contract["contract_id"] for contract in contracts_response.get("Items", [])]
     calls = []
-    tracker_table = await get_table(db, settings.TRACKER_TABLE)
+    calls_table = await get_table(db, settings.CALLS_TABLE)
     student_id = report_card_generator_id.split("#")[0]
     session_id_starting = f"{coach_id}#{student_id}#{start_month}"
     call_field_to_keep = [
@@ -1161,7 +1199,7 @@ async def get_calls_by_report_card(
     ]
     for contract_id in contract_ids:
         # calls for the contract by the coach in the report card period with the student
-        calls_response = await tracker_table.query(
+        calls_response = await calls_table.query(
             KeyConditionExpression=Key("contract_id").eq(contract_id) & Key("session_id").gt(session_id_starting),
             FilterExpression=Attr("date").lt(report_card["end_month"]),
         )

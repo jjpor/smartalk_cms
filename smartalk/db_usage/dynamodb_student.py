@@ -9,7 +9,7 @@ from typing import Any, Dict, List, Optional
 import pandas as pd
 from boto3.dynamodb.conditions import Attr, Key
 from botocore.exceptions import ClientError
-from dateutil import relativedelta
+from dateutil.relativedelta import relativedelta
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from mypy_boto3_dynamodb.service_resource import DynamoDBServiceResource
 

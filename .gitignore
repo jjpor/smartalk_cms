@@ -218,5 +218,7 @@ dynamodb_local/
 #json
 *.json
 
-# testing
+# logs, test
+logs
 testing
+

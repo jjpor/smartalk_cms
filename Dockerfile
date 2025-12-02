@@ -1,6 +1,21 @@
 # Usa l'immagine ufficiale di Python 3.11 su base leggera (slim)
 FROM python:3.11-slim
 
+# Install system dependencies for WeasyPrint (Debian Trixie compatible)
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    libcairo2 \
+    libcairo2-dev \
+    libpango-1.0-0 \
+    libpangoft2-1.0-0 \
+    libpangocairo-1.0-0 \
+    libgdk-pixbuf-2.0-0 \
+    libgobject-2.0-0 \
+    libffi-dev \
+    shared-mime-info \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 # Imposta la directory di lavoro all'interno del container
 WORKDIR /app
 
