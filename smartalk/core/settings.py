@@ -33,9 +33,10 @@ class settings(BaseSettings):
     GMAIL_TOKEN_JSON: str
     CALENDAR_SERVICE: str
 
-    # --- Variabile per la migrazione ---
-    # Impostala a 'True' nel file .env solo per il primo avvio
+    # --- Variabili per la migrazione ---
+    # Impostare a 'True' nel file .env solo per il primo avvio
     RUN_DATA_MIGRATION: bool = False
+    RUN_INIT_CALENDARS: bool = False
     LOCAL_ENDPOINT: str
 
     # Startup

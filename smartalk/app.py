@@ -90,7 +90,7 @@ app.include_router(auth.router)
 app.include_router(student.router)
 app.include_router(coach.router)
 app.include_router(scheduler.router)
-app.include_router(calendar_sync.router)
+# app.include_router(calendar_sync.router)
 app.include_router(website.router)
 
 
@@ -124,32 +124,33 @@ async def unified_startup(x_internal_key: str | None = None):
             await migrate_all_data(db)
             logger.info("Migrazione completata.")
 
-        # 2. Watchers Google Calendar
-        logger.info("Avvio watchers Google Calendar...")
-        coaches = await get_all_coaches(db)
+        if settings.RUN_INIT_CALENDARS:
+            # 2. Watchers Google Calendar
+            logger.info("Avvio watchers Google Calendar...")
+            coaches = await get_all_coaches(db)
 
-        for c in coaches:
-            calendar_id = c["calendar_id"]
-            email = c["email"]
+            for c in coaches:
+                calendar_id = c["calendar_id"]
+                email = c["email"]
 
-            sync_item = await get_sync_item(db, calendar_id)
+                sync_item = await get_sync_item(db, calendar_id)
 
-            # se non c'è watcher → crealo
-            if not sync_item:
-                await setup_watch_for_calendar(db, email, calendar_id)
-                sync_token = None  # primo sync
-            else:
-                sync_token = sync_item.get("sync_token")
+                # se non c'è watcher → crealo
+                if not sync_item:
+                    await setup_watch_for_calendar(db, email, calendar_id)
+                    sync_token = None  # primo sync
+                else:
+                    sync_token = sync_item.get("sync_token")
 
-            # sync incrementale se disponibile, full se no
-            await process_calendar_delta(
-                db=db,
-                calendar_id=calendar_id,
-                coach_email=email,
-                sync_token=sync_token,
-            )
+                # sync incrementale se disponibile, full se no
+                await process_calendar_delta(
+                    db=db,
+                    calendar_id=calendar_id,
+                    coach_email=email,
+                    sync_token=sync_token,
+                )
 
-        logger.info("Watchers attivi e sincronizzazione completa.")
+            logger.info("Watchers attivi e sincronizzazione completa.")
 
     return {"status": "startup_completed"}
 
