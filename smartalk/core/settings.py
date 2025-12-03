@@ -38,6 +38,7 @@ class settings(BaseSettings):
     RUN_DATA_MIGRATION: bool = False
     RUN_INIT_CALENDARS: bool = False
     LOCAL_ENDPOINT: str
+    X_SECRET: str
 
     # Startup
     INTERNAL_STARTUP_KEY: str

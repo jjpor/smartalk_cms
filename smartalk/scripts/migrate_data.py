@@ -16,7 +16,7 @@ from pydantic import BaseModel, EmailStr, Field, TypeAdapter, ValidationError, f
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from smartalk.core.dynamodb import get_table, get_today_string, to_dynamodb_item
+from smartalk.core.dynamodb import get_item, get_table, get_today_string, to_dynamodb_item
 from smartalk.core.settings import settings
 from smartalk.db_usage.dynamodb_auth import hash_password
 
@@ -308,7 +308,9 @@ async def fetch_sheet_data(sheet_name: str) -> List[Dict[str, Any]]:
     }
     async with httpx.AsyncClient(follow_redirects=True) as client:
         try:
-            response = await client.get(f"{APPS_SCRIPT_URL}?sheet={sheet_name}", timeout=120.0, headers=headers)
+            response = await client.get(
+                f"{APPS_SCRIPT_URL}?sheet={sheet_name}&x_secret={settings.X_SECRET}", timeout=120.0, headers=headers
+            )
             response.raise_for_status()
             json_data = response.json()
             if isinstance(json_data, dict) and json_data.get("success"):
@@ -380,10 +382,14 @@ async def get_contract(db, student_id):
         return None
 
 
-async def get_contract_by_id(db, contract_id):
-    contract_table = await get_table(db, settings.CONTRACTS_TABLE)
-    response = await contract_table.get_item(Key={"contract_id": contract_id})
-    return response["Item"]
+async def get_product_by_name(db, product_name):
+    products_table = await get_table(db, settings.PRODUCTS_TABLE)
+    response = await products_table.query(
+        IndexName="product_name-index",
+        KeyConditionExpression=Key("product_name").eq(product_name),
+        Limit=1,
+    )
+    return response["Items"][0]
 
 
 async def migrate_generic(db: Any, table_name: str, sheet_name: str, model_cls: BaseModel, special_logic=None):
@@ -391,6 +397,58 @@ async def migrate_generic(db: Any, table_name: str, sheet_name: str, model_cls: 
     row_index = 2
     for row in await fetch_sheet_data(sheet_name):
         try:
+            if sheet_name == "OLD - Trackers":
+                # from OLD
+                # Student ID	Allocation ID	Date	Coach	Time Override	Units	Attendance	Left	€/h	Info	Contexted Info	Product	JJ €/h
+                # to New
+                # Date	Student ID	Contract ID	Coach ID	Units	Duration	Coach Rate	Prod cost	Attendance	Notes	Product ID
+
+                new_row = {}
+
+                # Date	Student ID	Coach ID    Units	Attendance	Notes
+                new_row["Date"] = row["Date"]
+                new_row["Student ID"] = row["Student ID"]
+                new_row["Coach ID"] = row["Coach"]
+                new_row["Units"] = row["Units"]
+                new_row["Attendance"] = row["Attendance"]
+                new_row["Notes"] = row["Info"]
+
+                # Product ID    Duration	Coach Rate	Prod cost
+                product = await get_product_by_name(db, row["Product"])
+                coach = await get_item(db, settings.USERS_TABLE, {"id": new_row["Coach ID"]})
+
+                new_row["Product ID"] = product["product_id"]
+                new_row["Duration"] = product["duration"] * new_row["Units"]
+                new_row["Coach Rate"] = product[f"{coach['role'].split(' ')[0].lower()}_coach_rate"] * new_row["Units"]
+                new_row["Prod cost"] = product["head_coach_rate"] * new_row["Units"]
+
+                # Contract ID
+                invoice_id, client_id, _ = row["Allocation ID"].split("–")
+                contracts_table = await get_table(db, settings.CONTRACTS_TABLE)
+                contracts_response = await contracts_table.query(
+                    IndexName="client-id-product-id-index",
+                    KeyConditionExpression=Key("client_id").eq(client_id) & Key("product_id").eq(new_row["Product ID"]),
+                    FilterExpression=Attr("student_id").eq(new_row["Student ID"]),
+                )
+                contracts = contracts_response.get("Items", [])
+                if contracts:
+                    if len(contracts) == 1:
+                        if contracts[0]["invoice_id"].endswith(invoice_id.split("/")[1]):
+                            new_row["Contract ID"] = contracts[0]["contract_id"]
+                        else:
+                            raise Exception("Found contract not matching")
+                    else:
+                        candidates = []
+                        for contract in contracts:
+                            if contract["invoice_id"].endswith(invoice_id.split("/")[1]):
+                                candidates.append(contract["contract_id"])
+                        if len(candidates) == 1:
+                            new_row["Contract ID"] = candidates[0]
+                        else:
+                            raise Exception("Multiple contracts matching")
+                else:
+                    raise Exception("Contract not found")
+
             if (
                 table_name == settings.INVOICES_TABLE
                 and row.get("Invoice ID") in ["", None]
@@ -426,7 +484,7 @@ async def migrate_generic(db: Any, table_name: str, sheet_name: str, model_cls: 
                     # prendere contract_id del primo contract in cui compare row['Student ID']
                     contract = await get_contract(db, row["Student ID"])
                 else:
-                    contract = await get_contract_by_id(db, contract_id)
+                    contract = await get_item(db, settings.CONTRACTS_TABLE, {"contract_id": contract_id})
                 if contract is None:
                     # salta per la migrazione (dati troppo vecchi)
                     continue
@@ -782,6 +840,16 @@ async def migrate_all_data(db: Any):
     logger.info("\n--- Migrating Debriefs ---")
     await migrate_generic(db, settings.DEBRIEFS_TABLE, "Debriefs", Debrief, special_logic=debrief_logic)
 
+    # def tracker_logic(item):
+    #     item["date"] = item.pop("session_date")
+    #     item["session_id"] = f"{item['coach_id']}#{item['student_id']}#{item['date']}"
+    #     if f"{item['student_id']}#{item['coach_id']}#{item['date']}" in calls_with_debrief:
+    #         item["has_debrief"] = True
+    #     return item
+
+    # logger.info("\n--- Migrating Tracker ---")
+    # await migrate_generic(db, settings.CALLS_TABLE, "Tracker", Tracker, special_logic=tracker_logic)
+
     def tracker_logic(item):
         item["date"] = item.pop("session_date")
         item["session_id"] = f"{item['coach_id']}#{item['student_id']}#{item['date']}"
@@ -790,7 +858,7 @@ async def migrate_all_data(db: Any):
         return item
 
     logger.info("\n--- Migrating Tracker ---")
-    await migrate_generic(db, settings.CALLS_TABLE, "Tracker", Tracker, special_logic=tracker_logic)
+    await migrate_generic(db, settings.CALLS_TABLE, "OLD - Trackers", Tracker, special_logic=tracker_logic)
 
     logger.info("\n--- Migrating Report Cards ---")
     await introduce_report_card_generators_and_report_cards(db)
@@ -803,7 +871,3 @@ async def migrate_all_data(db: Any):
 # aggiornare le colonne di Contracts table
 # Start Date,	Max End Date,	Status,	Used Calls,	Left Calls
 # in maniera coerente con le call inserite fino ad ora
-
-# TODO:
-# verificare i dati originari da google sheet che siano corenti con le colonne
-# Units,	Duration,	Coach Rate,	Prod cost

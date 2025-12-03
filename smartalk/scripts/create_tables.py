@@ -70,7 +70,17 @@ async def _create_products_table(db, table_name) -> None:
         TableName=table_name,
         BillingMode="PAY_PER_REQUEST",
         KeySchema=[{"AttributeName": "product_id", "KeyType": "HASH"}],
-        AttributeDefinitions=[{"AttributeName": "product_id", "AttributeType": "S"}],
+        AttributeDefinitions=[
+            {"AttributeName": "product_id", "AttributeType": "S"},
+            {"AttributeName": "product_name", "AttributeType": "S"},
+        ],
+        GlobalSecondaryIndexes=[
+            {
+                "IndexName": "product_name-index",
+                "KeySchema": [{"AttributeName": "product_name", "KeyType": "HASH"}],
+                "Projection": {"ProjectionType": "ALL"},
+            },
+        ],
     )
 
 
