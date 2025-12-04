@@ -14,6 +14,8 @@ from boto3.dynamodb.conditions import Attr, Key
 from dateutil.relativedelta import relativedelta
 from pydantic import BaseModel, EmailStr, Field, TypeAdapter, ValidationError, field_validator
 
+from smartalk.scripts.create_booking_calendars import USER_TIMEZONES, get_or_create_booking_calendar
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from smartalk.core.dynamodb import get_item, get_table, get_today_string, to_dynamodb_item
@@ -317,7 +319,10 @@ async def fetch_sheet_data(sheet_name: str) -> List[Dict[str, Any]]:
                 data = json_data.get("data", [])
                 logger.info(f"  -> Fetched {len(data)} rows from {sheet_name}.")
                 return data
-            return []
+            else:
+                logger.info(f"type: {type(json_data)} - success: {json_data.get('success')}")
+                logger.info(json_data)
+                return []
         except Exception as e:
             logger.error(f"  -> An error occurred while fetching {sheet_name}: {e}", exc_info=True)
             return []
@@ -350,10 +355,17 @@ async def migrate_users(db: Any):
                 # not real error
                 if user_type == "Students" and row.get("Password") == "" and row.get("Email") == "":
                     continue
+
+                # all empty values to None
+                row = {k: row[k] if row[k] else None for k in row}
+
+                # validate row
                 data = user_class_map[user_type].model_validate(row)
                 item = data.model_dump(by_alias=False, exclude={"password"})
                 item["user_type"] = user_type_map[user_type]
                 item["password_hash"] = hash_password(str(data.password))
+
+                # use key fields
                 key = None
                 if user_type in key_map:
                     key = {k: item[k] for k in key_map[user_type]}
@@ -367,6 +379,95 @@ async def migrate_users(db: Any):
             except ValidationError as e:
                 logger.warning(f"  -> Skipping invalid {user_type} row {row_index}: {e} | Data: {repr(row)}")
             row_index += 1
+
+
+async def migrate_coaches(db: Any):
+    table_name = settings.USERS_TABLE
+    sheet_name = "OLD - Coaches"
+
+    coaches = []
+    #################################################
+    # from
+    # OLD Coaches
+    #   Surname	Name	Coach ID	Status	Email	Phone	Middle Name	Address	Citizenship	Wise Payment Info	Collaboration Agreement	Dashboard Password	Payment Folder
+    # to New Coaches
+    #   Name	Surname	Coach ID	Status	Email	Phone	Role	Wise Payment Info	Password	Agreement	Payment Folder	Middle Name	Address	Citizenship	Time Zone	Calendar ID
+
+    old_coaches = await fetch_sheet_data(sheet_name)
+    for row in old_coaches:
+        new_row = {}
+        # "Name", "Surname", "Coach ID", "Status", "Email", "Phone", "Middle Name", "Wise Payment Info", "Payment Folder", "Address", "Citizenship"
+        for key in [
+            "Name",
+            "Surname",
+            "Coach ID",
+            "Status",
+            "Email",
+            "Phone",
+            "Middle Name",
+            "Wise Payment Info",
+            "Payment Folder",
+            "Address",
+            "Citizenship",
+        ]:
+            new_row[key] = row[key]
+
+        # Password	Agreement
+        new_row["Password"] = row["Dashboard Password"]
+        new_row["Agreement"] = row["Collaboration Agreement"]
+
+        # Role
+        if new_row["Coach ID"] == "JJ":
+            new_row["Role"] = "Head Coach"
+        if new_row["Coach ID"] in ["EL", "TH"]:
+            new_row["Role"] = "Senior Coach"
+        if "Role" not in new_row:
+            new_row["Role"] = "Junior Coach"
+
+        # Time Zone
+        new_row["Time Zone"] = (
+            USER_TIMEZONES[new_row["Email"]]
+            if new_row["Email"] in USER_TIMEZONES
+            else USER_TIMEZONES["jj@smartalk.online"]
+        )
+
+        # Calendar ID
+        new_row["Calendar ID"] = await get_or_create_booking_calendar(new_row["Email"], new_row["Time Zone"])
+
+    coaches.append(new_row)
+
+    #################################################
+
+    table = await get_table(db, table_name)
+    row_index = 2
+
+    user_type = "Coaches"
+    row_index = 2
+    for row in coaches:
+        try:
+            # all empty values to None
+            row = {k: row[k] if row[k] else None for k in row}
+
+            # validate row
+            data = user_class_map[user_type].model_validate(row)
+            item = data.model_dump(by_alias=False, exclude={"password"})
+            item["user_type"] = user_type_map[user_type]
+            item["password_hash"] = hash_password(str(data.password))
+
+            # use key fields
+            key = None
+            if user_type in key_map:
+                key = {k: item[k] for k in key_map[user_type]}
+            if key:
+                previous_item_response = await table.get_item(Key=key)
+                previous_item = previous_item_response.get("Item", None)
+                if previous_item:
+                    logger.info(f"{user_type}, row_index: {row_index}")
+                    logger.info(f"Already inserted overwritten item {user_type}: {previous_item}")
+                await table.put_item(Item=to_dynamodb_item(item))
+        except ValidationError as e:
+            logger.warning(f"  -> Skipping invalid {user_type} row {row_index}: {e} | Data: {repr(row)}")
+        row_index += 1
 
 
 async def get_contract(db, student_id):
@@ -397,58 +498,6 @@ async def migrate_generic(db: Any, table_name: str, sheet_name: str, model_cls: 
     row_index = 2
     for row in await fetch_sheet_data(sheet_name):
         try:
-            if sheet_name == "OLD - Trackers":
-                # from OLD
-                # Student ID	Allocation ID	Date	Coach	Time Override	Units	Attendance	Left	€/h	Info	Contexted Info	Product	JJ €/h
-                # to New
-                # Date	Student ID	Contract ID	Coach ID	Units	Duration	Coach Rate	Prod cost	Attendance	Notes	Product ID
-
-                new_row = {}
-
-                # Date	Student ID	Coach ID    Units	Attendance	Notes
-                new_row["Date"] = row["Date"]
-                new_row["Student ID"] = row["Student ID"]
-                new_row["Coach ID"] = row["Coach"]
-                new_row["Units"] = row["Units"]
-                new_row["Attendance"] = row["Attendance"]
-                new_row["Notes"] = row["Info"]
-
-                # Product ID    Duration	Coach Rate	Prod cost
-                product = await get_product_by_name(db, row["Product"])
-                coach = await get_item(db, settings.USERS_TABLE, {"id": new_row["Coach ID"]})
-
-                new_row["Product ID"] = product["product_id"]
-                new_row["Duration"] = product["duration"] * new_row["Units"]
-                new_row["Coach Rate"] = product[f"{coach['role'].split(' ')[0].lower()}_coach_rate"] * new_row["Units"]
-                new_row["Prod cost"] = product["head_coach_rate"] * new_row["Units"]
-
-                # Contract ID
-                invoice_id, client_id, _ = row["Allocation ID"].split("–")
-                contracts_table = await get_table(db, settings.CONTRACTS_TABLE)
-                contracts_response = await contracts_table.query(
-                    IndexName="client-id-product-id-index",
-                    KeyConditionExpression=Key("client_id").eq(client_id) & Key("product_id").eq(new_row["Product ID"]),
-                    FilterExpression=Attr("student_id").eq(new_row["Student ID"]),
-                )
-                contracts = contracts_response.get("Items", [])
-                if contracts:
-                    if len(contracts) == 1:
-                        if contracts[0]["invoice_id"].endswith(invoice_id.split("/")[1]):
-                            new_row["Contract ID"] = contracts[0]["contract_id"]
-                        else:
-                            raise Exception("Found contract not matching")
-                    else:
-                        candidates = []
-                        for contract in contracts:
-                            if contract["invoice_id"].endswith(invoice_id.split("/")[1]):
-                                candidates.append(contract["contract_id"])
-                        if len(candidates) == 1:
-                            new_row["Contract ID"] = candidates[0]
-                        else:
-                            raise Exception("Multiple contracts matching")
-                else:
-                    raise Exception("Contract not found")
-
             if (
                 table_name == settings.INVOICES_TABLE
                 and row.get("Invoice ID") in ["", None]
@@ -530,10 +579,236 @@ async def migrate_generic(db: Any, table_name: str, sheet_name: str, model_cls: 
                 if row["Student ID"] in ["", None]:
                     continue
 
+            # all empty values to None
+            row = {k: row[k] if row[k] else None for k in row}
+
+            # validate row
             data = model_cls.model_validate(row)
             item = to_dynamodb_item(data.model_dump())
             if special_logic:
                 item = special_logic(item)
+
+            # use key fields
+            key = None
+            if sheet_name in key_map:
+                key = {k: item[k] for k in key_map[sheet_name]}
+            if key:
+                previous_item_response = await table.get_item(Key=key)
+                previous_item = previous_item_response.get("Item", None)
+                if previous_item:
+                    logger.info(f"{sheet_name}, row_index: {row_index}")
+                    logger.info(f"Already inserted overwritten item {sheet_name}: {previous_item}")
+            await table.put_item(Item=item)
+        except Exception as e:
+            logger.warning(f"  -> Skipping invalid {sheet_name} row {row_index}: {e} | Data: {row}")
+        row_index += 1
+
+
+async def migrate_invoices(db: Any, special_logic=None):
+    table_name = settings.INVOICES_TABLE
+    sheet_name = "OLD - Invoices"
+    model_cls = Invoice
+
+    invoices = []
+    #################################################
+    # from
+    # OLD Invoices
+    #   Invoice ID	Buyer	Date	Due Date	Total	Prod cost	Calls	Price	Installments	Paid	Client ID	Product	Package	Type	Constrained?	Unlimited	Left Invoice	ACTIVE	Frequency (M)	Installments Paid	New Due Date	Reminder Email	Codice univoco CFMT	Codice fiscale beneficiario	1st PEC
+    # to New Invoices
+    #   Invoice ID	Client ID	Buyer	Date	Due	Amount	Paid	Installments	Email Reminder Expired Invoice	Expired Email (sent on)	1st PEC (sent on)	2nd PEC (sent on)	Codice Univoco CFMT	Codice Fiscale Beneficiario CFMT
+
+    # TODO: usare
+
+    #################################################
+
+    table = await get_table(db, table_name)
+    row_index = 2
+
+    for row in invoices:
+        try:
+            if row.get("Invoice ID") in ["", None] and row.get("Client ID") in ["", None]:
+                continue
+
+            # all empty values to None
+            row = {k: row[k] if row[k] else None for k in row}
+
+            # validate row
+            data = model_cls.model_validate(row)
+            item = to_dynamodb_item(data.model_dump())
+            if special_logic:
+                item = special_logic(item)
+
+            # use key fields
+            key = None
+            if sheet_name in key_map:
+                key = {k: item[k] for k in key_map[sheet_name]}
+            if key:
+                previous_item_response = await table.get_item(Key=key)
+                previous_item = previous_item_response.get("Item", None)
+                if previous_item:
+                    logger.info(f"{sheet_name}, row_index: {row_index}")
+                    logger.info(f"Already inserted overwritten item {sheet_name}: {previous_item}")
+            await table.put_item(Item=item)
+        except Exception as e:
+            logger.warning(f"  -> Skipping invalid {sheet_name} row {row_index}: {e} | Data: {row}")
+        row_index += 1
+
+
+async def migrate_contracts(db: Any, special_logic=None):
+    table_name = settings.CONTRACTS_TABLE
+    sheet_name = "OLD - Contracts"
+    model_cls = Contract
+
+    contracts = []
+    #################################################
+    # from
+    # OLD Invoices
+    #   Invoice ID	Buyer	Date	Due Date	Total	Prod cost	Calls	Price	Installments	Paid	Client ID	Product	Package	Type	Constrained?	Unlimited	Left Invoice	ACTIVE	Frequency (M)	Installments Paid	New Due Date	Reminder Email	Codice univoco CFMT	Codice fiscale beneficiario	1st PEC
+    # OLD Allocations
+    #   Student ID	Allocation ID	Invoice ID	Client ID	Product ID	TOT Calls	Unlimited	IND Calls	Done	IND Left (Shared/Not Shared)	Active	Start Date Course	Max End Course	Course Expired
+    # to New Contracts
+    #   Contract ID Invoice ID	Client ID	Student ID	Product ID	Package	Manual Total Calls	Total Calls	Calls/week	Unlimited	Start Date	Max End Date	Status	Used Calls	Left Calls	Report Card Cadency	Report Card Start Date	Report Card Email Recipient(s)
+
+    # TODO: usare
+
+    #################################################
+
+    table = await get_table(db, table_name)
+    row_index = 2
+
+    for row in contracts:
+        try:
+            if row["Invoice ID"] in ["", None]:
+                continue
+            if row["Report Card Cadency"] not in ["", None] and isinstance(row["Report Card Cadency"], int):
+                row["report_card_generator_id"] = f"{row['Student ID']}#{row['Client ID']}#{row['Report Card Cadency']}"
+            else:
+                row["report_card_generator_id"] = ""
+
+            # all empty values to None
+            row = {k: row[k] if row[k] else None for k in row}
+
+            # validate row
+            data = model_cls.model_validate(row)
+            item = to_dynamodb_item(data.model_dump())
+            if special_logic:
+                item = special_logic(item)
+
+            # use key fields
+            key = None
+            if sheet_name in key_map:
+                key = {k: item[k] for k in key_map[sheet_name]}
+            if key:
+                previous_item_response = await table.get_item(Key=key)
+                previous_item = previous_item_response.get("Item", None)
+                if previous_item:
+                    logger.info(f"{sheet_name}, row_index: {row_index}")
+                    logger.info(f"Already inserted overwritten item {sheet_name}: {previous_item}")
+            await table.put_item(Item=item)
+        except Exception as e:
+            logger.warning(f"  -> Skipping invalid {sheet_name} row {row_index}: {e} | Data: {row}")
+        row_index += 1
+
+
+async def migrate_trackers(db: Any, special_logic=None):
+    table_name = settings.CALLS_TABLE
+    sheet_name = "OLD - Trackers"
+    model_cls = Tracker
+
+    calls = []
+    #################################################
+    # from
+    # OLD Trackers
+    #   Student ID	Allocation ID	Date	Coach	Time Override	Units	Attendance	Left	€/h	Info	Contexted Info	Product	JJ €/h
+    # to New Tracker
+    #   Date	Student ID	Contract ID	Coach ID	Units	Duration	Coach Rate	Prod cost	Attendance	Notes	Product ID
+
+    old_rows = await fetch_sheet_data(sheet_name)
+
+    # sum units on same (Date, Student ID, Coach)
+    old_rows = (
+        pd.DataFrame.from_dict(old_rows)
+        .groupby(["Date", "Student ID", "Coach", "Attendance", "Product", "Allocation ID"], dropna=False)
+        .agg({"Units": "sum", "Info": lambda s: "\n".join(pd.unique(s.dropna().astype(str)))})
+        .reset_index()
+        .to_dict("records")
+    )
+
+    for row in old_rows:
+        new_row = {}
+
+        # Date	Student ID	Coach ID    Units	Attendance	Notes
+        new_row["Date"] = row["Date"]
+        new_row["Student ID"] = row["Student ID"]
+        new_row["Coach ID"] = row["Coach"]
+        new_row["Units"] = row["Units"]
+        new_row["Attendance"] = row["Attendance"]
+        new_row["Notes"] = row["Info"]
+
+        # Product ID    Duration	Coach Rate	Prod cost
+        product = await get_product_by_name(db, row["Product"])
+        coach = await get_item(db, settings.USERS_TABLE, {"id": new_row["Coach ID"]})
+
+        new_row["Product ID"] = product["product_id"]
+        new_row["Duration"] = product["duration"] * new_row["Units"]
+        new_row["Coach Rate"] = product[f"{coach['role'].split(' ')[0].lower()}_coach_rate"] * new_row["Units"]
+        new_row["Prod cost"] = product["head_coach_rate"] * new_row["Units"]
+
+        # Contract ID
+        invoice_id, client_id, _ = row["Allocation ID"].split(" – ")
+        contracts_table = await get_table(db, settings.CONTRACTS_TABLE)
+        contracts_response = await contracts_table.query(
+            IndexName="client-id-product-id-index",
+            KeyConditionExpression=Key("client_id").eq(client_id) & Key("product_id").eq(new_row["Product ID"]),
+            FilterExpression=Attr("student_id").eq(new_row["Student ID"]),
+            ProjectionExpression="invoice_id, contract_id",
+        )
+        contracts = contracts_response.get("Items", [])
+
+        if contracts:
+            if len(contracts) == 1:
+                try:
+                    if contracts[0]["invoice_id"].endswith(invoice_id.split("/")[1]):
+                        new_row["Contract ID"] = contracts[0]["contract_id"]
+                    else:
+                        raise Exception("Found contract not matching")
+                except Exception as eee:
+                    raise Exception(f"Error contract not matching - {eee}: {contracts[0]}")
+            else:
+                try:
+                    candidates = []
+                    for contract in contracts:
+                        if contract["invoice_id"].endswith(invoice_id.split("/")[1]):
+                            candidates.append(contract["contract_id"])
+                    if len(candidates) == 1:
+                        new_row["Contract ID"] = candidates[0]
+                    else:
+                        raise Exception("Multiple contracts matching")
+                except Exception as eee:
+                    raise Exception(f"Error contracts not matching - {eee}: {contracts}")
+        else:
+            raise Exception("Contract not found")
+
+        # new_row in calls
+        calls.append(new_row)
+
+    #################################################
+
+    table = await get_table(db, table_name)
+    row_index = 2
+
+    for row in calls:
+        try:
+            # all empty values to None
+            row = {k: row[k] if row[k] else None for k in row}
+
+            # validate row
+            data = model_cls.model_validate(row)
+            item = to_dynamodb_item(data.model_dump())
+            if special_logic:
+                item = special_logic(item)
+
+            # use key fields
             key = None
             if sheet_name in key_map:
                 key = {k: item[k] for k in key_map[sheet_name]}
@@ -797,7 +1072,10 @@ async def migrate_all_data(db: Any):
     logger.info("STARTING DATA MIGRATION FROM GOOGLE SHEETS API...")
 
     logger.info("\n--- Migrating Users ---")
-    await migrate_users(db)
+    # await migrate_users(db)
+    await migrate_coaches(db)
+    await migrate_students(db)
+    await migrate_companies(db)
 
     logger.info("\n--- Migrating Products ---")
     await migrate_generic(db, settings.PRODUCTS_TABLE, "Products", Product)
@@ -809,8 +1087,11 @@ async def migrate_all_data(db: Any):
             item["due"] = item.pop("due_date")
         return item
 
-    logger.info("\n--- Migrating Invoices ---")
-    await migrate_generic(db, settings.INVOICES_TABLE, "Invoices", Invoice, special_logic=invoice_logic)
+    # logger.info("\n--- Migrating Invoices ---")
+    # await migrate_generic(db, settings.INVOICES_TABLE, "Invoices", Invoice, special_logic=invoice_logic)
+
+    logger.info("\n--- Migrating OLD  Invoices ---")
+    await migrate_invoices(db, special_logic=invoice_logic)
 
     def contract_logic(item):
         if item.get("unlimited"):
@@ -820,8 +1101,11 @@ async def migrate_all_data(db: Any):
                 _ = item.pop("left_calls")
         return item
 
-    logger.info("\n--- Migrating Contracts ---")
-    await migrate_generic(db, settings.CONTRACTS_TABLE, "Contracts", Contract, special_logic=contract_logic)
+    # logger.info("\n--- Migrating Contracts ---")
+    # await migrate_generic(db, settings.CONTRACTS_TABLE, "Contracts", Contract, special_logic=contract_logic)
+
+    logger.info("\n--- Migrating OLD Contracts ---")
+    await migrate_contracts(db, special_logic=contract_logic)
 
     # migration for company - student relations
     await insert_company_student_relations(db)
@@ -837,18 +1121,11 @@ async def migrate_all_data(db: Any):
             calls_with_debrief.append(id_for_debrief_in_call)
         return item
 
-    logger.info("\n--- Migrating Debriefs ---")
-    await migrate_generic(db, settings.DEBRIEFS_TABLE, "Debriefs", Debrief, special_logic=debrief_logic)
+    # logger.info("\n--- Migrating Debriefs ---")
+    # await migrate_generic(db, settings.DEBRIEFS_TABLE, "Debriefs", Debrief, special_logic=debrief_logic)
 
-    # def tracker_logic(item):
-    #     item["date"] = item.pop("session_date")
-    #     item["session_id"] = f"{item['coach_id']}#{item['student_id']}#{item['date']}"
-    #     if f"{item['student_id']}#{item['coach_id']}#{item['date']}" in calls_with_debrief:
-    #         item["has_debrief"] = True
-    #     return item
-
-    # logger.info("\n--- Migrating Tracker ---")
-    # await migrate_generic(db, settings.CALLS_TABLE, "Tracker", Tracker, special_logic=tracker_logic)
+    logger.info("\n--- Migrating OLD Debriefs ---")
+    await migrate_generic(db, settings.DEBRIEFS_TABLE, "OLD - Debriefs", Debrief, special_logic=debrief_logic)
 
     def tracker_logic(item):
         item["date"] = item.pop("session_date")
@@ -857,12 +1134,18 @@ async def migrate_all_data(db: Any):
             item["has_debrief"] = True
         return item
 
-    logger.info("\n--- Migrating Tracker ---")
-    await migrate_generic(db, settings.CALLS_TABLE, "OLD - Trackers", Tracker, special_logic=tracker_logic)
+    # logger.info("\n--- Migrating Tracker ---")
+    # await migrate_generic(db, settings.CALLS_TABLE, "Tracker", Tracker, special_logic=tracker_logic)
 
-    logger.info("\n--- Migrating Report Cards ---")
+    logger.info("\n--- Migrating OLD Trackers ---")
+    await migrate_trackers(db, special_logic=tracker_logic)
+
+    logger.info("\n--- Report Card Generators and Report Cards ---")
     await introduce_report_card_generators_and_report_cards(db)
-    await migrate_generic(db, settings.REPORT_CARDS_TABLE, "Report Cards", ReportCard)
+    # logger.info("\n--- Migrating Report Cards ---")
+    # await migrate_generic(db, settings.REPORT_CARDS_TABLE, "Report Cards", ReportCard)
+    logger.info("\n--- Migrating OLD Report Cards ---")
+    await migrate_generic(db, settings.REPORT_CARDS_TABLE, "OLD - Report Cards", ReportCard)
 
     logger.info("DATA MIGRATION COMPLETED.")
 

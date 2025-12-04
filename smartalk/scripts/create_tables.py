@@ -145,7 +145,7 @@ async def _create_contracts_table(db, table_name) -> None:
                 ],
                 "Projection": {
                     "ProjectionType": "INCLUDE",
-                    "NonKeyAttributes": ["status", "student_id"],
+                    "NonKeyAttributes": ["status", "student_id", "invoice_id"],
                 },
             },
             {

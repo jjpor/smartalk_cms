@@ -33,7 +33,7 @@ USER_TIMEZONES = {
 }
 
 
-async def get_or_create_booking_calendar(user_email: str):
+async def get_or_create_booking_calendar(user_email: str, time_zone: str):
     creds = get_service_account_creds(user_email)
 
     async with Aiogoogle(service_account_creds=creds) as ag:
@@ -51,7 +51,7 @@ async def get_or_create_booking_calendar(user_email: str):
         # 2) Crea calendario
         new_calendar = {
             "summary": BOOKING_CALENDAR_NAME,
-            "timeZone": USER_TIMEZONES[user_email],
+            "timeZone": time_zone,
         }
 
         created = await ag.as_service_account(api.calendars.insert(json=new_calendar))
@@ -73,12 +73,12 @@ async def setup_calendars():
     Per ogni utente crea/recupera il calendario Booking Calls.
     """
     results = {}
-    for user in list(USER_TIMEZONES.keys()):
+    for user_email in list(USER_TIMEZONES.keys()):
         try:
-            calendar_id = await get_or_create_booking_calendar(user)
-            results[user] = calendar_id
+            calendar_id = await get_or_create_booking_calendar(user_email, USER_TIMEZONES[user_email])
+            results[user_email] = calendar_id
         except Exception as e:
-            results[user] = f"Errore: {e}"
+            results[user_email] = f"Errore: {e}"
     return results
 
 
