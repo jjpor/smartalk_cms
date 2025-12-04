@@ -69,6 +69,29 @@ def parse_date_field(value: Any) -> Optional[str]:
     return None
 
 
+def check_emails(value: str) -> str:
+    NBSP = "\u00a0"  # non-breaking space
+
+    # Normalizzazione robusta
+    val = str(value).replace(NBSP, " ").strip()
+
+    # Split robusto (gestisce spazi multipli, unicode, ecc.)
+    parts = [p.strip() for p in re.split(r"[,;]", val) if p.strip()]
+
+    valid_emails = []
+    for p in parts:
+        try:
+            valid_emails.append(email_adapter.validate_python(p))
+        except Exception:
+            raise ValueError(f"Invalid email addresses in report_card_email_recipients: {repr(p)}")
+
+    if not valid_emails:
+        raise ValueError("No valid email addresses in report_card_email_recipients")
+
+    # salva sempre come stringa normalizzata
+    return ", ".join([str(e) for e in valid_emails])
+
+
 class CoachUser(BaseModel):
     id: str = Field(..., alias="Coach ID")
     name: str = Field(..., alias="Name")
@@ -93,8 +116,8 @@ class StudentUser(BaseModel):
     name: str = Field(..., alias="Name")
     surname: str = Field(..., alias="Surname")
     # La password e l'email possono essere vuote per le righe "segnaposto"
-    password: Optional[str] = Field(None, alias="Password")
-    email: Optional[EmailStr] = Field(None, alias="Email")
+    password: str = Field(None, alias="Password")
+    email: EmailStr = Field(None, alias="Email")
     secondary_email: Optional[EmailStr] = Field(None, alias="Secondary Email")
     phone: Optional[str] = Field(None, alias="Phone")
     status: str = Field(..., alias="Status")
@@ -113,6 +136,17 @@ class ClientUser(BaseModel):
     name: str = Field(..., alias="Company Name")
     id: str = Field(..., alias="Company ID")
     password: int = Field(..., alias="Company Password")
+
+
+class CompanyUser(BaseModel):
+    name: str = Field(..., alias="Company Name")
+    id: str = Field(..., alias="Company ID")
+    password: int = Field(..., alias="Company Password")
+    emails: str = Field(..., alias="Emails")
+
+    @field_validator("emails", mode="before")
+    def validate_email_list(cls, value):
+        return check_emails(value)
 
 
 class Product(BaseModel):
@@ -178,27 +212,7 @@ class Contract(BaseModel):
     def validate_email_list(cls, value):
         if not value or not value.strip():
             return ""
-
-        NBSP = "\u00a0"  # non-breaking space
-
-        # Normalizzazione robusta
-        val = str(value).replace(NBSP, " ").strip()
-
-        # Split robusto (gestisce spazi multipli, unicode, ecc.)
-        parts = [p.strip() for p in re.split(r"[,;]", val) if p.strip()]
-
-        valid_emails = []
-        for p in parts:
-            try:
-                valid_emails.append(email_adapter.validate_python(p))
-            except Exception:
-                raise ValueError(f"Invalid email addresses in report_card_email_recipients: {repr(p)}")
-
-        if not valid_emails:
-            raise ValueError("No valid email addresses in report_card_email_recipients")
-
-        # salva sempre come stringa normalizzata
-        return ", ".join([str(e) for e in valid_emails])
+        return check_emails(value)
 
 
 class Tracker(BaseModel):
@@ -332,6 +346,7 @@ key_map = {
     "Coaches": ["id"],
     "Students": ["id"],
     "Clients": ["id"],
+    "Companies": ["id"],
     "Products": ["product_id"],
     "Contracts": ["contract_id"],
     "Tracker": ["contract_id", "session_id"],
@@ -340,45 +355,45 @@ key_map = {
     "Report Cards": ["report_card_id", "start_month"],
 }
 
-user_class_map = {"Coaches": CoachUser, "Students": StudentUser, "Clients": ClientUser}
-user_type_map = {"Coaches": "coach", "Students": "student", "Clients": "company"}
+user_class_map = {"Coaches": CoachUser, "Students": StudentUser, "Clients": ClientUser, "Companies": CompanyUser}
+user_type_map = {"Coaches": "coach", "Students": "student", "Clients": "company", "Companies": "company"}
 
 
-async def migrate_users(db: Any):
-    table = await get_table(db, settings.USERS_TABLE)
+# async def migrate_users(db: Any):
+#     table = await get_table(db, settings.USERS_TABLE)
 
-    for user_type in ["Coaches", "Students", "Clients"]:
-        # user_type
-        row_index = 2
-        for row in await fetch_sheet_data(user_type):
-            try:
-                # not real error
-                if user_type == "Students" and row.get("Password") == "" and row.get("Email") == "":
-                    continue
+#     for user_type in ["Coaches", "Students", "Clients"]:
+#         # user_type
+#         row_index = 2
+#         for row in await fetch_sheet_data(user_type):
+#             try:
+#                 # not real error
+#                 if user_type == "Students" and row.get("Password") == "" and row.get("Email") == "":
+#                     continue
 
-                # all empty values to None
-                row = {k: row[k] if row[k] else None for k in row}
+#                 # all empty values to None
+#                 row = {k: row[k] if row[k] else None for k in row}
 
-                # validate row
-                data = user_class_map[user_type].model_validate(row)
-                item = data.model_dump(by_alias=False, exclude={"password"})
-                item["user_type"] = user_type_map[user_type]
-                item["password_hash"] = hash_password(str(data.password))
+#                 # validate row
+#                 data = user_class_map[user_type].model_validate(row)
+#                 item = data.model_dump(by_alias=False, exclude={"password"})
+#                 item["user_type"] = user_type_map[user_type]
+#                 item["password_hash"] = hash_password(str(data.password))
 
-                # use key fields
-                key = None
-                if user_type in key_map:
-                    key = {k: item[k] for k in key_map[user_type]}
-                if key:
-                    previous_item_response = await table.get_item(Key=key)
-                    previous_item = previous_item_response.get("Item", None)
-                    if previous_item:
-                        logger.info(f"{user_type}, row_index: {row_index}")
-                        logger.info(f"Already inserted overwritten item {user_type}: {previous_item}")
-                    await table.put_item(Item=to_dynamodb_item(item))
-            except ValidationError as e:
-                logger.warning(f"  -> Skipping invalid {user_type} row {row_index}: {e} | Data: {repr(row)}")
-            row_index += 1
+#                 # use key fields
+#                 key = None
+#                 if user_type in key_map:
+#                     key = {k: item[k] for k in key_map[user_type]}
+#                 if key:
+#                     previous_item_response = await table.get_item(Key=key)
+#                     previous_item = previous_item_response.get("Item", None)
+#                     if previous_item:
+#                         logger.info(f"{user_type}, row_index: {row_index}")
+#                         logger.info(f"Already inserted overwritten item {user_type}: {previous_item}")
+#                     await table.put_item(Item=to_dynamodb_item(item))
+#             except ValidationError as e:
+#                 logger.warning(f"  -> Skipping invalid {user_type} row {row_index}: {e} | Data: {repr(row)}")
+#             row_index += 1
 
 
 async def migrate_coaches(db: Any):
@@ -387,8 +402,7 @@ async def migrate_coaches(db: Any):
 
     coaches = []
     #################################################
-    # from
-    # OLD Coaches
+    # from OLD Coaches
     #   Surname	Name	Coach ID	Status	Email	Phone	Middle Name	Address	Citizenship	Wise Payment Info	Collaboration Agreement	Dashboard Password	Payment Folder
     # to New Coaches
     #   Name	Surname	Coach ID	Status	Email	Phone	Role	Wise Payment Info	Password	Agreement	Payment Folder	Middle Name	Address	Citizenship	Time Zone	Calendar ID
@@ -444,6 +458,132 @@ async def migrate_coaches(db: Any):
     user_type = "Coaches"
     row_index = 2
     for row in coaches:
+        try:
+            # all empty values to None
+            row = {k: row[k] if row[k] else None for k in row}
+
+            # validate row
+            data = user_class_map[user_type].model_validate(row)
+            item = data.model_dump(by_alias=False, exclude={"password"})
+            item["user_type"] = user_type_map[user_type]
+            item["password_hash"] = hash_password(str(data.password))
+
+            # use key fields
+            key = None
+            if user_type in key_map:
+                key = {k: item[k] for k in key_map[user_type]}
+            if key:
+                previous_item_response = await table.get_item(Key=key)
+                previous_item = previous_item_response.get("Item", None)
+                if previous_item:
+                    logger.info(f"{user_type}, row_index: {row_index}")
+                    logger.info(f"Already inserted overwritten item {user_type}: {previous_item}")
+                await table.put_item(Item=to_dynamodb_item(item))
+        except ValidationError as e:
+            logger.warning(f"  -> Skipping invalid {user_type} row {row_index}: {e} | Data: {repr(row)}")
+        row_index += 1
+
+
+async def migrate_students(db: Any):
+    table_name = settings.USERS_TABLE
+    sheet_name = "OLD - Students"
+
+    students = []
+    #################################################
+    # from OLD Students
+    #   Surname	Name	Student ID	Client ID	Email	Phone	Status	Start Date	Password	Quizlet Link	Report Cards Recurrency	Report Card Recipient	Global start reporting	Last reported date	Next start reporting	Next end reporting	Bulletin Board	Drive Folder Link	Homework File	Lesson Plan File    Onboarded
+    # to New Students
+    #   Name	Surname	Student ID	Password	Email	Secondary Email	Phone	Quizlet	Drive	Homework	Lesson Plan	Onboarded (dashboard)	Status
+
+    old_students = await fetch_sheet_data(sheet_name)
+    for row in old_students:
+        new_row = {}
+        # Surname	Name	Student ID	Email	Phone	Status	Password
+        for key in [
+            "Name",
+            "Surname",
+            "Student ID",
+            "Status",
+            "Email",
+            "Phone",
+            "Password",
+        ]:
+            new_row[key] = row[key]
+
+        # Secondary Email	Quizlet	Drive	Homework	Lesson Plan	Onboarded (dashboard)
+        new_row["Secondary Email"] = ""  # fare matching con sheet dedicato
+        new_row["Quizlet"] = row["Quizlet Link"]
+        new_row["Homework"] = row["Homework File"]
+        new_row["Lesson Plan"] = row["Lesson Plan File"]
+        new_row["Onboarded (dashboard)"] = row["Onboarded"]
+
+    students.append(new_row)
+
+    assert len(pd.DataFrame.from_dict(students)["Student ID"].unique()) == len(students), "There are double Student IDs"
+
+    #################################################
+
+    table = await get_table(db, table_name)
+    row_index = 2
+
+    user_type = "Students"
+    row_index = 2
+    for row in students:
+        try:
+            # all empty values to None
+            row = {k: row[k] if row[k] else None for k in row}
+
+            # validate row
+            data = user_class_map[user_type].model_validate(row)
+            item = data.model_dump(by_alias=False, exclude={"password"})
+            item["user_type"] = user_type_map[user_type]
+            item["password_hash"] = hash_password(str(data.password))
+
+            # use key fields
+            key = None
+            if user_type in key_map:
+                key = {k: item[k] for k in key_map[user_type]}
+            if key:
+                previous_item_response = await table.get_item(Key=key)
+                previous_item = previous_item_response.get("Item", None)
+                if previous_item:
+                    logger.info(f"{user_type}, row_index: {row_index}")
+                    logger.info(f"Already inserted overwritten item {user_type}: {previous_item}")
+                await table.put_item(Item=to_dynamodb_item(item))
+        except ValidationError as e:
+            logger.warning(f"  -> Skipping invalid {user_type} row {row_index}: {e} | Data: {repr(row)}")
+        row_index += 1
+
+
+async def migrate_companies(db: Any):
+    table_name = settings.USERS_TABLE
+    sheet_name = "OLD - Companies"
+
+    companies = []
+    #################################################
+    # from OLD Companies
+    #   Name	Company ID	Password	Client ID	Final Password	Email
+    # to New Companies
+    #   Company Name	Company ID  Company Password    Emails
+
+    old_companies = await fetch_sheet_data(sheet_name)
+    for row in old_companies:
+        new_row = {}
+        new_row["Company Name"] = row["Name"]
+        new_row["Company ID"] = row["Company ID"]
+        new_row["Company Password"] = row["Password"]
+        new_row["Emails"] = row["Email"]
+
+    companies.append(new_row)
+
+    #################################################
+
+    table = await get_table(db, table_name)
+    row_index = 2
+
+    user_type = "Companies"
+    row_index = 2
+    for row in companies:
         try:
             # all empty values to None
             row = {k: row[k] if row[k] else None for k in row}
@@ -618,7 +758,8 @@ async def migrate_invoices(db: Any, special_logic=None):
     #   Invoice ID	Client ID	Buyer	Date	Due	Amount	Paid	Installments	Email Reminder Expired Invoice	Expired Email (sent on)	1st PEC (sent on)	2nd PEC (sent on)	Codice Univoco CFMT	Codice Fiscale Beneficiario CFMT
 
     # TODO: usare
-
+    invoices = await fetch_sheet_data(sheet_name)
+    invoices_df = pd.DataFrame.from_dict(invoices)
     #################################################
 
     table = await get_table(db, table_name)
