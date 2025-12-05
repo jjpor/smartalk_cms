@@ -239,6 +239,11 @@ async def get_student_info(student_id: str, db: DynamoDBServiceResource) -> Opti
 #         return {"success": False, "error": str(e)}
 
 
+def calculate_max_end_date(total_calls: int, calls_per_week: int, start_date: str) -> str:
+    delta_days = int(ceil(7 * 1.7 * total_calls / calls_per_week**0.5))
+    return (datetime.fromisoformat(start_date).date() + timedelta(days=delta_days)).isoformat()
+
+
 async def log_call_to_db(
     group_call: dict,
     db: DynamoDBServiceResource,
@@ -302,11 +307,6 @@ async def log_call_to_db(
             )
             if not unlimited:
                 if start_date is None:
-                    delta_days = int(ceil(7 * 1.7 * total_calls / calls_per_week**0.5))
-                    calculated_max_end_date = (
-                        datetime.fromisoformat(call_date).date() + timedelta(days=delta_days)
-                    ).isoformat()
-
                     # set start_date and max_end_date
                     updates.append(
                         {
@@ -316,7 +316,7 @@ async def log_call_to_db(
                             "UpdateExpression": "SET start_date = :call_date, max_end_date = :max_end",
                             "ExpressionAttributeValues": {
                                 ":call_date": {"S": call_date},
-                                ":max_end": {"S": calculated_max_end_date},
+                                ":max_end": {"S": calculate_max_end_date(total_calls, calls_per_week, call_date)},
                             },
                         }
                     )

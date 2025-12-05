@@ -4,8 +4,9 @@ import os
 # Permette allo script di trovare i moduli del progetto
 import re
 import sys
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from decimal import Decimal
+from math import ceil
 from typing import Any, Dict, List, Optional
 
 import httpx
@@ -14,6 +15,7 @@ from boto3.dynamodb.conditions import Attr, Key
 from dateutil.relativedelta import relativedelta
 from pydantic import BaseModel, EmailStr, Field, TypeAdapter, ValidationError, field_validator
 
+from smartalk.db_usage.dynamodb_coach import calculate_max_end_date
 from smartalk.scripts.create_booking_calendars import USER_TIMEZONES, get_or_create_booking_calendar
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -188,8 +190,8 @@ class Contract(BaseModel):
     left_calls: Optional[float | str] = Field(None, alias="Left Calls")
     report_card_cadency: Optional[int | str] = Field(None, alias="Report Card Cadency")
     start_date: Optional[str] = Field(None, alias="Start Date")
-    max_end_date: Optional[str] = Field(None, alias="Max End Date")
-    report_card_start_month: Optional[str] = Field(None, alias="Report Card Start Date")
+    # max_end_date: Optional[str] = Field(None, alias="Max End Date")
+    # report_card_start_month: Optional[str] = Field(None, alias="Report Card Start Date")
     report_card_email_recipients: Optional[str] = Field(None, alias="Report Card Email Recipient(s)")
     report_card_generator_id: Optional[str] = Field(None, alias="report_card_generator_id")
 
@@ -197,16 +199,20 @@ class Contract(BaseModel):
     def standardize_unlimited(cls, value):
         return str(value).strip().upper() in ["Y", "YES", "TRUE"]
 
-    @field_validator("start_date", "max_end_date", mode="before")
+    # @field_validator("start_date", "max_end_date", mode="before")
+    # def _parse_date_fields(cls, value):
+    #     return parse_date_field(value)
+
+    @field_validator("start_date", mode="before")
     def _parse_date_fields(cls, value):
         return parse_date_field(value)
 
-    @field_validator("report_card_start_month", mode="before")
-    def _parse_month_field(cls, value):
-        if value:
-            return parse_date_field(value)[:7]
-        else:
-            ""
+    # @field_validator("report_card_start_month", mode="before")
+    # def _parse_month_field(cls, value):
+    #     if value:
+    #         return parse_date_field(value)[:7]
+    #     else:
+    #         ""
 
     @field_validator("report_card_email_recipients", mode="before")
     def validate_email_list(cls, value):
@@ -744,6 +750,34 @@ async def migrate_generic(db: Any, table_name: str, sheet_name: str, model_cls: 
         row_index += 1
 
 
+def get_cleaned_invoices(invoices_df):
+    # filtering
+    particular_buyers = ["MATERIA PRIMA SRL", "Alessia Milani"]
+    invoices_df = invoices_df[
+        invoices_df["Buyer"].notna()
+        & (~invoices_df["Buyer"].isin(particular_buyers) | invoices_df["Invoice ID"].str.startswith("00/00"))
+    ]
+
+    # grouping
+    invoices_df = (
+        invoices_df.groupby(["Client ID", "Invoice ID", "Buyer"], dropna=False)
+        .agg(
+            {
+                "Date": "first",
+                "Due": "first",
+                # Amount: se nessuno nel gruppo è Nan → somma, altrimenti restituisci None
+                "Amount": lambda s: s.sum() if s.notna().all() else None,
+                # Paid: se tutto il gruppo è NaN → None, altrimenti se tutti sono Y metti Y altrimenti N
+                "Paid": lambda s: (None if s.isna().all() else ("Y" if (s == "Y").all() else "N")),
+                "Installments": "first",
+                "Email Reminder Expired Invoice": ("Reminder Email", "first"),
+            }
+        )
+        .reset_index()
+    )
+    return invoices_df
+
+
 async def migrate_invoices(db: Any, special_logic=None):
     table_name = settings.INVOICES_TABLE
     sheet_name = "OLD - Invoices"
@@ -755,11 +789,13 @@ async def migrate_invoices(db: Any, special_logic=None):
     # OLD Invoices
     #   Invoice ID	Buyer	Date	Due Date	Total	Prod cost	Calls	Price	Installments	Paid	Client ID	Product	Package	Type	Constrained?	Unlimited	Left Invoice	ACTIVE	Frequency (M)	Installments Paid	New Due Date	Reminder Email	Codice univoco CFMT	Codice fiscale beneficiario	1st PEC
     # to New Invoices
-    #   Invoice ID	Client ID	Buyer	Date	Due	Amount	Paid	Installments	Email Reminder Expired Invoice	Expired Email (sent on)	1st PEC (sent on)	2nd PEC (sent on)	Codice Univoco CFMT	Codice Fiscale Beneficiario CFMT
+    #   Invoice ID	Client ID	Buyer	Date	Due	Amount	Paid	Installments	Email Reminder Expired Invoice
 
-    # TODO: usare
     invoices = await fetch_sheet_data(sheet_name)
     invoices_df = pd.DataFrame.from_dict(invoices)
+    invoices_df = get_cleaned_invoices(invoices_df)
+    invoices = invoices_df.to_dict("records")
+
     #################################################
 
     table = await get_table(db, table_name)
@@ -797,7 +833,7 @@ async def migrate_invoices(db: Any, special_logic=None):
 
 async def migrate_contracts(db: Any, special_logic=None):
     table_name = settings.CONTRACTS_TABLE
-    sheet_name = "OLD - Contracts"
+    sheet_name = "OLD - Allocations"
     model_cls = Contract
 
     contracts = []
@@ -807,11 +843,132 @@ async def migrate_contracts(db: Any, special_logic=None):
     #   Invoice ID	Buyer	Date	Due Date	Total	Prod cost	Calls	Price	Installments	Paid	Client ID	Product	Package	Type	Constrained?	Unlimited	Left Invoice	ACTIVE	Frequency (M)	Installments Paid	New Due Date	Reminder Email	Codice univoco CFMT	Codice fiscale beneficiario	1st PEC
     # OLD Allocations
     #   Student ID	Allocation ID	Invoice ID	Client ID	Product ID	TOT Calls	Unlimited	IND Calls	Done	IND Left (Shared/Not Shared)	Active	Start Date Course	Max End Course	Course Expired
+    # Products
+    #   Product ID  Product Name
     # to New Contracts
-    #   Contract ID Invoice ID	Client ID	Student ID	Product ID	Package	Manual Total Calls	Total Calls	Calls/week	Unlimited	Start Date	Max End Date	Status	Used Calls	Left Calls	Report Card Cadency	Report Card Start Date	Report Card Email Recipient(s)
+    #   Contract ID Invoice ID	Client ID	Student ID	Product ID	Package Total Calls	Calls/week	Unlimited	Start Date	Max End Date	Status	Used Calls	Left Calls	Report Card Cadency	Report Card Start Date	Report Card Email Recipient(s)
 
-    # TODO: usare
+    invoices = await fetch_sheet_data("OLD - Invoices")
+    allocations = await fetch_sheet_data(sheet_name)
+    products = await fetch_sheet_data("Products")
+    students = await fetch_sheet_data("OLD - Students")
 
+    invoices_df = pd.DataFrame.from_dict(invoices)
+    all_invoices_df = invoices_df.copy()
+    invoices_df = get_cleaned_invoices(invoices_df)
+    allocations_df = pd.DataFrame.from_dict(allocations).rename(columns={"Product ID": "Product Name"})
+    products_df = pd.DataFrame.from_dict(products)[["Product ID", "Product Name"]]
+    students_df = pd.DataFrame.from_dict(students)[["Student ID", "Report Card Recipient"]]
+
+    # exceptions
+    allocations_df.loc[allocations_df["Invoice ID"] == "XX/25ALF", "Invoice ID"] = "01/25ALF"
+    allocations_df = allocations_df[
+        (~allocations_df["Client ID"].isin(["ALE.MIL"])) | (allocations_df["Invoice ID"].str.startswith("00/00"))
+    ]
+
+    allocations_df.loc[
+        (allocations_df["Student ID"] == "Student ID") & (allocations_df["Client ID"] == "ALE.MIL"), "Student ID"
+    ] = "ALE.MIL"
+
+    M1A_students = [
+        "ALI.FAC",
+        "CHI.SER",
+        "CRI.CAR",
+        "ELI.BOS",
+        "EUG.GIU",
+        "GIO.PED",
+        "ISA.POR",
+        "MAR.CAP",
+        "MAR.GIU",
+        "NAU.DEP",
+        "ROC.CAS",
+        "VAL.CAR",
+        "VAL.COG",
+        "VIR.BIA",
+        "VIT.RAT",
+    ]
+
+    # 1. righe che devono essere replicate
+    mask = (allocations_df["Student ID"] == "Student ID") & (allocations_df["Client ID"] == "M1A")
+    rows_to_expand = allocations_df[mask]
+
+    # 2. righe normali (non da espandere)
+    rows_normal = allocations_df[~mask]
+
+    # 3. espandiamo duplicando le righe una per ogni Student ID della lista
+    expanded_rows = (
+        rows_to_expand.assign(StudentIDList=[M1A_students] * len(rows_to_expand))
+        .explode("StudentIDList")
+        .rename(columns={"StudentIDList": "Student ID"})
+    )
+
+    # 4. dataframe finale
+    allocations_df = pd.concat([rows_normal, expanded_rows], ignore_index=True)
+    allocations_df = allocations_df.merge(products_df, on="Product Name", how="left").merge(
+        students_df, on="Student ID", how="left"
+    )
+
+    contracts_df = allocations_df.merge(invoices_df, on=["Invoice ID", "Client ID"], how="left", uffixes=("", "_inv"))
+    contracts_df = contracts_df.merge(
+        all_invoices_df[all_invoices_df["Package"].notna()].rename(columns={"Product": "Product Name"})[
+            ["Invoice ID", "Client ID", "Product Name", "Package", "Unlimited"]
+        ],
+        on=["Invoice ID", "Client ID", "Product Name"],
+        how="left",
+    )
+
+    contracts_df["Calls/week"] = contracts_df["Product Name"].apply(lambda x: 2 if "30" in x else 1)
+    contracts_df["Report Card Cadency"] = None
+    contracts_df.loc[contracts_df["Report Card Recipient"].notna(), "Report Card Cadency"] = 1
+
+    # renaming columns
+    contracts_df = contracts_df.rename(
+        columns={
+            "IND Calls": "Total Calls",
+            "Done": "Used Calls",
+            "Report Card Recipient": "Report Card Email Recipient(s)",
+            "Start Date Course": "Start Date",
+        }
+    )
+
+    contracts_df["Status"] = contracts_df["Active"].apply(lambda x: "Active" if x in [True, "TRUE"] else "Inactive")
+
+    contracts_df[contracts_df["Unlimited"] == "N", "Left Calls"] = (
+        contracts_df[contracts_df["Unlimited"] == "N", "Total Calls"]
+        - contracts_df["Total Calls"]
+        - contracts_df["Used Calls"]
+    )
+
+    # Invoice ID	Client ID	Student ID	Product ID	Package Total Calls	Calls/week	Unlimited   Start Date   Status  Used Calls  Left Calls  Report Card Cadency Report Card Email Recipient(s)
+    contracts_df = contracts_df[
+        [
+            "Invoice ID",
+            "Client ID",
+            "Student ID",
+            "Product ID",
+            "Package",
+            "Total Calls",
+            "Used Calls",
+            "Calls/week",
+            "Unlimited",
+            "Start Date",
+            "Status",
+            "Used Calls",
+            "Left Calls",
+            "Report Card Cadency",
+            "Report Card Email Recipient(s)",
+        ]
+    ]
+
+    # Max End Date, Report Card Start Date
+    # in special_logic
+
+    # Contract ID
+    contracts_df.reset_index(inplace=True, drop=True)
+    contracts_df["Contract ID"] = "CON00" + pd.Series(contracts_df.index).apply(lambda x: str(x + 1))
+
+    # dict
+    contracts = contracts_df.to_dict("records")
     #################################################
 
     table = await get_table(db, table_name)
@@ -919,6 +1076,9 @@ async def migrate_trackers(db: Any, special_logic=None):
                 try:
                     candidates = []
                     for contract in contracts:
+                        if contract["invoice_id"] == invoice_id:
+                            candidates = [candidates[0]]
+                            break
                         if contract["invoice_id"].endswith(invoice_id.split("/")[1]):
                             candidates.append(contract["contract_id"])
                     if len(candidates) == 1:
@@ -1240,12 +1400,19 @@ async def migrate_all_data(db: Any):
                 _ = item.pop("used_calls")
             if "left_calls" in item:
                 _ = item.pop("left_calls")
+        else:
+            if item.get("start_date"):
+                item["max_end_date"] = calculate_max_end_date(
+                    item["total_calls"], item["calls_per_week"], item["start_date"]
+                )
+            if item.get("report_card_cadency"):
+                item["report_card_start_month"] = "2025-12"
         return item
 
     # logger.info("\n--- Migrating Contracts ---")
     # await migrate_generic(db, settings.CONTRACTS_TABLE, "Contracts", Contract, special_logic=contract_logic)
 
-    logger.info("\n--- Migrating OLD Contracts ---")
+    logger.info("\n--- Migrating OLD Allocations ---")
     await migrate_contracts(db, special_logic=contract_logic)
 
     # migration for company - student relations
