@@ -644,6 +644,42 @@ async def migrate_generic(db: Any, table_name: str, sheet_name: str, model_cls: 
     row_index = 2
     for row in await fetch_sheet_data(sheet_name):
         try:
+            if sheet_name == "OLD - Debriefs":
+                # from OLD Debrief
+                #   Timestamp	Email Address	Student	Date	Coach	Goals	Topics	Grammar	Vocabulary	Pronunciation	Other	Homework
+                # to new Debrief
+                #   Date	Coach ID	Student ID	Goals	Topics	Grammar	Vocabulary	Pronunciation	Other	Homework	Draft	Sent	Sent Date
+                new_row = {}
+
+                # Date	Goals	Topics	Grammar	Vocabulary	Pronunciation	Other	Homework
+                for key in ["Date", "Goals", "Topics", "Grammar", "Vocabulary", "Pronunciation", "Other", "Homework"]:
+                    new_row[key] = row[key]
+
+                # Coach ID	Student ID
+                new_row["Coach ID"] = row["Coach"]
+                new_row["Student ID"] = row["Student"]
+
+                # Draft	Sent	Sent Date
+                for key in ["Draft", "Sent", "Sent Date"]:
+                    new_row[key] = None
+
+                # back to row
+                row = new_row
+
+            if sheet_name == "OLD - Report Cards":
+                # from OLD Report Card
+                #   Student ID	Client ID	Recurrency	Start	End	Attendance	Report	Coach	Final check	Sent
+                # to new Report Card
+                #   Date	Student ID	Contract ID	Coach ID	Attendance	Report	Status	Sent
+                new_row = {}
+                new_row["Date"] = row["End"]
+                new_row["Student ID"] = row["Student ID"]
+                new_row["Contract ID"] = None
+                new_row["Coach ID"] = row["Coach"]
+                new_row["Attendance"] = row["Attendance"]
+                new_row["Report"] = row["Report"]
+                new_row["Status"] = row["Final check"]
+                new_row["Sent"] = row["Sent"]
             if (
                 table_name == settings.INVOICES_TABLE
                 and row.get("Invoice ID") in ["", None]
@@ -1456,9 +1492,3 @@ async def migrate_all_data(db: Any):
     await migrate_generic(db, settings.REPORT_CARDS_TABLE, "OLD - Report Cards", ReportCard)
 
     logger.info("DATA MIGRATION COMPLETED.")
-
-
-# TODO:
-# aggiornare le colonne di Contracts table
-# Start Date,	Max End Date,	Status,	Used Calls,	Left Calls
-# in maniera coerente con le call inserite fino ad ora
