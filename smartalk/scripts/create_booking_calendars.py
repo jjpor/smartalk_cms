@@ -1,6 +1,3 @@
-# calendar_setup.py
-
-import asyncio
 import json
 import logging
 
@@ -81,6 +78,3 @@ async def setup_calendars():
             results[user_email] = f"Errore: {e}"
     return results
 
-
-results = asyncio.run(setup_calendars())
-logger.info(results)

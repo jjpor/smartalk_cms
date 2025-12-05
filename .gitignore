@@ -222,3 +222,5 @@ dynamodb_local/
 logs
 testing
 
+poetry.toml
+.DS_Store
