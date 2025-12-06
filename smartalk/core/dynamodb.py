@@ -4,7 +4,7 @@ import logging
 from contextlib import asynccontextmanager
 from datetime import date, datetime, timezone
 from decimal import Decimal
-from typing import Any, AsyncGenerator, Dict, List, Optional
+from typing import Any, AsyncGenerator, Dict, List, Mapping, Optional
 
 from aioboto3 import Session as AioSession
 from botocore.exceptions import ClientError
@@ -77,10 +77,35 @@ async def get_table(db: DynamoDBServiceResource, table_name: str) -> Table:
     return await db.Table(table_name)
 
 
-async def get_item(db: DynamoDBServiceResource, table_name: str, keys: dict) -> Table:
+def clean_dynamo_value(value: Any) -> Any:
+    """Converte ricorsivamente i tipi DynamoDB (Decimal, mappe, liste)
+    in tipi Python standard (int, float, dict, list)."""
+
+    # Decimal → int o float
+    if isinstance(value, Decimal):
+        if value % 1 == 0:  # valore senza decimali
+            return int(value)
+        return float(value)
+
+    # Liste → conversione ricorsiva
+    if isinstance(value, list):
+        return [clean_dynamo_value(v) for v in value]
+
+    # Dizionari → conversione ricorsiva
+    if isinstance(value, Mapping):
+        return {k: clean_dynamo_value(v) for k, v in value.items()}
+
+    return value
+
+
+async def get_item(db, table_name: str, keys: dict) -> dict:
+    """Ottiene un item da DynamoDB e converte i Decimal e altri tipi non JSON-friendly."""
     table = await get_table(db, table_name)
+
     item_response = await table.get_item(Key=keys)
-    return item_response.get("Item", {})
+    raw_item = item_response.get("Item", {})
+
+    return clean_dynamo_value(raw_item)
 
 
 async def put_item(db: DynamoDBServiceResource, table_name: str, item: dict, keys: list) -> Table:

@@ -20,7 +20,7 @@ from smartalk.scripts.create_booking_calendars import USER_TIMEZONES, get_or_cre
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from smartalk.core.dynamodb import get_item, get_table, get_today_string, to_dynamodb_item
+from smartalk.core.dynamodb import clean_dynamo_value, get_item, get_table, get_today_string, to_dynamodb_item
 from smartalk.core.settings import settings
 from smartalk.db_usage.dynamodb_auth import hash_password
 
@@ -246,11 +246,11 @@ class Tracker(BaseModel):
 class Invoice(BaseModel):
     invoice_id: str = Field(..., alias="Invoice ID")
     client_id: str = Field(..., alias="Client ID")
-    buyer: Optional[str] = Field(None, alias="Buyer")
-    invoice_date: Optional[str] = Field(..., alias="Date")
-    due_date: Optional[str] = Field(..., alias="Due")
-    amount: Decimal = Field(..., alias="Amount")
-    paid: bool = Field(..., alias="Paid")
+    buyer: str = Field(..., alias="Buyer")
+    invoice_date: Optional[str] = Field(None, alias="Date")
+    due_date: Optional[str] = Field(None, alias="Due")
+    amount: Optional[Decimal] = Field(None, alias="Amount")
+    paid: Optional[bool] = Field(None, alias="Paid")
     installments: Optional[int | str] = Field(None, alias="Installments")
     email_reminder: Optional[EmailStr] = Field(None, alias="Email Reminder Expired Invoice")
 
@@ -454,12 +454,11 @@ async def migrate_coaches(db: Any):
         # Calendar ID
         new_row["Calendar ID"] = await get_or_create_booking_calendar(new_row["Email"], new_row["Time Zone"])
 
-    coaches.append(new_row)
+        coaches.append(new_row)
 
     #################################################
 
     table = await get_table(db, table_name)
-    row_index = 2
 
     user_type = "Coaches"
     row_index = 2
@@ -503,34 +502,30 @@ async def migrate_students(db: Any):
 
     old_students = await fetch_sheet_data(sheet_name)
     for row in old_students:
+        # filtering empty or testing rows
+        if row.get("Password") in ["", None] and row.get("Email") in ["", None] or row.get("Student ID") == "NAM.SUR":
+            continue
+
         new_row = {}
         # Surname	Name	Student ID	Email	Phone	Status	Password
-        for key in [
-            "Name",
-            "Surname",
-            "Student ID",
-            "Status",
-            "Email",
-            "Phone",
-            "Password",
-        ]:
+        for key in ["Name", "Surname", "Student ID", "Status", "Email", "Phone", "Password"]:
             new_row[key] = row[key]
 
         # Secondary Email	Quizlet	Drive	Homework	Lesson Plan	Onboarded (dashboard)
         new_row["Secondary Email"] = ""  # fare matching con sheet dedicato
         new_row["Quizlet"] = row["Quizlet Link"]
+        new_row["Drive"] = row["Drive Folder Link"]
         new_row["Homework"] = row["Homework File"]
         new_row["Lesson Plan"] = row["Lesson Plan File"]
         new_row["Onboarded (dashboard)"] = row["Onboarded"]
 
-    students.append(new_row)
+        students.append(new_row)
 
     assert len(pd.DataFrame.from_dict(students)["Student ID"].unique()) == len(students), "There are double Student IDs"
 
     #################################################
 
     table = await get_table(db, table_name)
-    row_index = 2
 
     user_type = "Students"
     row_index = 2
@@ -580,7 +575,7 @@ async def migrate_companies(db: Any):
         new_row["Company Password"] = row["Password"]
         new_row["Emails"] = row["Email"]
 
-    companies.append(new_row)
+        companies.append(new_row)
 
     #################################################
 
@@ -636,7 +631,7 @@ async def get_product_by_name(db, product_name):
         KeyConditionExpression=Key("product_name").eq(product_name),
         Limit=1,
     )
-    return response["Items"][0]
+    return clean_dynamo_value(response["Items"][0])
 
 
 async def migrate_generic(db: Any, table_name: str, sheet_name: str, model_cls: BaseModel, special_logic=None):
@@ -649,6 +644,11 @@ async def migrate_generic(db: Any, table_name: str, sheet_name: str, model_cls: 
                 #   Timestamp	Email Address	Student	Date	Coach	Goals	Topics	Grammar	Vocabulary	Pronunciation	Other	Homework
                 # to new Debrief
                 #   Date	Coach ID	Student ID	Goals	Topics	Grammar	Vocabulary	Pronunciation	Other	Homework	Draft	Sent	Sent Date
+
+                # filtering testing rows
+                if row.get("Student ID") == "NAM.SUR":
+                    continue
+
                 new_row = {}
 
                 # Date	Goals	Topics	Grammar	Vocabulary	Pronunciation	Other	Homework
@@ -766,9 +766,11 @@ async def migrate_generic(db: Any, table_name: str, sheet_name: str, model_cls: 
 
             # validate row
             data = model_cls.model_validate(row)
-            item = to_dynamodb_item(data.model_dump())
+            item = data.model_dump()
             if special_logic:
                 item = special_logic(item)
+
+            item = to_dynamodb_item(item)
 
             # use key fields
             key = None
@@ -786,17 +788,26 @@ async def migrate_generic(db: Any, table_name: str, sheet_name: str, model_cls: 
         row_index += 1
 
 
-def get_cleaned_invoices(invoices_df):
-    # filtering
-    particular_buyers = ["MATERIA PRIMA SRL", "Alessia Milani"]
-    invoices_df = invoices_df[
-        invoices_df["Buyer"].notna()
-        & (~invoices_df["Buyer"].isin(particular_buyers) | invoices_df["Invoice ID"].str.startswith("00/00"))
-    ]
+def get_cleaned_invoices(old_invoices_df):
+    # from
+    # OLD Invoices
+    #   Invoice ID	Buyer	Date	Due Date	Total	Prod cost	Calls	Price	Installments	Paid	Client ID	Product	Package	Type	Constrained?	Unlimited	Left Invoice	ACTIVE	Frequency (M)	Installments Paid	New Due Date	Reminder Email	Codice univoco CFMT	Codice fiscale beneficiario	1st PEC
+    # to New Invoices
+    #   Invoice ID	Client ID	Buyer	Date	Due	Amount	Paid	Installments	Email Reminder Expired Invoice
 
-    # grouping
-    invoices_df = (
-        invoices_df.groupby(["Client ID", "Invoice ID", "Buyer"], dropna=False)
+    particular_buyers = ["MATERIA PRIMA SRL", "Alessia Milani"]
+
+    # filtering and grouping
+    return (
+        old_invoices_df[
+            old_invoices_df["Buyer"].notna()
+            & (
+                ~old_invoices_df["Buyer"].isin(particular_buyers)
+                | old_invoices_df["Invoice ID"].str.startswith("00/00")
+            )
+        ]
+        .rename(columns={"Due Date": "Due", "Total": "Amount", "Reminder Email": "Email Reminder Expired Invoice"})
+        .groupby(["Client ID", "Invoice ID", "Buyer"], dropna=False)
         .agg(
             {
                 "Date": "first",
@@ -806,12 +817,11 @@ def get_cleaned_invoices(invoices_df):
                 # Paid: se tutto il gruppo è NaN → None, altrimenti se tutti sono Y metti Y altrimenti N
                 "Paid": lambda s: (None if s.isna().all() else ("Y" if (s == "Y").all() else "N")),
                 "Installments": "first",
-                "Email Reminder Expired Invoice": ("Reminder Email", "first"),
+                "Email Reminder Expired Invoice": "first",
             }
         )
         .reset_index()
     )
-    return invoices_df
 
 
 async def migrate_invoices(db: Any, special_logic=None):
@@ -847,9 +857,11 @@ async def migrate_invoices(db: Any, special_logic=None):
 
             # validate row
             data = model_cls.model_validate(row)
-            item = to_dynamodb_item(data.model_dump())
+            item = data.model_dump()
             if special_logic:
                 item = special_logic(item)
+
+            item = to_dynamodb_item(item)
 
             # use key fields
             key = None
@@ -926,31 +938,32 @@ async def migrate_contracts(db: Any, special_logic=None):
 
     # 1. righe che devono essere replicate
     mask = (allocations_df["Student ID"] == "Student ID") & (allocations_df["Client ID"] == "M1A")
-    rows_to_expand = allocations_df[mask]
+    rows_to_expand = allocations_df[mask].copy()
 
-    # 2. righe normali (non da espandere)
-    rows_normal = allocations_df[~mask]
+    # 2. righe normali
+    rows_normal = allocations_df[~mask].copy()
 
-    # 3. espandiamo duplicando le righe una per ogni Student ID della lista
-    expanded_rows = (
-        rows_to_expand.assign(StudentIDList=[M1A_students] * len(rows_to_expand))
-        .explode("StudentIDList")
-        .rename(columns={"StudentIDList": "Student ID"})
-    )
+    # 3. espansione corretta
+    expanded_rows = rows_to_expand.loc[rows_to_expand.index.repeat(len(M1A_students))].copy()
+
+    expanded_rows["Student ID"] = M1A_students * len(rows_to_expand)
 
     # 4. dataframe finale
     allocations_df = pd.concat([rows_normal, expanded_rows], ignore_index=True)
+
+    # merge
     allocations_df = allocations_df.merge(products_df, on="Product Name", how="left").merge(
         students_df, on="Student ID", how="left"
     )
 
-    contracts_df = allocations_df.merge(invoices_df, on=["Invoice ID", "Client ID"], how="left", uffixes=("", "_inv"))
+    contracts_df = allocations_df.merge(invoices_df, on=["Invoice ID", "Client ID"], how="left", suffixes=("", "_inv"))
     contracts_df = contracts_df.merge(
         all_invoices_df[all_invoices_df["Package"].notna()].rename(columns={"Product": "Product Name"})[
             ["Invoice ID", "Client ID", "Product Name", "Package", "Unlimited"]
         ],
         on=["Invoice ID", "Client ID", "Product Name"],
         how="left",
+        suffixes=("", "_all_inv"),
     )
 
     contracts_df["Calls/week"] = contracts_df["Product Name"].apply(lambda x: 2 if "30" in x else 1)
@@ -969,10 +982,9 @@ async def migrate_contracts(db: Any, special_logic=None):
 
     contracts_df["Status"] = contracts_df["Active"].apply(lambda x: "Active" if x in [True, "TRUE"] else "Inactive")
 
-    contracts_df[contracts_df["Unlimited"] == "N", "Left Calls"] = (
-        contracts_df[contracts_df["Unlimited"] == "N", "Total Calls"]
-        - contracts_df["Total Calls"]
-        - contracts_df["Used Calls"]
+    contracts_df.loc[contracts_df["Unlimited"] == "N", "Left Calls"] = (
+        contracts_df.loc[contracts_df["Unlimited"] == "N", "Total Calls"]
+        - contracts_df.loc[contracts_df["Unlimited"] == "N", "Used Calls"]
     )
 
     # Invoice ID	Client ID	Student ID	Product ID	Package Total Calls	Calls/week	Unlimited   Start Date   Status  Used Calls  Left Calls  Report Card Cadency Report Card Email Recipient(s)
@@ -1024,9 +1036,11 @@ async def migrate_contracts(db: Any, special_logic=None):
 
             # validate row
             data = model_cls.model_validate(row)
-            item = to_dynamodb_item(data.model_dump())
+            item = data.model_dump()
             if special_logic:
                 item = special_logic(item)
+
+            item = to_dynamodb_item(item)
 
             # use key fields
             key = None
@@ -1141,9 +1155,11 @@ async def migrate_trackers(db: Any, special_logic=None):
 
             # validate row
             data = model_cls.model_validate(row)
-            item = to_dynamodb_item(data.model_dump())
+            item = data.model_dump()
             if special_logic:
                 item = special_logic(item)
+
+            item = to_dynamodb_item(item)
 
             # use key fields
             key = None
